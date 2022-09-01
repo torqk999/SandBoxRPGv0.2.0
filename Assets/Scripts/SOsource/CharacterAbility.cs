@@ -1,0 +1,90 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum CostType
+{
+    HEALTH,
+    STAMINA,
+    MANA,
+    NONE
+}
+public enum RangeType
+{
+    SELF,
+    TARGET,
+    TARGET_AOE,
+    AOE,
+    SHAPED_VOLUME,
+    SUMMON
+}
+public enum AbilityType
+{
+    ATTACK,
+    SPELL,
+    POWER
+}
+[CreateAssetMenu(fileName = "CharacterSheet", menuName = "ScriptableObjects/CharacterAbility")]
+public class CharacterAbility : ScriptableObject
+{
+    public int WeaponID;
+    public string Name;
+    public Sprite Sprite;
+    public bool bTargetEnemy;
+    public RangeType RangeType;
+    public CostType CostType;
+    public AbilityType AbilityType;
+    public float RangeValue;
+    public float CostValue;
+    public float CD_Duration;
+    public float CD_Timer;
+    public Effect[] Effects;
+
+    public void Clone(CharacterAbility ability, float potency = 1)
+    {
+        WeaponID = ability.WeaponID; // <<<--- ?!?!?
+        Name = ability.Name;
+        Sprite = ability.Sprite;
+        RangeType = ability.RangeType;
+        CostType = ability.CostType;
+        AbilityType = ability.AbilityType;
+        RangeValue = ability.RangeValue;
+        CostValue = ability.CostValue;
+        CD_Duration = ability.CD_Duration;
+        CD_Timer = 0;
+        Effects = new Effect[ability.Effects.Length];
+        for (int i = 0; i < Effects.Length; i++)
+        {
+            Effects[i] = ability.Effects[i];
+            Effects[i].ElementPack.Amplify(potency);
+        }
+    }
+    public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
+    {
+        
+        int[] characterSkillLevels = currentCharacter.Sheet.Level.PullData();
+
+        float potency = 1 +
+            (((currentCharacter.Sheet.Level.CHARACTER * CharacterMath.SKILL_FACTOR[8]) +                          // Level
+            (equip.EquipLevel * CharacterMath.SKILL_FACTOR[9]) +                                                  // Weapon
+            (characterSkillLevels[(int)equip.EquipSkill] * CharacterMath.SKILL_FACTOR[(int)equip.EquipSkill])) *  // Skill
+            CharacterMath.RACE_FACTOR[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                  // Race
+
+        CharacterAbility newAbility = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");
+        newAbility.Clone(this, potency);
+        return newAbility;
+    }
+    public void SetCooldown()
+    {
+        CD_Timer = CD_Duration;
+    }
+    public void UpdateCooldown()
+    {
+        CD_Timer -= GlobalConstants.TIME_SCALE;
+        CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
+    }
+
+
+    // Add animation/projectile prefabs & assets here
+}

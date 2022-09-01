@@ -1,0 +1,117 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SimpleWorldBuilder : MonoBehaviour
+{
+    public GameState GameState;
+    public Transform SpawnLocations;
+    public GameObject MobPrefab;
+    public Transform MobFolder;
+    public GenericContainer LootBox;
+
+    public List<SimpleAIcontroller> myAIpool = new List<SimpleAIcontroller>();
+    public List<Stackable> SampleObjects;
+    public List<Wearable> SampleGear;
+    public List<OneHand> SampleOneHands;
+    public List<TwoHand> SampleTwoHands;
+
+    public void SpawnSampleItems(Character character)
+    {
+        if (character == null)
+        {
+            Debug.Log("null character, no inventory spawned");
+            return;
+        }
+
+        foreach (Stackable item in SampleObjects)
+        {
+            if (item == null)
+                continue;
+            character.Inventory.Items.Add(new StackableWrapper(item));
+            LootBox.Inventory.Items.Add(new StackableWrapper(item));
+        }
+
+
+        foreach (Wearable wear in SampleGear)
+        {
+            if (wear == null)
+                continue;
+
+            WearableWrapper newWrapper = new WearableWrapper(wear);
+            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            GameState.EQUIPMENT_INDEX++;
+
+            character.Inventory.Items.Add(newWrapper);
+            LootBox.Inventory.Items.Add(newWrapper);
+        }
+
+        foreach (OneHand oneHand in SampleOneHands)
+        {
+            if (oneHand == null)
+                continue;
+
+            OneHandWrapper newWrapper = new OneHandWrapper(oneHand);
+            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            GameState.EQUIPMENT_INDEX++;
+
+            character.Inventory.Items.Add(newWrapper);
+            LootBox.Inventory.Items.Add(newWrapper);
+        }
+
+        foreach (TwoHand twoHand in SampleTwoHands)
+        {
+            if (twoHand == null)
+                continue;
+            TwoHandWrapper newWrapper = new TwoHandWrapper(twoHand);
+            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            GameState.EQUIPMENT_INDEX++;
+
+            character.Inventory.Items.Add(newWrapper);
+            LootBox.Inventory.Items.Add(newWrapper);
+        }
+    }
+    public void SpawnMobs()
+    {
+        
+        if (MobPrefab == null)
+        {
+            Debug.Log("Mob Prefab Missing!");
+            return;
+        }
+        if (MobPrefab.GetComponent<Character>() == null)
+        {
+            Debug.Log("Character Script Missing!");
+            return;
+        }
+        if (MobPrefab.GetComponent<Character>().Sheet == null)
+        {
+            Debug.Log("CharacterSheet Missing!");
+            return;
+        }
+
+        GameState.CharacterMan.CreateCloneParty(MobPrefab, SpawnLocations, Faction.BADDIES);
+    }
+
+    void BuildTestWorld()
+    {
+        GameState.NavMesh.GenerateMesh();
+
+        //GameState.testPath.GenerateNewPath(GameState.testPath.START.position, GameState.testPath.END.position, out GameState.testPath.TP);
+
+        GameState.CharacterMan.CreateLiteralParty(GameState.CharacterMan.DefaultPartyPrefabs, Faction.GOODIES,
+            GameState.CharacterMan.DefaultPartyFormation); // Migrations -______-
+        SpawnMobs();
+        
+
+        GameState.Controller.InitialPawnControl();
+
+        GameState.testBuilder.SpawnSampleItems(GameState.Controller.CurrentCharacter);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        BuildTestWorld();
+    }
+}

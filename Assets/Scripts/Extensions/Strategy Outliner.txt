@@ -1,0 +1,81 @@
+Tactic : (Target => Filter => Condition => Ability/Action)
+
+Tactic Priority (index)
+
+//////////////////
+/// BRAINSTORM ///
+//////////////////
+
+- Toggle Tactic on/off
+- Total number (int) of nearby enemies (Faction)
+- Healthiest (float) enemy in range (float, Faction), anywhere (index, Faction)
+- Currently Targetting (Character), being targetted by (index)
+- Current Stats/Status (H,S,M, CC?)
+- Target Resistances
+- Ally
+
+- Pen
+- Blocking/Evade
+- Min/Max
+- Crit
+- Formations
+
+//////////////////
+
+AI pathing Guide
+- Aggro/Combat ?
+- Pick Tactic
+- Generate Target
+- Generate Path to travelPoint near target
+OR
+- Generate Path to travelPoint away from target (ranged abilites)
+- Interruptions:
+	- Lose Aggro/Combat
+	- Tactic/Target change
+	- Target moves too far/close from travelPoint
+	- Target gets within range of ability
+
+//////////////////
+
+1. Target
+- Self
+- Friend
+- Foe
+2. Filter
+- Nearest in range of ability
+- Furtherst in range of ability
+3. Ability/Action
+- Move Towards
+- Back Pedal
+- Turn Towards
+
+//////////////////
+
+Target:
+- Filters
+	- Faction
+	- Race
+	- Level
+	- Distance
+	- ThreatScore?
+
+Condition:
+- Type
+	- Range
+	- MaxStat
+	- CurrentStat
+	- CurrentRes
+- Comparator
+	- >
+	- >=
+	- <
+	- <=
+	- ==
+	- !=
+- Value
+
+Targetting:
+- Faction
+
+
+Ability/Action:
