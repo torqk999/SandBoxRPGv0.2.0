@@ -352,7 +352,11 @@ public class UIManager : MonoBehaviour
         if (GameState == null || GameState.Controller.CurrentCharacter == null)
             return;
 
-        GameState.bContainerOpen = GameState.PawnMan.CurrentPawn.CurrentInteraction is GenericContainer;
+        Debug.Log("yo");
+
+        GameState.bContainerOpen = GameState.Controller.CurrentCharacter.CurrentInteraction is GenericContainer;
+        Debug.Log($"Open?:{GameState.bContainerOpen}");
+
         Container.gameObject.SetActive(GameState.bContainerOpen && GameState.bInventoryOpen);
 
         if (GameState.bContainerOpen && GameState.bInventoryOpen)
@@ -424,7 +428,7 @@ public class UIManager : MonoBehaviour
     public void UpdateCharacterCanvas()
     {
         GameState.bCharacterMenuOpen = ((
-            GameState.bContainerOpen ||
+            //GameState.bContainerOpen ||
             GameState.bEquipmentOpen ||
             GameState.bInventoryOpen ||
             GameState.bSkillsOpen ||
@@ -658,7 +662,7 @@ public class UIManager : MonoBehaviour
     {
         Interaction.SetActive(state);
         //Container.SetActive((state) ? Container.gameObject.activeSelf : false);
-        Container.SetActive(state);
+        //Container.SetActive(state);
         GameState.bContainerOpen = Container.activeSelf;
 
         if (!Interaction.gameObject.activeSelf)
