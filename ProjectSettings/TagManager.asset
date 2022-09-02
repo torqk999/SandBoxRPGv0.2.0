@@ -11,6 +11,7 @@ TagManager:
   - TRIGGER_VOLUME
   - MOB
   - CHARACTER
+  - LOOT
   layers:
   - Default
   - TransparentFX

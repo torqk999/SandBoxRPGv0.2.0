@@ -19,12 +19,19 @@ public class PawnTriggerVolume : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (Parent == null)
+        //Debug.Log("I'm Triggered! SJW!!!");
+
+        if (Parent == null ||
+            Parent.Source.gameObject == other.gameObject)
             return;
+
+        //Debug.Log("I have a parent");
 
         switch(other.tag)
         {
+            case GlobalConstants.TAG_MOB: 
             case GlobalConstants.TAG_CHARACTER:
+                Debug.Log("Character detected!");
                 Character targetChar = other.gameObject.GetComponent<Character>();
                 if (targetChar == null)
                     return;
@@ -32,17 +39,20 @@ public class PawnTriggerVolume : MonoBehaviour
                 break;
 
             case GlobalConstants.TAG_LOOT:
+                Debug.Log("Loot detected!");
                 GenericContainer targetContainer = other.gameObject.GetComponent<GenericContainer>();
                 if (targetContainer == null)
                     return;
                 Parent.CurrentInteractions.Add(targetContainer);
                 break;
         }
+        Parent.bTriggerStateChange = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (Parent == null)
+        if (Parent == null ||
+            Parent.Source.gameObject == other.gameObject)
             return;
 
         switch(other.tag)
@@ -61,6 +71,7 @@ public class PawnTriggerVolume : MonoBehaviour
                 Parent.CurrentInteractions.Remove(targetContainer);
                 break;
         }
+        Parent.bTriggerStateChange = true;
     }
 
     // Start is called before the first frame update
