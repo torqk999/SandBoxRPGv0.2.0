@@ -349,10 +349,8 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateContainer()
     {
-        if (GameState == null || GameState.Controller.CurrentCharacter == null)
+        if (Container == null || GameState == null || GameState.Controller.CurrentCharacter == null)
             return;
-
-        Debug.Log("yo");
 
         GameState.bContainerOpen = GameState.Controller.CurrentCharacter.CurrentInteraction is GenericContainer;
         Debug.Log($"Open?:{GameState.bContainerOpen}");
@@ -376,7 +374,6 @@ public class UIManager : MonoBehaviour
         if (GameState.bInventoryOpen)
             PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
 
-        UpdateContainer();
         UpdateCharacterCanvas();
     }
     public void UpdateEquipment()
@@ -527,26 +524,20 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region HUD
-    public void UpdateInteraction()
+    public void UpdateTarget()
     {
         if (GameState.Controller.CurrentCharacter == null)
             return;
 
-        if (GameState.Controller.CurrentCharacter.CurrentInteraction == null)
-            UpdateInteractionHUD(false);
-        else
-            UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData());
-
-        /*
-        if (GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData().Type == TriggerType.CHARACTER)
+        if (GameState.Controller.CurrentCharacter.CurrentInteraction != null &&
+            GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData().Type == TriggerType.CHARACTER)
             UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData());
 
         else if (GameState.Controller.CurrentCharacter.Target != null)
             UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.Target.GetInteractData());
 
-        */
-        //if (GameState.Controller.CurrentCharacter.CurrentInteraction == null && GameState.Controller.CurrentCharacter.Target == null)
-            
+        if (GameState.Controller.CurrentCharacter.CurrentInteraction == null && GameState.Controller.CurrentCharacter.Target == null)
+            UpdateInteractionHUD(false);
     }
     void UpdatePartyPanel()
     {
@@ -665,6 +656,7 @@ public class UIManager : MonoBehaviour
         //Container.SetActive(state);
         GameState.bContainerOpen = Container.activeSelf;
 
+
         if (!Interaction.gameObject.activeSelf)
             return;
 
@@ -721,7 +713,7 @@ public class UIManager : MonoBehaviour
     {
         RepopulateMemberPanels();
         UpdatePartyPanel();
-        UpdateInteraction();
+        UpdateTarget();
         UpdateCooldownBars();
     }
 }
