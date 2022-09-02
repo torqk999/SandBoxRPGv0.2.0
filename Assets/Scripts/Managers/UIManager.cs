@@ -35,6 +35,10 @@ public enum CharPage
 public class UIManager : MonoBehaviour
 {
     #region VARS
+    [Header("===GRAPHICS===")]
+    public List<UIGraphic> UIGraphicBin; 
+
+    [Header("===LOGIC===")]
     public GameState GameState;
 
     [Header("Indexing")]
@@ -682,6 +686,11 @@ public class UIManager : MonoBehaviour
             InteractionHUDslider.value = (data.Type == TriggerType.CHARACTER) ? data.HealthCurrent / data.HealthMax : 0;
         }
     }
+
+    #endregion
+
+    #region GRAPHICS
+
 
     #endregion
 
