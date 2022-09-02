@@ -69,12 +69,12 @@ public static class CharacterMath
         {
         1,  // LIGHT
         1,  // MEDIUM
-        1,  // HEAVY
+        2,  // HEAVY
         1,  // ONE HAND
         1,  // TWO HAND
         1,  // SHIELD
         1,  // RANGED
-        1,  // MAGIC
+        .5f,  // MAGIC
         }
     };
     public static readonly float[,] RACE_STAT =
