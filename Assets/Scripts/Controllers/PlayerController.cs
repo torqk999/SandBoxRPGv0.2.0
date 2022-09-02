@@ -165,45 +165,23 @@ public class PlayerController : MonoBehaviour
     }
     bool CheckAction(KeyAction action, KeyState state = KeyState.DOWN)
     {
-        KeyMap? targetMap = Array.Find(GameState.KeyMap.Map, x => x.Action == action);
-        if (!targetMap.HasValue)
-            return false;
-
-        //for (int i = 0; i < GameState.KeyMap.Map[(int)action].Keys.Length; i++)
-        for (int i = 0; i < targetMap.Value.Keys.Length; i++)
+        for (int i = 0; i < GameState.KeyMap.Map[(int)action].Keys.Length; i++)
         {
-            //if (GameState.KeyMap.Map[(int)action].Keys[i] == KeyCode.None)
-            //    continue;
-
             switch(state)
             {
                 case KeyState.DOWN:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKeyDown(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Down");
+                    if (Input.GetKeyDown(GameState.KeyMap.Map[(int)action].Keys[i]))
                         return true;
-                    }
-                        
                     break;
 
                 case KeyState.PRESSED:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKey(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Pressed");
+                    if (Input.GetKey(GameState.KeyMap.Map[(int)action].Keys[i]))
                         return true;
-                    }
                     break;
 
                 case KeyState.UP:
-                    if (targetMap.Value.Keys[i] != KeyCode.None && 
-                        Input.GetKeyUp(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Up");
+                    if (Input.GetKeyUp(GameState.KeyMap.Map[(int)action].Keys[i]))
                         return true;
-                    }
-                        
                     break;
             }
         }
@@ -430,23 +408,12 @@ public class PlayerController : MonoBehaviour
         float forceScale = (1 - (PhysicsObject.velocity.magnitude/ GameState.Controller.CurrentCharacter.MaximumStatValues.SPEED));
 
         float forward = 0;
-        float right = 0;
-        if (CheckAction(KeyAction.FORWARD, KeyState.PRESSED))
+        if (CheckAction(KeyAction.FORWARD))
             forward += 1;
-        if (CheckAction(KeyAction.BACKWARD, KeyState.PRESSED))
-            forward -= 1;
-        if (CheckAction(KeyAction.RIGHT, KeyState.PRESSED))
-            right += 1;
-        if (CheckAction(KeyAction.LEFT, KeyState.PRESSED))
-            right -= 1;
+        if (CheckAction(KeyAction.BACKWARD))
 
-        //Debug.Log($"for:{forward}");
-        //Debug.Log($"Rit:{right}");
-
-        PhysicsObject.AddForce(forward * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
-        PhysicsObject.AddForce(right * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
-        //PhysicsObject.AddForce(Input.GetAxis("Forward") * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
-        //PhysicsObject.AddForce(Input.GetAxis("Right") * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
+        PhysicsObject.AddForce(Input.GetAxis("Forward") * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
+        PhysicsObject.AddForce(Input.GetAxis("Right") * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
     }
     #endregion
 
