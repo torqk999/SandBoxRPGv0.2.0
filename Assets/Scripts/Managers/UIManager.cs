@@ -353,7 +353,9 @@ public class UIManager : MonoBehaviour
             return;
 
         GameState.bContainerOpen = GameState.Controller.CurrentCharacter.CurrentInteraction is GenericContainer;
+
         Container.gameObject.SetActive(GameState.bContainerOpen && GameState.bInventoryOpen);
+
 
         if (GameState.bContainerOpen && GameState.bInventoryOpen)
         {
