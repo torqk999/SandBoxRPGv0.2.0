@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
         bIsInPlay = (
         !GameState.bInventoryOpen &&
         !GameState.bEquipmentOpen &&
-        !GameState.bContainerOpen &&
+        //!GameState.bContainerOpen &&
         !GameState.bSkillsOpen);
         CursorToggle(!bIsInPlay);
     }

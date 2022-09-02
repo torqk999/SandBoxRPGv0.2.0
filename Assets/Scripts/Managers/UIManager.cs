@@ -352,9 +352,12 @@ public class UIManager : MonoBehaviour
         if (Container == null || GameState == null || GameState.Controller.CurrentCharacter == null)
             return;
 
-        Container.gameObject.SetActive(GameState.bContainerOpen);
+        GameState.bContainerOpen = GameState.Controller.CurrentCharacter.CurrentInteraction is GenericContainer;
+        Debug.Log($"Open?:{GameState.bContainerOpen}");
 
-        if (GameState.bContainerOpen)
+        Container.gameObject.SetActive(GameState.bContainerOpen && GameState.bInventoryOpen);
+
+        if (GameState.bContainerOpen && GameState.bInventoryOpen)
         {
             if (GameState.PawnMan.CurrentPawn.CurrentInteraction != null && GameState.PawnMan.CurrentPawn.CurrentInteraction is GenericContainer)
                 PopulateInventoryButtons(((GenericContainer)GameState.PawnMan.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
@@ -422,7 +425,7 @@ public class UIManager : MonoBehaviour
     public void UpdateCharacterCanvas()
     {
         GameState.bCharacterMenuOpen = ((
-            GameState.bContainerOpen ||
+            //GameState.bContainerOpen ||
             GameState.bEquipmentOpen ||
             GameState.bInventoryOpen ||
             GameState.bSkillsOpen ||
@@ -649,8 +652,10 @@ public class UIManager : MonoBehaviour
     public void UpdateInteractionHUD(bool state, InteractData data = new InteractData())
     {
         Interaction.SetActive(state);
-        Container.SetActive((state) ? Container.gameObject.activeSelf : false);
-        GameState.bContainerOpen = Container.gameObject.activeSelf;
+        //Container.SetActive((state) ? Container.gameObject.activeSelf : false);
+        //Container.SetActive(state);
+        GameState.bContainerOpen = Container.activeSelf;
+
 
         if (!Interaction.gameObject.activeSelf)
             return;
