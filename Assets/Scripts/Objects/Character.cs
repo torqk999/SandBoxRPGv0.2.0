@@ -218,6 +218,7 @@ public class Character : Pawn, Interaction
         InteractData.HealthCurrent = CurrentStats.HEALTH;
         InteractData.HealthMax = MaximumStatValues.HEALTH;
     }
+
     void UpdateAssetTimer()
     {
         if (!bAssetTimer)
@@ -271,6 +272,7 @@ public class Character : Pawn, Interaction
             LegState = AnimatorState.IDLE;
             return;
 
+            /*
             // Future Implements
             if (yawIntention > 0)
                 LegState = AnimatorState.TURN_R;
@@ -279,6 +281,7 @@ public class Character : Pawn, Interaction
             else
                 LegState = AnimatorState.IDLE;
             return;
+            */
         }
 
         else

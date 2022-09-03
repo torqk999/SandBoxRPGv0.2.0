@@ -57,7 +57,7 @@ public enum KeyAction
     STRATEGY,
 }
 
-public class PlayerController : PawnController
+public class PlayerController : CharacterController
 {
     #region VARS
     [Header("Input Preferances")]
@@ -628,7 +628,7 @@ public class PlayerController : PawnController
     }
     void UpdateZoom()
     {
-        if (!bIsZooming || GameState.Controller.CurrentPawn == null)
+        if (!bIsZooming || CurrentPawn == null)
             return;
 
         Zoom += CurrentPawn.ZoomScale * -Input.mouseScrollDelta.y;

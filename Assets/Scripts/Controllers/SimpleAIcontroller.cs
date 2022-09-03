@@ -21,16 +21,14 @@ public struct AIstaticSequence
 {
     public AIoperation[] Operations;
 }
-public class SimpleAIcontroller : PawnController
+public class SimpleAIcontroller : CharacterController
 {
     [Header("Links and stuff")]
-    //public GameState GameState;
+    [Header("===AI CONTROL===")]
     public SimpleAIpathingController Pathing;
-    public Character Character;
-    public Character TargetCharacter;
     public AIstaticSequence myStaticSequence;
-
     public Transform[] BoundaryTransforms;
+    public Strategy Strategy;
 
     [Header("TOUCH DA BOOLS!")]
     public bool bIsAgressive;
@@ -71,16 +69,16 @@ public class SimpleAIcontroller : PawnController
     /// TEST SECTION ///
     ////////////////////
 
-    public Strategy Strategy;
+    
 
     ////////////////////
 
     void CheckAwake()
     {
-        bIsAwake = GameState == null
-            || GameState.Controller == null
-            || GameState.Controller.CurrentCharacter == null
-            || !(Character.bControllable && GameState.Controller.CurrentCharacter == Character);
+        bIsAwake = !(GameState == null
+            || CurrentCharacter == null
+            || (GameState.Controller != null &&
+            GameState.Controller.CurrentCharacter == CurrentCharacter));
     }
     void FindTarget()
     {
@@ -90,8 +88,8 @@ public class SimpleAIcontroller : PawnController
         if (bIsAgressive)
         {
             TargetCharacter = GameState.CharacterMan.CharacterPool.Find(
-                x => x.Sheet.Faction != Character.Sheet.Faction &&
-                Vector3.Distance(x.Source.position, Character.Source.position) <= AggroRange);
+                x => x.Sheet.Faction != base.CurrentCharacter.Sheet.Faction &&
+                Vector3.Distance(x.Source.position, base.CurrentCharacter.Source.position) <= AggroRange);
             return;
         }
 
@@ -106,27 +104,27 @@ public class SimpleAIcontroller : PawnController
         if (TargetCharacter == null || !bIsAgressive)
             return;
 
-        if (bIsAggro && Vector3.Distance(TargetCharacter.Source.position, Character.Source.position) > DisengageRange)
+        if (bIsAggro && Vector3.Distance(TargetCharacter.Source.position, base.CurrentCharacter.Source.position) > DisengageRange)
         {
             bIsAggro = false;
             TargetCharacter = null;
             ResetStaticSequence();
         }
-        else if (!bIsAggro && Vector3.Distance(TargetCharacter.Source.position, Character.Source.position) < AggroRange)
+        else if (!bIsAggro && Vector3.Distance(TargetCharacter.Source.position, base.CurrentCharacter.Source.position) < AggroRange)
             bIsAggro = true;
     }
     void MoveAggro()
     {
-        Rigidbody rigidBody = Character.Source.gameObject.GetComponent<Rigidbody>();
+        Rigidbody rigidBody = base.CurrentCharacter.Source.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
 
         Vector3 newVector = rigidBody.transform.rotation.eulerAngles;
-        newVector.y = GenerateYbearing(Character.Source.position, TargetCharacter.Source.position);
+        newVector.y = GenerateYbearing(base.CurrentCharacter.Source.position, TargetCharacter.Source.position);
         rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-        if (rigidBody.velocity.magnitude <= Character.MaximumStatValues.SPEED && Vector3.Distance(Character.Source.position, TargetCharacter.Source.position) > TargetMaintainRange)
-            rigidBody.AddForce(Character.Source.forward * AIwalkForce, ForceMode.Impulse);
+        if (rigidBody.velocity.magnitude <= base.CurrentCharacter.MaximumStatValues.SPEED && Vector3.Distance(base.CurrentCharacter.Source.position, TargetCharacter.Source.position) > TargetMaintainRange)
+            rigidBody.AddForce(base.CurrentCharacter.Source.forward * AIwalkForce, ForceMode.Impulse);
     }
     void UpdateSequenceIndex()
     {
@@ -193,7 +191,7 @@ public class SimpleAIcontroller : PawnController
 
             Debug.Log($"{bOperationComplete} : {bSequenceComplete}");
 
-            if (!Pathing.GenerateNewPath(Character.Source.position, randCoords))
+            if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, randCoords))
             {
                 //Debug.Log("Shits not workin dawg!");
                 return;
@@ -209,7 +207,7 @@ public class SimpleAIcontroller : PawnController
             TravelPoint.y = 0;
             TravelPoint.z = UnityEngine.Random.Range(FollowerBoxRadius, -FollowerBoxRadius);
 
-            if (!Pathing.GenerateNewPath(Character.Source.position, TravelPoint))
+            if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, TravelPoint))
             {
                 //Debug.Log("Shits not workin dawg!");
                 return;
@@ -251,7 +249,7 @@ public class SimpleAIcontroller : PawnController
             case AIoperationType.ROTATE:
                 TotalOperationTime = operation.duration;
                 CurrentOperationTime = TotalOperationTime;
-                oldRot = Character.Source.rotation.eulerAngles.y;
+                oldRot = CurrentCharacter.Source.rotation.eulerAngles.y;
                 bLerping = true;
                 break;
 
@@ -287,8 +285,8 @@ public class SimpleAIcontroller : PawnController
         Vector3 target = (bIsFollowing) ? TargetCharacter.Source.position + TravelPoint : TravelPoint;
 
         if (myStaticSequence.Operations[CurrentOperationIndex].Type == AIoperationType.ROTATE)
-            Character.Source.rotation = Quaternion.Lerp(Quaternion.Euler(new Vector3(0, oldRot, 0)),
-                                                        Quaternion.Euler(new Vector3(0, GenerateYbearing(Character.Source.position, target), 0)),
+            CurrentCharacter.Source.rotation = Quaternion.Lerp(Quaternion.Euler(new Vector3(0, oldRot, 0)),
+                                                        Quaternion.Euler(new Vector3(0, GenerateYbearing(CurrentCharacter.Source.position, target), 0)),
                                                         1 - (CurrentOperationTime / TotalOperationTime));
 
         bLerping = CurrentOperationTime != 0;
@@ -299,7 +297,7 @@ public class SimpleAIcontroller : PawnController
         if (!bMoving || bIsUsingNavMesh)
             return;
 
-        Rigidbody rigidBody = Character.Source.gameObject.GetComponent<Rigidbody>();
+        Rigidbody rigidBody = CurrentCharacter.Source.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
 
@@ -307,13 +305,13 @@ public class SimpleAIcontroller : PawnController
         Vector3 target = (bIsFollowing) ? TargetCharacter.Source.position + TravelPoint : TravelPoint;
 
         Vector3 newVector = rigidBody.transform.rotation.eulerAngles;
-        newVector.y = GenerateYbearing(Character.Source.position, target);
+        newVector.y = GenerateYbearing(CurrentCharacter.Source.position, target);
         rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-        if (rigidBody.velocity.magnitude <= Character.MaximumStatValues.SPEED)
-            rigidBody.AddForce(Character.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / Character.MaximumStatValues.SPEED)), ForceMode.Impulse);
+        if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.SPEED)
+            rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED)), ForceMode.Impulse);
 
-        bMoving = Vector3.Distance(Character.Source.position, target) > TargetArrivalThreshold;
+        bMoving = Vector3.Distance(CurrentCharacter.Source.position, target) > TargetArrivalThreshold;
         bOperationComplete = !bMoving;
     }
     void NavMoving()
@@ -321,7 +319,7 @@ public class SimpleAIcontroller : PawnController
         if (!bMoving || !bIsUsingNavMesh)
             return;
 
-        Rigidbody rigidBody = Character.Source.gameObject.GetComponent<Rigidbody>();
+        Rigidbody rigidBody = CurrentCharacter.Source.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
 
@@ -329,7 +327,7 @@ public class SimpleAIcontroller : PawnController
 
         if (bTestMotion)
         {
-            float newBearing = GenerateYbearing(Character.Source.position, TravelPoint);
+            float newBearing = GenerateYbearing(CurrentCharacter.Source.position, TravelPoint);
             float currentBearing = rigidBody.transform.rotation.eulerAngles.y;
 
             newVector.y = newBearing;
@@ -341,19 +339,19 @@ public class SimpleAIcontroller : PawnController
             float turningFactor = (180 - magnitude) / 180;
             Vector3 newDirection = TravelPoint - rigidBody.position;
             //rigidBody.velocity = newDirection * (turningFactor * Character.MaximumStatValues.SPEED); // Maybe? : |
-            if (rigidBody.velocity.magnitude <= Character.MaximumStatValues.SPEED)
-                rigidBody.AddForce(newDirection * (turningFactor * (1 - (rigidBody.velocity.magnitude / Character.MaximumStatValues.SPEED))), ForceMode.Impulse);
+            if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.SPEED)
+                rigidBody.AddForce(newDirection * (turningFactor * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED))), ForceMode.Impulse);
         }
         else
         {
-            newVector.y = GenerateYbearing(Character.Source.position, TravelPoint);
+            newVector.y = GenerateYbearing(CurrentCharacter.Source.position, TravelPoint);
             rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-            if (rigidBody.velocity.magnitude <= Character.MaximumStatValues.SPEED)
-                rigidBody.AddForce(Character.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / Character.MaximumStatValues.SPEED)), ForceMode.Impulse);
+            if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.SPEED)
+                rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED)), ForceMode.Impulse);
         }
 
-        bNavPointReached = Vector3.Distance(Character.Source.position, TravelPoint) < TargetArrivalThreshold;
+        bNavPointReached = Vector3.Distance(CurrentCharacter.Source.position, TravelPoint) < TargetArrivalThreshold;
 
         if (bNavPointReached)
         {
@@ -395,7 +393,7 @@ public class SimpleAIcontroller : PawnController
     }
     void testDelta()
     {
-        delta = Vector3.Distance(TravelPoint, Character.Source.position);
+        delta = Vector3.Distance(TravelPoint, CurrentCharacter.Source.position);
     }
     void ResetStaticSequence()
     {
@@ -435,10 +433,10 @@ public class SimpleAIcontroller : PawnController
         CheckAwake();
 
         if (GameState == null
-            || Character == null
+            || CurrentCharacter == null
             || GameState.bPause
             || !bIsAwake
-            || !Character.bIsAlive)
+            || !CurrentCharacter.bIsAlive)
             return;
 
         FindTarget();
