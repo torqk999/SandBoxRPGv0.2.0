@@ -7,6 +7,7 @@ public class Pawn : MonoBehaviour
 {
     [Header("User Settings")]
     [Header("==== PAWN CLASS ====")]
+
     public ControlMode ControlMode;
 
     [Header ("Zoom Settings")]
@@ -15,18 +16,12 @@ public class Pawn : MonoBehaviour
     public float ZoomScale;
     public float ZoomCurrent;
 
-    [Header("Input Settings")]
-    public float KeyAxisScale;
-    public float MouseAxisScale;
-    public float RollScale;
-    public float JumpForce;
-    public bool bHasTriggerVolume;
-
-    [Header ("Pawn Components")]
+    [Header("Pawn Components")]
+    public GameState GameState;
+    public CharacterController CurrentController;
     public Transform Socket;
     public Transform Boom;
     public Transform Source;
-    //public Transform Container; // maybe needed in the future?
     public Rigidbody RigidBody;
 
     [Header("Pawn Logic")]
@@ -35,12 +30,64 @@ public class Pawn : MonoBehaviour
     public Vector3 CurrentVelocity;
     public Interaction CurrentInteraction;
     public List<Interaction> CurrentInteractions;
-    
 
+    public bool bHasTriggerVolume;
     public bool bTriggerStateChange = false;
     public bool bUsesGravity;
     public bool bIsGrounded;
     public bool bControllable;
+
+    void UpdateCurrentInteraction()
+    {
+        if (bTriggerStateChange == false)
+            return;
+
+        bTriggerStateChange = false;
+
+        InteractData data = new InteractData();
+        data.Type = TriggerType.NONE;
+        bool state;
+
+        if (CurrentInteractions.Count > 0)
+        {
+            CurrentInteraction = CurrentInteractions[0];
+            data = CurrentInteraction.GetInteractData();
+            state = true;
+        }
+        else
+        {
+            CurrentInteraction = null;
+            state = false;
+        }
+
+        switch (data.Type)
+        {
+            case TriggerType.NONE:
+                break;
+
+            case TriggerType.CONTAINER:
+                if (!(CurrentInteraction is GenericContainer))
+                {
+                    state = false;
+                    break;
+                }
+                break;
+
+            case TriggerType.CHARACTER:
+                if (!(CurrentInteraction is Character))
+                {
+                    state = false;
+                    break;
+                }
+                break;
+        }
+
+        if (this == GameState.Controller.CurrentPawn)
+        {
+            GameState.UIman.UpdateContainer();
+            GameState.UIman.UpdateInteractionHUD(state, data);
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -60,5 +107,6 @@ public class Pawn : MonoBehaviour
     }
     private void Update()
     {
+        UpdateCurrentInteraction();
     }
 }

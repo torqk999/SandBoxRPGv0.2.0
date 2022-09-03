@@ -23,135 +23,9 @@ public class PawnManager : MonoBehaviour
     public GameObject CharacterBlockerPrefab;
     public GameObject CharacterCanvasPrefab;
 
-    [Header("Pawn Settings")]
-    public float Mouse = 5;
-    public float Roll = .5f;
-
     [Header("Pawn Logic")]
     public Pawn[] PlayerPawns;
-    public Pawn CurrentPawn;
-
-    [Header("Camera Logic")]
-    public CameraMode CurrentCameraMode = CameraMode.CHASE;
-    public bool bIsZooming = true;
-    public bool bCameraLookEnabled;
-    public float Zoom;
-    public Vector2 FixedXY;
-
-    [Header("Lerp Logic")]
-    public float LerpTimer = 0;
-    public bool bIsCamLerping = false;
-    public Quaternion oldRotation;
-    public Vector3 oldPosition;
-
     #endregion
-
-    #region PUBLIC
-    public void ToggleCameraMode()
-    {
-        if (CurrentCameraMode == CameraMode.FIXED)
-            CurrentCameraMode = 0;
-        else
-            CurrentCameraMode++;
-
-        CameraRealign();
-    }
-    public bool PossessPawn(Pawn targetPawn)
-    {
-        if (targetPawn == null || !targetPawn.Source.gameObject.activeSelf)
-        {
-            Debug.Log("PawnMan failed possession");
-            return false;
-        }
-
-        oldRotation = GameCamera.transform.parent.rotation;
-        oldPosition = GameCamera.transform.parent.position;
-        CurrentPawn = targetPawn;
-        GameState.Controller.CurrentCharacter = targetPawn as Character;
-        GameCamera.transform.parent = targetPawn.Socket;
-        LerpTimer = 0;
-        bIsCamLerping = true;
-
-        return true;
-    }
-    public bool ReturnCameraRay(out Ray ray)
-    {
-        ray = new Ray();
-        if (GameCamera == null)
-            return false;
-
-        ray = GameCamera.ScreenPointToRay(Input.mousePosition);
-        return true;
-    }
-    #endregion
-
-    void UpdateCurrentInteraction()
-    {
-        if (CurrentPawn == null || CurrentPawn.bTriggerStateChange == false)
-            return;
-
-        CurrentPawn.bTriggerStateChange = false;
-
-        InteractData data = new InteractData();
-        data.Type = TriggerType.NONE;
-        bool state;
-
-        if (CurrentPawn.CurrentInteractions.Count > 0)
-        {
-            CurrentPawn.CurrentInteraction = CurrentPawn.CurrentInteractions[0];
-            data = CurrentPawn.CurrentInteraction.GetInteractData();
-            state = true;
-        }
-        else
-        {
-            CurrentPawn.CurrentInteraction = null;
-            state = false;
-        }
-
-        switch (data.Type)
-        {
-            case TriggerType.NONE:
-                //GameState.bContainerOpen = false;
-                break;
-
-            case TriggerType.CONTAINER:
-                if (!(CurrentPawn.CurrentInteraction is GenericContainer))
-                {
-                    state = false;
-                    break;
-                }
-                //GameState.bContainerOpen = true;
-                //GenericContainer container = (GenericContainer)CurrentPawn.CurrentInteraction;
-                //if (container == null || container == GameState.Controller.targetContainer)
-                //    break;
-                //GameState.bContainerOpen = false;
-                //GameState.UIman.UpdateContainer();
-                break;
-
-            case TriggerType.CHARACTER:
-                //GameState.bContainerOpen = false;
-                if (!(CurrentPawn.CurrentInteraction is Character))
-                {
-                    state = false;
-                    break;
-                }
-                //state = false;
-                break;
-        }
-
-        GameState.UIman.UpdateContainer();
-        GameState.UIman.UpdateInteractionHUD(state, data);
-
-    }
-    void UpdateCurrentTarget()
-    {
-        if (GameState.Controller.CurrentCharacter != null &&
-            GameState.Controller.CurrentCharacter.Target != null)
-            GameState.UIman.UpdateInteraction();
-
-        //GameState.UIman.UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.Target.InteractData);
-
-    }
 
     #region PAWNGENERATION
     public Pawn PawnGeneration(GameObject prefab, Transform targetFolder, Transform spawnTransform = null)
@@ -169,7 +43,7 @@ public class PawnManager : MonoBehaviour
         Pawn currentPawn = newPawnObject.GetComponent<Pawn>();
         newPawnObject.transform.parent = targetFolder;
 
-        //currentPawn.GameState = GameState;
+        currentPawn.GameState = GameState;
         currentPawn.DefPos = newPawnObject.transform.position;
         currentPawn.DefRot = newPawnObject.transform.rotation.eulerAngles;
 
@@ -292,132 +166,16 @@ public class PawnManager : MonoBehaviour
     }
 
     #endregion
-
-    #region CAMERA
-    void LerpCam()
-    {
-        if (!bIsCamLerping)
-            return;
-        if (GameCamera.transform.parent == null)
-        { bIsCamLerping = false; return; }
-
-        GameCamera.transform.rotation = Quaternion.Lerp(oldRotation, GameCamera.transform.parent.rotation, LerpTimer);
-        GameCamera.transform.position = Vector3.Lerp(oldPosition, GameCamera.transform.parent.position, LerpTimer);
-        LerpTimer += GlobalConstants.TIME_SCALE;
-
-        if (LerpTimer >= 1)
-            bIsCamLerping = false;
-    }
-    void UpdateZoom()
-    {
-        if (!bIsZooming || CurrentPawn == null)
-            return;
-
-        Zoom += CurrentPawn.ZoomScale * -Input.mouseScrollDelta.y;
-        Zoom = (Zoom < CurrentPawn.ZoomMin) ? CurrentPawn.ZoomMin : Zoom;
-        Zoom = (Zoom > CurrentPawn.ZoomMax) ? CurrentPawn.ZoomMax : Zoom;
-
-        /*
-        Vector3 newPos = CurrentPawn.Socket.localPosition;
-        newPos.z = -Zoom;
-        CurrentPawn.Socket.localPosition = newPos;
-        */
-    }
-    void UpdateBoom()
-    {
-        if (CurrentPawn == null)
-            return;
-
-        //Vector3 oldPos = CurrentPawn.Socket.position;
-        Vector3 newLocal = CurrentPawn.Socket.localPosition;
-        RaycastHit hit;
-
-        //Debug.Log($"Raycast Length: {-(CurrentPawn.Boom.forward * Zoom)}");
-
-        if (Physics.Raycast(CurrentPawn.Boom.position, -CurrentPawn.Boom.forward , out hit, Zoom))
-        {
-            //Debug.Log($"HitName: {hit.collider.name}");
-            newLocal.z = -Vector3.Distance(CurrentPawn.Boom.position, hit.point);
-        }
-        else
-            newLocal.z = -Zoom;
-
-        CurrentPawn.Socket.localPosition = newLocal;
-        //Vector3 newPos = CurrentPawn.Socket.position;
-
-        //Debug.DrawLine(oldPos, newPos, Color.blue, 5);
-    }
-    void CameraRealign()
-    {
-        switch (CurrentCameraMode)
-        {
-            case CameraMode.CHASE:
-                CurrentPawn.Boom.localRotation = Quaternion.Euler(CurrentPawn.DefRot);
-                break;
-
-            case CameraMode.FIXED:
-                FixedXY = new Vector2(CurrentPawn.DefRot.y, CurrentPawn.DefRot.x);
-                break;
-        }
-    }
-    void UpdateInput()
-    {
-        if (Input.GetButtonDown("CamReset"))
-            CameraRealign();
-
-        // Camera Rotate
-        if (!Input.GetButton("CameraLook") || !bCameraLookEnabled)
-        {
-            GameState.Controller.bIsInControl = true;
-            return;
-        }
-
-        GameState.Controller.bIsInControl = false;
-
-        float x = Mouse * Input.GetAxisRaw("Mouse X");
-        float y = Mouse * Input.GetAxisRaw("Mouse Y");
-        float z = Input.GetAxis("Roll") * Roll;
-
-        switch(CurrentCameraMode)
-        {
-            case CameraMode.CHASE:
-                CurrentPawn.Boom.Rotate(-y, x, z, Space.World);
-                break;
-
-            case CameraMode.FIXED:
-                //CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
-                //CurrentPawn.Boom.Rotate(0, x, 0, Space.World);
-                FixedXY.x += x;
-                FixedXY.y += y;
-                break;
-        }
-    }
-
-    void FixedBoom()
-    {
-        if (CurrentCameraMode != CameraMode.FIXED)
-            return;
-
-        CurrentPawn.Boom.rotation = Quaternion.Euler(CurrentPawn.Source.rotation.eulerAngles.x + FixedXY.y, CurrentPawn.Source.rotation.eulerAngles.y + FixedXY.x, 0);
-    }
-    #endregion
-
+    
     // Start is called before the first frame update
     void Start()
     {
         GeneratePurePawns();
-        //PawnInitializer();
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdateZoom();
-        UpdateBoom();
-        UpdateInput();
-        UpdateCurrentInteraction();
-        UpdateCurrentTarget();
-        LerpCam();
-        FixedBoom();
+
     }
 }

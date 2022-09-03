@@ -142,7 +142,7 @@ public class Strategy
 
         for (int i = characterPool.Count - 1; i > -1; i--)
         {
-            float check;
+            //float check;
 
         }
     }

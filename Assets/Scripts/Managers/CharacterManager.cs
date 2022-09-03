@@ -392,7 +392,7 @@ public class CharacterManager : MonoBehaviour
         {
             newAI.GameState = GameState;
             newAI.Strategy = new Strategy(newCharacter); // Simple solution for now, will need presets
-            newAI.Character = newCharacter;
+            newAI.CurrentCharacter = newCharacter;
             newAI.bIsAwake = bAwake;
 
             if (newPathing != null)
