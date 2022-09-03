@@ -1,6 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[System.Serializable]
+public enum AnimatorType
+{
+    BI_PED,
+    QUAD_PED,
+    BIRD,
+    FISH
+}
+
+[System.Serializable]
+public enum AnimatorState
+{
+    IDLE,
+    WALK,
+    RUN,
+    JUMP,
+    TURN_L,
+    TURN_R,
+    SLIDE,
+    FALL
+}
 
 public class Character : Pawn, Interaction
 {
@@ -8,6 +31,10 @@ public class Character : Pawn, Interaction
     [Header("==== CHARACTER CLASS ====")]
     public int ID;
     public CharacterAssetPack Assets;
+    public Animator Animator;
+    public AnimatorType AnimType;
+    public AnimatorState LegState;
+    public AnimatorState TorsoState;
 
     [Header("Character Stats")]
     public StatPackage CurrentStats;
@@ -24,7 +51,6 @@ public class Character : Pawn, Interaction
     public float ChannelTimer;
 
     [Header("Character Logic")]
-    public GameState GameState;
     public Character Target;
     public List<Character> TargettedBy;
     public Inventory Inventory;
@@ -56,6 +82,8 @@ public class Character : Pawn, Interaction
         InitializePassiveRegen();
         InitializeInteractData();
     }
+
+    #region INITIALIZERS
     void InitializeCharacterSheet()
     {
         if (Sheet == null)
@@ -108,6 +136,7 @@ public class Character : Pawn, Interaction
         InteractData.HealthCurrent = CurrentStats.HEALTH;
         InteractData.HealthMax = MaximumStatValues.HEALTH;
     }
+    #endregion
 
     #region ABILITIES
     public void UpdateAbilites()
@@ -150,6 +179,9 @@ public class Character : Pawn, Interaction
     }
 
     #endregion
+
+    #region UPDATES
+
     void UpdateLife() // Get a life...
     {
         float[] stats = CurrentStats.PullData();
@@ -232,6 +264,42 @@ public class Character : Pawn, Interaction
         bAssetTimer = true;
         bAssetUpdate = false;
     }
+    public void UpdateAnimationState(float translationMagnitude, float yawIntention)
+    {
+        if (translationMagnitude == 0)
+        {
+            LegState = AnimatorState.IDLE;
+            return;
+
+            // Future Implements
+            if (yawIntention > 0)
+                LegState = AnimatorState.TURN_R;
+            if (yawIntention < 0)
+                LegState = AnimatorState.TURN_L;
+            else
+                LegState = AnimatorState.IDLE;
+            return;
+        }
+
+        else
+            LegState = AnimatorState.WALK;
+    }
+    void UpdateAnimation()
+    {
+        if (Animator == null)
+            return;
+
+        switch(LegState)
+        {
+            case AnimatorState.IDLE:
+                break;
+
+            case AnimatorState.WALK:
+                break;
+        }
+    }
+
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -243,7 +311,8 @@ public class Character : Pawn, Interaction
     void Update()
     {
         UpdateCooldowns();
-        
+
+        UpdateAnimation();
         UpdateAssetTimer();
         UpdateAssets();
         UpdateLife();

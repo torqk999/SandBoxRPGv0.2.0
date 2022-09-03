@@ -15,14 +15,12 @@ public enum TacticalMode
     BUILD,
     DELETE
 }
-
 public enum KeyState
 {
     DOWN,
     PRESSED,
     UP
 }
-
 public enum KeyAction
 {
     LEFT,
@@ -59,39 +57,77 @@ public enum KeyAction
     STRATEGY,
 }
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : PawnController
 {
-    //[Header("Player Stats")]
-    //public float CollisionVelocityTolerance;
-    //public float CollisionDamageScalar;
-
     #region VARS
-    [Header("Object References")]
-    public GameState GameState;
-    public Transform Focus;
-
     [Header("Input Preferances")]
+    [Header("===PLAYER CONTROL===")]
     public float KeyAxisScale;
     public float MouseAxisScale;
     public float RollScale;
+    public float JumpForce;
 
     [Header("Player Logic")]
     public bool bIsInPlay = true;
     public bool bIsInControl = true;
     public int PawnIndex;
-
-    public Rigidbody PhysicsObject;
-    public Character CurrentCharacter;
     public GenericContainer targetContainer;
-    public Vector3 PausedFlightVector;
 
     public ControlMode CurrentControlMode;
     public TacticalMode CurrentTacticalMode = TacticalMode.SELECT;
 
+    [Header("Camera Logic")]
+    public CameraMode CurrentCameraMode = CameraMode.CHASE;
+    public bool bIsZooming = true;
+    public bool bCameraLookEnabled;
+    public float Zoom;
+    public Vector2 FixedXY;
+
+    [Header("Lerp Logic")]
+    public float LerpTimer = 0;
+    public bool bIsCamLerping = false;
+    public Quaternion oldRotation;
+    public Vector3 oldPosition;
     #endregion
 
     #region PUBLIC
 
+    public void ToggleCameraMode()
+    {
+        if (CurrentCameraMode == CameraMode.FIXED)
+            CurrentCameraMode = 0;
+        else
+            CurrentCameraMode++;
+
+        CameraRealign();
+    }
+    public bool PossessPawn(Pawn targetPawn)
+    {
+        if (targetPawn == null || !targetPawn.Source.gameObject.activeSelf)
+        {
+            Debug.Log("PawnMan failed possession");
+            return false;
+        }
+
+        oldRotation = GameState.GameCamera.transform.parent.rotation;
+        oldPosition = GameState.GameCamera.transform.parent.position;
+        GameState.Controller.CurrentPawn = targetPawn;
+        GameState.Controller.CurrentCharacter = targetPawn as Character;
+        GameState.GameCamera.transform.parent = targetPawn.Socket;
+        LerpTimer = 0;
+        bIsCamLerping = true;
+
+        return true;
+    }
+    public bool ReturnCameraRay(out Ray ray)
+    {
+        ray = new Ray();
+        if (GameState.GameCamera == null)
+            return false;
+
+        ray = GameState.GameCamera.ScreenPointToRay(Input.mousePosition);
+        return true;
+    }
     public void UpdateCollide(float velocity)
     {
 
@@ -144,7 +180,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"Initial Pawn Index: {PawnIndex}");
         Debug.Log($"Initial PawnControl Success: {PossessPawn()}");
 
-        if (GameState.PawnMan.CurrentPawn == null)
+        if (CurrentPawn == null)
             return;
 
         SnapPawnOptions();
@@ -159,7 +195,6 @@ public class PlayerController : MonoBehaviour
         bIsInPlay = (
         !GameState.bInventoryOpen &&
         !GameState.bEquipmentOpen &&
-        //!GameState.bContainerOpen &&
         !GameState.bSkillsOpen);
         CursorToggle(!bIsInPlay);
     }
@@ -169,13 +204,9 @@ public class PlayerController : MonoBehaviour
         if (!targetMap.HasValue)
             return false;
 
-        //for (int i = 0; i < GameState.KeyMap.Map[(int)action].Keys.Length; i++)
         for (int i = 0; i < targetMap.Value.Keys.Length; i++)
         {
-            //if (GameState.KeyMap.Map[(int)action].Keys[i] == KeyCode.None)
-            //    continue;
-
-            switch(state)
+            switch (state)
             {
                 case KeyState.DOWN:
                     if (targetMap.Value.Keys[i] != KeyCode.None &&
@@ -184,7 +215,7 @@ public class PlayerController : MonoBehaviour
                         //Debug.Log("Down");
                         return true;
                     }
-                        
+
                     break;
 
                 case KeyState.PRESSED:
@@ -197,20 +228,20 @@ public class PlayerController : MonoBehaviour
                     break;
 
                 case KeyState.UP:
-                    if (targetMap.Value.Keys[i] != KeyCode.None && 
+                    if (targetMap.Value.Keys[i] != KeyCode.None &&
                         Input.GetKeyUp(targetMap.Value.Keys[i]))
                     {
                         //Debug.Log("Up");
                         return true;
                     }
-                        
+
                     break;
             }
         }
 
         return false;
     }
-    void UpdateInput()
+    void UpdatePawnInput()
     {
         if (CheckAction(KeyAction.PAUSE) &&
             GameState.UIman.CurrentMenu != GameMenu.KEY_MAP)
@@ -223,7 +254,7 @@ public class PlayerController : MonoBehaviour
             ChangePawns();
 
         if (CheckAction(KeyAction.TOG_CAM_MODE))
-            GameState.PawnMan.ToggleCameraMode();
+            ToggleCameraMode();
 
         if (CheckAction(KeyAction.TOG_CHAR))
             ChangeCharacters();
@@ -237,35 +268,18 @@ public class PlayerController : MonoBehaviour
         if (CheckAction(KeyAction.TELEPORT))
             Teleport();
 
-        if (CurrentCharacter != null)
-        {
-            if (CheckAction(KeyAction.INVENTORY))
-                ToggleCharacterPage(CharPage.Inventory);
-
-            if (CheckAction(KeyAction.EQUIPMENT))
-                ToggleCharacterPage(CharPage.Equipment);
-
-            if (CheckAction(KeyAction.SKILLS))
-                ToggleCharacterPage(CharPage.Skills);
-
-            if (CheckAction(KeyAction.STRATEGY))
-                ToggleCharacterPage(CharPage.Strategy);
-        }
-
-        //if (Input.GetButtonDown("Interact"))
         if (CheckAction(KeyAction.INTERACT))
         {
-            if (GameState.PawnMan.CurrentPawn.CurrentInteraction != null)
-                GameState.PawnMan.CurrentPawn.CurrentInteraction.Interact();
+            if (CurrentPawn.CurrentInteraction != null)
+                CurrentPawn.CurrentInteraction.Interact();
             else
                 ClearTarget();
         }
 
-        //if (Input.GetButtonDown("CycleTargets"))
-        if (CheckAction(KeyAction.CYCLE_TARGETS))
-            CycleCharacterTargets();
+        if (CurrentCharacter != null)
+            UpdateCharacterInput();
 
-        if (!bIsInPlay || GameState.PawnMan.CurrentPawn == null)
+        if (!bIsInPlay || CurrentPawn == null)
             return;
 
         switch (CurrentControlMode)
@@ -283,11 +297,28 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+    void UpdateCharacterInput()
+    {
+        if (CheckAction(KeyAction.INVENTORY))
+            ToggleCharacterPage(CharPage.Inventory);
+
+        if (CheckAction(KeyAction.EQUIPMENT))
+            ToggleCharacterPage(CharPage.Equipment);
+
+        if (CheckAction(KeyAction.SKILLS))
+            ToggleCharacterPage(CharPage.Skills);
+
+        if (CheckAction(KeyAction.STRATEGY))
+            ToggleCharacterPage(CharPage.Strategy);
+
+        if (CheckAction(KeyAction.CYCLE_TARGETS))
+            CycleCharacterTargets();
+    }
     void FlightControl()
     {
         // Actions
         if (Input.GetButton("Focus") && Focus != null)
-            GameState.PawnMan.CurrentPawn.Source.LookAt(Focus, Vector3.up);
+            CurrentPawn.Source.LookAt(Focus, Vector3.up);
 
         if (!bIsInControl)
             return;
@@ -295,25 +326,25 @@ public class PlayerController : MonoBehaviour
         // Looking
         //if (Input.GetMouseButton(0))
         {
-            float x = GameState.PawnMan.CurrentPawn.MouseAxisScale * Input.GetAxisRaw("Mouse X");
-            float y = GameState.PawnMan.CurrentPawn.MouseAxisScale * Input.GetAxisRaw("Mouse Y");
-            float z = Input.GetAxis("Roll") * GameState.PawnMan.CurrentPawn.RollScale;
+            float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
+            float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
+            float z = Input.GetAxis("Roll") * RollScale;
 
-            GameState.PawnMan.CurrentPawn.Source.Rotate(-y, x, z, Space.Self);
+            CurrentPawn.Source.Rotate(-y, x, z, Space.Self);
         }
 
-        if (PhysicsObject == null)
+        if (CurrentPawn.RigidBody == null)
             return;
 
         // Movement
-        PhysicsObject.AddForce(Input.GetAxis("Forward") * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale, ForceMode.Impulse);
-        PhysicsObject.AddForce(Input.GetAxis("Right") * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale, ForceMode.Impulse);
-        PhysicsObject.AddForce(Input.GetAxis("Up") * GameState.PawnMan.CurrentPawn.Source.transform.up * GameState.PawnMan.CurrentPawn.KeyAxisScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Forward") * CurrentPawn.Source.forward * KeyAxisScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Right") * CurrentPawn.Source.right * KeyAxisScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Up") * CurrentPawn.Source.transform.up * KeyAxisScale, ForceMode.Impulse);
 
         if (Input.GetButton("Break"))
         {
-            PhysicsObject.velocity = new Vector3(0, 0, 0);
-            PhysicsObject.angularVelocity = new Vector3(0, 0, 0);
+            CurrentPawn.RigidBody.velocity = new Vector3(0, 0, 0);
+            CurrentPawn.RigidBody.angularVelocity = new Vector3(0, 0, 0);
         }
     }
     void TacticalControl()
@@ -321,17 +352,17 @@ public class PlayerController : MonoBehaviour
         // Looking
         if (Input.GetMouseButton(0))
         {
-            float x = GameState.PawnMan.CurrentPawn.MouseAxisScale * Input.GetAxisRaw("Mouse X");
-            float y = GameState.PawnMan.CurrentPawn.MouseAxisScale * Input.GetAxisRaw("Mouse Y");
+            float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
+            float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
 
-            GameState.PawnMan.CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
-            GameState.PawnMan.CurrentPawn.Source.Rotate(0, x, 0, Space.World);
+            CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
+            CurrentPawn.Source.Rotate(0, x, 0, Space.World);
         }
 
         // Movement
-        GameState.PawnMan.CurrentPawn.Source.position += Input.GetAxis("Forward") * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale;
-        GameState.PawnMan.CurrentPawn.Source.position += Input.GetAxis("Right") * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale;
-        GameState.PawnMan.CurrentPawn.Source.position += Input.GetAxis("Up") * GameState.PawnMan.CurrentPawn.Source.up * GameState.PawnMan.CurrentPawn.KeyAxisScale;
+        CurrentPawn.Source.position += Input.GetAxis("Forward") * CurrentPawn.Source.forward * KeyAxisScale;
+        CurrentPawn.Source.position += Input.GetAxis("Right") * CurrentPawn.Source.right * KeyAxisScale;
+        CurrentPawn.Source.position += Input.GetAxis("Up") * CurrentPawn.Source.up * KeyAxisScale;
 
         if (Input.GetButtonDown("TacticalMode"))
             TacticalModeChange();
@@ -347,7 +378,7 @@ public class PlayerController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     Ray ray;
-                    if (GameState.PawnMan.ReturnCameraRay(out ray))
+                    if (ReturnCameraRay(out ray))
                     {
                         RaycastHit hit;
                         if (Physics.Raycast(ray, out hit))
@@ -362,7 +393,7 @@ public class PlayerController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     Ray ray;
-                    if (GameState.PawnMan.ReturnCameraRay(out ray))
+                    if (ReturnCameraRay(out ray))
                     {
                         RaycastHit hit;
                         if (Physics.Raycast(ray, out hit))
@@ -393,19 +424,18 @@ public class PlayerController : MonoBehaviour
         // Looking
         //if (Input.GetMouseButton(0))
         {
-            float x = GameState.PawnMan.CurrentPawn.MouseAxisScale * Input.GetAxisRaw("Mouse X");
-            float y = GameState.PawnMan.CurrentPawn.MouseAxisScale * Input.GetAxisRaw("Mouse Y");
-            float z = Input.GetAxis("Roll") * GameState.PawnMan.CurrentPawn.RollScale;
+            float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
+            float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
+            float z = Input.GetAxis("Roll") * RollScale;
 
-            if (GameState.PawnMan.CurrentCameraMode != CameraMode.FIXED)
-                GameState.PawnMan.CurrentPawn.Boom.Rotate(-y, 0, 0, Space.Self);
-            GameState.PawnMan.CurrentPawn.Source.Rotate(0, x, 0, Space.World);
+            if (CurrentCameraMode != CameraMode.FIXED)
+                CurrentPawn.Boom.Rotate(-y, 0, 0, Space.Self);
+            CurrentPawn.Source.Rotate(0, x, 0, Space.World);
         }
 
         // Action Bar
         for (int i = (int)KeyAction.HotBar0; i < 10 + (int)KeyAction.HotBar0; i++)
             if (CheckAction((KeyAction)i))
-            //if (Input.GetKeyDown((KeyCode)(i + 48)))
                 AttemptAction(i);
 
         // Click
@@ -415,42 +445,44 @@ public class PlayerController : MonoBehaviour
             AttemptAction(11);
 
         // Movement
-        if (PhysicsObject == null 
-            || !GameState.PawnMan.CurrentPawn.bIsGrounded 
-            || !GameState.PawnMan.CurrentPawn.bControllable 
+        if (CurrentPawn.RigidBody == null
+            || !CurrentPawn.bIsGrounded
+            || !CurrentPawn.bControllable
             || !GameState.CharacterMan.PullCurrentCharacter().bIsAlive)
             return;
 
-        //if (Input.GetButtonDown("Jump"))
         if (CheckAction(KeyAction.JUMP))
-            PhysicsObject.AddForce(GameState.PawnMan.CurrentPawn.JumpForce * GameState.PawnMan.CurrentPawn.Source.up, ForceMode.Impulse);
+            CurrentPawn.RigidBody.AddForce(JumpForce * CurrentPawn.Source.up, ForceMode.Impulse);
 
-        if (GameState.PawnMan.CurrentPawn == GameState.Controller.CurrentCharacter && PhysicsObject.velocity.magnitude >= GameState.Controller.CurrentCharacter.MaximumStatValues.SPEED)
+        if (CurrentPawn == CurrentCharacter && CurrentPawn.RigidBody.velocity.magnitude >= CurrentCharacter.MaximumStatValues.SPEED)
             return;
-        float forceScale = (1 - (PhysicsObject.velocity.magnitude/ GameState.Controller.CurrentCharacter.MaximumStatValues.SPEED));
+        float forceScale = (1 - (CurrentPawn.RigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED));
 
         float forward = 0;
         float right = 0;
         if (CheckAction(KeyAction.FORWARD, KeyState.PRESSED))
+        {
             forward += 1;
+        }
         if (CheckAction(KeyAction.BACKWARD, KeyState.PRESSED))
+        {
             forward -= 1;
+        }
         if (CheckAction(KeyAction.RIGHT, KeyState.PRESSED))
+        {
             right += 1;
+        }
         if (CheckAction(KeyAction.LEFT, KeyState.PRESSED))
+        {
             right -= 1;
+        }
 
-        //Debug.Log($"for:{forward}");
-        //Debug.Log($"Rit:{right}");
-
-        PhysicsObject.AddForce(forward * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
-        PhysicsObject.AddForce(right * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
-        //PhysicsObject.AddForce(Input.GetAxis("Forward") * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
-        //PhysicsObject.AddForce(Input.GetAxis("Right") * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(forward * CurrentPawn.Source.forward * KeyAxisScale * forceScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(right * CurrentPawn.Source.right * KeyAxisScale * forceScale, ForceMode.Impulse);
     }
     #endregion
 
-    #region ACTIONS
+    #region PAWN ACTIONS
     void ChangePawns()
     {
         PawnIndex++;
@@ -474,14 +506,14 @@ public class PlayerController : MonoBehaviour
     {
         if (PawnIndex > -1) // Other Pawns such as tactical or flight
         {
-            if (!GameState.PawnMan.PossessPawn(GameState.PawnMan.PlayerPawns[PawnIndex]))
+            if (!PossessPawn(GameState.PawnMan.PlayerPawns[PawnIndex]))
             {
                 Debug.Log("Controller failed to possess pure pawn");
                 return false;
             }
         }
 
-        else if (!GameState.PawnMan.PossessPawn(GameState.CharacterMan.PullCurrentCharacter()))
+        else if (!PossessPawn(GameState.CharacterMan.PullCurrentCharacter()))
         {
             Debug.Log("Controller failed to possess character pawn");
             return false;
@@ -493,9 +525,9 @@ public class PlayerController : MonoBehaviour
     }
     void SnapPawnOptions()
     {
-        CurrentControlMode = GameState.PawnMan.CurrentPawn.ControlMode;
+        CurrentControlMode = CurrentPawn.ControlMode;
         CursorToggle((CurrentControlMode == ControlMode.TACTICAL) ? true : false);
-        PhysicsObject = GameState.PawnMan.CurrentPawn.RigidBody;
+        //PhysicsObject = CurrentPawn.RigidBody;
     }
     void CursorToggle(bool toggle)
     {
@@ -506,34 +538,13 @@ public class PlayerController : MonoBehaviour
 
         Cursor.visible = toggle;
     }
-    void CycleCharacterTargets()
-    {
-        //Debug.Log("cycling");
-        //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
-
-        int index = (CurrentCharacter.Target == null) ? 0 : GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target) + 1;
-        //index = (index == -1) ? 0 : index;
-        index = (index >= GameState.CharacterMan.CharacterPool.Count) ? 0 : index;
-        if (GameState.CharacterMan.CharacterPool.Count == 0)
-            return;
-        CurrentCharacter.Target = GameState.CharacterMan.CharacterPool[index];
-        //GameState.UIman.UpdateInteractionHUD()
-    }
-    void ClearTarget()
-    {
-        GameState.Controller.CurrentCharacter.Target = null;
-    }
-    void AttemptAction(int abilityIndex)
-    {
-        GameState.CharacterMan.AttemptAbility(abilityIndex, CurrentCharacter);
-    }
     void JumpHome()
     {
-        GameState.PawnMan.CurrentPawn.Source.position = GameState.PawnMan.CurrentPawn.DefPos;
-        GameState.PawnMan.CurrentPawn.Source.rotation = Quaternion.Euler(GameState.PawnMan.CurrentPawn.DefRot);
+        CurrentPawn.Source.position = CurrentPawn.DefPos;
+        CurrentPawn.Source.rotation = Quaternion.Euler(CurrentPawn.DefRot);
 
-        if (PhysicsObject != null)
-            PhysicsObject.velocity = Vector3.zero;
+        if (CurrentPawn.RigidBody != null)
+            CurrentPawn.RigidBody.velocity = Vector3.zero;
     }
     void Teleport(Transform location = null)
     {
@@ -551,7 +562,7 @@ public class PlayerController : MonoBehaviour
             CurrentTacticalMode++;
 
         GameState.Builder.ToggleCast(CurrentTacticalMode == TacticalMode.BUILD);
-        GameState.PawnMan.bIsZooming = !(CurrentTacticalMode == TacticalMode.BUILD);
+        bIsZooming = !(CurrentTacticalMode == TacticalMode.BUILD);
     }
     void FocusSelect(RaycastHit hit)
     {
@@ -566,8 +577,8 @@ public class PlayerController : MonoBehaviour
             return;
 
         Focus = selection.MassTransform;
-        GameState.PawnMan.CurrentPawn.Source.rotation = selection.CameraSnapPoint.rotation;
-        GameState.PawnMan.CurrentPawn.Source.position = selection.CameraSnapPoint.position;
+        CurrentPawn.Source.rotation = selection.CameraSnapPoint.rotation;
+        CurrentPawn.Source.position = selection.CameraSnapPoint.position;
     }
     void DeleteSelect(RaycastHit hit)
     {
@@ -575,6 +586,136 @@ public class PlayerController : MonoBehaviour
             Destroy(hit.transform.gameObject);
     }
     #endregion
+
+    #region CHARACTER ACTIONS
+    void CycleCharacterTargets()
+    {
+        //Debug.Log("cycling");
+        //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
+        if (GameState.CharacterMan.CharacterPool.Count == 0)
+            return;
+        int index = (CurrentCharacter.Target == null) ? 0 : GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target) + 1;
+        //index = (index == -1) ? 0 : index;
+        index = (index >= GameState.CharacterMan.CharacterPool.Count) ? 0 : index;
+
+        CurrentCharacter.Target = GameState.CharacterMan.CharacterPool[index];
+        //GameState.UIman.UpdateInteractionHUD()
+    }
+    void ClearTarget()
+    {
+        CurrentCharacter.Target = null;
+    }
+    void AttemptAction(int abilityIndex)
+    {
+        GameState.CharacterMan.AttemptAbility(abilityIndex, CurrentCharacter);
+    }
+    #endregion
+
+    #region CAMERA
+    void LerpCam()
+    {
+        if (!bIsCamLerping)
+            return;
+        if (GameState.GameCamera.transform.parent == null)
+        { bIsCamLerping = false; return; }
+
+        GameState.GameCamera.transform.rotation = Quaternion.Lerp(oldRotation, GameState.GameCamera.transform.parent.rotation, LerpTimer);
+        GameState.GameCamera.transform.position = Vector3.Lerp(oldPosition, GameState.GameCamera.transform.parent.position, LerpTimer);
+        LerpTimer += GlobalConstants.TIME_SCALE;
+
+        if (LerpTimer >= 1)
+            bIsCamLerping = false;
+    }
+    void UpdateZoom()
+    {
+        if (!bIsZooming || GameState.Controller.CurrentPawn == null)
+            return;
+
+        Zoom += CurrentPawn.ZoomScale * -Input.mouseScrollDelta.y;
+        Zoom = (Zoom < CurrentPawn.ZoomMin) ? CurrentPawn.ZoomMin : Zoom;
+        Zoom = (Zoom > CurrentPawn.ZoomMax) ? CurrentPawn.ZoomMax : Zoom;
+
+    }
+    void UpdateBoom()
+    {
+        if (CurrentPawn == null)
+            return;
+
+        Vector3 newLocal = CurrentPawn.Socket.localPosition;
+        RaycastHit hit;
+
+
+        if (Physics.Raycast(CurrentPawn.Boom.position, -CurrentPawn.Boom.forward, out hit, Zoom))
+        {
+            //Debug.Log($"HitName: {hit.collider.name}");
+            newLocal.z = -Vector3.Distance(CurrentPawn.Boom.position, hit.point);
+        }
+        else
+            newLocal.z = -Zoom;
+
+        CurrentPawn.Socket.localPosition = newLocal;
+    }
+    void CameraRealign()
+    {
+        switch (CurrentCameraMode)
+        {
+            case CameraMode.CHASE:
+                CurrentPawn.Boom.localRotation = Quaternion.Euler(CurrentPawn.DefRot);
+                break;
+
+            case CameraMode.FIXED:
+                FixedXY = new Vector2(CurrentPawn.DefRot.y, CurrentPawn.DefRot.x);
+                break;
+        }
+    }
+    void UpdateCamera()
+    {
+        if (Input.GetButtonDown("CamReset"))
+            CameraRealign();
+
+        // Camera Rotate
+        if (!Input.GetButton("CameraLook") || !bCameraLookEnabled)
+        {
+            GameState.Controller.bIsInControl = true;
+            return;
+        }
+
+        GameState.Controller.bIsInControl = false;
+
+        float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
+        float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
+        float z = Input.GetAxis("Roll") * RollScale;
+
+        switch (CurrentCameraMode)
+        {
+            case CameraMode.CHASE:
+                CurrentPawn.Boom.Rotate(-y, x, z, Space.World);
+                break;
+
+            case CameraMode.FIXED:
+                //CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
+                //CurrentPawn.Boom.Rotate(0, x, 0, Space.World);
+                FixedXY.x += x;
+                FixedXY.y += y;
+                break;
+        }
+    }
+
+    void FixedBoom()
+    {
+        if (CurrentCameraMode != CameraMode.FIXED)
+            return;
+
+        CurrentPawn.Boom.rotation = Quaternion.Euler(CurrentPawn.Source.rotation.eulerAngles.x + FixedXY.y, CurrentPawn.Source.rotation.eulerAngles.y + FixedXY.x, 0);
+    }
+    #endregion
+
+    void UpdateCurrentTarget()
+    {
+        if (CurrentCharacter != null &&
+            CurrentCharacter.Target != null)
+            GameState.UIman.UpdateInteraction();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -584,6 +725,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateInput();
+        UpdateZoom();
+        UpdateBoom();
+        UpdatePawnInput();
+        UpdateCamera();
+        UpdateCurrentTarget();
+        LerpCam();
+        FixedBoom();
     }
 }

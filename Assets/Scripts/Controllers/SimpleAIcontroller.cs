@@ -21,10 +21,10 @@ public struct AIstaticSequence
 {
     public AIoperation[] Operations;
 }
-public class SimpleAIcontroller : MonoBehaviour
+public class SimpleAIcontroller : PawnController
 {
     [Header("Links and stuff")]
-    public GameState GameState;
+    //public GameState GameState;
     public SimpleAIpathingController Pathing;
     public Character Character;
     public Character TargetCharacter;

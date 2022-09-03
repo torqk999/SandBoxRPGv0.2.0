@@ -13,6 +13,9 @@ public enum GameMode
 
 public class GameState : MonoBehaviour
 {
+    [Header("Essentials")]
+    public Camera GameCamera;
+
     [Header("Controllers")]
     public PlayerController Controller;
     public SimpleAIcontroller testAI;
@@ -39,7 +42,7 @@ public class GameState : MonoBehaviour
     public bool bPartyChanged = true;
 
     [Header("UI State Logic")]
-    //public bool bGameMenuOpen;
+    public bool bGameMenuOpen;
     public bool bHUDactive;
     public bool bCharacterMenuOpen;
     public bool bInventoryOpen;
@@ -71,7 +74,7 @@ public class GameState : MonoBehaviour
 
     void UpdateHUDstate()
     {
-        bHUDactive = !(bPause || bCharacterMenuOpen);
+        bHUDactive = !(bPause);// || bCharacterMenuOpen);
         UIman.HUDcanvas.gameObject.SetActive(bHUDactive);
     }
     void UpdateRigidBodyPawns()
