@@ -71,7 +71,6 @@ public class GameState : MonoBehaviour
         Controller.targetContainer = container;
         Controller.ToggleCharacterPage(CharPage.Container);
     }
-
     void UpdateHUDstate()
     {
         bHUDactive = !(bPause);// || bCharacterMenuOpen);

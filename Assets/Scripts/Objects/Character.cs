@@ -180,6 +180,167 @@ public class Character : Pawn, Interaction
 
     #endregion
 
+    #region EQUIPPING
+    public bool EquipSelection(int equipIndex, int inventoryIndex, bool bLeftHand)
+    {
+        if (inventoryIndex == -1 && equipIndex != -1)
+            return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
+
+        if (inventoryIndex != -1 && equipIndex == -1)
+        {
+            if (Inventory.Items[inventoryIndex] == null || !(Inventory.Items[inventoryIndex] is EquipWrapper))
+                return false;
+
+            EquipWrapper equip = (EquipWrapper)Inventory.Items[inventoryIndex];
+
+            if (equip is WearableWrapper)
+            {
+                WearableWrapper wear = (WearableWrapper)equip;
+                int slotNumber = (int)wear.Wear.Type;
+
+                if (slotNumber < 6)
+                {
+                    EquipWear(slotNumber, inventoryIndex);
+                    return true;
+                }
+                EquipRing(inventoryIndex, bLeftHand);
+                return true;
+            }
+
+            if (equip is TwoHandWrapper)
+                return EquipTwoHand(inventoryIndex);
+
+            return EquipOneHand(inventoryIndex, bLeftHand);
+        }
+
+
+
+        Debug.Log("How did you get here? >.>");
+        return false;
+    }
+    void EquipWear(int equipIndex, int inventoryIndex)
+    {
+        if (EquipmentSlots[equipIndex] == null)
+        {
+            EquipmentSlots[equipIndex] =
+                (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+            return;
+        }
+
+        EquipmentSlots[equipIndex] =
+            (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[equipIndex], inventoryIndex);
+
+
+    }
+    bool EquipOneHand(int inventoryIndex, bool bLeftHand)
+    {
+        int slot = (bLeftHand) ? 6 : 7;
+
+
+        if (EquipmentSlots[slot] == null)
+        {
+            EquipmentSlots[slot] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+            return true;
+        }
+        if (EquipmentSlots[slot] is TwoHandWrapper)
+        {
+            if (Inventory.Items.Count == Inventory.MaxCount)
+                return false;
+
+            EquipmentSlots[6] = (bLeftHand) ? (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[slot], inventoryIndex) : null;
+            EquipmentSlots[7] = (!bLeftHand) ? (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[slot], inventoryIndex) : null;
+            return true;
+        }
+        EquipmentSlots[slot] = (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[slot], inventoryIndex);
+        return true;
+    }
+    bool EquipTwoHand(int inventoryIndex)
+    {
+        if (EquipmentSlots[6] == null && EquipmentSlots[7] == null)
+        {
+            EquipmentSlots[6] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+            EquipmentSlots[7] = EquipmentSlots[6];
+            return true;
+        }
+        if (EquipmentSlots[6] != null && EquipmentSlots[7] != null)
+        {
+            if (Inventory.Items.Count == Inventory.MaxCount)
+                return false;
+            EquipmentSlots[6] =
+                (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[6], inventoryIndex);
+            Inventory.PushItemIntoInventory(EquipmentSlots[7]);
+            EquipmentSlots[7] = EquipmentSlots[6];
+            return true;
+        }
+        if (EquipmentSlots[6] != null && EquipmentSlots[7] == null)
+        {
+            EquipmentSlots[6] =
+                (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[6], inventoryIndex);
+            EquipmentSlots[7] = EquipmentSlots[6];
+            return true;
+        }
+        if (EquipmentSlots[6] == null && EquipmentSlots[7] != null)
+        {
+            EquipmentSlots[7] =
+                (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[7], inventoryIndex);
+            EquipmentSlots[6] = EquipmentSlots[7];
+            return true;
+        }
+        Debug.Log("How did you get here? >.>");
+        return false;
+    }
+    void EquipRing(int inventoryIndex, bool bLeftHand)
+    {
+        int slot = (bLeftHand) ? 8 : 9;
+
+        if (EquipmentSlots[slot] == null)
+        {
+            EquipmentSlots[slot] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+            return;
+        }
+
+        EquipmentSlots[slot] = (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[slot], inventoryIndex);
+    }
+    bool AttemptEquipRemoval(EquipWrapper equip, int equipIndex)
+    {
+        if (equip == null)
+            return false;
+
+        if (Inventory.PushItemIntoInventory(equip))
+        {
+            if (EquipmentSlots[equipIndex] is TwoHandWrapper)
+            {
+                EquipmentSlots[6] = null;
+                EquipmentSlots[7] = null;
+            }
+            else
+                EquipmentSlots[equipIndex] = null;
+            return true;
+        }
+        return false;
+    }
+    #endregion
+
+    #region LOOTING
+    public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
+    {
+        if (loot.Inventory.Items[containerIndex] is StackableWrapper &&
+            Inventory.PushItemIntoStack((StackableWrapper)loot.Inventory.Items[containerIndex]))
+        {
+            loot.Inventory.RemoveIndexFromInventory(containerIndex);
+            return true;
+            //Debug.Log("found stackable!: " + Inventory.Items[containerIndex].Name);
+        }
+
+        if (Inventory.PushItemIntoInventory(loot.Inventory.Items[containerIndex]))
+        {
+            loot.Inventory.RemoveIndexFromInventory(containerIndex);
+            return true;
+        }
+        return false;
+    }
+    #endregion
+
     #region UPDATES
 
     void UpdateLife() // Get a life...
@@ -218,7 +379,6 @@ public class Character : Pawn, Interaction
         InteractData.HealthCurrent = CurrentStats.HEALTH;
         InteractData.HealthMax = MaximumStatValues.HEALTH;
     }
-
     void UpdateAssetTimer()
     {
         if (!bAssetTimer)

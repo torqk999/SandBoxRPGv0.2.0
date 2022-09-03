@@ -16,7 +16,6 @@ public class SceneManager : MonoBehaviour
         // Meeeeeeeeeeeeeeeer -_________-
         return false;
     }
-
     public bool PushIntoContainer(Character character, int inventoryIndex)
     {
         // 1. Check for container
@@ -40,12 +39,10 @@ public class SceneManager : MonoBehaviour
 
         return false;
     }
-
     int CheckForLootBagInteractionIndex(Character character)
     {
         return character.CurrentInteractions.FindIndex(x => x.GetInteractData().Type == TriggerType.LOOTBAG);
     }
-
     Inventory CreateLootBag(Character character)
     {
         if (LootBagPrefab == null || LootBagPrefab.GetComponent<GenericContainer>() == null)
@@ -69,11 +66,11 @@ public class SceneManager : MonoBehaviour
         trigger.parent = container;
         return container.Inventory;
     }
-
     public void RemoveFromLootBag(int index)
     {
 
     }
+
 
     // Start is called before the first frame update
     void Start()

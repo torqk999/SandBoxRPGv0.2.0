@@ -219,7 +219,7 @@ public class UIManager : MonoBehaviour
     }
     public void EquipSelection(bool bLeftHand = true)
     {
-        if (!GameState.Controller.CurrentCharacter.Inventory.EquipSelection(GameState.Controller.CurrentCharacter, SelectedEquipSlot, InventoryListSelection, bLeftHand))
+        if (!GameState.Controller.CurrentCharacter.EquipSelection(SelectedEquipSlot, InventoryListSelection, bLeftHand))
             return;
         GameState.Controller.CurrentCharacter.UpdateAbilites();
         UpdateSkills();
@@ -244,7 +244,7 @@ public class UIManager : MonoBehaviour
     }
     public void LootSelectedContainerItem()
     {
-        GameState.Controller.targetContainer.Inventory.LootContainer(GameState.Controller.CurrentCharacter, ContainerListSelection, InventoryListSelection);
+        GameState.Controller.CurrentCharacter.LootContainer(GameState.Controller.targetContainer, ContainerListSelection, InventoryListSelection);
 
         UpdateInventory();
         UpdateContainer();

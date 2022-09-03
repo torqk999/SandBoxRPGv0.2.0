@@ -9,7 +9,7 @@ public class Inventory
     public List<ItemWrapper> Items;
     public int MaxCount;
 
-    #region EQUIPPING
+    /*#region EQUIPPING
     public bool EquipSelection(Character currentCharacter, int equipIndex, int inventoryIndex, bool bLeftHand)
     {
         if (inventoryIndex == -1 && equipIndex != -1)
@@ -148,9 +148,9 @@ public class Inventory
         }
         return false;
     }
-    #endregion
+    #endregion*/
 
-    #region LOOTING
+    /*#region LOOTING
     public bool LootContainer(Character currentCharacter, int containerIndex, int inventoryIndex)
     {
         if (Items[containerIndex] is StackableWrapper)
@@ -165,7 +165,7 @@ public class Inventory
         }
         return false;
     }
-    #endregion
+    #endregion*/
 
     #region INVENTORY
     public bool PushItemIntoStack(StackableWrapper stackItem)

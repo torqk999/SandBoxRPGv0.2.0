@@ -28,8 +28,10 @@ public class Pawn : MonoBehaviour
     public Vector3 DefPos; // Used for homeTeleport
     public Vector3 DefRot;
     public Vector3 CurrentVelocity;
+
     public Interaction CurrentInteraction;
     public List<Interaction> CurrentInteractions;
+    public int InteractionCount;
 
     public bool bHasTriggerVolume;
     public bool bTriggerStateChange = false;
@@ -41,12 +43,15 @@ public class Pawn : MonoBehaviour
     {
         if (bTriggerStateChange == false)
             return;
+        Debug.Log("UpdatingInteraction");
 
         bTriggerStateChange = false;
 
         InteractData data = new InteractData();
         data.Type = TriggerType.NONE;
         bool state;
+
+        InteractionCount = CurrentInteractions.Count;
 
         if (CurrentInteractions.Count > 0)
         {

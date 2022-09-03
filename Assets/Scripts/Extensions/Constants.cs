@@ -12,7 +12,6 @@ public static class GlobalConstants
 
     public const string ANIM_BOOL_WALK = "walking";
 
-
     public const string TAG_GROUND = "GROUND";
     public const string TAG_CHARACTER = "CHARACTER";
     public const string TAG_MOB = "MOB";
