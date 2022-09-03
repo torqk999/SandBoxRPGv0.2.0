@@ -91,6 +91,7 @@ public class PawnManager : MonoBehaviour
             return;
 
         CurrentPawn.bTriggerStateChange = false;
+
         InteractData data = new InteractData();
         data.Type = TriggerType.NONE;
         bool state;
@@ -110,21 +111,35 @@ public class PawnManager : MonoBehaviour
         switch (data.Type)
         {
             case TriggerType.NONE:
+                //GameState.bContainerOpen = false;
                 break;
 
             case TriggerType.CONTAINER:
-                GenericContainer container = (GenericContainer)CurrentPawn.CurrentInteraction;
-                if (container == null || container == GameState.Controller.targetContainer)
+                if (!(CurrentPawn.CurrentInteraction is GenericContainer))
+                {
+                    state = false;
                     break;
-                GameState.bContainerOpen = false;
-                GameState.UIman.UpdateContainer();
+                }
+                //GameState.bContainerOpen = true;
+                //GenericContainer container = (GenericContainer)CurrentPawn.CurrentInteraction;
+                //if (container == null || container == GameState.Controller.targetContainer)
+                //    break;
+                //GameState.bContainerOpen = false;
+                //GameState.UIman.UpdateContainer();
                 break;
 
             case TriggerType.CHARACTER:
-                state = false;
+                //GameState.bContainerOpen = false;
+                if (!(CurrentPawn.CurrentInteraction is Character))
+                {
+                    state = false;
+                    break;
+                }
+                //state = false;
                 break;
         }
 
+        GameState.UIman.UpdateContainer();
         GameState.UIman.UpdateInteractionHUD(state, data);
 
     }
@@ -132,26 +147,27 @@ public class PawnManager : MonoBehaviour
     {
         if (GameState.Controller.CurrentCharacter != null &&
             GameState.Controller.CurrentCharacter.Target != null)
-            GameState.UIman.UpdateTarget();
+            GameState.UIman.UpdateInteraction();
 
         //GameState.UIman.UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.Target.InteractData);
 
     }
 
     #region PAWNGENERATION
-    public Pawn PawnGeneration(GameObject pawnObject, Transform targetFolder, Transform spawnTransform = null)
+    public Pawn PawnGeneration(GameObject prefab, Transform targetFolder, Transform spawnTransform = null)
     {
-        Pawn samplePawn = pawnObject.GetComponent<Pawn>();
+        Pawn samplePawn = prefab.GetComponent<Pawn>();
         if (samplePawn == null)
             return null;
 
         GameObject newPawnObject;
         if (spawnTransform == null)
-            newPawnObject = PawnObjectInstantiation(pawnObject, pawnObject.transform);
+            newPawnObject = PawnObjectInstantiation(prefab, prefab.transform);
         else
-            newPawnObject = PawnObjectInstantiation(pawnObject, spawnTransform);
+            newPawnObject = PawnObjectInstantiation(prefab, spawnTransform);
 
         Pawn currentPawn = newPawnObject.GetComponent<Pawn>();
+        newPawnObject.transform.parent = targetFolder;
 
         //currentPawn.GameState = GameState;
         currentPawn.DefPos = newPawnObject.transform.position;
@@ -160,14 +176,16 @@ public class PawnManager : MonoBehaviour
         if (currentPawn is Character)
         {
             newPawnObject.tag = GlobalConstants.TAG_CHARACTER;
-            AttatchCharacterCollider(newPawnObject);
+            BuildCharacterBlocker(newPawnObject);
         }
 
-        BuildCameraRig(newPawnObject, currentPawn, targetFolder);
+        BuildCameraRig(newPawnObject, currentPawn);
+        BuildRigidBody(newPawnObject, currentPawn);
+        BuildTriggerVolume(newPawnObject, currentPawn);
 
         currentPawn.CurrentInteractions = new List<Interaction>();
 
-        pawnObject.SetActive(false); // disable template
+        prefab.SetActive(false); // disable template
 
         return currentPawn;
     }
@@ -178,14 +196,10 @@ public class PawnManager : MonoBehaviour
         clone.SetActive(true);
         return clone;
     }
-    void BuildCameraRig(GameObject pawnObject, Pawn currentPawn, Transform targetFolder)
+    void BuildCameraRig(GameObject pawnObject, Pawn currentPawn)
     {
         GameObject empty = new GameObject();
-
-        pawnObject.transform.parent = targetFolder;
         currentPawn.Source = pawnObject.transform;
-
-        BuildSubComponents(pawnObject, currentPawn);
 
         // Boom
         GameObject boom = Instantiate(empty, pawnObject.transform.position, Quaternion.Euler(0, 0, 0), pawnObject.transform);
@@ -201,7 +215,7 @@ public class PawnManager : MonoBehaviour
 
         Destroy(empty);
     }
-    void BuildSubComponents(GameObject pawnObject, Pawn currentPawn)
+    void BuildRigidBody(GameObject pawnObject, Pawn currentPawn)
     {
         Rigidbody rigidBody = pawnObject.GetComponent<Rigidbody>();
         if (rigidBody != null)
@@ -212,7 +226,9 @@ public class PawnManager : MonoBehaviour
                 GameState.RigidBodyPawns.Add(currentPawn);
             //State.grav.Affected.Add(pawnObject);
         }
-
+    }
+    void BuildTriggerVolume(GameObject pawnObject, Pawn currentPawn)
+    {
         if (currentPawn.bHasTriggerVolume && currentPawn is Character)
         {
             GameObject newTriggerVolume = Instantiate(TriggerVolumePrefab,
@@ -225,7 +241,7 @@ public class PawnManager : MonoBehaviour
             newTriggerScript.Parent = (Character)currentPawn;
         }
     }
-    void AttatchCharacterCollider(GameObject pawnObject)
+    void BuildCharacterBlocker(GameObject pawnObject)
     {
         if (CharacterBlockerPrefab == null)
             return;

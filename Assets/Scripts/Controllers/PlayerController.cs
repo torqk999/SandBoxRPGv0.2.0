@@ -159,29 +159,51 @@ public class PlayerController : MonoBehaviour
         bIsInPlay = (
         !GameState.bInventoryOpen &&
         !GameState.bEquipmentOpen &&
-        !GameState.bContainerOpen &&
+        //!GameState.bContainerOpen &&
         !GameState.bSkillsOpen);
         CursorToggle(!bIsInPlay);
     }
     bool CheckAction(KeyAction action, KeyState state = KeyState.DOWN)
     {
-        for (int i = 0; i < GameState.KeyMap.Map[(int)action].Keys.Length; i++)
+        KeyMap? targetMap = Array.Find(GameState.KeyMap.Map, x => x.Action == action);
+        if (!targetMap.HasValue)
+            return false;
+
+        //for (int i = 0; i < GameState.KeyMap.Map[(int)action].Keys.Length; i++)
+        for (int i = 0; i < targetMap.Value.Keys.Length; i++)
         {
+            //if (GameState.KeyMap.Map[(int)action].Keys[i] == KeyCode.None)
+            //    continue;
+
             switch(state)
             {
                 case KeyState.DOWN:
-                    if (Input.GetKeyDown(GameState.KeyMap.Map[(int)action].Keys[i]))
+                    if (targetMap.Value.Keys[i] != KeyCode.None &&
+                        Input.GetKeyDown(targetMap.Value.Keys[i]))
+                    {
+                        //Debug.Log("Down");
                         return true;
+                    }
+                        
                     break;
 
                 case KeyState.PRESSED:
-                    if (Input.GetKey(GameState.KeyMap.Map[(int)action].Keys[i]))
+                    if (targetMap.Value.Keys[i] != KeyCode.None &&
+                        Input.GetKey(targetMap.Value.Keys[i]))
+                    {
+                        //Debug.Log("Pressed");
                         return true;
+                    }
                     break;
 
                 case KeyState.UP:
-                    if (Input.GetKeyUp(GameState.KeyMap.Map[(int)action].Keys[i]))
+                    if (targetMap.Value.Keys[i] != KeyCode.None && 
+                        Input.GetKeyUp(targetMap.Value.Keys[i]))
+                    {
+                        //Debug.Log("Up");
                         return true;
+                    }
+                        
                     break;
             }
         }
@@ -408,12 +430,23 @@ public class PlayerController : MonoBehaviour
         float forceScale = (1 - (PhysicsObject.velocity.magnitude/ GameState.Controller.CurrentCharacter.MaximumStatValues.SPEED));
 
         float forward = 0;
-        if (CheckAction(KeyAction.FORWARD))
+        float right = 0;
+        if (CheckAction(KeyAction.FORWARD, KeyState.PRESSED))
             forward += 1;
-        if (CheckAction(KeyAction.BACKWARD))
+        if (CheckAction(KeyAction.BACKWARD, KeyState.PRESSED))
+            forward -= 1;
+        if (CheckAction(KeyAction.RIGHT, KeyState.PRESSED))
+            right += 1;
+        if (CheckAction(KeyAction.LEFT, KeyState.PRESSED))
+            right -= 1;
 
-        PhysicsObject.AddForce(Input.GetAxis("Forward") * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
-        PhysicsObject.AddForce(Input.GetAxis("Right") * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
+        //Debug.Log($"for:{forward}");
+        //Debug.Log($"Rit:{right}");
+
+        PhysicsObject.AddForce(forward * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
+        PhysicsObject.AddForce(right * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
+        //PhysicsObject.AddForce(Input.GetAxis("Forward") * GameState.PawnMan.CurrentPawn.Source.forward * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
+        //PhysicsObject.AddForce(Input.GetAxis("Right") * GameState.PawnMan.CurrentPawn.Source.right * GameState.PawnMan.CurrentPawn.KeyAxisScale * forceScale, ForceMode.Impulse);
     }
     #endregion
 

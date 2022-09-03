@@ -133,7 +133,7 @@ public class SimpleAIcontroller : MonoBehaviour
         if (!bOperationComplete)
             return;
 
-        Debug.Log("Updating");
+        //Debug.Log("Updating");
 
         CurrentOperationIndex++;
         CurrentOperationIndex = (CurrentOperationIndex >= myStaticSequence.Operations.Length) ? 0 : CurrentOperationIndex;
@@ -195,10 +195,10 @@ public class SimpleAIcontroller : MonoBehaviour
 
             if (!Pathing.GenerateNewPath(Character.Source.position, randCoords))
             {
-                Debug.Log("Shits not workin dawg!");
+                //Debug.Log("Shits not workin dawg!");
                 return;
             }
-            Debug.Log("Shits workin dawg!");
+            //Debug.Log("Shits workin dawg!");
         }
         else
         {
@@ -236,7 +236,7 @@ public class SimpleAIcontroller : MonoBehaviour
         if (myStaticSequence.Operations.Length < 1)
             return;
 
-        Debug.Log("Commencing");
+        //Debug.Log("Commencing");
 
         AIoperation operation = myStaticSequence.Operations[CurrentOperationIndex];
 
