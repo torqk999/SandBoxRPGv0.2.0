@@ -64,36 +64,36 @@ public class PawnTriggerVolume : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("I'm Triggered! SJW!!!");
+        //Debug.Log("I'm Triggered! SJW!!!");
 
         if (Parent == null ||
             Parent.Source.gameObject == other.gameObject)
             return;
 
-        Debug.Log("I have a parent");
+        //Debug.Log("I have a parent");
 
         switch(other.tag)
         {
             case GlobalConstants.TAG_MOB: 
             case GlobalConstants.TAG_CHARACTER:
-                Debug.Log("Character detected!");
+                //Debug.Log("Character detected!");
                 Character targetChar = other.gameObject.GetComponent<Character>();
                 if (targetChar == null)
                     return;
-                Debug.Log($"{targetChar.name} added!");
+                //Debug.Log($"{targetChar.name} added!");
                 Parent.CurrentInteractions.Add(targetChar);
                 break;
 
             case GlobalConstants.TAG_LOOT:
-                Debug.Log("Loot detected!");
+                //Debug.Log("Loot detected!");
                 GenericContainer targetContainer = other.gameObject.GetComponent<GenericContainer>();
                 if (targetContainer == null)
                     return;
-                Debug.Log($"{targetContainer} added!");
+                //Debug.Log($"{targetContainer} added!");
                 Parent.CurrentInteractions.Add(targetContainer);
                 break;
         }
-        Debug.Log("Interaction added!");
+        //Debug.Log("Interaction added!");
         Parent.bTriggerStateChange = true;
     }
     private void OnTriggerExit(Collider other)
@@ -118,7 +118,7 @@ public class PawnTriggerVolume : MonoBehaviour
                 Parent.CurrentInteractions.Remove(targetContainer);
                 break;
         }
-        Debug.Log("Interaction removed!");
+        //Debug.Log("Interaction removed!");
         Parent.bTriggerStateChange = true;
     }
 

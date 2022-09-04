@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Rendering;
@@ -20,7 +21,7 @@ public enum GameMenu
     KEY_MAP,
     OPTIONS,
     HELP,
-    ABOUT
+    ABOUT,
 }
 
 public enum CharPage
@@ -31,6 +32,24 @@ public enum CharPage
     Skills,
     Strategy
 }
+
+/*
+public enum ToolTipType
+{
+    ITEM_EQUIP,
+    ITEM_CONSUME,
+
+}
+
+[System.Serializable]
+public struct ToolTipData
+{
+    public TriggerType Type;
+    public string Splash;
+    public float HealthCurrent;
+    public float HealthMax;
+}
+*/
 
 public class UIManager : MonoBehaviour
 {
@@ -70,10 +89,11 @@ public class UIManager : MonoBehaviour
     public GameObject Container;
     public GameObject Skills;
     public GameObject Strategy;
-    
+
     /////////////////////////////////////////////////////////
 
     [Header("Canvases")]
+    public Canvas ToolTipCanvas;
     public Canvas GameMenuCanvas;
     public Canvas HUDcanvas;
     public Canvas CharSheetsCanvas;
@@ -94,7 +114,6 @@ public class UIManager : MonoBehaviour
     public int SelectedAbilitySlot;
 
     public Button[] EquipButtons;
-
     public Sprite EmptyButtonSprite;
 
     [Header("Interaction Logic")]
@@ -123,26 +142,56 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region BUTTONS
-    void CreateCallBackIdentity(Button Button, int index, ButtonType type)
+    void CreateCallBackIdentity(Button button, int index, ButtonType type)
     {
         switch (type)
         {
             case ButtonType.INVENTORY:
-                Button.onClick.AddListener(() => InventoryItemClick(index));
+                button.onClick.AddListener(() => InventoryItemClick(index));
                 break;
 
             case ButtonType.CONTAINER:
-                Button.onClick.AddListener(() => ContainerItemClick(index));
+                button.onClick.AddListener(() => ContainerItemClick(index));
                 break;
 
             case ButtonType.SKILL:
-                Button.onClick.AddListener(() => SkillListClick(index));
+                button.onClick.AddListener(() => SkillListClick(index));
                 break;
 
             case ButtonType.KEY_MAP:
-                Button.onClick.AddListener(() => Remap(index, Button));
+                button.onClick.AddListener(() => Remap(index, button));
                 break;
         }
+    }
+    void CreateHoverIdentity(EventTrigger trigger, int index, ButtonType type)
+    {
+        Debug.Log("Hoverin");
+
+        EventTrigger.Entry enter = new EventTrigger.Entry();
+        EventTrigger.Entry exit = new EventTrigger.Entry();
+
+        enter.eventID = EventTriggerType.PointerEnter;
+        exit.eventID = EventTriggerType.PointerExit;
+
+        switch (type)
+        {
+            case ButtonType.INVENTORY:
+                enter.callback.AddListener((enter) => InventoryItemHover(index));
+                exit.callback.AddListener((exit) => InventoryItemHover(index, false));
+                break;
+
+            case ButtonType.CONTAINER:
+                break;
+
+            case ButtonType.SKILL:
+                break;
+
+            case ButtonType.KEY_MAP:
+                break;
+        }
+
+        trigger.triggers.Add(enter);
+        trigger.triggers.Add(exit);
     }
     void PopulateKeyMaps()
     {
@@ -280,6 +329,12 @@ public class UIManager : MonoBehaviour
 
         if (InventoryListSelection != -1)
             EquipmentSlotClick(-1);
+    }
+    public void InventoryItemHover(int index, bool hovering = true)
+    {
+        InventoryListSelection = index;
+        string @event = hovering ? "Entered" : "Exited";
+        Debug.Log($"Mouse has {@event} Inv Item {index}");
     }
     public void ContainerItemClick(int index)
     {
@@ -447,6 +502,7 @@ public class UIManager : MonoBehaviour
             GameObject newButtonObject = Instantiate(InventoryButtonPrefab, targetContent);
             newButtonObject.SetActive(true);
             CreateCallBackIdentity(newButtonObject.GetComponent<Button>(), index, type);
+            CreateHoverIdentity(newButtonObject.GetComponent<EventTrigger>(), index, type);
             index++;
 
             newButtonObject.transform.GetChild(0).GetComponent<Text>().text = (item is StackableWrapper) ? ((StackableWrapper)item).CurrentQuantity.ToString() : string.Empty;
@@ -514,6 +570,14 @@ public class UIManager : MonoBehaviour
             newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = output;
         }
     }
+    void UpdateToolTipState()
+    {
+        
+    }
+    void UpdateToolTipPosition()
+    {
+
+    }
     #endregion
 
     #region HUD
@@ -526,16 +590,6 @@ public class UIManager : MonoBehaviour
             UpdateInteractionHUD(false);
         else
             UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData());
-
-        /*
-        if (GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData().Type == TriggerType.CHARACTER)
-            UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData());
-
-        else if (GameState.Controller.CurrentCharacter.Target != null)
-            UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.Target.GetInteractData());
-
-        */
-        //if (GameState.Controller.CurrentCharacter.CurrentInteraction == null && GameState.Controller.CurrentCharacter.Target == null)
             
     }
     void UpdatePartyPanel()
@@ -629,8 +683,9 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateActionBar()
     {
-        if (ActionButtons == null || GameState.Controller.CurrentCharacter == null)
+        if (ActionButtons == null)
             return;
+
         Actionbar.SetActive(GameState.bHUDactive);
         if (!Actionbar.activeSelf)
             return;
@@ -642,7 +697,9 @@ public class UIManager : MonoBehaviour
 
             Image image = ActionButtons.GetChild(I).gameObject.GetComponent<Button>().GetComponent<Image>();
 
-            image.sprite = (GameState.Controller.CurrentCharacter.AbilitySlots[i] != null && GameState.Controller.CurrentCharacter.AbilitySlots[i].Sprite != null) ?
+            image.sprite = (GameState.Controller.CurrentCharacter != null
+                && GameState.Controller.CurrentCharacter.AbilitySlots[i] != null
+                && GameState.Controller.CurrentCharacter.AbilitySlots[i].Sprite != null) ?
             GameState.Controller.CurrentCharacter.AbilitySlots[i].Sprite : EmptyButtonSprite;
 
             image.color = (SelectedAbilitySlot == i) ? new Color(0, 1, 0) : new Color(1, 1, 1);
@@ -651,8 +708,6 @@ public class UIManager : MonoBehaviour
     public void UpdateInteractionHUD(bool state, InteractData data = new InteractData())
     {
         Interaction.SetActive(state);
-        //Container.SetActive((state) ? Container.gameObject.activeSelf : false);
-        //Container.SetActive(state);
         GameState.bContainerOpen = Container.activeSelf;
 
         if (!Interaction.gameObject.activeSelf)
