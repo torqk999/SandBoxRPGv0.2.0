@@ -7,13 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public enum ButtonType
-{
-    INVENTORY,
-    CONTAINER,
-    SKILL,
-    KEY_MAP
-}
+
 public enum GameMenu
 {
     NONE = -1,
@@ -321,8 +315,8 @@ public class UIManager : MonoBehaviour
         InventoryListSelection = index;
         InventoryText.text = (index > -1) ? GameState.Controller.CurrentCharacter.Inventory.Items[index].Name : "NothingSelected";
 
-        if (index > -1 && GameState.Controller.CurrentCharacter.Inventory.Items[index] is EquipWrapper)
-            InventoryText.text += $"\nAbilityID: {((EquipWrapper)GameState.Controller.CurrentCharacter.Inventory.Items[index]).Equip.AbilityID}";
+        //if (index > -1 && GameState.Controller.CurrentCharacter.Inventory.Items[index] is EquipWrapper)
+            //InventoryText.text += $"\nAbilityID: {((EquipWrapper)GameState.Controller.CurrentCharacter.Inventory.Items[index]).Equip.AbilityID}";
 
         for (int i = 0; i < InventoryButtonContent.childCount; i++)
             InventoryButtonContent.GetChild(i).GetComponent<Button>().image.color = (i == index) ? new Color(0, 1, 0) : new Color(1, 1, 1);
