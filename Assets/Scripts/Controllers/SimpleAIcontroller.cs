@@ -189,7 +189,7 @@ public class SimpleAIcontroller : CharacterController
             randCoords[0] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[0]);
             randCoords[1] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[1]);
 
-            Debug.Log($"{bOperationComplete} : {bSequenceComplete}");
+            //Debug.Log($"{bOperationComplete} : {bSequenceComplete}");
 
             if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, randCoords))
             {

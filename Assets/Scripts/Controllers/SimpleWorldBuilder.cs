@@ -14,6 +14,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<Stackable> SampleObjects;
     public List<Wearable> SampleGear;
     public List<OneHand> SampleOneHands;
+    public List<OffHand> SampleOffHands;
     public List<TwoHand> SampleTwoHands;
 
     public void SpawnSampleItems(Inventory inventory)
@@ -31,7 +32,6 @@ public class SimpleWorldBuilder : MonoBehaviour
             inventory.Items.Add(new StackableWrapper(item));
             LootBox.Inventory.Items.Add(new StackableWrapper(item));
         }
-
 
         foreach (Wearable wear in SampleGear)
         {
@@ -52,6 +52,19 @@ public class SimpleWorldBuilder : MonoBehaviour
                 continue;
 
             OneHandWrapper newWrapper = new OneHandWrapper(oneHand);
+            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            GameState.EQUIPMENT_INDEX++;
+
+            inventory.Items.Add(newWrapper);
+            LootBox.Inventory.Items.Add(newWrapper);
+        }
+
+        foreach (OffHand offHand in SampleOffHands)
+        {
+            if (offHand == null)
+                continue;
+
+            OffHandWrapper newWrapper = new OffHandWrapper(offHand);
             newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 

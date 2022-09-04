@@ -9,17 +9,19 @@ public enum EquipSkill
     MEDIUM,
     HEAVY,
     HAND_ONE,
+    HAND_OFF,
     HAND_TWO,
     SHIELD,
     RANGED,
     MAGIC
 }
-public enum EquipType
+/*public enum EquipType
 {
     WEARABLE,
     ONEHAND,
+    OFFHAND,
     TWOHAND
-}
+}*/
 
 public class Equipment : ItemObject
 {

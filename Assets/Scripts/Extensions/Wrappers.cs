@@ -86,6 +86,25 @@ public class OneHandWrapper : EquipWrapper
     }
 }
 [System.Serializable]
+public class OffHandWrapper : EquipWrapper
+{
+    public OffHand Hand;
+
+    public OffHandWrapper(OffHand offHand)
+    {
+        Name = offHand.Name;
+        Sprite = offHand.Sprite;
+        Hand = offHand.CloneOneHand();
+        Equip = Hand;
+    }
+
+    public OffHandWrapper CloneOneHandWrapper()
+    {
+        return new OffHandWrapper(Hand);
+    }
+}
+
+[System.Serializable]
 public class TwoHandWrapper : EquipWrapper
 {
     public TwoHand Hand;

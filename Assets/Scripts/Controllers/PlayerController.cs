@@ -51,7 +51,7 @@ public enum KeyAction
 
     INTERACT,
     CYCLE_TARGETS,
-    INVENTORY,
+    CHARACTER,
     EQUIPMENT,
     SKILLS,
     STRATEGY,
@@ -148,30 +148,37 @@ public class PlayerController : CharacterController
     }
     public void ToggleCharacterPage(CharPage page)
     {
+        /*
         switch (page)
         {
-            case CharPage.Inventory: // Inventory
+            case CharPage.Character: // Character
                 GameState.bInventoryOpen = !GameState.UIman.Inventory.activeSelf;
                 GameState.UIman.UpdateInventory();
                 break;
+
             case CharPage.Equipment: // Equip
                 GameState.bEquipmentOpen = !GameState.UIman.Equipment.activeSelf;
                 GameState.UIman.UpdateEquipment();
                 break;
-            case CharPage.Container: // Container
-                GameState.bContainerOpen = !GameState.UIman.Container.activeSelf;
+
+            case CharPage.Looting: // Container
+                GameState.bLootingOpen = !GameState.bLootingOpen;
                 GameState.UIman.UpdateContainer();
                 break;
+
             case CharPage.Skills: // Skills
-                GameState.bSkillsOpen = !GameState.UIman.Skills.activeSelf;
+                GameState.bSkillsOpen = !GameState.bSkillsOpen;
                 GameState.UIman.UpdateSkills();
                 break;
+
             case CharPage.Strategy: // Strategy
                 GameState.bStrategyOpen = !GameState.UIman.Strategy.activeSelf;
                 GameState.UIman.UpdateStrategy();
                 break;
         }
+        */
 
+        GameState.UIman.UpdateGameMenuCanvasState(page);
         TogglePlayStatus();
     }
     public void InitialPawnControl()
@@ -192,10 +199,7 @@ public class PlayerController : CharacterController
     #region INPUT
     void TogglePlayStatus()
     {
-        bIsInPlay = (
-        !GameState.bInventoryOpen &&
-        !GameState.bEquipmentOpen &&
-        !GameState.bSkillsOpen);
+        bIsInPlay = GameState.UIman.CurrentPage == CharPage.None;
         CursorToggle(!bIsInPlay);
     }
     bool CheckAction(KeyAction action, KeyState state = KeyState.DOWN)
@@ -299,17 +303,17 @@ public class PlayerController : CharacterController
     }
     void UpdateCharacterInput()
     {
-        if (CheckAction(KeyAction.INVENTORY))
-            ToggleCharacterPage(CharPage.Inventory);
+        if (CheckAction(KeyAction.CHARACTER))
+            ToggleCharacterPage(CharPage.Character);
 
-        if (CheckAction(KeyAction.EQUIPMENT))
-            ToggleCharacterPage(CharPage.Equipment);
+        //if (CheckAction(KeyAction.EQUIPMENT))
+        //    ToggleCharacterPage(CharPage.Equipment);
 
         if (CheckAction(KeyAction.SKILLS))
             ToggleCharacterPage(CharPage.Skills);
 
-        if (CheckAction(KeyAction.STRATEGY))
-            ToggleCharacterPage(CharPage.Strategy);
+        //if (CheckAction(KeyAction.STRATEGY))
+        //    ToggleCharacterPage(CharPage.Strategy);
 
         if (CheckAction(KeyAction.CYCLE_TARGETS))
             CycleCharacterTargets();

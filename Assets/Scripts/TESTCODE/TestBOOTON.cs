@@ -48,7 +48,7 @@ public class TestBOOTON : Button
     public Vector2 ButtonBounds;
     public bool Following;
 
-    RectTransform MyRect;
+    public RectTransform MyRect;
 
     //[DllImport("user32.dll")]
     //public static extern bool SetCursorPos(int X, int Y);
@@ -97,7 +97,6 @@ public class TestBOOTON : Button
     // Update is called once per frame
     void Update()
     {
-
         FollowMouse();
     }
 }

@@ -187,7 +187,7 @@ public class SimpleAIpathingController : MonoBehaviour
 
         if (safeCount == 1000)
         {
-            Debug.Log("Naw mang");
+            //Debug.Log("Naw mang");
             return false;
         }
 

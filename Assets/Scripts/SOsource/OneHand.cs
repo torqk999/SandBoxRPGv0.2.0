@@ -9,9 +9,7 @@ public enum OneHandType
     RAPIER,
     AXE,
     MACE,
-    FLAIL,
-    SHIELD,
-    BUCKLER
+    FLAIL
 }
 
 [CreateAssetMenu(fileName = "OneHand", menuName = "ScriptableObjects/Equipment/OneHand")]

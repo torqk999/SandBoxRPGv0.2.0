@@ -20,11 +20,12 @@ public enum GameMenu
 
 public enum CharPage
 {
-    Inventory,
-    Equipment,
-    Container,
+    None,
+    Character,
+    //Equipment,
+    Looting,
     Skills,
-    Strategy
+    //Strategy
 }
 
 /*
@@ -56,6 +57,8 @@ public class UIManager : MonoBehaviour
 
     [Header("Indexing")]
     public GameMenu CurrentMenu;
+    public CharPage CurrentPage;
+    public CharPage OldPage;
 
     [Header("Prefabs")]
     public GameObject InventoryButtonPrefab;
@@ -78,19 +81,26 @@ public class UIManager : MonoBehaviour
     public GameObject Party;
 
     [Header("CharSheets")]
-    public GameObject Inventory;
-    public GameObject Equipment;
+    public List<GameObject> AllSheetElements = new List<GameObject>();
+    [Header("==LEFT==")]
+    public GameObject CharSheet;
     public GameObject Container;
-    public GameObject Skills;
     public GameObject Strategy;
+
+    [Header("==MIDDLE==")]
+    public GameObject Equipment;
+
+    [Header("==RIGHT==")]
+    public GameObject Inventory;
+    public GameObject Skills;
 
     /////////////////////////////////////////////////////////
 
     [Header("Canvases")]
-    public Canvas ToolTipCanvas;
-    public Canvas GameMenuCanvas;
+    //public Canvas ToolTipCanvas;
+    public Canvas PauseMenuCanvas;
     public Canvas HUDcanvas;
-    public Canvas CharSheetsCanvas;
+    public Canvas GameMenuCanvas;
 
     [Header("KeyMap")]
     public Transform KeyMapContent;
@@ -159,7 +169,7 @@ public class UIManager : MonoBehaviour
     }
     void CreateHoverIdentity(EventTrigger trigger, int index, ButtonType type)
     {
-        Debug.Log("Hoverin");
+        //Debug.Log("Hoverin");
 
         EventTrigger.Entry enter = new EventTrigger.Entry();
         EventTrigger.Entry exit = new EventTrigger.Entry();
@@ -249,9 +259,9 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region ACTIONS
-    public void GameMenuCanvasNavigation(int index)
+    public void PauseMenuCanvasNavigation(int index)
     {
-        if (index < -1 || index >= GameMenuCanvas.gameObject.transform.childCount)
+        if (index < -1 || index >= PauseMenuCanvas.gameObject.transform.childCount)
         {
             CurrentMenu = GameMenu.NONE;
             GameMenuRefresh();
@@ -260,15 +270,16 @@ public class UIManager : MonoBehaviour
         CurrentMenu = (GameMenu)index;
         GameMenuRefresh();
     }
-    public void EquipSelection(bool bLeftHand = true)
+    public void EquipSelection()//bool bLeftHand = true
     {
-        if (!GameState.Controller.CurrentCharacter.EquipSelection(SelectedEquipSlot, InventoryListSelection, bLeftHand))
+        if (!GameState.Controller.CurrentCharacter.EquipSelection(SelectedEquipSlot, InventoryListSelection))
             return;
         GameState.Controller.CurrentCharacter.UpdateAbilites();
-        UpdateSkills();
+        UpdateGameMenuCanvasState(CharPage.Character);
+        //UpdateSkills();
         UpdateActionBar();
-        UpdateInventory();
-        UpdateEquipment();
+        //UpdateInventory();
+        //UpdateEquipment();
 
     }
     public void AbilitySelection(bool bEquip)
@@ -289,8 +300,7 @@ public class UIManager : MonoBehaviour
     {
         GameState.Controller.CurrentCharacter.LootContainer(GameState.Controller.targetContainer, ContainerListSelection, InventoryListSelection);
 
-        UpdateInventory();
-        UpdateContainer();
+        UpdateGameMenuCanvasState(CharPage.Looting);
     }
     public void EquipmentSlotClick(int index)
     {
@@ -328,7 +338,7 @@ public class UIManager : MonoBehaviour
     {
         InventoryListSelection = index;
         string @event = hovering ? "Entered" : "Exited";
-        Debug.Log($"Mouse has {@event} Inv Item {index}");
+        //Debug.Log($"Mouse has {@event} Inv Item {index}");
     }
     public void ContainerItemClick(int index)
     {
@@ -365,10 +375,10 @@ public class UIManager : MonoBehaviour
     public void GameMenuRefresh()
     {
         // Set menu
-        for (int i = 0; i < GameMenuCanvas.transform.childCount; i++)
-            GameMenuCanvas.transform.GetChild(i).gameObject.SetActive((i == (int)CurrentMenu) ? true : false);
+        for (int i = 0; i < PauseMenuCanvas.transform.childCount; i++)
+            PauseMenuCanvas.transform.GetChild(i).gameObject.SetActive((i == (int)CurrentMenu) ? true : false);
 
-        GameMenuCanvas.gameObject.SetActive((int)CurrentMenu != -1);
+        PauseMenuCanvas.gameObject.SetActive((int)CurrentMenu != -1);
         //return; // <<<<<<<<<<<<<<<<<<<<<
 
         // Clean-ups
@@ -390,22 +400,23 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
+    /*
     public void UpdateContainer()
     {
         if (GameState == null || GameState.Controller.CurrentCharacter == null)
             return;
 
-        GameState.bContainerOpen = GameState.Controller.CurrentCharacter.CurrentInteraction is GenericContainer;
+        GameState.bLootingOpen = GameState.Controller.CurrentCharacter.CurrentInteraction is GenericContainer;
 
-        Container.gameObject.SetActive(GameState.bContainerOpen && GameState.bInventoryOpen);
+        Container.gameObject.SetActive(GameState.bLootingOpen && GameState.bInventoryOpen);
 
 
-        if (GameState.bContainerOpen && GameState.bInventoryOpen)
+        if (GameState.bLootingOpen && GameState.bInventoryOpen)
         {
             if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
                 PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
         }
-        UpdateCharacterCanvas();
+        UpdateGameMenuCanvasState();
     }
     public void UpdateInventory()
     {
@@ -418,7 +429,7 @@ public class UIManager : MonoBehaviour
             PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
 
         UpdateContainer();
-        UpdateCharacterCanvas();
+        UpdateGameMenuCanvasState();
     }
     public void UpdateEquipment()
     {
@@ -436,14 +447,12 @@ public class UIManager : MonoBehaviour
 
             }
         }
-        UpdateCharacterCanvas();
+        UpdateGameMenuCanvasState();
     }
     public void UpdateSkills()
     {
-        if (Skills == null || GameState == null || GameState.Controller.CurrentCharacter == null)
+        if (GameState == null || GameState.Controller.CurrentCharacter == null)
             return;
-
-        Skills.SetActive(GameState.bSkillsOpen);
 
         if (GameState.bSkillsOpen)
         {
@@ -455,7 +464,7 @@ public class UIManager : MonoBehaviour
             SelectedAbilitySlot = -1;
             UpdateActionBar();
         }
-        UpdateCharacterCanvas();
+        UpdateGameMenuCanvasState();
     }
     public void UpdateStrategy()
     {
@@ -464,20 +473,74 @@ public class UIManager : MonoBehaviour
 
         Strategy.SetActive(GameState.bStrategyOpen);
 
-        UpdateCharacterCanvas();
+        UpdateGameMenuCanvasState();
     }
-    public void UpdateCharacterCanvas()
+    */
+    public void UpdateGameMenuCanvasState(CharPage page)
     {
-        GameState.bCharacterMenuOpen = ((
-            //GameState.bContainerOpen ||
-            GameState.bEquipmentOpen ||
-            GameState.bInventoryOpen ||
-            GameState.bSkillsOpen ||
-            GameState.bStrategyOpen) &&
-            !GameState.bPause);
+        if (GameState.bPause)
+        {
+            GameMenuCanvas.gameObject.SetActive(false);
+            return;
+        }
 
-        CharSheetsCanvas.gameObject.SetActive(GameState.bCharacterMenuOpen);
+        GameMenuCanvas.gameObject.SetActive(true);
+
+        CurrentPage = CurrentPage == page ? CharPage.None : page;
+
+        foreach (GameObject obj in AllSheetElements)
+            obj.SetActive(false);
+
+        switch(CurrentPage)
+        {
+            case CharPage.None:
+                GameMenuCanvas.gameObject.SetActive(false);
+                break;
+
+            case CharPage.Character:
+                // not Skills
+                SelectedAbilitySlot = -1;
+                UpdateActionBar();
+                //
+                PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
+                PopulateEquipSlots();
+
+                CharSheet.SetActive(true);
+                Equipment.SetActive(true);
+                Inventory.SetActive(true);
+                break;
+
+            case CharPage.Looting:
+                // not Skills
+                SelectedAbilitySlot = -1;
+                UpdateActionBar();
+                ///
+                PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
+                if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
+                    PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
+
+                Inventory.SetActive(true);
+                Container.SetActive(true);
+                break;
+
+            case CharPage.Skills:
+                PopulateSkillButtons();
+                PopulateEffectPanels();
+                Strategy.SetActive(true);
+                Skills.SetActive(true);
+                break;
+        }
+
         UpdatePartyPanel();
+    }
+    void PopulateEquipSlots()
+    {
+        for (int i = 0; i < CharacterMath.EQUIP_SLOTS; i++)
+        {
+            try { EquipButtons[i].GetComponent<Image>().sprite = GameState.Controller.CurrentCharacter.EquipmentSlots[i].Equip.Sprite; }
+            catch { EquipButtons[i].GetComponent<Image>().sprite = EmptyButtonSprite; }
+
+        }
     }
     void PopulateInventoryButtons(Inventory inventory, ButtonType type)
     {
@@ -601,7 +664,7 @@ public class UIManager : MonoBehaviour
         }
 
         Party.SetActive(GameState.bHUDactive &&
-            !GameState.bCharacterMenuOpen &&
+            !GameState.bGameMenuOpen &&
             GameState.CharacterMan.Parties.Count > 0 &&
             GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.Count > 0);
 
@@ -702,7 +765,7 @@ public class UIManager : MonoBehaviour
     public void UpdateInteractionHUD(bool state, InteractData data = new InteractData())
     {
         Interaction.SetActive(state);
-        GameState.bContainerOpen = Container.activeSelf;
+        //GameState.bLootingOpen = Container.activeSelf;
 
         if (!Interaction.gameObject.activeSelf)
             return;
@@ -745,11 +808,18 @@ public class UIManager : MonoBehaviour
         GameMenuRefresh();
         UIselectionRefresh();
 
-        CharSheetsCanvas.gameObject.SetActive(false);
-        Inventory.SetActive(false);
-        Equipment.SetActive(false);
-        Container.SetActive(false);
-        Skills.SetActive(false);
+        AllSheetElements.Add(Inventory);
+        AllSheetElements.Add(Equipment);
+        AllSheetElements.Add(Container);
+        AllSheetElements.Add(Skills);
+        AllSheetElements.Add(CharSheet);
+        AllSheetElements.Add(Strategy);
+
+        foreach (GameObject obj in AllSheetElements)
+            obj.SetActive(false);
+
+        GameMenuCanvas.gameObject.SetActive(false);
+        PauseMenuCanvas.gameObject.SetActive(false);
     }
 
     private void OnGUI()
