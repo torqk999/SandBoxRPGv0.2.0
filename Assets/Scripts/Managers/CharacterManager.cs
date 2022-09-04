@@ -293,7 +293,6 @@ public class CharacterManager : MonoBehaviour
 
             newCharacter.bControllable = true;
             literalParty.Members.Add(newCharacter);
-            CharacterPool.Add(newCharacter);
         }
 
         Parties.Add(literalParty);
@@ -330,9 +329,9 @@ public class CharacterManager : MonoBehaviour
 
         Party newParty = partyObject.AddComponent<Party>();
 
+        newParty.PartyLoot.MaxCount = CharacterMath.PARTY_INVENTORY_MAX;
         newParty.Faction = faction;
         newParty.CurrentMemberIndex = startIndex;
-        newParty.Members = new List<Character>();
 
         newParty.Formation = formation;
         if (formation != null)
@@ -354,6 +353,7 @@ public class CharacterManager : MonoBehaviour
         newCharacter.GameState = GameState;
         newCharacter.bDebugMode = GameState.bDebugEffects;
         newCharacter.Sheet.Faction = party.Faction;
+        newCharacter.Inventory = party.PartyLoot;
         
         SetupAI(newCharacter);
 

@@ -136,7 +136,9 @@ public class PawnManager : MonoBehaviour
         PlayerPawns = new Pawn[CandidateFolder.transform.childCount];
 
         for (int i = CandidateFolder.childCount - 1; i > -1; i--)
+        {
             PlayerPawns[i] = PawnGeneration(CandidateFolder.GetChild(i).gameObject, PureFolder);
+        }
     }
     #endregion
 

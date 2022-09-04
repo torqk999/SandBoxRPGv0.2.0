@@ -21,6 +21,7 @@ public static class GlobalConstants
 
 public static class CharacterMath
 {
+    public static readonly int PARTY_INVENTORY_MAX;
     public static readonly int STATS_RAW_COUNT = 4;
     //public static readonly int STATS_REGEN_COUNT = 3;
     public static readonly int STATS_ELEMENT_COUNT = 7;

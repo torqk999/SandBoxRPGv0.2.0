@@ -16,11 +16,11 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<OneHand> SampleOneHands;
     public List<TwoHand> SampleTwoHands;
 
-    public void SpawnSampleItems(Character character)
+    public void SpawnSampleItems(Inventory inventory)
     {
-        if (character == null)
+        if (inventory == null)
         {
-            Debug.Log("null character, no inventory spawned");
+            Debug.Log("null inventory!");
             return;
         }
 
@@ -28,7 +28,7 @@ public class SimpleWorldBuilder : MonoBehaviour
         {
             if (item == null)
                 continue;
-            character.Inventory.Items.Add(new StackableWrapper(item));
+            inventory.Items.Add(new StackableWrapper(item));
             LootBox.Inventory.Items.Add(new StackableWrapper(item));
         }
 
@@ -42,7 +42,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
-            character.Inventory.Items.Add(newWrapper);
+            inventory.Items.Add(newWrapper);
             LootBox.Inventory.Items.Add(newWrapper);
         }
 
@@ -55,7 +55,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
-            character.Inventory.Items.Add(newWrapper);
+            inventory.Items.Add(newWrapper);
             LootBox.Inventory.Items.Add(newWrapper);
         }
 
@@ -67,7 +67,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
-            character.Inventory.Items.Add(newWrapper);
+            inventory.Items.Add(newWrapper);
             LootBox.Inventory.Items.Add(newWrapper);
         }
     }
@@ -92,7 +92,6 @@ public class SimpleWorldBuilder : MonoBehaviour
 
         GameState.CharacterMan.CreateCloneParty(MobPrefab, SpawnLocations, Faction.BADDIES);
     }
-
     void BuildTestWorld()
     {
         GameState.NavMesh.GenerateMesh();
@@ -106,7 +105,7 @@ public class SimpleWorldBuilder : MonoBehaviour
 
         GameState.Controller.InitialPawnControl();
 
-        GameState.testBuilder.SpawnSampleItems(GameState.Controller.CurrentCharacter);
+        GameState.testBuilder.SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);//GameState.Controller.CurrentCharacter);
     }
 
     // Start is called before the first frame update
