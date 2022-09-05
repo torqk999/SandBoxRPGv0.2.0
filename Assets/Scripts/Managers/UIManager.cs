@@ -275,7 +275,8 @@ public class UIManager : MonoBehaviour
         if (!GameState.Controller.CurrentCharacter.EquipSelection(SelectedEquipSlot, InventoryListSelection))
             return;
         GameState.Controller.CurrentCharacter.UpdateAbilites();
-        UpdateGameMenuCanvasState(CharPage.Character);
+        RefreshGameMenuCanvas();
+        //UpdateGameMenuCanvasState(CharPage.Character);
         //UpdateSkills();
         UpdateActionBar();
         //UpdateInventory();
@@ -498,12 +499,7 @@ public class UIManager : MonoBehaviour
                 break;
 
             case CharPage.Character:
-                // not Skills
                 SelectedAbilitySlot = -1;
-                UpdateActionBar();
-                //
-                PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
-                PopulateEquipSlots();
 
                 CharSheet.SetActive(true);
                 Equipment.SetActive(true);
@@ -511,27 +507,47 @@ public class UIManager : MonoBehaviour
                 break;
 
             case CharPage.Looting:
-                // not Skills
                 SelectedAbilitySlot = -1;
-                UpdateActionBar();
-                ///
-                PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
-                if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
-                    PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
-
+                
                 Inventory.SetActive(true);
                 Container.SetActive(true);
                 break;
 
             case CharPage.Skills:
-                PopulateSkillButtons();
-                PopulateEffectPanels();
+                SelectedEquipSlot = -1;
+
                 Strategy.SetActive(true);
                 Skills.SetActive(true);
                 break;
         }
 
+        RefreshGameMenuCanvas();
+        UpdateActionBar();
         UpdatePartyPanel();
+    }
+    void RefreshGameMenuCanvas()
+    {
+        switch(CurrentPage)
+        {
+            case CharPage.None:
+                break;
+
+            case CharPage.Character:
+                PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
+                PopulateEquipSlots();
+                break;
+
+            case CharPage.Looting:
+                PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
+                if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
+                    PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
+                break;
+
+            case CharPage.Skills:
+                PopulateSkillButtons();
+                PopulateEffectPanels();
+                break;
+        }
     }
     void PopulateEquipSlots()
     {

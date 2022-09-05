@@ -677,7 +677,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3318,7 +3318,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8537,7 +8537,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14460,7 +14460,7 @@ GameObject:
   - component: {fileID: 982864747}
   - component: {fileID: 982864746}
   m_Layer: 0
-  m_Name: EquipLeft
+  m_Name: Equip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16859,7 +16859,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17008,7 +17008,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21476,7 +21476,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22230,7 +22230,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22569,7 +22569,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361174406}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: GameMenuCanvasNavigation
+        m_MethodName: PauseMenuCanvasNavigation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
