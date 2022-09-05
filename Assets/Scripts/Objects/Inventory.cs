@@ -9,6 +9,11 @@ public class Inventory
     public List<ItemWrapper> Items;
     public int MaxCount;
 
+    public Inventory()
+    {
+        Items = new List<ItemWrapper>();
+    }
+
     /*#region EQUIPPING
     public bool EquipSelection(Character currentCharacter, int equipIndex, int inventoryIndex, bool bLeftHand)
     {

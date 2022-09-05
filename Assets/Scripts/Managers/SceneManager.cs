@@ -21,7 +21,7 @@ public class SceneManager : MonoBehaviour
         // 1. Check for container
         // 2. Check for lootBag
         // 3. Create lootbag
-        if (GameState.bContainerOpen && GameState.Controller.targetContainer != null &&
+        if (GameState.UIman.CurrentPage == CharPage.Looting && GameState.Controller.targetContainer != null &&
             GameState.Controller.CurrentCharacter.Inventory.TransferItem(GameState.Controller.targetContainer.Inventory, inventoryIndex))
             return true;
 

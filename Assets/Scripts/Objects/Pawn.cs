@@ -89,7 +89,9 @@ public class Pawn : MonoBehaviour
 
         if (this == GameState.Controller.CurrentPawn)
         {
-            GameState.UIman.UpdateContainer();
+            //if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
+            //    PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
+            //GameState.UIman.UpdateContainer();
             GameState.UIman.UpdateInteractionHUD(state, data);
         }
     }

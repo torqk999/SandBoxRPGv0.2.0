@@ -4,13 +4,13 @@ using UnityEngine;
 
 public enum WearableType
 {
-    HEAD,       //0
-    NECK,       //1
-    CHEST,      //2
-    BELT,       //3
-    LEGS,       //4
-    FEET,       //5   
-    RING,       //6
+    HEAD = 0,
+    CHEST = 1,
+    BELT = 2,
+    LEGS = 3,
+    FEET = 4,
+    NECK = 5,
+    RING = 6,
 }
 
 [CreateAssetMenu(fileName = "Wearable", menuName = "ScriptableObjects/Equipment/Wearable")]

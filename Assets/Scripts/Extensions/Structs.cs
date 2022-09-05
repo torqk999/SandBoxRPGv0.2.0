@@ -223,6 +223,7 @@ public struct LVLpackage
     }
 }
 [System.Serializable]
+
 public struct InteractData
 {
     public TriggerType Type;
@@ -230,6 +231,8 @@ public struct InteractData
     public float HealthCurrent;
     public float HealthMax;
 }
+
+
 
 //Interfaces
 public interface Interaction

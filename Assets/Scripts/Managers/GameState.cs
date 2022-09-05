@@ -42,14 +42,14 @@ public class GameState : MonoBehaviour
     public bool bPartyChanged = true;
 
     [Header("UI State Logic")]
-    public bool bGameMenuOpen;
+    public bool bPauseMenuOpen;
     public bool bHUDactive;
-    public bool bCharacterMenuOpen;
-    public bool bInventoryOpen;
-    public bool bEquipmentOpen;
-    public bool bContainerOpen;
-    public bool bSkillsOpen;
-    public bool bStrategyOpen;
+    public bool bGameMenuOpen;
+    //public bool bInventoryOpen;
+    //public bool bEquipmentOpen;
+    //public bool bLootingOpen;
+    //public bool bSkillsOpen;
+    //public bool bStrategyOpen;
     
     [Header("Generated Indices")]
     public int EQUIPMENT_INDEX;
@@ -60,16 +60,23 @@ public class GameState : MonoBehaviour
     public void GamePause(bool toggle)
     {
         bPause = toggle;
-
+        if (bPause)
+        {
+            UIman.OldPage = UIman.CurrentPage;
+            UIman.CurrentPage = UIman.OldPage;
+        }
+        else
+            UIman.CurrentPage = UIman.OldPage;
+            
         UpdateHUDstate();
-        UIman.UpdateCharacterCanvas();
-        UIman.GameMenuCanvasNavigation((toggle) ? 0 : -1);
+        UIman.UpdateGameMenuCanvasState(UIman.CurrentPage);
+        UIman.PauseMenuCanvasNavigation((toggle) ? 0 : -1);
         UpdateRigidBodyPawns();
     }
     public void InteractWithContainer(GenericContainer container)
     {
         Controller.targetContainer = container;
-        Controller.ToggleCharacterPage(CharPage.Container);
+        Controller.ToggleCharacterPage(CharPage.Looting);
     }
     void UpdateHUDstate()
     {

@@ -9,4 +9,10 @@ public class Party : MonoBehaviour
     public Formation Formation;
     public Faction Faction;
     public int CurrentMemberIndex;
+
+    public Party()
+    {
+        Members = new List<Character>();
+        PartyLoot = new Inventory();
+    }
 }
