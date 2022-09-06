@@ -574,7 +574,7 @@ public class UIManager : MonoBehaviour
             GameObject newButtonObject = Instantiate(InventoryButtonPrefab, targetContent);
             newButtonObject.SetActive(true);
             CreateCallBackIdentity(newButtonObject.GetComponent<Button>(), index, type);
-            CreateHoverIdentity(newButtonObject.GetComponent<EventTrigger>(), index, type);
+            //CreateHoverIdentity(newButtonObject.GetComponent<EventTrigger>(), index, type);
             index++;
 
             newButtonObject.transform.GetChild(0).GetComponent<Text>().text = (item is StackableWrapper) ? ((StackableWrapper)item).CurrentQuantity.ToString() : string.Empty;

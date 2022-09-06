@@ -9,7 +9,7 @@ public class Inventory
     public List<ItemWrapper> Items;
     public int MaxCount;
 
-    public Inventory()
+    public Inventory(int count = CharacterMath.PARTY_INVENTORY_MAX)
     {
         Items = new List<ItemWrapper>();
     }

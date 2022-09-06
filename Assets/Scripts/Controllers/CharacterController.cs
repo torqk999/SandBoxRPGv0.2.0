@@ -16,7 +16,7 @@ public class CharacterController : MonoBehaviour
 
     public void UpdateCharacterAnimationState()
     {
-        Debug.Log($"IntentVector: {IntentVector}");
+        //Debug.Log($"IntentVector: {IntentVector}");
 
         if (CurrentCharacter == null)
             return;

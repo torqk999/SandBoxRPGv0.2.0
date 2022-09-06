@@ -1811,8 +1811,9 @@ MonoBehaviour:
   Assets: {fileID: 0}
   Animator: {fileID: 0}
   AnimType: 0
-  LegState: 0
-  TorsoState: 0
+  IntentForward: 0
+  IntentRight: 0
+  bIntent: 0
   CurrentStats:
     HEALTH: 0
     STAMINA: 0
@@ -1967,8 +1968,8 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
-  IntendedTranslationMagnitude: 0
-  IntendedYawMagnitude: 0
+  IntentVector: {x: 0, y: 0, z: 0}
+  IntentRotations: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations: []
@@ -3768,8 +3769,9 @@ MonoBehaviour:
   Assets: {fileID: 11400000, guid: 053308082f7a43649a64b9f60324b942, type: 2}
   Animator: {fileID: 0}
   AnimType: 0
-  LegState: 0
-  TorsoState: 0
+  IntentForward: 0
+  IntentRight: 0
+  bIntent: 0
   CurrentStats:
     HEALTH: 0
     STAMINA: 0
@@ -3903,8 +3905,8 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
-  IntendedTranslationMagnitude: 0
-  IntendedYawMagnitude: 0
+  IntentVector: {x: 0, y: 0, z: 0}
+  IntentRotations: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations:
@@ -5714,11 +5716,11 @@ MonoBehaviour:
   SelectedAbilitySlot: 0
   EquipButtons:
   - {fileID: 891627194}
-  - {fileID: 1269435570}
   - {fileID: 538943644}
   - {fileID: 330476261}
   - {fileID: 1434444645}
   - {fileID: 1032224392}
+  - {fileID: 1269435570}
   - {fileID: 763975310}
   - {fileID: 654538492}
   - {fileID: 1860351084}
@@ -9270,8 +9272,8 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
-  IntendedTranslationMagnitude: 0
-  IntendedYawMagnitude: 0
+  IntentVector: {x: 0, y: 0, z: 0}
+  IntentRotations: {x: 0, y: 0, z: 0}
   KeyAxisScale: 1
   MouseAxisScale: 1
   RollScale: 1
@@ -14920,8 +14922,8 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
-  IntendedTranslationMagnitude: 0
-  IntendedYawMagnitude: 0
+  IntentVector: {x: 0, y: 0, z: 0}
+  IntentRotations: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations: []
@@ -25146,6 +25148,7 @@ MonoBehaviour:
   Resolution: 0.5
   MaxDetectionRange: 10
   InclineThreshold: 0.4
+  Offset: {x: 0, y: 1, z: 0}
   AxisCounts: 0000000000000000
 --- !u!1 &1807808458
 GameObject:
@@ -26770,8 +26773,8 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
-  IntendedTranslationMagnitude: 0
-  IntendedYawMagnitude: 0
+  IntentVector: {x: 0, y: 0, z: 0}
+  IntentRotations: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations:
@@ -26851,8 +26854,9 @@ MonoBehaviour:
   Assets: {fileID: 0}
   Animator: {fileID: 0}
   AnimType: 0
-  LegState: 0
-  TorsoState: 0
+  IntentForward: 0
+  IntentRight: 0
+  bIntent: 0
   CurrentStats:
     HEALTH: 0
     STAMINA: 0

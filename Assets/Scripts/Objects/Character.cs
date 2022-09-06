@@ -201,7 +201,10 @@ public class Character : Pawn, Interaction
     public bool EquipSelection(int equipIndex, int inventoryIndex)
     {
         if (inventoryIndex == -1 && equipIndex != -1)
+        {
+            Debug.Log("unequipping");
             return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
+        }
 
         if (inventoryIndex != -1 && equipIndex == -1)
         {
@@ -335,15 +338,19 @@ public class Character : Pawn, Interaction
     }
     bool AttemptEquipRemoval(EquipWrapper equip, int equipIndex)
     {
+        Debug.Log("step0");
+
         if (equip == null)
             return false;
+
+        Debug.Log("step1");
 
         if (Inventory.PushItemIntoInventory(equip))
         {
             if (EquipmentSlots[equipIndex] is TwoHandWrapper)
             {
-                EquipmentSlots[6] = null;
-                EquipmentSlots[7] = null;
+                EquipmentSlots[(int)EquipSlot.MAIN] = null;
+                EquipmentSlots[(int)EquipSlot.OFF] = null;
             }
             else
                 EquipmentSlots[equipIndex] = null;
