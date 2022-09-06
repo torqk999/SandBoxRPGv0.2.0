@@ -272,7 +272,7 @@ public class CharacterManager : MonoBehaviour
     #endregion
 
     #region CHARACTER GENERATION
-    public void CreateLiteralParty(Transform partyPrefabFolder, Faction faction, Formation formation)
+    public void CreateLiteralParty(Transform partyPrefabFolder, Faction faction, Formation formation, Transform startPosition)
     {
         if (partyPrefabFolder == null)
         {
@@ -284,7 +284,7 @@ public class CharacterManager : MonoBehaviour
 
         for(int i = 0; i < partyPrefabFolder.childCount; i++)
         {
-            Character newCharacter = GenerateCharacter(partyPrefabFolder.GetChild(i).gameObject, literalParty,null);
+            Character newCharacter = GenerateCharacter(partyPrefabFolder.GetChild(i).gameObject, literalParty, startPosition);
             if (newCharacter == null)
             {
                 Debug.Log("Literal Character generation failed");

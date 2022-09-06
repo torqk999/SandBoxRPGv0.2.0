@@ -36,6 +36,7 @@ public class SimpleAIcontroller : CharacterController
     public bool bIsUsingNavMesh;
     public bool bTestMotion;
     public bool bStrategyActive;
+    public bool bDebuggingDisable;
 
     [Header("don't touch dees bools...")]
     public bool bIsAwake;
@@ -49,6 +50,7 @@ public class SimpleAIcontroller : CharacterController
 
     [Header("\"You sure you know what you're doing son?\"")]
     public float TotalOperationTime;
+    public float TargetTimeOutThreshold;
     public float TargetArrivalThreshold;
     public float AIwalkForce;
     public float AIturnRate;
@@ -60,6 +62,7 @@ public class SimpleAIcontroller : CharacterController
     [Header("Just Stahp :-| ")]
     public int CurrentOperationIndex;
     public float CurrentOperationTime;
+    public float CurrentTimeOutRemaining;
     public float oldRot;
     public float newRot;
     public float delta;
@@ -191,6 +194,8 @@ public class SimpleAIcontroller : CharacterController
 
             //Debug.Log($"{bOperationComplete} : {bSequenceComplete}");
 
+            //Debug.Log($"{randCoords[0]} : {randCoords[1]}");
+
             if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, randCoords))
             {
                 //Debug.Log("Shits not workin dawg!");
@@ -223,6 +228,7 @@ public class SimpleAIcontroller : CharacterController
 
         // Target Magic Here!
 
+        CurrentTimeOutRemaining = TargetTimeOutThreshold;
         bSequenceComplete = false;
         bOperationComplete = true;
     }
@@ -279,16 +285,23 @@ public class SimpleAIcontroller : CharacterController
         if (!bLerping)
             return;
 
+        AIoperation operation = myStaticSequence.Operations[CurrentOperationIndex];
+
         CurrentOperationTime -= GlobalConstants.TIME_SCALE;
         CurrentOperationTime = (CurrentOperationTime < 0) ? 0 : CurrentOperationTime;
 
         Vector3 target = (bIsFollowing) ? TargetCharacter.Source.position + TravelPoint : TravelPoint;
 
-        if (myStaticSequence.Operations[CurrentOperationIndex].Type == AIoperationType.ROTATE)
-            CurrentCharacter.Source.rotation = Quaternion.Lerp(Quaternion.Euler(new Vector3(0, oldRot, 0)),
+        switch (operation.Type)
+        {
+            case AIoperationType.ROTATE:
+                CurrentCharacter.Source.rotation = Quaternion.Lerp(Quaternion.Euler(new Vector3(0, oldRot, 0)),
                                                         Quaternion.Euler(new Vector3(0, GenerateYbearing(CurrentCharacter.Source.position, target), 0)),
                                                         1 - (CurrentOperationTime / TotalOperationTime));
+                break;
+        }
 
+        
         bLerping = CurrentOperationTime != 0;
         bOperationComplete = !bLerping;
     }
@@ -356,9 +369,20 @@ public class SimpleAIcontroller : CharacterController
 
         if (bNavPointReached)
         {
+            CurrentTimeOutRemaining = TargetTimeOutThreshold;
             rigidBody.velocity = Vector3.zero;
             //Debug.Log("Reached the navPoint!");
             bMoving = Pathing.RequestNextTravelPoint(out TravelPoint);
+        }
+
+        CurrentTimeOutRemaining -= GlobalConstants.TIME_SCALE;
+        if (CurrentTimeOutRemaining <= 0)
+        {
+            bMoving = Pathing.Repath(CurrentCharacter.Source.position) &&
+                Pathing.RequestNextTravelPoint(out TravelPoint);
+
+            //bDebuggingDisable = true;
+            CurrentTimeOutRemaining = TargetTimeOutThreshold;
         }
 
         bOperationComplete = !bMoving;
@@ -426,6 +450,7 @@ public class SimpleAIcontroller : CharacterController
     // Start is called before the first frame update
     void Start()
     {
+        bDebuggingDisable = false;
         ResetStaticSequence();
     }
 
@@ -435,7 +460,8 @@ public class SimpleAIcontroller : CharacterController
         UpdateCharacterAnimationState();
         CheckAwake();
 
-        if (GameState == null
+        if (bDebuggingDisable
+            ||GameState == null
             || CurrentCharacter == null
             || GameState.bPause
             || !bIsAwake

@@ -50,7 +50,7 @@ public class PawnManager : MonoBehaviour
         if (currentPawn is Character)
         {
             newPawnObject.tag = GlobalConstants.TAG_CHARACTER;
-            BuildCharacterBlocker(newPawnObject);
+            //BuildCharacterBlocker(newPawnObject);
         }
 
         BuildCameraRig(newPawnObject, currentPawn);

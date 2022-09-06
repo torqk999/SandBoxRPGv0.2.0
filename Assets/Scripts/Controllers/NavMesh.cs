@@ -10,15 +10,17 @@ public enum NavNodeType
     EDGE
 }
 
-public struct NavNode
+public class NavNode
 {
     public Vector3 Position;
     public NavNodeType Type;
+    public bool Obstructed;
 
     public NavNode(Vector3 position, NavNodeType type)
     {
         Position = position;
         Type = type;
+        Obstructed = false;
     }
 }
 
@@ -99,6 +101,11 @@ public class NavMesh : MonoBehaviour
         float slope = Mathf.Abs(origin.y - target.y);
         Color newColor = new Color(slope / InclineThreshold, 1 - (slope / InclineThreshold), 0);
         Debug.DrawLine(origin, target, newColor);
+    }
+    public void ClearObstructions()
+    {
+        foreach (NavNode node in NavNodes)
+            node.Obstructed = false;
     }
 
     /*
