@@ -255,7 +255,6 @@ public class UIManager : MonoBehaviour
             CurrentRemap.transform.GetChild(0).GetComponent<Text>().text = Event.current.keyCode.ToString();
         }
     }
-
     #endregion
 
     #region ACTIONS
@@ -264,11 +263,11 @@ public class UIManager : MonoBehaviour
         if (index < -1 || index >= PauseMenuCanvas.gameObject.transform.childCount)
         {
             CurrentMenu = GameMenu.NONE;
-            GameMenuRefresh();
+            PauseMenuRefresh();
             return;
         }
         CurrentMenu = (GameMenu)index;
-        GameMenuRefresh();
+        PauseMenuRefresh();
     }
     public void EquipSelection()//bool bLeftHand = true
     {
@@ -373,7 +372,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region MENUS
-    public void GameMenuRefresh()
+    public void PauseMenuRefresh()
     {
         // Set menu
         for (int i = 0; i < PauseMenuCanvas.transform.childCount; i++)
@@ -821,7 +820,7 @@ public class UIManager : MonoBehaviour
     void UIinitializer()
     {
         CurrentMenu = GameMenu.NONE;
-        GameMenuRefresh();
+        PauseMenuRefresh();
         UIselectionRefresh();
 
         AllSheetElements.Add(Inventory);
