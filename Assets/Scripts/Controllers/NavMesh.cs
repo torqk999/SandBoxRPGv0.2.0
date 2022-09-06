@@ -31,6 +31,7 @@ public class NavMesh : MonoBehaviour
     public float Resolution;
     public float MaxDetectionRange;
     public float InclineThreshold;
+    public Vector3 Offset = new Vector3(0,1,0);
 
     public int[] AxisCounts = new int[2];
 
@@ -56,7 +57,7 @@ public class NavMesh : MonoBehaviour
 
                 RaycastHit hit;
                 if (Physics.Raycast(newSkyPoint, Vector3.down * MaxDetectionRange, out hit))
-                    NavNodes[i, j] = new NavNode(hit.point, NavNodeType.CLEAR);
+                    NavNodes[i, j] = new NavNode(hit.point + Offset, NavNodeType.CLEAR);
                 else
                 {
                     Vector3 location = new Vector3(newSkyPoint.x, newSkyPoint.y - MaxDetectionRange, newSkyPoint.z);

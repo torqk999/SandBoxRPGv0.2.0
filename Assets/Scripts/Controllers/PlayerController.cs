@@ -483,6 +483,9 @@ public class PlayerController : CharacterController
 
         CurrentPawn.RigidBody.AddForce(forward * CurrentPawn.Source.forward * KeyAxisScale * forceScale, ForceMode.Impulse);
         CurrentPawn.RigidBody.AddForce(right * CurrentPawn.Source.right * KeyAxisScale * forceScale, ForceMode.Impulse);
+
+        IntentVector.x = right;
+        IntentVector.z = forward;
     }
     #endregion
 
@@ -736,5 +739,7 @@ public class PlayerController : CharacterController
         UpdateCurrentTarget();
         LerpCam();
         FixedBoom();
+
+        UpdateCharacterAnimationState();
     }
 }

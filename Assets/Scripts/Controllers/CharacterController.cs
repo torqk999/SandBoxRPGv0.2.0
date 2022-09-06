@@ -11,17 +11,20 @@ public class CharacterController : MonoBehaviour
     public Character CurrentCharacter;
     public Character TargetCharacter;
 
-    public float IntendedTranslationMagnitude;
-    public float IntendedYawMagnitude;
+    public Vector3 IntentVector;
+    public Vector3 IntentRotations;
 
-    void UpdateCharacterAnimationState()
+    public void UpdateCharacterAnimationState()
     {
+        Debug.Log($"IntentVector: {IntentVector}");
+
         if (CurrentCharacter == null)
             return;
 
-        CurrentCharacter.UpdateAnimationState(IntendedTranslationMagnitude, IntendedYawMagnitude);
-        IntendedTranslationMagnitude = 0;
-        IntendedYawMagnitude = 0;
+        float trueForward = Vector3.Dot(IntentVector, CurrentCharacter.RigidBody.velocity) / (IntentVector.magnitude * CurrentCharacter.RigidBody.velocity.magnitude);
+
+        //CurrentCharacter.UpdateAnimationIntents(trueForward, IntentVector.x);
+        CurrentCharacter.UpdateAnimationIntents(IntentVector.z, IntentVector.x);
     }
 
     // Start is called before the first frame update
@@ -33,6 +36,6 @@ public class CharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateCharacterAnimationState();
+        //UpdateCharacterAnimationState();
     }
 }

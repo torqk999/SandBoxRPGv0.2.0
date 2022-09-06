@@ -313,6 +313,7 @@ public class SimpleAIcontroller : CharacterController
 
         bMoving = Vector3.Distance(CurrentCharacter.Source.position, target) > TargetArrivalThreshold;
         bOperationComplete = !bMoving;
+        IntentVector.z = bMoving ? 1 : 0;
     }
     void NavMoving()
     {
@@ -361,6 +362,7 @@ public class SimpleAIcontroller : CharacterController
         }
 
         bOperationComplete = !bMoving;
+        IntentVector.z = bMoving ? 1 : 0;
     }
     float GenerateBearingTurnMagnitude(float currentBearing, float newBearing)
     {
@@ -430,6 +432,7 @@ public class SimpleAIcontroller : CharacterController
     // Update is called once per frame
     void Update()
     {
+        UpdateCharacterAnimationState();
         CheckAwake();
 
         if (GameState == null
