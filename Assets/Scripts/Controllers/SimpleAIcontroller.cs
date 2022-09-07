@@ -80,8 +80,9 @@ public class SimpleAIcontroller : CharacterController
     {
         bIsAwake = !(GameState == null
             || CurrentCharacter == null
-            || (GameState.Controller != null &&
-            GameState.Controller.CurrentCharacter == CurrentCharacter));
+            || (CurrentCharacter.bControllable &&
+                GameState.Controller != null &&
+                GameState.Controller.CurrentCharacter == CurrentCharacter));
     }
     void FindTarget()
     {
@@ -196,7 +197,7 @@ public class SimpleAIcontroller : CharacterController
 
             //Debug.Log($"{randCoords[0]} : {randCoords[1]}");
 
-            if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, randCoords))
+            if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, ref randCoords))
             {
                 //Debug.Log("Shits not workin dawg!");
                 return;
