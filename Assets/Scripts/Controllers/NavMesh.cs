@@ -10,15 +10,17 @@ public enum NavNodeType
     EDGE
 }
 
-public struct NavNode
+public class NavNode
 {
     public Vector3 Position;
     public NavNodeType Type;
+    public bool Obstructed;
 
     public NavNode(Vector3 position, NavNodeType type)
     {
         Position = position;
         Type = type;
+        Obstructed = false;
     }
 }
 
@@ -31,6 +33,7 @@ public class NavMesh : MonoBehaviour
     public float Resolution;
     public float MaxDetectionRange;
     public float InclineThreshold;
+    public Vector3 Offset = new Vector3(0,1,0);
 
     public int[] AxisCounts = new int[2];
 
@@ -56,7 +59,7 @@ public class NavMesh : MonoBehaviour
 
                 RaycastHit hit;
                 if (Physics.Raycast(newSkyPoint, Vector3.down * MaxDetectionRange, out hit))
-                    NavNodes[i, j] = new NavNode(hit.point, NavNodeType.CLEAR);
+                    NavNodes[i, j] = new NavNode(hit.point + Offset, NavNodeType.CLEAR);
                 else
                 {
                     Vector3 location = new Vector3(newSkyPoint.x, newSkyPoint.y - MaxDetectionRange, newSkyPoint.z);
@@ -98,6 +101,11 @@ public class NavMesh : MonoBehaviour
         float slope = Mathf.Abs(origin.y - target.y);
         Color newColor = new Color(slope / InclineThreshold, 1 - (slope / InclineThreshold), 0);
         Debug.DrawLine(origin, target, newColor);
+    }
+    public void ClearObstructions()
+    {
+        foreach (NavNode node in NavNodes)
+            node.Obstructed = false;
     }
 
     /*

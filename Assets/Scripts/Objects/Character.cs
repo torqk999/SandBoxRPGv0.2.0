@@ -11,7 +11,7 @@ public enum AnimatorType
     BIRD,
     FISH
 }
-
+/*
 [System.Serializable]
 public enum AnimatorState
 {
@@ -24,7 +24,7 @@ public enum AnimatorState
     SLIDE,
     FALL
 }
-
+*/
 public enum EquipSlot
 {
     HEAD,
@@ -44,11 +44,14 @@ public class Character : Pawn, Interaction
     [Header("Character Defs")]
     [Header("==== CHARACTER CLASS ====")]
     public int ID;
+
+    [Header("Animation")]
     public CharacterAssetPack Assets;
     public Animator Animator;
     public AnimatorType AnimType;
-    public AnimatorState LegState;
-    public AnimatorState TorsoState;
+    public float IntentForward;
+    public float IntentRight;
+    public bool bIntent;
 
     [Header("Character Stats")]
     public StatPackage CurrentStats;
@@ -198,7 +201,10 @@ public class Character : Pawn, Interaction
     public bool EquipSelection(int equipIndex, int inventoryIndex)
     {
         if (inventoryIndex == -1 && equipIndex != -1)
+        {
+            Debug.Log("unequipping");
             return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
+        }
 
         if (inventoryIndex != -1 && equipIndex == -1)
         {
@@ -332,15 +338,19 @@ public class Character : Pawn, Interaction
     }
     bool AttemptEquipRemoval(EquipWrapper equip, int equipIndex)
     {
+        Debug.Log("step0");
+
         if (equip == null)
             return false;
+
+        Debug.Log("step1");
 
         if (Inventory.PushItemIntoInventory(equip))
         {
             if (EquipmentSlots[equipIndex] is TwoHandWrapper)
             {
-                EquipmentSlots[6] = null;
-                EquipmentSlots[7] = null;
+                EquipmentSlots[(int)EquipSlot.MAIN] = null;
+                EquipmentSlots[(int)EquipSlot.OFF] = null;
             }
             else
                 EquipmentSlots[equipIndex] = null;
@@ -454,43 +464,28 @@ public class Character : Pawn, Interaction
         bAssetTimer = true;
         bAssetUpdate = false;
     }
-    public void UpdateAnimationState(float translationMagnitude, float yawIntention)
+    public void UpdateAnimationIntents(float forward, float right)
     {
-        if (translationMagnitude == 0)
-        {
-            LegState = AnimatorState.IDLE;
-            return;
-
-            /*
-            // Future Implements
-            if (yawIntention > 0)
-                LegState = AnimatorState.TURN_R;
-            if (yawIntention < 0)
-                LegState = AnimatorState.TURN_L;
-            else
-                LegState = AnimatorState.IDLE;
-            return;
-            */
-        }
-
-        else
-            LegState = AnimatorState.WALK;
+        IntentForward = forward;
+        IntentRight = right;
+        bIntent = true;
     }
+    
     void UpdateAnimation()
     {
         if (Animator == null)
             return;
-
-        switch(LegState)
+        if (!bIntent)
         {
-            case AnimatorState.IDLE:
-                break;
-
-            case AnimatorState.WALK:
-                break;
+            Animator.SetFloat("horizontalMove", 0);
+            Animator.SetFloat("verticalMove", 0);
+            return;
         }
+        Animator.SetFloat("horizontalMove", IntentRight);
+        Animator.SetFloat("verticalMove", IntentForward);
+        bIntent = false;
     }
-
+    
     #endregion
 
     // Start is called before the first frame update

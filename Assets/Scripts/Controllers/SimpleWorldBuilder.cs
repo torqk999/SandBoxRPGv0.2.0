@@ -6,6 +6,7 @@ public class SimpleWorldBuilder : MonoBehaviour
 {
     public GameState GameState;
     public Transform SpawnLocations;
+    public Transform PartyStartLocation;
     public GameObject MobPrefab;
     public Transform MobFolder;
     public GenericContainer LootBox;
@@ -112,7 +113,7 @@ public class SimpleWorldBuilder : MonoBehaviour
         //GameState.testPath.GenerateNewPath(GameState.testPath.START.position, GameState.testPath.END.position, out GameState.testPath.TP);
 
         GameState.CharacterMan.CreateLiteralParty(GameState.CharacterMan.DefaultPartyPrefabs, Faction.GOODIES,
-            GameState.CharacterMan.DefaultPartyFormation); // Migrations -______-
+            GameState.CharacterMan.DefaultPartyFormation, PartyStartLocation); // Migrations -______-
         SpawnMobs();
         
 
