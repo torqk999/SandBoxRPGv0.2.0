@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 0
   Name: PlateHelmet
-  Sprite: {fileID: 21300000, guid: 04eb4055f8da6a04ea5362dd385f0645, type: 3}
+  Sprite: {fileID: 21300000, guid: d0151ab49aede3e499bb0f925dd64efe, type: 3}
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipType: 0
   EquipSkill: 2
   EquipLevel: 0
   AbilityID: 0
   EquipAbilites: []
+  Type: 0
