@@ -399,7 +399,6 @@ public class CharacterManager : MonoBehaviour
             {
                 newPathing.GameState = GameState;
                 newAI.Pathing = newPathing;
-                newAI.Pathing.myAI = newAI;
             }
         }
     }

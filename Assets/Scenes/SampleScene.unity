@@ -1770,8 +1770,7 @@ Transform:
   m_LocalPosition: {x: 0, y: -1.79, z: -31.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 207042729}
+  m_Children: []
   m_Father: {fileID: 1034490503}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1793,6 +1792,7 @@ MonoBehaviour:
   ZoomScale: 1
   ZoomCurrent: 0
   GameState: {fileID: 0}
+  CurrentController: {fileID: 0}
   Socket: {fileID: 0}
   Boom: {fileID: 0}
   Source: {fileID: 0}
@@ -1808,7 +1808,7 @@ MonoBehaviour:
   bControllable: 1
   ID: 0
   Assets: {fileID: 0}
-  Animator: {fileID: 207042730}
+  Animator: {fileID: 0}
   AnimType: 0
   IntentForward: 0
   IntentRight: 0
@@ -3478,16 +3478,6 @@ Transform:
   m_Father: {fileID: 1010888933}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &207042729 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-  m_PrefabInstance: {fileID: 1361945855}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &207042730 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-  m_PrefabInstance: {fileID: 1361945855}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &219768924
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,6 +3754,7 @@ MonoBehaviour:
   ZoomScale: 1
   ZoomCurrent: 0
   GameState: {fileID: 0}
+  CurrentController: {fileID: 0}
   Socket: {fileID: 0}
   Boom: {fileID: 0}
   Source: {fileID: 0}
@@ -9379,7 +9370,7 @@ MonoBehaviour:
   CurrentTacticalMode: 0
   CurrentCameraMode: 0
   bIsZooming: 1
-  bCameraLookEnabled: 1
+  bCameraLookEnabled: 0
   Zoom: 0
   FixedXY: {x: 0, y: 0}
   LerpTimer: 0
@@ -9437,7 +9428,7 @@ MonoBehaviour:
   - Action: 17
     Keys: 6800000016010000
   - Action: 18
-    Keys: 74000000
+    Keys: 2e000000
   - Action: 19
     Keys: 2e000000
   - Action: 20
@@ -9458,10 +9449,6 @@ MonoBehaviour:
     Keys: 6f000000
   - Action: 28
     Keys: 79000000
-  - Action: 29
-    Keys: 44010000
-  - Action: 30
-    Keys: 17010000
   OpenIndex: 0
   OpenSlot: 0
   OldKey: 0
@@ -13927,6 +13914,7 @@ MonoBehaviour:
   ZoomScale: 1
   ZoomCurrent: 0
   GameState: {fileID: 0}
+  CurrentController: {fileID: 0}
   Socket: {fileID: 0}
   Boom: {fileID: 0}
   Source: {fileID: 0}
@@ -18529,67 +18517,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1353616055}
   m_CullTransparentMesh: 1
---- !u!1001 &1361945855
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 109683110}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.9
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_Name
-      value: newModel1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 8e622b7d35440e94fabdcef07f92c760, type: 2}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
 --- !u!1 &1362225218
 GameObject:
   m_ObjectHideFlags: 0
@@ -20973,7 +20900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
       propertyPath: m_LocalPosition.z
@@ -21015,10 +20942,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: newModel1
       objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 8e622b7d35440e94fabdcef07f92c760, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
 --- !u!1 &1506733733
@@ -21225,6 +21148,7 @@ MonoBehaviour:
   ZoomScale: 1
   ZoomCurrent: 0
   GameState: {fileID: 0}
+  CurrentController: {fileID: 0}
   Socket: {fileID: 0}
   Boom: {fileID: 0}
   Source: {fileID: 0}
@@ -27009,6 +26933,7 @@ MonoBehaviour:
   ZoomScale: 1
   ZoomCurrent: 0
   GameState: {fileID: 0}
+  CurrentController: {fileID: 0}
   Socket: {fileID: 0}
   Boom: {fileID: 0}
   Source: {fileID: 0}

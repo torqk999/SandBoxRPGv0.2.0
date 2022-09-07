@@ -18,7 +18,7 @@ public class Pawn : MonoBehaviour
 
     [Header("Pawn Components")]
     public GameState GameState;
-    //public CharacterController CurrentController;
+    public CharacterController CurrentController;
     public Transform Socket;
     public Transform Boom;
     public Transform Source;
