@@ -1,0 +1,3 @@
+﻿- Stat_Change/Adjust by fixed/percent
+- Ai gets stuck in crevises
+- Update GUI assistant for text

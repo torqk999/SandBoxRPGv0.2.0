@@ -11,6 +11,8 @@ public static class GlobalConstants
     public const int ACTION_KEY_COUNT = 2;
 
     public const string ANIM_BOOL_WALK = "walking";
+    public const string ANIM_VERT_WALK = "VerticalWalk";
+    public const string ANIM_HORZ_WALK = "HorizontalWalk";
 
     public const string TAG_GROUND = "GROUND";
     public const string TAG_CHARACTER = "CHARACTER";

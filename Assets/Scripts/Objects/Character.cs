@@ -477,12 +477,12 @@ public class Character : Pawn, Interaction
             return;
         if (!bIntent)
         {
-            Animator.SetFloat("horizontalMove", 0);
-            Animator.SetFloat("verticalMove", 0);
+            Animator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
+            Animator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
             return;
         }
-        Animator.SetFloat("horizontalMove", IntentRight);
-        Animator.SetFloat("verticalMove", IntentForward);
+        Animator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
+        Animator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
     }
     

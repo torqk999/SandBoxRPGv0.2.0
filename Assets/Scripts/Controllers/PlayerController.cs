@@ -460,6 +460,7 @@ public class PlayerController : CharacterController
 
         if (CurrentPawn == CurrentCharacter && CurrentPawn.RigidBody.velocity.magnitude >= CurrentCharacter.MaximumStatValues.SPEED)
             return;
+
         float forceScale = (1 - (CurrentPawn.RigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED));
 
         float forward = 0;
