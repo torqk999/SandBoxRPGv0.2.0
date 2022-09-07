@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemID: 0
   Name: TwoHandedAxe
-  Sprite: {fileID: 21300000, guid: 9e8697fbd4776d64da18bb3b8409c08d, type: 3}
+  Sprite: {fileID: 21300000, guid: 4ce56ac8440c9ae4997ad24b40ede710, type: 3}
   Quality: 0
   GoldValue: 0
   Weight: 0
