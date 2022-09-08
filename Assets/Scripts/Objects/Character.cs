@@ -11,20 +11,7 @@ public enum AnimatorType
     BIRD,
     FISH
 }
-/*
-[System.Serializable]
-public enum AnimatorState
-{
-    IDLE,
-    WALK,
-    RUN,
-    JUMP,
-    TURN_L,
-    TURN_R,
-    SLIDE,
-    FALL
-}
-*/
+
 public enum EquipSlot
 {
     HEAD,
@@ -47,6 +34,7 @@ public class Character : Pawn, Interaction
 
     [Header("Animation")]
     public CharacterAssetPack Assets;
+    public AnimatorPlus myAnim;
     public Animator Animator;
     public AnimatorType AnimType;
     public float IntentForward;
@@ -106,22 +94,30 @@ public class Character : Pawn, Interaction
         if (Sheet == null)
             return;
 
-        float[] totalStats = new float[CharacterMath.STATS_TOTAL_COUNT];
+        CurrentStats = new StatPackage(CharacterMath.STATS_RAW_COUNT);
+        MaximumStatValues = new StatPackage(CharacterMath.STATS_RAW_COUNT);
 
-        for (int i = 0; i < CharacterMath.STATS_TOTAL_COUNT; i++)
-            totalStats[i] = CharacterMath.BASE_STAT[i] +
-                (CharacterMath.LEVEL_STAT[i] *
-                CharacterMath.RACE_STAT[(int)Sheet.Race, i] *
-                Sheet.Level.CHARACTER);
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+        {
+            float stat = CharacterMath.RAW_BASE[i] +
+                (CharacterMath.RAW_GROWTH[i] *
+                CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] *
+                Sheet.Level);
 
-        float[] resStats = new float[CharacterMath.STATS_ELEMENT_COUNT];
+            CurrentStats.Stats[i] = stat;
+            MaximumStatValues.Stats[i] = stat;
+        }
+
+        Resistances = new ElementPackage(CharacterMath.STATS_ELEMENT_COUNT);
+
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-            resStats[i] = totalStats[i + CharacterMath.STATS_RAW_COUNT];
+        {
+            Resistances.Elements[i] = CharacterMath.RES_BASE[i] +
+                (CharacterMath.RES_GROWTH[i] *
+                CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] *
+                Sheet.Level);
+        }
 
-        CurrentStats.EnterData(totalStats);
-        MaximumStatValues.EnterData(totalStats);
-        Resistances.EnterData(resStats);
-        //MaximumResistances.EnterData(resStats);
         UpdateAbilites();
     }
     void InitializePassiveRegen()
@@ -130,19 +126,20 @@ public class Character : Pawn, Interaction
 
         for (int i = 0; i < 3; i++)
         {
-            float magnitude = (CharacterMath.BASE_REGEN[i] * CharacterMath.RACE_STAT[(int)Sheet.Race, i]) *
-                (1 + CharacterMath.LEVEL_STAT[i]);
+            float magnitude = (CharacterMath.BASE_REGEN[i] * CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i]) *
+                (1 + CharacterMath.RAW_GROWTH[i]);
 
             //Debug.Log($"{Sheet.Name} : {(EffectTarget)i} : {magnitude}");
-            Effects.Add(CreateRegen((EffectTarget)i, magnitude));
+            Effects.Add(CreateRegen((EffectType)i, magnitude));
         }
     }
-    Effect CreateRegen(EffectTarget targetStat, float magnitude)
+    Effect CreateRegen(EffectType targetStat, float magnitude)
     {
         Effect regen = new Effect();
-        regen.Target = targetStat;
-        regen.Type = EffectType.PASSIVE;
-        regen.ElementPack.HEALING = magnitude;
+        regen.Name = $"{targetStat} REGEN";
+        regen.Type = targetStat;
+        regen.Duration = EffectDuration.PASSIVE;
+        regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
 
         return regen;
     }
@@ -150,8 +147,9 @@ public class Character : Pawn, Interaction
     {
         InteractData.Type = TriggerType.CHARACTER;
         InteractData.Splash = Sheet.Name;
-        InteractData.HealthCurrent = CurrentStats.HEALTH;
-        InteractData.HealthMax = MaximumStatValues.HEALTH;
+        //UpdateInteractData();
+        //InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
+        //InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
     }
     #endregion
 
@@ -164,7 +162,7 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         List<int> equipIDs = new List<int>();
-        for (int i = 0; i < CharacterMath.EQUIP_SLOTS; i++)
+        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
             if (EquipmentSlots[i] != null)
                 equipIDs.Add(EquipmentSlots[i].ItemID);
 
@@ -182,7 +180,7 @@ public class Character : Pawn, Interaction
     {
         Abilities.Clear();
 
-        for (int i = 0; i < CharacterMath.EQUIP_SLOTS; i++)
+        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
         {
             if (EquipmentSlots[i] == null)
                 continue;
@@ -201,10 +199,7 @@ public class Character : Pawn, Interaction
     public bool EquipSelection(int equipIndex, int inventoryIndex)
     {
         if (inventoryIndex == -1 && equipIndex != -1)
-        {
-            Debug.Log("unequipping");
             return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
-        }
 
         if (inventoryIndex != -1 && equipIndex == -1)
         {
@@ -338,12 +333,8 @@ public class Character : Pawn, Interaction
     }
     bool AttemptEquipRemoval(EquipWrapper equip, int equipIndex)
     {
-        Debug.Log("step0");
-
         if (equip == null)
             return false;
-
-        Debug.Log("step1");
 
         if (Inventory.PushItemIntoInventory(equip))
         {
@@ -384,19 +375,15 @@ public class Character : Pawn, Interaction
 
     void UpdateLife() // Get a life...
     {
-        float[] stats = CurrentStats.PullData();
-        float[] maxStats = MaximumStatValues.PullData();
         for (int i = 0; i < 3; i++)
         {
-            stats[i] = (stats[i] < 0) ? 0 : stats[i];
-            stats[i] = (stats[i] > maxStats[i]) ? maxStats[i] : stats[i];
+            CurrentStats.Stats[i] = (CurrentStats.Stats[i] < 0) ? 0 : CurrentStats.Stats[i];
+            CurrentStats.Stats[i] = (CurrentStats.Stats[i] > MaximumStatValues.Stats[i]) ? MaximumStatValues.Stats[i] : CurrentStats.Stats[i];
         }
-        CurrentStats.EnterData(stats);
 
-        if (CurrentStats.HEALTH == 0)
+        if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
             bIsAlive = false;
-            CurrentStats.HEALTH = 0;
             DebugState = DebugState.DEAD;
             //Source.GetComponent<Collider>().enabled = false;
 
@@ -415,8 +402,8 @@ public class Character : Pawn, Interaction
     }
     void UpdateInteractData()
     {
-        InteractData.HealthCurrent = CurrentStats.HEALTH;
-        InteractData.HealthMax = MaximumStatValues.HEALTH;
+        InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
+        InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
     }
     void UpdateAssetTimer()
     {
@@ -477,12 +464,12 @@ public class Character : Pawn, Interaction
             return;
         if (!bIntent)
         {
-            Animator.SetFloat("horizontalMove", 0);
-            Animator.SetFloat("verticalMove", 0);
+            Animator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
+            Animator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
             return;
         }
-        Animator.SetFloat("horizontalMove", IntentRight);
-        Animator.SetFloat("verticalMove", IntentForward);
+        Animator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
+        Animator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
     }
     

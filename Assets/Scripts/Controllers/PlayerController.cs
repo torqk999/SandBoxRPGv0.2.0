@@ -29,17 +29,7 @@ public enum KeyAction
     BACKWARD,
     SPRINT,
     JUMP,
-
-    HotBar0,
-    HotBar1,
-    HotBar2,
-    HotBar3,
-    HotBar4,
-    HotBar5,
-    HotBar6,
-    HotBar7,
-    HotBar8,
-    HotBar9,
+    HOTBAR,
 
     PAUSE,
     HOME_TP,
@@ -52,9 +42,9 @@ public enum KeyAction
     INTERACT,
     CYCLE_TARGETS,
     CHARACTER,
-    EQUIPMENT,
     SKILLS,
-    STRATEGY,
+    CAM_LOOK,
+    CAM_RESET
 }
 
 public class PlayerController : CharacterController
@@ -91,7 +81,6 @@ public class PlayerController : CharacterController
     #endregion
 
     #region PUBLIC
-
     public void ToggleCameraMode()
     {
         if (CurrentCameraMode == CameraMode.FIXED)
@@ -148,36 +137,6 @@ public class PlayerController : CharacterController
     }
     public void ToggleCharacterPage(CharPage page)
     {
-        /*
-        switch (page)
-        {
-            case CharPage.Character: // Character
-                GameState.bInventoryOpen = !GameState.UIman.Inventory.activeSelf;
-                GameState.UIman.UpdateInventory();
-                break;
-
-            case CharPage.Equipment: // Equip
-                GameState.bEquipmentOpen = !GameState.UIman.Equipment.activeSelf;
-                GameState.UIman.UpdateEquipment();
-                break;
-
-            case CharPage.Looting: // Container
-                GameState.bLootingOpen = !GameState.bLootingOpen;
-                GameState.UIman.UpdateContainer();
-                break;
-
-            case CharPage.Skills: // Skills
-                GameState.bSkillsOpen = !GameState.bSkillsOpen;
-                GameState.UIman.UpdateSkills();
-                break;
-
-            case CharPage.Strategy: // Strategy
-                GameState.bStrategyOpen = !GameState.UIman.Strategy.activeSelf;
-                GameState.UIman.UpdateStrategy();
-                break;
-        }
-        */
-
         GameState.UIman.UpdateGameMenuCanvasState(page);
         TogglePlayStatus();
     }
@@ -193,7 +152,6 @@ public class PlayerController : CharacterController
         SnapPawnOptions();
         Teleport();
     }
-
     #endregion
 
     #region INPUT
@@ -202,43 +160,35 @@ public class PlayerController : CharacterController
         bIsInPlay = GameState.UIman.CurrentPage == CharPage.None;
         CursorToggle(!bIsInPlay);
     }
-    bool CheckAction(KeyAction action, KeyState state = KeyState.DOWN)
+    bool CheckAction(KeyAction action, KeyState state = KeyState.DOWN, int index = -1)
     {
-        KeyMap? targetMap = Array.Find(GameState.KeyMap.Map, x => x.Action == action);
+        KeyMap? targetMap = Array.Find(GameState.KeyMap.Map, x => x.Action == action && x.Index == index);
         if (!targetMap.HasValue)
             return false;
 
+        //Debug.Log($"{targetMap.Value.Action} : {targetMap.Value.Index}");
+        //Debug.Log($"{targetMap.Value.Keys == null}");
+
         for (int i = 0; i < targetMap.Value.Keys.Length; i++)
         {
+            if (targetMap.Value.Keys[i] == KeyCode.None)
+                continue;
+
             switch (state)
             {
                 case KeyState.DOWN:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKeyDown(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Down");
+                    if (Input.GetKeyDown(targetMap.Value.Keys[i]))
                         return true;
-                    }
-
                     break;
 
                 case KeyState.PRESSED:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKey(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Pressed");
+                    if (Input.GetKey(targetMap.Value.Keys[i]))
                         return true;
-                    }
                     break;
 
                 case KeyState.UP:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKeyUp(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Up");
+                    if (Input.GetKeyUp(targetMap.Value.Keys[i]))
                         return true;
-                    }
-
                     break;
             }
         }
@@ -272,6 +222,23 @@ public class PlayerController : CharacterController
         if (CheckAction(KeyAction.TELEPORT))
             Teleport();
 
+        if (CurrentCharacter != null)
+            UpdateCharacterInput();
+
+        if (!bIsInPlay)
+            return;
+
+        float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
+        float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
+        float z = Input.GetAxis("Roll") * RollScale;
+
+        // Looking
+        UpdateCamera(ref x, ref y, ref z);
+
+        if (CurrentPawn == null ||
+            !CurrentPawn.bControllable)
+            return;
+
         if (CheckAction(KeyAction.INTERACT))
         {
             if (CurrentPawn.CurrentInteraction != null)
@@ -280,24 +247,18 @@ public class PlayerController : CharacterController
                 ClearTarget();
         }
 
-        if (CurrentCharacter != null)
-            UpdateCharacterInput();
-
-        if (!bIsInPlay || CurrentPawn == null)
-            return;
-
         switch (CurrentControlMode)
         {
             case ControlMode.FLIGHT:
-                FlightControl();
+                FlightControl(ref x, ref y, ref z);
                 break;
 
             case ControlMode.TACTICAL:
-                TacticalControl();
+                TacticalControl(ref x, ref y, ref z);
                 break;
 
             case ControlMode.PERSON:
-                PersonControl();
+                PersonControl(ref x, ref y, ref z);
                 break;
         }
     }
@@ -306,19 +267,13 @@ public class PlayerController : CharacterController
         if (CheckAction(KeyAction.CHARACTER))
             ToggleCharacterPage(CharPage.Character);
 
-        //if (CheckAction(KeyAction.EQUIPMENT))
-        //    ToggleCharacterPage(CharPage.Equipment);
-
         if (CheckAction(KeyAction.SKILLS))
             ToggleCharacterPage(CharPage.Skills);
-
-        //if (CheckAction(KeyAction.STRATEGY))
-        //    ToggleCharacterPage(CharPage.Strategy);
 
         if (CheckAction(KeyAction.CYCLE_TARGETS))
             CycleCharacterTargets();
     }
-    void FlightControl()
+    void FlightControl(ref float x, ref float y, ref float z)
     {
         // Actions
         if (Input.GetButton("Focus") && Focus != null)
@@ -329,13 +284,8 @@ public class PlayerController : CharacterController
 
         // Looking
         //if (Input.GetMouseButton(0))
-        {
-            float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
-            float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
-            float z = Input.GetAxis("Roll") * RollScale;
-
+        if (!CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED))
             CurrentPawn.Source.Rotate(-y, x, z, Space.Self);
-        }
 
         if (CurrentPawn.RigidBody == null)
             return;
@@ -351,13 +301,11 @@ public class PlayerController : CharacterController
             CurrentPawn.RigidBody.angularVelocity = new Vector3(0, 0, 0);
         }
     }
-    void TacticalControl()
+    void TacticalControl(ref float x, ref float y, ref float z)
     {
         // Looking
         if (Input.GetMouseButton(0))
         {
-            float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
-            float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
 
             CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
             CurrentPawn.Source.Rotate(0, x, 0, Space.World);
@@ -420,33 +368,22 @@ public class PlayerController : CharacterController
                 break;
         }
     }
-    void PersonControl()
+    void PersonControl(ref float x, ref float y, ref float z)
     {
-        if (!bIsInControl)
-            return;
-
-        // Looking
-        //if (Input.GetMouseButton(0))
-        {
-            float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
-            float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
-            float z = Input.GetAxis("Roll") * RollScale;
-
-            if (CurrentCameraMode != CameraMode.FIXED)
-                CurrentPawn.Boom.Rotate(-y, 0, 0, Space.Self);
+        // Turning
+        if (!CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED) && bCameraLookEnabled)
             CurrentPawn.Source.Rotate(0, x, 0, Space.World);
-        }
 
         // Action Bar
-        for (int i = (int)KeyAction.HotBar0; i < 10 + (int)KeyAction.HotBar0; i++)
-            if (CheckAction((KeyAction)i))
+        for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
+            if (CheckAction(KeyAction.HOTBAR, KeyState.DOWN, i))
                 AttemptAction(i);
 
-        // Click
+        /* Click
         if (Input.GetMouseButtonDown(0))
             AttemptAction(10);
         if (Input.GetMouseButtonDown(1))
-            AttemptAction(11);
+            AttemptAction(11);*/
 
         // Movement
         if (CurrentPawn.RigidBody == null
@@ -458,9 +395,11 @@ public class PlayerController : CharacterController
         if (CheckAction(KeyAction.JUMP))
             CurrentPawn.RigidBody.AddForce(JumpForce * CurrentPawn.Source.up, ForceMode.Impulse);
 
-        if (CurrentPawn == CurrentCharacter && CurrentPawn.RigidBody.velocity.magnitude >= CurrentCharacter.MaximumStatValues.SPEED)
+        // Max Velocity
+        if (CurrentPawn == CurrentCharacter && CurrentPawn.RigidBody.velocity.magnitude >= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
             return;
-        float forceScale = (1 - (CurrentPawn.RigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED));
+
+        float forceScale = (1 - (CurrentPawn.RigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED]));
 
         float forward = 0;
         float right = 0;
@@ -534,7 +473,6 @@ public class PlayerController : CharacterController
     {
         CurrentControlMode = CurrentPawn.ControlMode;
         CursorToggle((CurrentControlMode == ControlMode.TACTICAL) ? true : false);
-        //PhysicsObject = CurrentPawn.RigidBody;
     }
     void CursorToggle(bool toggle)
     {
@@ -599,6 +537,7 @@ public class PlayerController : CharacterController
     {
         //Debug.Log("cycling");
         //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
+
         if (GameState.CharacterMan.CharacterPool.Count == 0)
             return;
         int index = (CurrentCharacter.Target == null) ? 0 : GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target) + 1;
@@ -606,7 +545,11 @@ public class PlayerController : CharacterController
         index = (index >= GameState.CharacterMan.CharacterPool.Count) ? 0 : index;
 
         CurrentCharacter.Target = GameState.CharacterMan.CharacterPool[index];
-        //GameState.UIman.UpdateInteractionHUD()
+        //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
+        if (CurrentCharacter.Target == null)
+            GameState.UIman.UpdateInteractionHUD(false);
+        else
+            GameState.UIman.UpdateInteractionHUD(true, CurrentCharacter.Target.GetInteractData());
     }
     void ClearTarget()
     {
@@ -614,6 +557,7 @@ public class PlayerController : CharacterController
     }
     void AttemptAction(int abilityIndex)
     {
+        Debug.Log("Attempting");
         GameState.CharacterMan.AttemptAbility(abilityIndex, CurrentCharacter);
     }
     #endregion
@@ -643,14 +587,13 @@ public class PlayerController : CharacterController
         Zoom = (Zoom > CurrentPawn.ZoomMax) ? CurrentPawn.ZoomMax : Zoom;
 
     }
-    void UpdateBoom()
+    void UpdateBoomClipping()
     {
         if (CurrentPawn == null)
             return;
 
         Vector3 newLocal = CurrentPawn.Socket.localPosition;
         RaycastHit hit;
-
 
         if (Physics.Raycast(CurrentPawn.Boom.position, -CurrentPawn.Boom.forward, out hit, Zoom))
         {
@@ -675,45 +618,33 @@ public class PlayerController : CharacterController
                 break;
         }
     }
-    void UpdateCamera()
+    void UpdateCamera(ref float x, ref float y, ref float z)
     {
-        if (Input.GetButtonDown("CamReset"))
+        UpdateZoom();
+
+        if (CheckAction(KeyAction.CAM_RESET))
             CameraRealign();
 
-        // Camera Rotate
-        if (!Input.GetButton("CameraLook") || !bCameraLookEnabled)
-        {
-            GameState.Controller.bIsInControl = true;
-            return;
-        }
-
-        GameState.Controller.bIsInControl = false;
-
-        float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
-        float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
-        float z = Input.GetAxis("Roll") * RollScale;
+        bool looking = CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED) && bCameraLookEnabled;
 
         switch (CurrentCameraMode)
         {
             case CameraMode.CHASE:
-                CurrentPawn.Boom.Rotate(-y, x, z, Space.World);
+                if (CurrentControlMode != ControlMode.FLIGHT ||
+                    looking)
+                    CurrentPawn.Boom.Rotate(-y, 0, 0, Space.Self);
+                if (looking)
+                    CurrentPawn.Boom.Rotate(0, x, 0, Space.World);
                 break;
 
             case CameraMode.FIXED:
-                //CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
-                //CurrentPawn.Boom.Rotate(0, x, 0, Space.World);
+                if (!looking)
+                    break;
                 FixedXY.x += x;
                 FixedXY.y += y;
+                CurrentPawn.Boom.localRotation = Quaternion.Euler(FixedXY.y, FixedXY.x, 0);
                 break;
         }
-    }
-
-    void FixedBoom()
-    {
-        if (CurrentCameraMode != CameraMode.FIXED)
-            return;
-
-        CurrentPawn.Boom.rotation = Quaternion.Euler(CurrentPawn.Source.rotation.eulerAngles.x + FixedXY.y, CurrentPawn.Source.rotation.eulerAngles.y + FixedXY.x, 0);
     }
     #endregion
 
@@ -732,14 +663,15 @@ public class PlayerController : CharacterController
     // Update is called once per frame
     void Update()
     {
-        UpdateZoom();
-        UpdateBoom();
+        //UpdateZoom();
+        
         UpdatePawnInput();
-        UpdateCamera();
+        UpdateBoomClipping();
         UpdateCurrentTarget();
         LerpCam();
-        FixedBoom();
 
-        UpdateCharacterAnimationState();
+        if (CurrentCharacter != null &&
+            CurrentCharacter.bControllable)
+            UpdateCharacterAnimationState();
     }
 }

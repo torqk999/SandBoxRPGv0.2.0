@@ -7,11 +7,13 @@ using UnityEngine;
 public struct KeyMap
 {
     public KeyAction Action;
+    public int Index;
     public KeyCode[] Keys;
 
-    public KeyMap(KeyAction action)
+    public KeyMap(KeyAction action, int index = -1)
     {
         Action = action;
+        Index = index;
         Keys = new KeyCode[GlobalConstants.ACTION_KEY_COUNT];
         for (int i = 0; i < Keys.Length; i++)
         {
@@ -19,10 +21,10 @@ public struct KeyMap
         }
     }
 
-    public KeyMap(KeyMap source)//, float value)
+    public KeyMap(KeyMap source, bool defaultIndex = true)//, float value)
     {
         Action = source.Action;
-        //Value = value;
+        Index = defaultIndex? -1 : source.Index;
         Keys = new KeyCode[GlobalConstants.ACTION_KEY_COUNT];
         for(int i = 0; i < source.Keys.Length; i++)
         {
@@ -63,18 +65,29 @@ public class KeyMapper : MonoBehaviour
         bMapOpen = false;
     }
 
-    void GenerateKeyMap()
+    public void GenerateKeyMap()
     {
-        Map = new KeyMap[Default.Length];
+        Map = new KeyMap[Default.Length + CharacterMath.ABILITY_SLOTS];
 
         for (int i = 0; i < Default.Length; i++)
             Map[i] = new KeyMap(Default[i]);
+
+        for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
+        {
+            KeyMap hotMap = new KeyMap(KeyAction.HOTBAR, i);
+            if (i < 10)
+            {
+                hotMap.Keys[0] = KeyCode.Alpha0 + i;
+                hotMap.Keys[1] = KeyCode.Keypad0 + i;
+            }
+            Map[i + Default.Length] = hotMap;
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        GenerateKeyMap();
+
     }
 
     // Update is called once per frame

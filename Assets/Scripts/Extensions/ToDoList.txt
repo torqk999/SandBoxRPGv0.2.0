@@ -1,0 +1,5 @@
+﻿- Stat_Change/Adjust by fixed/percent
+- Ai gets stuck in crevises
+- Update GUI assistant for text
+- Resolve Multi-Mapping (Mouse/Keyboard/Console)
+- Ramp intent vector to char-animators

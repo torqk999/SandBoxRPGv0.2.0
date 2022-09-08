@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    [Header ("References")]
+    [Header("References")]
     public GameState GameState;
     public Transform CharacterPartyFolder;
 
-    [Header ("Default Party Defs")]
+    [Header("Default Party Defs")]
     public Transform DefaultPartyPrefabs;
     public Transform DefaultPartyStart;
     public Formation DefaultPartyFormation;
@@ -69,9 +69,9 @@ public class CharacterManager : MonoBehaviour
         if (!CheckAbility(call, caller))
             return false;
 
-        float[] stats = caller.CurrentStats.PullData();
-        stats[(int)call.CostType] -= call.CostValue;
-        caller.CurrentStats.EnterData(stats);
+        //float[] stats = caller.CurrentStats.PullData();
+        caller.CurrentStats.Stats[(int)call.CostType] -= call.CostValue;
+        //caller.CurrentStats.EnterData(stats);
 
         call.SetCooldown();
         TargetAbility(call, caller);
@@ -88,53 +88,8 @@ public class CharacterManager : MonoBehaviour
         if (caller.CCstatus[(int)call.AbilityType]) // Check CC
             return false;
 
-        /*
-        switch (call.AbilityType) // Check CC 
-        {
-            case AbilityType.POWER:
-                if ()
-                break;
-
-            case AbilityType.ATTACK:
-                break;
-
-            case AbilityType.SPELL:
-                break;
-        }
-        */
-        
-        if (call.CostType != CostType.NONE) // Check Cost
-        {
-            float[] stats = caller.CurrentStats.PullData();
-            if (call.CostValue > stats[(int)call.CostType])
-                return false;
-        }
-
-        /*
-        switch (call.CostType) // Check Cost / ApplyCost
-        {
-            case CostType.HEALTH:
-                if (call.CostValue > caller.CurrentStats.HEALTH)
-                    return false;
-                caller.CurrentStats.HEALTH -= call.CostValue;
-                break;
-
-            case CostType.STAMINA:
-                if (call.CostValue > caller.CurrentStats.STAMINA)
-                    return false;
-                caller.CurrentStats.STAMINA -= call.CostValue;
-                break;
-
-            case CostType.MANA:
-                if (call.CostValue > caller.CurrentStats.MANA)
-                    return false;
-                caller.CurrentStats.MANA -= call.CostValue;
-                break;
-
-            case CostType.NONE:
-                break;
-        }
-        */
+        if (call.CostValue > caller.CurrentStats.Stats[(int)call.CostType])
+            return false;
 
         return true; // Good to do things Sam!
     }
@@ -166,7 +121,7 @@ public class CharacterManager : MonoBehaviour
     {
         List<Character> AOEcandidates = new List<Character>();
 
-        foreach(Character target in CharacterPool)
+        foreach (Character target in CharacterPool)
             if (Vector3.Distance(target.Source.position, caller.Source.position) <= call.RangeValue)// &&
                 //target.Sheet.Faction != caller.Sheet.Faction)
                 AOEcandidates.Add(target);
@@ -179,17 +134,17 @@ public class CharacterManager : MonoBehaviour
         {
             Effect mod = call.Effects[i];
 
-            switch (mod.Type)
+            switch (mod.Duration)
             {
-                case EffectType.ONCE:
+                case EffectDuration.ONCE:
                     ApplySingleEffect(target, call.Effects[i]);
                     break;
 
-                case EffectType.TIMED:
+                case EffectDuration.TIMED:
                     ApplyRisidualEffect(target, call.Effects[i]);
                     break;
 
-                case EffectType.PASSIVE:
+                case EffectDuration.PASSIVE:
                     ApplyRisidualEffect(target, call.Effects[i]);
                     break;
             }
@@ -197,36 +152,37 @@ public class CharacterManager : MonoBehaviour
     }
     void ApplySingleEffect(Character target, Effect mod)
     {
-        float[] baseData = mod.ElementPack.PullData();
-        float[] resData = target.Resistances.PullData();
         float totalValue = 0;
 
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT - 1; i++) // Everything but healing
-            totalValue += baseData[i] * (1 - resData[i]);
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
+        {
+            float change = mod.ElementPack.Elements[i] * (1 - target.Resistances.Elements[i]);
+            totalValue += (Element)i == Element.HEALING ? -change : change;
+        }
 
         // Healing, it is expected that this element is the last index of all the elements
-        totalValue -= baseData[CharacterMath.STATS_ELEMENT_COUNT - 1] * (1 - resData[CharacterMath.STATS_ELEMENT_COUNT - 1]);
+        //totalValue -= mod.ElementPack.Elements[CharacterMath.STATS_ELEMENT_COUNT - 1] * (1 - resData[CharacterMath.STATS_ELEMENT_COUNT - 1]);
 
-        switch (mod.Target)
+        switch (mod.TargetStat)
         {
-            case EffectTarget.HEALTH:
-                target.CurrentStats.HEALTH -= totalValue;
+            case RawStat.HEALTH:
+                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_H;
                 break;
 
-            case EffectTarget.MANA:
-                target.CurrentStats.MANA -= totalValue;
+            case RawStat.MANA:
+                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_M;
                 break;
 
-            case EffectTarget.SPEED:
-                target.CurrentStats.SPEED -= totalValue;
+            case RawStat.SPEED:
+                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 break;
 
-            case EffectTarget.STAMINA:
-                target.CurrentStats.STAMINA -= totalValue;
+            case RawStat.STAMINA:
+                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_S;
                 break;
@@ -244,7 +200,7 @@ public class CharacterManager : MonoBehaviour
     #region CHECK-UPS
     void UpdateCharacters()
     {
-        foreach(Character character in CharacterPool)
+        foreach (Character character in CharacterPool)
         {
             if (character.bIsAlive)
                 UpdateRisidualEffects(character);
@@ -255,14 +211,14 @@ public class CharacterManager : MonoBehaviour
         for (int i = character.Effects.Count - 1; i > -1; i--)
         {
             Effect risidual = character.Effects[i];
-            if (risidual.Type == EffectType.TIMED)
+            if (risidual.Duration == EffectDuration.TIMED)
             {
                 risidual.Timer -= GlobalConstants.TIME_SCALE;
                 if (risidual.Timer <= 0)
                 {
                     character.Effects.RemoveAt(i);
                     continue;
-                }    
+                }
             }
             character.Effects[i] = risidual;
 
@@ -282,7 +238,7 @@ public class CharacterManager : MonoBehaviour
 
         Party literalParty = GenerateParty(faction, formation);
 
-        for(int i = 0; i < partyPrefabFolder.childCount; i++)
+        for (int i = 0; i < partyPrefabFolder.childCount; i++)
         {
             Character newCharacter = GenerateCharacter(partyPrefabFolder.GetChild(i).gameObject, literalParty, startPosition);
             if (newCharacter == null)
@@ -301,7 +257,7 @@ public class CharacterManager : MonoBehaviour
     {
         Party cloneParty = GenerateParty(faction);
 
-        for(int i = 0; i < spawnPointFolder.childCount; i++)
+        for (int i = 0; i < spawnPointFolder.childCount; i++)
         {
             if (!spawnPointFolder.GetChild(i).gameObject.activeSelf)
                 continue;
@@ -354,7 +310,7 @@ public class CharacterManager : MonoBehaviour
         newCharacter.bDebugMode = GameState.bDebugEffects;
         newCharacter.Sheet.Faction = party.Faction;
         newCharacter.Inventory = party.PartyLoot;
-        
+
         SetupAI(newCharacter);
 
         CharacterPool.Add(newCharacter);
@@ -366,7 +322,7 @@ public class CharacterManager : MonoBehaviour
         // Slots
         character.CCstatus = new bool[3];
         character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
-        character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS];
+        character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
 
         // Sheet
         CharacterSheet sheetInstance = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
@@ -399,6 +355,7 @@ public class CharacterManager : MonoBehaviour
             {
                 newPathing.GameState = GameState;
                 newAI.Pathing = newPathing;
+                newAI.Pathing.myAI = newAI;
             }
         }
     }

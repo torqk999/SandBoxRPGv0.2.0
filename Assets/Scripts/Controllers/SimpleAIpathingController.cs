@@ -27,6 +27,7 @@ public class SimpleAIpathingController : MonoBehaviour
 {
     [Header("Refs")]
     public GameState GameState;
+    public SimpleAIcontroller myAI;
 
     [Header("Defs")]
     public float InclineThreshold;
@@ -65,7 +66,7 @@ public class SimpleAIpathingController : MonoBehaviour
 
         GenerateStartAndEndCoords(startLocation, destination, true);
 
-        return AstarPathing(StartCoord, EndCoord);
+        return AstarPathing(ref StartCoord, ref EndCoord);
     }
     public bool GenerateNewPath(Vector3 startLocation, int[] destinationCoords)
     {
@@ -85,7 +86,7 @@ public class SimpleAIpathingController : MonoBehaviour
         GenerateStartAndEndCoords(startLocation);
         EndCoord = destinationCoords;
 
-        return AstarPathing(StartCoord, EndCoord);
+        return AstarPathing(ref StartCoord, ref EndCoord);
     }
     public bool Repath(Vector3 startLocation)
     {
@@ -152,6 +153,7 @@ public class SimpleAIpathingController : MonoBehaviour
     }
     void GenerateObstructionMask(Vector3 startLocation, PathNode source)
     {
+        { 
         //ObstructionMask.Clear();
 
         // 5x5 around the obstructed point
@@ -171,23 +173,27 @@ public class SimpleAIpathingController : MonoBehaviour
         int jS;
         int jE;
         */
-
+    }
         int range = 3;
+
 
         for (int i = -range; i <= range; i++)
             for (int j = -range; j <= range; j++)
             {
-                int[] neighbourIndex = new int[] {
+                /*int[] neighbourIndex = new int[] {
                 source.Index[0] + i, source.Index[1] + j
-                };
+                };*/
 
-                if (neighbourIndex[0] < 0 ||
-                    neighbourIndex[0] >= GameState.NavMesh.AxisCounts[0] ||
-                    neighbourIndex[1] < 0 ||
-                    neighbourIndex[1] >= GameState.NavMesh.AxisCounts[1])
+                int neighbourIndex_X = source.Index[0] + i;
+                int neighbourIndex_Y = source.Index[1] + j;
+
+                if (neighbourIndex_X < 0 ||
+                    neighbourIndex_X >= GameState.NavMesh.AxisCounts[0] ||
+                    neighbourIndex_Y < 0 ||
+                    neighbourIndex_Y >= GameState.NavMesh.AxisCounts[1])
                     continue; // Can't be anything there
 
-                GameState.NavMesh.NavNodes[neighbourIndex[0], neighbourIndex[1]].Obstructed = true;
+                GameState.NavMesh.NavNodes[neighbourIndex_X, neighbourIndex_Y].Obstructed = true;
             }
 
         CurrentPathIndex += range;
@@ -200,9 +206,6 @@ public class SimpleAIpathingController : MonoBehaviour
     }
     public bool RequestNextTravelPoint(out Vector3 travelPoint)
     {
-
-
-
         if (CurrentPathIndex < 0)
         {
             travelPoint = Vector3.zero;
@@ -222,7 +225,7 @@ public class SimpleAIpathingController : MonoBehaviour
 
     #region A*
 
-    bool AstarPathing(int[] start, int[] end)
+    bool AstarPathing(ref int[] start, ref int[] end)
     {
         if (!NodeSafetyCheck(GameState.NavMesh.NavNodes[end[0], end[1]]))
         {
@@ -236,12 +239,12 @@ public class SimpleAIpathingController : MonoBehaviour
         Beginning = new PathNode(GameState.NavMesh.NavNodes[start[0], start[1]], new int[] { start[0], start[1] }, null);
 
         NodeHeuristicCost(Beginning);
-        NodeTravelAndFinalCosts(Beginning);
+        NeighbourTravelAndFinalCosts(Beginning);
         Generated.Add(Beginning);
 
         int safeCount = 0;
 
-        while (safeCount < 1000)
+        while (safeCount < GlobalConstants.MAX_PATH_CYCLES)
         {
             Current = Generated.Find(x => x.bIsOpen);
 
@@ -267,7 +270,7 @@ public class SimpleAIpathingController : MonoBehaviour
             safeCount++;
         }
 
-        if (safeCount == 1000)
+        if (safeCount == GlobalConstants.MAX_PATH_CYCLES)
         {
             Debug.Log("Naw mang");
             return false;
@@ -293,63 +296,46 @@ public class SimpleAIpathingController : MonoBehaviour
     }
     void UpdateNeighbours(PathNode source)
     {
-        //Debug.Log($"Checking Node: {target.Index[0]}:{target.Index[1]}");
-
         for (int i = -1; i < 2; i++)
             for (int j = -1; j < 2; j++)
             {
-                int[] neighbourIndex = new int[] {
-                source.Index[0] + i, source.Index[1] + j
-                };
+                int neighbourIndex_X = source.Index[0] + i;
+                int neighbourIndex_Y = source.Index[1] + j;
 
-                if (neighbourIndex[0] < 0 ||
-                    neighbourIndex[0] >= GameState.NavMesh.AxisCounts[0] ||
-                    neighbourIndex[1] < 0 ||
-                    neighbourIndex[1] >= GameState.NavMesh.AxisCounts[1])
+                if (neighbourIndex_X < 0 ||
+                    neighbourIndex_X >= GameState.NavMesh.AxisCounts[0] ||
+                    neighbourIndex_Y < 0 ||
+                    neighbourIndex_Y >= GameState.NavMesh.AxisCounts[1])
                     continue; // Can't be anything there
 
                 if (i == 0 && j == 0)
                     continue; // Skip itself
 
-                //Debug.Log($"neighbourInd: {neighbourIndex[0]}:{neighbourIndex[1]}");
-
-                float verticalDisplacement = GameState.NavMesh.NavNodes[neighbourIndex[0], neighbourIndex[1]].Position.y - source.Source.Position.y;
+                float verticalDisplacement = GameState.NavMesh.NavNodes[neighbourIndex_X, neighbourIndex_Y].Position.y - source.Source.Position.y;
                 if (verticalDisplacement > InclineThreshold)
                     continue; // Too high to reach
 
-                if (!NodeSafetyCheck(GameState.NavMesh.NavNodes[neighbourIndex[0], neighbourIndex[1]]))
+                if (!NodeSafetyCheck(GameState.NavMesh.NavNodes[neighbourIndex_X, neighbourIndex_Y]))
                     continue; // Pathing unfriendly
 
-                //Debug.Log($"Checking through masks: {ObstructionMask.Count}");
-
-                /*if (ObstructionMask.FindIndex(x => x == neighbourIndex) != -1)
-                {
-                    Debug.Log($"found mask at: {i}:{j}");
-                    continue; // Obstruction mask
-                }*/
-
-                PathNode neighbour = Generated.Find(x => x.Index[0] == neighbourIndex[0] && x.Index[1] == neighbourIndex[1]);
+                PathNode neighbour = Generated.Find(x => x.Index[0] == neighbourIndex_X && x.Index[1] == neighbourIndex_Y);
                 if (neighbour == null) // Create a new neighbour node
                 {
-                    neighbour = new PathNode(GameState.NavMesh.NavNodes[neighbourIndex[0], neighbourIndex[1]], neighbourIndex, source);
+                    neighbour = new PathNode(GameState.NavMesh.NavNodes[neighbourIndex_X, neighbourIndex_Y], new int[] { neighbourIndex_X, neighbourIndex_Y }, source);
                     NodeHeuristicCost(neighbour);
-                    NodeTravelAndFinalCosts(neighbour);
+                    NeighbourTravelAndFinalCosts(neighbour);
                     Generated.Add(neighbour);
-
-                    //Debug.Log($"Generated new node at: {neighbour.Index[0]}:{neighbour.Index[1]}");
                 }
 
                 if (!neighbour.bIsOpen)
                     continue; // Neighbour is closed
 
-                int newDistanceCost = NodeCostReturn(source, neighbour) + source.TravelCost;
-                //float newDistanceCost = (int)Vector3.Distance(neighbour.Source.Position, source.Source.Position) + source.TravelCost;
+                int newDistanceCost = NeighbourCostReturn(source, neighbour) + source.TravelCost;
 
                 if (newDistanceCost < neighbour.TravelCost)
                 {
-                    //Debug.Log($"Improving path to neighbour: {neighbour.Index[0]}:{neighbour.Index[1]}");
                     neighbour.Parent = source;
-                    NodeTravelAndFinalCosts(neighbour);
+                    NeighbourTravelAndFinalCosts(neighbour);
                 }
             }
     }
@@ -373,17 +359,15 @@ public class SimpleAIpathingController : MonoBehaviour
         int lateral = Mathf.Abs(deltaX - deltaY);
 
         node.HeuristicCost = (diagonal * 14) + (lateral * 10);
-        //node.HeuristicCost = (int)Vector3.Distance(node.Source.Position, EndNavNode.Position);
     }
-    void NodeTravelAndFinalCosts(PathNode node)
+    void NeighbourTravelAndFinalCosts(PathNode neighbour)
     {
-        if (node.Parent != null)
-            node.TravelCost = NodeCostReturn(node, node.Parent) + node.Parent.TravelCost;
-            //node.TravelCost = (int)Vector3.Distance(node.Source.Position, node.Parent.Source.Position) + node.Parent.TravelCost;
+        if (neighbour.Parent != null)
+            neighbour.TravelCost = NeighbourCostReturn(neighbour, neighbour.Parent) + neighbour.Parent.TravelCost;
 
-        node.FinalCost = node.TravelCost + node.HeuristicCost;
+        neighbour.FinalCost = neighbour.TravelCost + neighbour.HeuristicCost;
     }
-    int NodeCostReturn(PathNode A, PathNode B)
+    int NeighbourCostReturn(PathNode A, PathNode B)
     {
         if (A == B)
             return 0;
