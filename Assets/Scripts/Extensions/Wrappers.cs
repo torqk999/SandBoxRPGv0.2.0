@@ -103,7 +103,6 @@ public class OffHandWrapper : EquipWrapper
         return new OffHandWrapper(Hand);
     }
 }
-
 [System.Serializable]
 public class TwoHandWrapper : EquipWrapper
 {

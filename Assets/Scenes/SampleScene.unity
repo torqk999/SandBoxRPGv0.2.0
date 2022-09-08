@@ -1548,23 +1548,11 @@ MonoBehaviour:
   IntentRight: 0
   bIntent: 0
   CurrentStats:
-    HEALTH: 0
-    STAMINA: 0
-    MANA: 0
-    SPEED: 0
+    Stats: []
   MaximumStatValues:
-    HEALTH: 0
-    STAMINA: 0
-    MANA: 0
-    SPEED: 0
+    Stats: []
   Resistances:
-    PHYSICAL: 0
-    FIRE: 0
-    WATER: 0
-    EARTH: 0
-    AIR: 0
-    POISON: 0
-    HEALING: 0
+    Elements: []
   Sheet: {fileID: 11400000, guid: c54092d548bb7e944b5f64f3f77f4848, type: 2}
   Abilities:
   - {fileID: 11400000, guid: 76d1a3c863e5cbe46864486982432ef2, type: 2}
@@ -3172,23 +3160,11 @@ MonoBehaviour:
   IntentRight: 0
   bIntent: 0
   CurrentStats:
-    HEALTH: 0
-    STAMINA: 0
-    MANA: 0
-    SPEED: 0
+    Stats: []
   MaximumStatValues:
-    HEALTH: 0
-    STAMINA: 0
-    MANA: 0
-    SPEED: 0
+    Stats: []
   Resistances:
-    PHYSICAL: 0
-    FIRE: 0
-    WATER: 0
-    EARTH: 0
-    AIR: 0
-    POISON: 0
-    HEALING: 0
+    Elements: []
   Sheet: {fileID: 11400000, guid: 9bc71a162292fc149b29dbc1ec528e91, type: 2}
   Abilities: []
   Effects: []
@@ -4066,7 +4042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -10917,7 +10893,7 @@ MonoBehaviour:
   bTriggerStateChange: 0
   bUsesGravity: 0
   bIsGrounded: 0
-  bControllable: 0
+  bControllable: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -17169,7 +17145,7 @@ MonoBehaviour:
   bTriggerStateChange: 0
   bUsesGravity: 0
   bIsGrounded: 0
-  bControllable: 0
+  bControllable: 1
 --- !u!33 &1508094098
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -22285,23 +22261,11 @@ MonoBehaviour:
   IntentRight: 0
   bIntent: 0
   CurrentStats:
-    HEALTH: 0
-    STAMINA: 0
-    MANA: 0
-    SPEED: 0
+    Stats: []
   MaximumStatValues:
-    HEALTH: 0
-    STAMINA: 0
-    MANA: 0
-    SPEED: 0
+    Stats: []
   Resistances:
-    PHYSICAL: 0
-    FIRE: 0
-    WATER: 0
-    EARTH: 0
-    AIR: 0
-    POISON: 0
-    HEALING: 0
+    Elements: []
   Sheet: {fileID: 11400000, guid: 97f60dcaf86d5614b81751eb34ff01fa, type: 2}
   Abilities:
   - {fileID: 11400000, guid: 76d1a3c863e5cbe46864486982432ef2, type: 2}
@@ -24555,10 +24519,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0

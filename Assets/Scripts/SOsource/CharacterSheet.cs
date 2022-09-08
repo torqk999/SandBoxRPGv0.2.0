@@ -30,24 +30,26 @@ public enum Faction
 public class CharacterSheet : ScriptableObject
 {
     public string Name;
+    public int Level;
     public Sprite Portrait;
 
     public EXPpackage CurrentEXP;
     public EXPpackage NextLevelEXP;
-    public LVLpackage Level;
-
+    public LVLpackage Skills;
+    
     public Race Race;
     public Faction Faction;
 
     public void Clone(CharacterSheet target)
     {
         Name = target.Name;
+        Level = target.Level;
         Portrait = target.Portrait;
         CurrentEXP = target.CurrentEXP;
         NextLevelEXP = target.NextLevelEXP;
-        Level = target.Level;
+        Skills = target.Skills;
         Race = target.Race;
-        Level = target.Level;
+        Skills = target.Skills;
     }
 
     /*== GOOD ==

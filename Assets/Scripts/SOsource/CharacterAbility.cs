@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CostType
+/*public enum CostType
 {
     HEALTH,
     STAMINA,
     MANA,
     NONE
-}
+}*/
 public enum RangeType
 {
     SELF,
@@ -33,7 +33,7 @@ public class CharacterAbility : ScriptableObject
     public Sprite Sprite;
     public bool bTargetEnemy;
     public RangeType RangeType;
-    public CostType CostType;
+    public RawStat CostType;
     public AbilityType AbilityType;
     public float RangeValue;
     public float CostValue;
@@ -63,13 +63,13 @@ public class CharacterAbility : ScriptableObject
     public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
     {
         
-        int[] characterSkillLevels = currentCharacter.Sheet.Level.PullData();
+        //int[] characterSkillLevels = currentCharacter.Sheet.Level.PullData();
 
         float potency = 1 +
-            (((currentCharacter.Sheet.Level.CHARACTER * CharacterMath.SKILL_FACTOR[8]) +                          // Level
-            (equip.EquipLevel * CharacterMath.SKILL_FACTOR[9]) +                                                  // Weapon
-            (characterSkillLevels[(int)equip.EquipSkill] * CharacterMath.SKILL_FACTOR[(int)equip.EquipSkill])) *  // Skill
-            CharacterMath.RACE_FACTOR[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                  // Race
+            (((currentCharacter.Sheet.Skills.Levels[(int)equip.EquipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +                      // Level
+            (equip.EquipLevel * CharacterMath.WEP_LEVEL_FACTOR) +                                                                    // Weapon
+            (currentCharacter.Sheet.Skills.Levels[(int)equip.EquipSkill] * CharacterMath.SKILL_MUL_LEVEL[(int)equip.EquipSkill])) *  // Skill
+            CharacterMath.SKILL_MUL_RACE[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                                  // Race
 
         CharacterAbility newAbility = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");
         newAbility.Clone(this, potency);

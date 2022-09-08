@@ -18,22 +18,12 @@ public enum GameMenu
     ABOUT,
 }
 
-/*public enum SelectionType
-{
-    INV,
-    CON,
-    EQUIP,
-    SKILL
-}*/
-
 public enum CharPage
 {
     None,
     Character,
-    //Equipment,
     Looting,
     Skills,
-    //Strategy
 }
 
 /*
@@ -81,7 +71,6 @@ public class UIManager : MonoBehaviour
     public Transform SkillButtonContent;
     public Transform EffectStatsContent;
     public Transform HotBarButtonContent;
-    //public Transform ActionCooldownBars;
     public Transform PartyMembers;
 
     [Header("HUD")]
@@ -91,6 +80,7 @@ public class UIManager : MonoBehaviour
 
     [Header("CharSheets")]
     public List<GameObject> AllSheetElements = new List<GameObject>();
+
     [Header("==LEFT==")]
     public GameObject CharSheet;
     public GameObject Container;
@@ -262,20 +252,20 @@ public class UIManager : MonoBehaviour
         if (!GameState.KeyMap.bMapOpen)
             return;
 
-        if (!Input.anyKeyDown)
-            return;
-
-            Debug.Log("yo0");
-
-        //if (Event.current == null)
+        //if (!Input.anyKeyDown)
         //    return;
+
+        Debug.Log("yo0");
+
+        if (Event.current == null)
+            return;
 
         //Debug.Log(Event.current.type);
 
         //if (!Event.current.isMouse &&
         //    Event.current.type == EventType.MouseDown)
         //{
-            for (int i = 0; i < GlobalConstants.TOTAL_MOUSE_BUTTONS; ++i)
+            /*for (int i = 0; i < GlobalConstants.TOTAL_MOUSE_BUTTONS; ++i)
             {
                 KeyCode target = (KeyCode)((int)KeyCode.Mouse0 + i);
 
@@ -284,19 +274,17 @@ public class UIManager : MonoBehaviour
                     ResolveMap(target);
                 return;
                 }
-            }
+            }*/
 
 
         //}
         
-        //if (Event.current.type != EventType.MouseDown &&
-        //    Event.current.keyCode != KeyCode.None)
-        
+        if (Event.current.type != EventType.MouseDown &&
+            Event.current.keyCode != KeyCode.None)
         {
             ResolveMap(Event.current.keyCode);
         }
     }
-
     void ResolveMap(KeyCode code)
     {
         GameState.KeyMap.CloseMap(code);
@@ -346,12 +334,12 @@ public class UIManager : MonoBehaviour
     }
     public void EquipmentSlotClick(int index)
     {
-        if (index >= CharacterMath.EQUIP_SLOTS)
+        if (index >= CharacterMath.EQUIP_SLOTS_COUNT)
             return;
 
         SelectedEquipSlot = index;
 
-        for (int i = 0; i < CharacterMath.EQUIP_SLOTS && i < EquipButtons.Length; i++)
+        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
             EquipButtons[i].image.color = (i == index) ? Selected : Unselected;
     }
     public void ContainerItemClick(int index)
@@ -454,82 +442,6 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    /*
-    public void UpdateContainer()
-    {
-        if (GameState == null || GameState.Controller.CurrentCharacter == null)
-            return;
-
-        GameState.bLootingOpen = GameState.Controller.CurrentCharacter.CurrentInteraction is GenericContainer;
-
-        Container.gameObject.SetActive(GameState.bLootingOpen && GameState.bInventoryOpen);
-
-
-        if (GameState.bLootingOpen && GameState.bInventoryOpen)
-        {
-            if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
-                PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
-        }
-        UpdateGameMenuCanvasState();
-    }
-    public void UpdateInventory()
-    {
-        if (Inventory == null || GameState == null || GameState.Controller.CurrentCharacter == null)
-            return;
-
-        Inventory.gameObject.SetActive(GameState.bInventoryOpen);
-
-        if (GameState.bInventoryOpen)
-            PopulateInventoryButtons(GameState.Controller.CurrentCharacter.Inventory, ButtonType.INVENTORY);
-
-        UpdateContainer();
-        UpdateGameMenuCanvasState();
-    }
-    public void UpdateEquipment()
-    {
-        if (Equipment == null || GameState == null || GameState.Controller.CurrentCharacter == null)
-            return;
-
-        Equipment.SetActive(GameState.bEquipmentOpen);
-
-        if (GameState.bEquipmentOpen && EmptyButtonSprite != null)
-        {
-            for (int i = 0; i < CharacterMath.EQUIP_SLOTS; i++)
-            {
-                try { EquipButtons[i].GetComponent<Image>().sprite = GameState.Controller.CurrentCharacter.EquipmentSlots[i].Equip.Sprite; }
-                catch { EquipButtons[i].GetComponent<Image>().sprite = EmptyButtonSprite; }
-
-            }
-        }
-        UpdateGameMenuCanvasState();
-    }
-    public void UpdateSkills()
-    {
-        if (GameState == null || GameState.Controller.CurrentCharacter == null)
-            return;
-
-        if (GameState.bSkillsOpen)
-        {
-            PopulateSkillButtons();
-            PopulateEffectPanels();
-        }
-        else
-        {
-            SelectedAbilitySlot = -1;
-            UpdateActionBar();
-        }
-        UpdateGameMenuCanvasState();
-    }
-    public void UpdateStrategy()
-    {
-        if (Strategy == null || GameState == null || GameState.Controller.CurrentCharacter == null)
-            return;
-
-        Strategy.SetActive(GameState.bStrategyOpen);
-
-        UpdateGameMenuCanvasState();
-    }
-    */
     public void UpdateGameMenuCanvasState(CharPage page)
     {
         if (GameState.bPause)
@@ -605,7 +517,7 @@ public class UIManager : MonoBehaviour
     }
     void UpdateEquipSlots()
     {
-        for (int i = 0; i < CharacterMath.EQUIP_SLOTS && i < EquipButtons.Length; i++)
+        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
         {
             try { EquipButtons[i].GetComponent<Image>().sprite = GameState.Controller.CurrentCharacter.EquipmentSlots[i].Equip.Sprite; }
             catch { EquipButtons[i].GetComponent<Image>().sprite = EmptyButtonSprite; }
@@ -688,18 +600,18 @@ public class UIManager : MonoBehaviour
             output += $"Effect: {effect.Name}\n";
             output += "Duration: ";
             string duration = "Instant\n";
-            duration = (effect.Duration < 0) ? "Forever\n" : duration;
-            duration = (effect.Duration > 0) ? $"{effect.Duration}\n" : duration;
+            duration = (effect.DurationLength < 0) ? "Forever\n" : duration;
+            duration = (effect.DurationLength > 0) ? $"{effect.DurationLength}\n" : duration;
             output += duration;
             output += "Values:";
 
-            float[] stats = effect.ElementPack.PullData();
+            //float[] stats = effect.ElementPack.PullData();
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
             {
-                if (stats[i] == 0)
+                if (effect.ElementPack.Elements[i] == 0)
                     continue;
 
-                output += $"\n{(Element)i}: {stats[i]}";
+                output += $"\n{(Element)i}: {effect.ElementPack.Elements[i]}";
             }
 
             newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = output;
@@ -707,7 +619,7 @@ public class UIManager : MonoBehaviour
     }
     void PopulateEquipSlotButtons()
     {
-        for (int i = 0; i < CharacterMath.EQUIP_SLOTS && i < EquipButtons.Length; i++)
+        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
             if (EquipButtons[i] != null)
                 CreateCallBackIdentity(EquipButtons[i], i, ButtonType.SLOT_EQUIP);
     }
@@ -760,19 +672,19 @@ public class UIManager : MonoBehaviour
     }
     void UpdateMemberPanel(Transform memberPanel, Character character)
     {
-        float[] current = character.CurrentStats.PullData();
-        float[] maximum = character.MaximumStatValues.PullData();
+        //float[] current = character.CurrentStats.PullData();
+        //float[] maximum = character.MaximumStatValues.PullData();
 
         memberPanel.gameObject.GetComponent<Image>().color =
             (character == GameState.Controller.CurrentCharacter) ?
             Color.green : Color.white;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++) // <---   Hard coded value
         {
             Slider slider = memberPanel.GetChild(1).GetChild(i).GetComponent<Slider>();
             Text text = memberPanel.GetChild(2).GetChild(i).GetComponent<Text>();
-            slider.value = current[i] / maximum[i];
-            text.text = $" {Math.Round(current[i], GlobalConstants.DECIMAL_PLACES)} / {Math.Round(maximum[i], GlobalConstants.DECIMAL_PLACES)}";
+            slider.value = character.CurrentStats.Stats[i] / character.MaximumStatValues.Stats[i];
+            text.text = $" {Math.Round(character.CurrentStats.Stats[i], GlobalConstants.DECIMAL_PLACES)} / {Math.Round(character.MaximumStatValues.Stats[i], GlobalConstants.DECIMAL_PLACES)}";
         }
     }
     void RepopulateMemberPanels()
@@ -917,11 +829,9 @@ public class UIManager : MonoBehaviour
         GameMenuCanvas.gameObject.SetActive(false);
         PauseMenuCanvas.gameObject.SetActive(false);
     }
-
-
     private void OnGUI()
     {
-        //ResolveMap();
+        CheckMap();
     }
 
     void Start()
@@ -929,7 +839,6 @@ public class UIManager : MonoBehaviour
         UIinitializer();
         PauseMenuRefresh();
         UIselectionRefresh();
-        //UpdateActionBar();
     }
 
     // Update is called once per frame
@@ -939,6 +848,6 @@ public class UIManager : MonoBehaviour
         UpdatePartyPanel();
         UpdateInteraction();
         UpdateCooldownBars();
-        CheckMap();
+        //CheckMap();
     }
 }

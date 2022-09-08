@@ -3,18 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum EquipSkill
-{
-    LIGHT,
-    MEDIUM,
-    HEAVY,
-    HAND_ONE,
-    HAND_OFF,
-    HAND_TWO,
-    SHIELD,
-    RANGED,
-    MAGIC
-}
+
 /*public enum EquipType
 {
     WEARABLE,
@@ -26,7 +15,7 @@ public enum EquipSkill
 public class Equipment : ItemObject
 {
     [Header("Equipment Properties")]
-    public EquipSkill EquipSkill;
+    public SkillType EquipSkill;
     public int EquipLevel;
     public int AbilityID;
     public CharacterAbility[] EquipAbilites;

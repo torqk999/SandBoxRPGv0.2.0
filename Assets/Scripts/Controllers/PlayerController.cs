@@ -284,9 +284,8 @@ public class PlayerController : CharacterController
 
         // Looking
         //if (Input.GetMouseButton(0))
-        {
+        if (!CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED))
             CurrentPawn.Source.Rotate(-y, x, z, Space.Self);
-        }
 
         if (CurrentPawn.RigidBody == null)
             return;
@@ -385,7 +384,6 @@ public class PlayerController : CharacterController
             AttemptAction(10);
         if (Input.GetMouseButtonDown(1))
             AttemptAction(11);*/
-        
 
         // Movement
         if (CurrentPawn.RigidBody == null
@@ -398,10 +396,10 @@ public class PlayerController : CharacterController
             CurrentPawn.RigidBody.AddForce(JumpForce * CurrentPawn.Source.up, ForceMode.Impulse);
 
         // Max Velocity
-        if (CurrentPawn == CurrentCharacter && CurrentPawn.RigidBody.velocity.magnitude >= CurrentCharacter.MaximumStatValues.SPEED)
+        if (CurrentPawn == CurrentCharacter && CurrentPawn.RigidBody.velocity.magnitude >= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
             return;
 
-        float forceScale = (1 - (CurrentPawn.RigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED));
+        float forceScale = (1 - (CurrentPawn.RigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED]));
 
         float forward = 0;
         float right = 0;
@@ -539,6 +537,7 @@ public class PlayerController : CharacterController
     {
         //Debug.Log("cycling");
         //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
+
         if (GameState.CharacterMan.CharacterPool.Count == 0)
             return;
         int index = (CurrentCharacter.Target == null) ? 0 : GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target) + 1;
@@ -546,7 +545,11 @@ public class PlayerController : CharacterController
         index = (index >= GameState.CharacterMan.CharacterPool.Count) ? 0 : index;
 
         CurrentCharacter.Target = GameState.CharacterMan.CharacterPool[index];
-        //GameState.UIman.UpdateInteractionHUD()
+        //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
+        if (CurrentCharacter.Target == null)
+            GameState.UIman.UpdateInteractionHUD(false);
+        else
+            GameState.UIman.UpdateInteractionHUD(true, CurrentCharacter.Target.GetInteractData());
     }
     void ClearTarget()
     {
@@ -554,6 +557,7 @@ public class PlayerController : CharacterController
     }
     void AttemptAction(int abilityIndex)
     {
+        Debug.Log("Attempting");
         GameState.CharacterMan.AttemptAbility(abilityIndex, CurrentCharacter);
     }
     #endregion
@@ -626,16 +630,14 @@ public class PlayerController : CharacterController
         switch (CurrentCameraMode)
         {
             case CameraMode.CHASE:
-                CurrentPawn.Boom.Rotate(-y, 0, 0, Space.Self);
+                if (CurrentControlMode != ControlMode.FLIGHT ||
+                    looking)
+                    CurrentPawn.Boom.Rotate(-y, 0, 0, Space.Self);
                 if (looking)
-                {
                     CurrentPawn.Boom.Rotate(0, x, 0, Space.World);
-                }
                 break;
 
             case CameraMode.FIXED:
-                //CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
-                //CurrentPawn.Boom.Rotate(0, x, 0, Space.World);
                 if (!looking)
                     break;
                 FixedXY.x += x;
@@ -668,7 +670,8 @@ public class PlayerController : CharacterController
         UpdateCurrentTarget();
         LerpCam();
 
-        if (CurrentCharacter.bControllable)
+        if (CurrentCharacter != null &&
+            CurrentCharacter.bControllable)
             UpdateCharacterAnimationState();
     }
 }

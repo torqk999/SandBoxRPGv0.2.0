@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,23 +23,32 @@ public static class GlobalConstants
     public const string TAG_MOB = "MOB";
     public const string TAG_TRIGGER = "TRIGGER";
     public const string TAG_LOOT = "LOOT";
+
+    public enum AttacksAnims
+    {
+        SWING = 1,
+        BOW = 5,
+    }
 }
 
 public static class CharacterMath
 {
-    public const int PARTY_INVENTORY_MAX = 100;
-    public static readonly int STATS_RAW_COUNT = 4;
     //public static readonly int STATS_REGEN_COUNT = 3;
-    public static readonly int STATS_ELEMENT_COUNT = 7;
-    public static readonly int STATS_TOTAL_COUNT = STATS_RAW_COUNT + STATS_ELEMENT_COUNT;
+    //public static readonly int STATS_TOTAL_COUNT = STATS_RAW_COUNT + STATS_ELEMENT_COUNT;
 
-    public static readonly int SKILLS_COUNT = 9;
-    public static readonly int EQUIP_SLOTS = 12;
-    public static readonly int ABILITY_SLOTS = 12;
-    public static readonly int TACTIC_SLOTS = 8;
-    public static readonly int LEVEL_CAP = 99;
-    public static readonly int BASE_EXP_CAP = 100;
-    public static readonly float LEVEL_EXP_CAP_MULTIPLIER = 1.1f;
+    public static readonly int STATS_RAW_COUNT = Enum.GetNames(typeof(RawStat)).Length;
+    public static readonly int STATS_ELEMENT_COUNT = Enum.GetNames(typeof(Element)).Length;
+    public static readonly int STATS_LEVELS_COUNT = Enum.GetNames(typeof(SkillType)).Length;
+    public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(EquipSlot)).Length;
+
+    public const int PARTY_INVENTORY_MAX = 100;
+    public const int ABILITY_SLOTS = 12;
+    public const int TACTIC_SLOTS = 8;
+    public const int LEVEL_CAP = 99;
+    public const int BASE_EXP_CAP = 100;
+    public const float LEVEL_EXP_CAP_MULTIPLIER = 1.1f;
+    public const float CHAR_LEVEL_FACTOR = .2f;
+    public const float WEP_LEVEL_FACTOR = .1f;
 
     public static readonly float[] BASE_REGEN =
     {
@@ -46,20 +56,20 @@ public static class CharacterMath
         0.01f,
         0.01f
     };
-    public static readonly float[] SKILL_FACTOR =
+
+    public static readonly float[] SKILL_MUL_LEVEL = 
     {
         .5f,  // LIGHT
         .5f,  // MEDIUM
         .5f,  // HEAVY
         .5f,  // ONE HAND
+        .5f,  // OFF HAND
         .5f,  // TWO HAND
         .5f,  // SHIELD
         .5f,  // RANGED
         .5f,  // MAGIC
-        .2f,  // CHAR LEVEL
-        .1f,  // WEP LEVEL
     };
-    public static readonly float[,] RACE_FACTOR =
+    public static readonly float[,] SKILL_MUL_RACE =
     {
         // HUMAN
         {
@@ -85,7 +95,7 @@ public static class CharacterMath
         .5f,  // MAGIC
         }
     };
-    public static readonly float[,] RACE_STAT =
+    public static readonly float[,] RAW_MUL_RACE =
     {
         // HUMAN
         {
@@ -93,7 +103,20 @@ public static class CharacterMath
         0.9f,   // STAMINA
         0.9f,   // MANA
         1,      // SPEED
+        },
 
+        // ORC
+        {
+        1.2f,   // HEALTH
+        1.0f,   // STAMINA
+        0.6f,   // MANA
+        1.1f,   // SPEED
+        }
+    };
+    public static readonly float[,] RES_MUL_RACE =
+{
+        // HUMAN
+        {
         1,      // PHYS
         1,      // FIRE
         1,      // WATER
@@ -105,13 +128,8 @@ public static class CharacterMath
 
         // ORC
         {
-        1.2f,   // HEALTH
-        1.0f,   // STAMINA
-        0.6f,   // MANA
-        1.1f,   // SPEED
-
         1,      // PHYS
-        1,      // FIRE
+        1.2f,   // FIRE
         1,      // WATER
         1,      // EARTH
         1,      // AIR
@@ -119,13 +137,15 @@ public static class CharacterMath
         1       // HEALING
         }
     };
-    public static readonly float[] BASE_STAT =
+    public static readonly float[] RAW_BASE =
     {
         100,
         100,
         100,
         6,
-
+    };
+    public static readonly float[] RES_BASE =
+{
         0,
         0,
         0,
@@ -134,13 +154,15 @@ public static class CharacterMath
         0,
         0
     };
-    public static readonly float[] LEVEL_STAT =
+    public static readonly float[] RAW_GROWTH =
     {
         5,
         1,
         1,
         0,
-
+    };
+    public static readonly float[] RES_GROWTH =
+{
         0,
         0,
         0,

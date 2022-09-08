@@ -73,7 +73,15 @@ public class KeyMapper : MonoBehaviour
             Map[i] = new KeyMap(Default[i]);
 
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
-            Map[i + Default.Length] = new KeyMap(KeyAction.HOTBAR, i);
+        {
+            KeyMap hotMap = new KeyMap(KeyAction.HOTBAR, i);
+            if (i < 10)
+            {
+                hotMap.Keys[0] = KeyCode.Alpha0 + i;
+                hotMap.Keys[1] = KeyCode.Keypad0 + i;
+            }
+            Map[i + Default.Length] = hotMap;
+        }
     }
 
     // Start is called before the first frame update

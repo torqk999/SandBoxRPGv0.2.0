@@ -127,7 +127,7 @@ public class SimpleAIcontroller : CharacterController
         newVector.y = GenerateYbearing(base.CurrentCharacter.Source.position, TargetCharacter.Source.position);
         rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-        if (rigidBody.velocity.magnitude <= base.CurrentCharacter.MaximumStatValues.SPEED && Vector3.Distance(base.CurrentCharacter.Source.position, TargetCharacter.Source.position) > TargetMaintainRange)
+        if (rigidBody.velocity.magnitude <= base.CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED] && Vector3.Distance(base.CurrentCharacter.Source.position, TargetCharacter.Source.position) > TargetMaintainRange)
             rigidBody.AddForce(base.CurrentCharacter.Source.forward * AIwalkForce, ForceMode.Impulse);
     }
     void UpdateSequenceIndex()
@@ -322,8 +322,8 @@ public class SimpleAIcontroller : CharacterController
         newVector.y = GenerateYbearing(CurrentCharacter.Source.position, target);
         rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-        if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.SPEED)
-            rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED)), ForceMode.Impulse);
+        if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
+            rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
 
         bMoving = Vector3.Distance(CurrentCharacter.Source.position, target) > TargetArrivalThreshold;
         bOperationComplete = !bMoving;
@@ -354,16 +354,16 @@ public class SimpleAIcontroller : CharacterController
             float turningFactor = (180 - magnitude) / 180;
             Vector3 newDirection = TravelPoint - rigidBody.position;
             //rigidBody.velocity = newDirection * (turningFactor * Character.MaximumStatValues.SPEED); // Maybe? : |
-            if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.SPEED)
-                rigidBody.AddForce(newDirection * (turningFactor * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED))), ForceMode.Impulse);
+            if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
+                rigidBody.AddForce(newDirection * (turningFactor * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED]))), ForceMode.Impulse);
         }
         else
         {
             newVector.y = GenerateYbearing(CurrentCharacter.Source.position, TravelPoint);
             rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-            if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.SPEED)
-                rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.SPEED)), ForceMode.Impulse);
+            if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
+                rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
         }
 
         bNavPointReached = Vector3.Distance(CurrentCharacter.Source.position, TravelPoint) < TargetArrivalThreshold;
