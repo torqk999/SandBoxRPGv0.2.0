@@ -26,6 +26,7 @@ public enum EffectStatus
 }
 public enum CCstatus
 {
+    NONE,
     IMMOBILE,
     UN_ARMED,
     SILENCED
