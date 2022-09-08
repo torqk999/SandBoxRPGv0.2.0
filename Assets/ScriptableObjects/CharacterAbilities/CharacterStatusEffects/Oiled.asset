@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5400cf6a5811e9b41b7b3fd4b58f06cd, type: 3}
+  m_Name: Oiled
+  m_EditorClassIdentifier: 
+  WeaponID: 0
+  Name: 
+  Sprite: {fileID: 0}
+  bTargetEnemy: 0
+  RangeType: 0
+  CostType: 0
+  AbilityType: 0
+  RangeValue: 0
+  CostValue: 0
+  CD_Duration: 0
+  CD_Timer: 0
+  Effects:
+  - Name: 
+    Sprite: {fileID: 0}
+    Type: 0
+    Target: 0
+    Status: 0
+    CCstatus: 0
+    ElementPack:
+      PHYSICAL: 0
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Duration: 0
+    Timer: 0
+    bIsBuff: 0
