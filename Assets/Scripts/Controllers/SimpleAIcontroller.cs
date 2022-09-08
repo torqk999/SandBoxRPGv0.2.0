@@ -80,8 +80,9 @@ public class SimpleAIcontroller : CharacterController
     {
         bIsAwake = !(GameState == null
             || CurrentCharacter == null
-            || (GameState.Controller != null &&
-            GameState.Controller.CurrentCharacter == CurrentCharacter));
+            || (CurrentCharacter.bControllable &&
+                GameState.Controller != null &&
+                GameState.Controller.CurrentCharacter == CurrentCharacter));
     }
     void FindTarget()
     {
