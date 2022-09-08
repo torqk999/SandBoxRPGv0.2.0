@@ -8,12 +8,12 @@ using UnityEngine.UI;
 
 using UnityEditor;
 
-[CustomEditor(typeof(TestBOOTON))]
+[CustomEditor(typeof(ExtendedButton))]
 public class TestBOOTONeditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        TestBOOTON button = (TestBOOTON)target;
+        ExtendedButton button = (ExtendedButton)target;
 
         button.Type = (ButtonType)EditorGUILayout.EnumPopup("Type", button.Type);
         button.Index = EditorGUILayout.IntField("Index", button.Index);
@@ -33,11 +33,13 @@ public enum ButtonType
 {
     INVENTORY,
     CONTAINER,
-    SKILL,
+    LIST_SKILL,
+    SLOT_SKILL,
+    SLOT_EQUIP,
     KEY_MAP
 }
 
-public class TestBOOTON : Button
+public class ExtendedButton : Button
 {
     public ButtonType Type;
     public int Index;
@@ -47,12 +49,10 @@ public class TestBOOTON : Button
     public Vector2 currentDelta;
     public Vector2 ButtonBounds;
     public bool Following;
-
     public RectTransform MyRect;
 
     //[DllImport("user32.dll")]
     //public static extern bool SetCursorPos(int X, int Y);
-
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
@@ -61,7 +61,6 @@ public class TestBOOTON : Button
         currentDelta = Vector3.zero;
         Following = true;
     }
-
     public override void OnPointerUp(PointerEventData eventData)
     {
         base.OnPointerUp(eventData);
@@ -77,7 +76,6 @@ public class TestBOOTON : Button
 
 
     }
-
     void FollowMouse()
     {
         if (!Following)
@@ -86,7 +84,6 @@ public class TestBOOTON : Button
         currentDelta = (Vector2)Input.mousePosition - oldPosMouse;
         this.transform.position = oldPosButton + currentDelta;
     }
-
     void Start()
     {
         MyRect = this.gameObject.GetComponent<RectTransform>();

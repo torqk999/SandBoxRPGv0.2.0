@@ -96,7 +96,9 @@ public class GameState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        // Key-Sensitive action. Migrate later maybe?
+        KeyMap.GenerateKeyMap();
+        UIman.UpdateActionBar();
     }
 
     // Update is called once per frame

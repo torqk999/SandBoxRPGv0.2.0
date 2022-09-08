@@ -29,17 +29,7 @@ public enum KeyAction
     BACKWARD,
     SPRINT,
     JUMP,
-
-    HotBar0,
-    HotBar1,
-    HotBar2,
-    HotBar3,
-    HotBar4,
-    HotBar5,
-    HotBar6,
-    HotBar7,
-    HotBar8,
-    HotBar9,
+    HOTBAR,
 
     PAUSE,
     HOME_TP,
@@ -52,9 +42,7 @@ public enum KeyAction
     INTERACT,
     CYCLE_TARGETS,
     CHARACTER,
-    EQUIPMENT,
     SKILLS,
-    STRATEGY,
     CAM_LOOK,
     CAM_RESET
 }
@@ -172,43 +160,35 @@ public class PlayerController : CharacterController
         bIsInPlay = GameState.UIman.CurrentPage == CharPage.None;
         CursorToggle(!bIsInPlay);
     }
-    bool CheckAction(KeyAction action, KeyState state = KeyState.DOWN)
+    bool CheckAction(KeyAction action, KeyState state = KeyState.DOWN, int index = -1)
     {
-        KeyMap? targetMap = Array.Find(GameState.KeyMap.Map, x => x.Action == action);
+        KeyMap? targetMap = Array.Find(GameState.KeyMap.Map, x => x.Action == action && x.Index == index);
         if (!targetMap.HasValue)
             return false;
 
+        //Debug.Log($"{targetMap.Value.Action} : {targetMap.Value.Index}");
+        //Debug.Log($"{targetMap.Value.Keys == null}");
+
         for (int i = 0; i < targetMap.Value.Keys.Length; i++)
         {
+            if (targetMap.Value.Keys[i] == KeyCode.None)
+                continue;
+
             switch (state)
             {
                 case KeyState.DOWN:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKeyDown(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Down");
+                    if (Input.GetKeyDown(targetMap.Value.Keys[i]))
                         return true;
-                    }
-
                     break;
 
                 case KeyState.PRESSED:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKey(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Pressed");
+                    if (Input.GetKey(targetMap.Value.Keys[i]))
                         return true;
-                    }
                     break;
 
                 case KeyState.UP:
-                    if (targetMap.Value.Keys[i] != KeyCode.None &&
-                        Input.GetKeyUp(targetMap.Value.Keys[i]))
-                    {
-                        //Debug.Log("Up");
+                    if (Input.GetKeyUp(targetMap.Value.Keys[i]))
                         return true;
-                    }
-
                     break;
             }
         }
@@ -242,6 +222,12 @@ public class PlayerController : CharacterController
         if (CheckAction(KeyAction.TELEPORT))
             Teleport();
 
+        if (CurrentCharacter != null)
+            UpdateCharacterInput();
+
+        if (!bIsInPlay)
+            return;
+
         float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
         float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
         float z = Input.GetAxis("Roll") * RollScale;
@@ -249,8 +235,7 @@ public class PlayerController : CharacterController
         // Looking
         UpdateCamera(ref x, ref y, ref z);
 
-        if (!bIsInPlay ||
-            CurrentPawn == null ||
+        if (CurrentPawn == null ||
             !CurrentPawn.bControllable)
             return;
 
@@ -261,9 +246,6 @@ public class PlayerController : CharacterController
             else
                 ClearTarget();
         }
-
-        if (CurrentCharacter != null)
-            UpdateCharacterInput();
 
         switch (CurrentControlMode)
         {
@@ -394,15 +376,16 @@ public class PlayerController : CharacterController
             CurrentPawn.Source.Rotate(0, x, 0, Space.World);
 
         // Action Bar
-        for (int i = (int)KeyAction.HotBar0; i < 10 + (int)KeyAction.HotBar0; i++)
-            if (CheckAction((KeyAction)i))
+        for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
+            if (CheckAction(KeyAction.HOTBAR, KeyState.DOWN, i))
                 AttemptAction(i);
 
-        // Click
+        /* Click
         if (Input.GetMouseButtonDown(0))
             AttemptAction(10);
         if (Input.GetMouseButtonDown(1))
-            AttemptAction(11);
+            AttemptAction(11);*/
+        
 
         // Movement
         if (CurrentPawn.RigidBody == null

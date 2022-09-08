@@ -9,6 +9,9 @@ public static class GlobalConstants
     public const float RAD_2_DEG = 180 / Mathf.PI;
     public const int DECIMAL_PLACES = 2;
     public const int ACTION_KEY_COUNT = 2;
+    public const int TOTAL_MOUSE_BUTTONS = 7;
+
+    public const int MAX_PATH_CYCLES = 1000;
 
     public const string ANIM_BOOL_WALK = "walking";
     public const string ANIM_VERT_WALK = "VerticalMove";
@@ -30,7 +33,7 @@ public static class CharacterMath
     public static readonly int STATS_TOTAL_COUNT = STATS_RAW_COUNT + STATS_ELEMENT_COUNT;
 
     public static readonly int SKILLS_COUNT = 9;
-    public static readonly int EQUIP_SLOTS = 10;
+    public static readonly int EQUIP_SLOTS = 12;
     public static readonly int ABILITY_SLOTS = 12;
     public static readonly int TACTIC_SLOTS = 8;
     public static readonly int LEVEL_CAP = 99;

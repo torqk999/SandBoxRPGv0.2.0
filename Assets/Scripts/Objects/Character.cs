@@ -11,20 +11,7 @@ public enum AnimatorType
     BIRD,
     FISH
 }
-/*
-[System.Serializable]
-public enum AnimatorState
-{
-    IDLE,
-    WALK,
-    RUN,
-    JUMP,
-    TURN_L,
-    TURN_R,
-    SLIDE,
-    FALL
-}
-*/
+
 public enum EquipSlot
 {
     HEAD,
@@ -201,10 +188,7 @@ public class Character : Pawn, Interaction
     public bool EquipSelection(int equipIndex, int inventoryIndex)
     {
         if (inventoryIndex == -1 && equipIndex != -1)
-        {
-            Debug.Log("unequipping");
             return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
-        }
 
         if (inventoryIndex != -1 && equipIndex == -1)
         {
@@ -338,12 +322,8 @@ public class Character : Pawn, Interaction
     }
     bool AttemptEquipRemoval(EquipWrapper equip, int equipIndex)
     {
-        Debug.Log("step0");
-
         if (equip == null)
             return false;
-
-        Debug.Log("step1");
 
         if (Inventory.PushItemIntoInventory(equip))
         {

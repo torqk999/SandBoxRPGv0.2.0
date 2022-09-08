@@ -153,6 +153,7 @@ public class SimpleAIpathingController : MonoBehaviour
     }
     void GenerateObstructionMask(Vector3 startLocation, PathNode source)
     {
+        { 
         //ObstructionMask.Clear();
 
         // 5x5 around the obstructed point
@@ -172,7 +173,7 @@ public class SimpleAIpathingController : MonoBehaviour
         int jS;
         int jE;
         */
-
+    }
         int range = 3;
 
 
@@ -243,7 +244,7 @@ public class SimpleAIpathingController : MonoBehaviour
 
         int safeCount = 0;
 
-        while (safeCount < 1000)
+        while (safeCount < GlobalConstants.MAX_PATH_CYCLES)
         {
             Current = Generated.Find(x => x.bIsOpen);
 
@@ -269,7 +270,7 @@ public class SimpleAIpathingController : MonoBehaviour
             safeCount++;
         }
 
-        if (safeCount == 1000)
+        if (safeCount == GlobalConstants.MAX_PATH_CYCLES)
         {
             Debug.Log("Naw mang");
             return false;
