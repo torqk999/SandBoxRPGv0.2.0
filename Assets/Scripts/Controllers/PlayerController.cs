@@ -283,7 +283,6 @@ public class PlayerController : CharacterController
             return;
 
         // Looking
-        //if (Input.GetMouseButton(0))
         if (!CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED))
             CurrentPawn.Source.Rotate(-y, x, z, Space.Self);
 
@@ -371,7 +370,7 @@ public class PlayerController : CharacterController
     void PersonControl(ref float x, ref float y, ref float z)
     {
         // Turning
-        if (!CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED) && bCameraLookEnabled)
+        if (!(CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED) && bCameraLookEnabled))
             CurrentPawn.Source.Rotate(0, x, 0, Space.World);
 
         // Action Bar

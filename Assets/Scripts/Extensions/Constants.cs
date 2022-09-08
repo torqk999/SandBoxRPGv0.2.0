@@ -15,8 +15,8 @@ public static class GlobalConstants
     public const int MAX_PATH_CYCLES = 1000;
 
     public const string ANIM_BOOL_WALK = "walking";
-    public const string ANIM_VERT_WALK = "VerticalMove";
-    public const string ANIM_HORZ_WALK = "HorizontalMove";
+    public const string ANIM_VERT_WALK = "verticalMove";
+    public const string ANIM_HORZ_WALK = "horizontalMove";
 
     public const string TAG_GROUND = "GROUND";
     public const string TAG_CHARACTER = "CHARACTER";
