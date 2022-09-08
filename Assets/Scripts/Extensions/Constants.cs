@@ -87,7 +87,7 @@ public static class CharacterMath
         0.9f,   // HEALTH
         0.9f,   // STAMINA
         0.9f,   // MANA
-        1,      // SPEED
+        1f,      // SPEED
 
         1,      // PHYS
         1,      // FIRE
@@ -116,18 +116,18 @@ public static class CharacterMath
     };
     public static readonly float[] BASE_STAT =
     {
-        100,
-        100,
-        100,
-        6,
+        100,// HEALTH
+        100,// STAMINA
+        100,// MANA
+        3,// SPEED
 
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
+        0,// PHYS
+        0,// FIRE
+        0,// WATER
+        0,// EARTH
+        0, // AIR
+        0,  // POISON
+        0// HEALING
     };
     public static readonly float[] LEVEL_STAT =
     {
