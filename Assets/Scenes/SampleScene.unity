@@ -1550,7 +1550,6 @@ MonoBehaviour:
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 30, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
-  InteractionCount: 0
   bHasTriggerVolume: 1
   bUsesGravity: 0
   bIsGrounded: 0
@@ -1598,6 +1597,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   EquipmentSlots: []
+  InteractionCount: 0
   DebugState: 0
   bDebugMode: 0
   bAssetUpdate: 0
@@ -3186,7 +3186,6 @@ MonoBehaviour:
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 0, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
-  InteractionCount: 0
   bHasTriggerVolume: 1
   bUsesGravity: 0
   bIsGrounded: 0
@@ -3229,6 +3228,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   EquipmentSlots: []
+  InteractionCount: 0
   DebugState: 0
   bDebugMode: 0
   bAssetUpdate: 0
@@ -7456,7 +7456,7 @@ MonoBehaviour:
   CurrentTacticalMode: 0
   CurrentCameraMode: 0
   bIsZooming: 1
-  bCameraLookEnabled: 0
+  bCameraLookEnabled: 1
   Zoom: 0
   FixedXY: {x: 0, y: 0}
   LerpTimer: 0
@@ -11383,11 +11383,10 @@ MonoBehaviour:
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 0, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
-  InteractionCount: 0
   bHasTriggerVolume: 0
   bUsesGravity: 0
   bIsGrounded: 0
-  bControllable: 0
+  bControllable: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -17437,11 +17436,10 @@ MonoBehaviour:
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 0, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
-  InteractionCount: 0
   bHasTriggerVolume: 0
   bUsesGravity: 0
   bIsGrounded: 0
-  bControllable: 0
+  bControllable: 1
 --- !u!33 &1508094098
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -22911,7 +22909,6 @@ MonoBehaviour:
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 30, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
-  InteractionCount: 0
   bHasTriggerVolume: 1
   bUsesGravity: 0
   bIsGrounded: 0
@@ -22959,6 +22956,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   EquipmentSlots: []
+  InteractionCount: 0
   DebugState: 0
   bDebugMode: 0
   bAssetUpdate: 0

@@ -643,8 +643,8 @@ public class PlayerController : CharacterController
         switch (CurrentCameraMode)
         {
             case CameraMode.CHASE:
-                if (CurrentControlMode != ControlMode.FLIGHT ||
-                    looking)
+                if (!(CurrentControlMode == ControlMode.FLIGHT &&
+                    !looking))
                     CurrentPawn.Boom.Rotate(-y, 0, 0, Space.Self);
                 if (looking)
                     CurrentPawn.Boom.Rotate(0, x, 0, Space.World);

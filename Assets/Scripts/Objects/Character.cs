@@ -92,12 +92,12 @@ public class Character : Pawn, Interaction
     public void RemoveInteraction(Interaction interact)
     {
         int index = CurrentProximityInteractions.FindIndex(x => x == interact);
-        if (index == -1)
-            return;
-
         ResolveCurrentTargetInteraction(index);
+        if (index == -1)
+        {
+            return;
+        }
         CurrentProximityInteractions.Remove(interact);
-
     }
     void ResolveCurrentTargetInteraction(int index)
     {
