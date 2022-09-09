@@ -17,12 +17,7 @@ public class Effect : ScriptableObject
     public float Timer;
     public bool bIsBuff;
 
-    public Effect()
-    {
-        ElementPack = new ElementPackage(CharacterMath.STATS_ELEMENT_COUNT);
-    }
-
-    public Effect(Effect source)
+    public void Clone(Effect source)
     {
         Name = source.Name;
         Sprite = source.Sprite;
@@ -34,6 +29,6 @@ public class Effect : ScriptableObject
         ElementPack = source.ElementPack;
         DurationLength = source.DurationLength;
         Timer = (Duration == EffectDuration.TIMED) ? DurationLength : 0;
-        this.bIsBuff = source.bIsBuff;
+        bIsBuff = source.bIsBuff;
     }
 }

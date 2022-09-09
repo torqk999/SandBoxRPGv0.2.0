@@ -63,6 +63,7 @@ public class PlayerController : CharacterController
     public int PawnIndex;
     public GenericContainer targetContainer;
 
+    //public Interaction CurrentInteraction;
     public ControlMode CurrentControlMode;
     public TacticalMode CurrentTacticalMode = TacticalMode.SELECT;
 
@@ -78,6 +79,10 @@ public class PlayerController : CharacterController
     public bool bIsCamLerping = false;
     public Quaternion oldRotation;
     public Vector3 oldPosition;
+
+    [Header("Debugging")]
+    public int CurrentTargetPartyIndex;
+    public int CurrentTargetCharacterIndex;
     #endregion
 
     #region PUBLIC
@@ -100,8 +105,8 @@ public class PlayerController : CharacterController
 
         oldRotation = GameState.GameCamera.transform.parent.rotation;
         oldPosition = GameState.GameCamera.transform.parent.position;
-        GameState.Controller.CurrentPawn = targetPawn;
-        GameState.Controller.CurrentCharacter = targetPawn as Character;
+        GameState.pController.CurrentPawn = targetPawn;
+        GameState.pController.CurrentCharacter = targetPawn as Character;
         GameState.GameCamera.transform.parent = targetPawn.Socket;
         LerpTimer = 0;
         bIsCamLerping = true;
@@ -239,14 +244,6 @@ public class PlayerController : CharacterController
             !CurrentPawn.bControllable)
             return;
 
-        if (CheckAction(KeyAction.INTERACT))
-        {
-            if (CurrentPawn.CurrentInteraction != null)
-                CurrentPawn.CurrentInteraction.Interact();
-            else
-                ClearTarget();
-        }
-
         switch (CurrentControlMode)
         {
             case ControlMode.FLIGHT:
@@ -264,6 +261,17 @@ public class PlayerController : CharacterController
     }
     void UpdateCharacterInput()
     {
+        if (CurrentCharacter.bControllable && CheckAction(KeyAction.INTERACT))
+        {
+            CurrentCharacter.RemoveInteraction(CurrentCharacter.CurrentTargetInteraction);
+            /*Debug.Log("Interacting");
+            if (CurrentCharacter.CurrentTargetInteraction != null &&
+                CurrentCharacter.CurrentTargetInteraction is Character)
+                CurrentCharacter.CurrentTargetInteraction.Interact();
+            else
+                ClearTarget();*/
+        }
+
         if (CheckAction(KeyAction.CHARACTER))
             ToggleCharacterPage(CharPage.Character);
 
@@ -535,29 +543,35 @@ public class PlayerController : CharacterController
     void CycleCharacterTargets()
     {
         //Debug.Log("cycling");
-        //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
 
         if (GameState.CharacterMan.CharacterPool.Count == 0)
             return;
+
         int index = (CurrentCharacter.Target == null) ? 0 : GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target) + 1;
         //index = (index == -1) ? 0 : index;
         index = (index >= GameState.CharacterMan.CharacterPool.Count) ? 0 : index;
 
         CurrentCharacter.Target = GameState.CharacterMan.CharacterPool[index];
         //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
-        if (CurrentCharacter.Target == null)
-            GameState.UIman.UpdateInteractionHUD();
-        else
-            GameState.UIman.UpdateInteractionHUD(CurrentCharacter.Target.GetInteractData());
+
+        UpdateInteractionTarget(CurrentCharacter.Target);
     }
     void ClearTarget()
     {
         CurrentCharacter.Target = null;
+        UpdateInteractionTarget();
+
+        CurrentTargetCharacterIndex = -1;
+        CurrentTargetPartyIndex = -1;
     }
     void AttemptAction(int abilityIndex)
     {
         Debug.Log("Attempting");
         GameState.CharacterMan.AttemptAbility(abilityIndex, CurrentCharacter);
+    }
+    public void UpdateInteractionTarget(Interaction target = null)
+    {
+        CurrentCharacter.CurrentTargetInteraction = target;
     }
     #endregion
 
@@ -647,26 +661,17 @@ public class PlayerController : CharacterController
     }
     #endregion
 
-    void UpdateCurrentTarget()
-    {
-        if (CurrentCharacter != null &&
-            CurrentCharacter.Target != null)
-            GameState.UIman.UpdateInteraction();
-    }
-
     // Start is called before the first frame update
     void Start()
     {
-
+        CurrentTargetPartyIndex = -1;
+        CurrentTargetCharacterIndex = -1;
     }
     // Update is called once per frame
     void Update()
     {
-        //UpdateZoom();
-        
         UpdatePawnInput();
         UpdateBoomClipping();
-        UpdateCurrentTarget();
         LerpCam();
 
         if (CurrentCharacter != null &&

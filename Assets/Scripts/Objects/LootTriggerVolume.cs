@@ -11,7 +11,7 @@ public class LootTriggerVolume : MonoBehaviour
         if (parent == null || other.tag != parent.TriggerTag)
             return;
 
-        UpdatePawnInteractions(other.gameObject.GetComponent<Pawn>(), true);
+        UpdateCharacterInteractions(other.gameObject.GetComponent<Character>(), true);
     }
 
     private void OnTriggerExit(Collider other)
@@ -19,23 +19,25 @@ public class LootTriggerVolume : MonoBehaviour
         if (parent == null || other.tag != parent.TriggerTag)
             return;
 
-        UpdatePawnInteractions(other.gameObject.GetComponent<Pawn>(), false);
+        UpdateCharacterInteractions(other.gameObject.GetComponent<Character>(), false);
     }
 
-    void UpdatePawnInteractions(Pawn pawn, bool addToList)
+    void UpdateCharacterInteractions(Character character, bool addToList)
     {
-        if (pawn == null)
+        if (character == null)
         {
             Debug.Log("wtf m8");
             return;
         }
 
         if (addToList)
-            pawn.CurrentInteractions.Add(parent);
+            character.CurrentProximityInteractions.Add(parent);
         else
-            pawn.CurrentInteractions.Remove(parent);
+            character.CurrentProximityInteractions.Remove(parent);
 
-        pawn.bTriggerStateChange = true;
+        character.CurrentTargetInteraction = parent;
+
+        //pawn.bTriggerStateChange = true;
     }
 
     // Start is called before the first frame update

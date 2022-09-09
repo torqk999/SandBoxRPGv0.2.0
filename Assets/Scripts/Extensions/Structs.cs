@@ -129,6 +129,7 @@ public class CharacterData : InteractData
 
     public CharacterData(Character character)
     {
+        Name = character.Sheet.Name;
         HealthCurrent = character.CurrentStats.Stats[(int)RawStat.HEALTH];
         HealthMax = character.MaximumStatValues.Stats[(int)RawStat.HEALTH];
     }

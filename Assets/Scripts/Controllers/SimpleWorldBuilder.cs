@@ -117,7 +117,7 @@ public class SimpleWorldBuilder : MonoBehaviour
         SpawnMobs();
         
 
-        GameState.Controller.InitialPawnControl();
+        GameState.pController.InitialPawnControl();
 
         GameState.testBuilder.SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);//GameState.Controller.CurrentCharacter);
     }

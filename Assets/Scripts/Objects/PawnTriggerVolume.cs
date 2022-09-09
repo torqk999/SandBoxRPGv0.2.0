@@ -81,7 +81,8 @@ public class PawnTriggerVolume : MonoBehaviour
                 if (targetChar == null)
                     return;
                 //Debug.Log($"{targetChar.name} added!");
-                Parent.CurrentInteractions.Add(targetChar);
+                Parent.CurrentProximityInteractions.Add(targetChar);
+                Parent.CurrentTargetInteraction = targetChar;
                 break;
 
             case GlobalConstants.TAG_LOOT:
@@ -90,11 +91,12 @@ public class PawnTriggerVolume : MonoBehaviour
                 if (targetContainer == null)
                     return;
                 //Debug.Log($"{targetContainer} added!");
-                Parent.CurrentInteractions.Add(targetContainer);
+                Parent.CurrentProximityInteractions.Add(targetContainer);
+                Parent.CurrentTargetInteraction = targetContainer;
                 break;
         }
         //Debug.Log("Interaction added!");
-        Parent.bTriggerStateChange = true;
+        //Parent.bTriggerStateChange = true;
     }
     private void OnTriggerExit(Collider other)
     {
@@ -108,18 +110,18 @@ public class PawnTriggerVolume : MonoBehaviour
                 Character targetChar = other.gameObject.GetComponent<Character>();
                 if (targetChar == null)
                     return;
-                Parent.CurrentInteractions.Remove(targetChar);
+                Parent.RemoveInteraction(targetChar);
                 break;
 
             case GlobalConstants.TAG_LOOT:
                 GenericContainer targetContainer = other.gameObject.GetComponent<GenericContainer>();
                 if (targetContainer == null)
                     return;
-                Parent.CurrentInteractions.Remove(targetContainer);
+                Parent.RemoveInteraction(targetContainer);
                 break;
         }
         //Debug.Log("Interaction removed!");
-        Parent.bTriggerStateChange = true;
+        //Parent.bTriggerStateChange = true;
     }
 
     // Start is called before the first frame update

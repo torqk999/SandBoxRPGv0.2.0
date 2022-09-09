@@ -59,12 +59,16 @@ public class Character : Pawn, Interaction
     public Character Target;
     public List<Character> TargettedBy;
     public Inventory Inventory;
-    //public CharacterData InteractData;
     public GameObject CharacterCanvas;
 
     [Header("Character Slots")]
     public CharacterAbility[] AbilitySlots;
     public EquipWrapper[] EquipmentSlots;
+
+    [Header("Interaction")]
+    public Interaction CurrentTargetInteraction;
+    public List<Interaction> CurrentProximityInteractions;
+    public int InteractionCount;
 
     [Header("Debugging")]
     public DebugState DebugState;
@@ -73,20 +77,50 @@ public class Character : Pawn, Interaction
     public bool bAssetTimer;
     public float AssetTimer;
 
+    public void UpdateAbilites()
+    {
+        UpdateAbilitySlots();
+        UpdateAbilityList();
+    }
+    public void InitializeCharacter()
+    {
+        InitializeCharacterSheet();
+        InitializePassiveRegen();
+    }
+
+    #region INTERACTION
+    public void RemoveInteraction(Interaction interact)
+    {
+        int index = CurrentProximityInteractions.FindIndex(x => x == interact);
+        if (index == -1)
+            return;
+
+        ResolveCurrentTargetInteraction(index);
+        CurrentProximityInteractions.Remove(interact);
+
+    }
+    void ResolveCurrentTargetInteraction(int index)
+    {
+        if (index < 0 || index >= CurrentProximityInteractions.Count || CurrentProximityInteractions.Count <= 1)
+        {
+            CurrentTargetInteraction = null;
+            return;
+        }
+
+        index++;
+        index = index >= CurrentProximityInteractions.Count ? 0 : index;
+
+        CurrentTargetInteraction = CurrentProximityInteractions[index];
+    }
     public InteractData GetInteractData()
     {
         return new CharacterData(this);
     }
     public void Interact()
     {
-        GameState.Controller.CurrentCharacter.Target = this;
+        GameState.pController.CurrentCharacter.Target = this;
     }
-    public void InitializeCharacter()
-    {
-        InitializeCharacterSheet();
-        InitializePassiveRegen();
-        //InitializeInteractData();
-    }
+    #endregion
 
     #region INITIALIZERS
     void InitializeCharacterSheet()
@@ -118,6 +152,8 @@ public class Character : Pawn, Interaction
                 Sheet.Level);
         }
 
+        Debug.Log($"{Sheet.Name}/{name} : {CurrentStats.Stats.Length} : {MaximumStatValues.Stats.Length}");
+
         UpdateAbilites();
     }
     void InitializePassiveRegen()
@@ -135,30 +171,20 @@ public class Character : Pawn, Interaction
     }
     Effect CreateRegen(EffectType targetStat, float magnitude)
     {
-        Effect regen = new Effect();
+        Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";
         regen.Type = targetStat;
         regen.Duration = EffectDuration.PASSIVE;
+        regen.ElementPack = new ElementPackage(CharacterMath.STATS_ELEMENT_COUNT);
         regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
 
         return regen;
     }
-    /*void InitializeInteractData()
-    {
-        InteractData.Type = TriggerType.CHARACTER;
-        InteractData.Name = Sheet.Name;
-        //UpdateInteractData();
-        //InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
-        //InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
-    }*/
+
     #endregion
 
     #region ABILITIES
-    public void UpdateAbilites()
-    {
-        UpdateAbilitySlots();
-        UpdateAbilityList();
-    }
+
     void UpdateAbilitySlots()
     {
         List<int> equipIDs = new List<int>();
