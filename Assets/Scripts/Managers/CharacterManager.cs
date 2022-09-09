@@ -102,10 +102,10 @@ public class CharacterManager : MonoBehaviour
                 break;
 
             case RangeType.TARGET:
-                if (caller.Target == null)
+                if (caller.CurrentTargetCharacter == null)
                     return;
-                if (Vector3.Distance(caller.Target.Source.position, caller.Source.position) <= call.RangeValue)
-                    ApplyAbilitySingle(caller.Target, call);
+                if (Vector3.Distance(caller.CurrentTargetCharacter.Source.position, caller.Source.position) <= call.RangeValue)
+                    ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
                 break;
 
             case RangeType.AOE:

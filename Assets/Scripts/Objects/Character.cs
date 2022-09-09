@@ -56,7 +56,7 @@ public class Character : Pawn, Interaction
     public float ChannelTimer;
 
     [Header("Character Logic")]
-    public Character Target;
+    public Character CurrentTargetCharacter;
     public List<Character> TargettedBy;
     public Inventory Inventory;
     public GameObject CharacterCanvas;
@@ -89,14 +89,31 @@ public class Character : Pawn, Interaction
     }
 
     #region INTERACTION
+    public void SwapInteractions()
+    {
+        if (CurrentTargetCharacter == null &&
+            CurrentTargetInteraction != null &&
+            CurrentTargetInteraction is Character)
+        {
+            CurrentTargetCharacter = (Character)CurrentTargetInteraction;
+            return;
+        }
+        
+        if (CurrentTargetCharacter != null)
+        {
+            CurrentTargetCharacter = null;
+            RemoveInteraction(CurrentTargetCharacter);
+        }
+
+    }
     public void RemoveInteraction(Interaction interact)
     {
         int index = CurrentProximityInteractions.FindIndex(x => x == interact);
         ResolveCurrentTargetInteraction(index);
-        if (index == -1)
-        {
-            return;
-        }
+        //if (index == -1)
+        //{
+        //    return;
+        //}
         CurrentProximityInteractions.Remove(interact);
     }
     void ResolveCurrentTargetInteraction(int index)
@@ -118,7 +135,7 @@ public class Character : Pawn, Interaction
     }
     public void Interact()
     {
-        GameState.pController.CurrentCharacter.Target = this;
+        GameState.pController.CurrentCharacter.CurrentTargetCharacter = this;
     }
     #endregion
 

@@ -263,7 +263,8 @@ public class PlayerController : CharacterController
     {
         if (CurrentCharacter.bControllable && CheckAction(KeyAction.INTERACT))
         {
-            CurrentCharacter.RemoveInteraction(CurrentCharacter.CurrentTargetInteraction);
+            CurrentCharacter.SwapInteractions();
+            //CurrentCharacter.RemoveInteraction(CurrentCharacter.CurrentTargetInteraction);
             /*Debug.Log("Interacting");
             if (CurrentCharacter.CurrentTargetInteraction != null &&
                 CurrentCharacter.CurrentTargetInteraction is Character)
@@ -547,18 +548,18 @@ public class PlayerController : CharacterController
         if (GameState.CharacterMan.CharacterPool.Count == 0)
             return;
 
-        int index = (CurrentCharacter.Target == null) ? 0 : GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target) + 1;
+        int index = (CurrentCharacter.CurrentTargetCharacter == null) ? 0 : GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.CurrentTargetCharacter) + 1;
         //index = (index == -1) ? 0 : index;
         index = (index >= GameState.CharacterMan.CharacterPool.Count) ? 0 : index;
 
-        CurrentCharacter.Target = GameState.CharacterMan.CharacterPool[index];
+        CurrentCharacter.CurrentTargetCharacter = GameState.CharacterMan.CharacterPool[index];
         //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
 
-        UpdateInteractionTarget(CurrentCharacter.Target);
+        UpdateInteractionTarget(CurrentCharacter.CurrentTargetCharacter);
     }
     void ClearTarget()
     {
-        CurrentCharacter.Target = null;
+        CurrentCharacter.CurrentTargetCharacter = null;
         UpdateInteractionTarget();
 
         CurrentTargetCharacterIndex = -1;

@@ -786,12 +786,15 @@ public class UIManager : MonoBehaviour
 
         InteractData data = GameState.pController.CurrentCharacter.CurrentTargetInteraction.GetInteractData();
 
-        if (InteractionHUDnameText != null)
-            InteractionHUDnameText.text = data.Name;
-
         if (data is CharacterData)
         {
             CharacterData charData = (CharacterData)data;
+            if (InteractionHUDnameText != null)
+            {
+                char append = (charData.myCharacter != null && charData.myCharacter == GameState.pController.CurrentCharacter.CurrentTargetCharacter) ? '+' : ' ';
+                InteractionHUDnameText.text = append + data.Name + append;
+            }
+
             if (InteractionHUDvalueText != null)
             {
                 InteractionHUDvalueText.gameObject.SetActive(true);
