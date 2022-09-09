@@ -546,9 +546,9 @@ public class PlayerController : CharacterController
         CurrentCharacter.Target = GameState.CharacterMan.CharacterPool[index];
         //Debug.Log(GameState.CharacterMan.CharacterPool.FindIndex(x => x == CurrentCharacter.Target));
         if (CurrentCharacter.Target == null)
-            GameState.UIman.UpdateInteractionHUD(false);
+            GameState.UIman.UpdateInteractionHUD();
         else
-            GameState.UIman.UpdateInteractionHUD(true, CurrentCharacter.Target.GetInteractData());
+            GameState.UIman.UpdateInteractionHUD(CurrentCharacter.Target.GetInteractData());
     }
     void ClearTarget()
     {

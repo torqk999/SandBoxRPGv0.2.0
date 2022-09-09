@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.65003693, g: 0.8682589, b: 1.2181036, a: 1}
+  m_IndirectSpecularColor: {r: 0.6488837, g: 0.86793303, b: 1.218174, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -899,9 +899,7 @@ MonoBehaviour:
   GameState: {fileID: 0}
   InteractData:
     Type: 3
-    Splash: LootBag
-    HealthCurrent: 0
-    HealthMax: 0
+    Name: 
   Inventory:
     Items: []
     MaxCount: 10
@@ -1588,11 +1586,6 @@ MonoBehaviour:
   Inventory:
     Items: []
     MaxCount: 40
-  InteractData:
-    Type: 0
-    Splash: 
-    HealthCurrent: 0
-    HealthMax: 0
   CharacterCanvas: {fileID: 0}
   AbilitySlots:
   - {fileID: 0}
@@ -3225,11 +3218,6 @@ MonoBehaviour:
   Inventory:
     Items: []
     MaxCount: 0
-  InteractData:
-    Type: 0
-    Splash: 
-    HealthCurrent: 0
-    HealthMax: 0
   CharacterCanvas: {fileID: 0}
   AbilitySlots:
   - {fileID: 0}
@@ -4791,7 +4779,7 @@ MonoBehaviour:
   - {fileID: 1860351084}
   - {fileID: 363597562}
   EmptyButtonSprite: {fileID: 21300000, guid: da284a9136b9b5f42b37a393c3134475, type: 3}
-  InteractionHUDsplashText: {fileID: 1573665685}
+  InteractionHUDnameText: {fileID: 0}
   InteractionHUDvalueText: {fileID: 1224925215}
   InteractionHUDslider: {fileID: 579448447}
   InventoryText: {fileID: 1564881523}
@@ -7511,7 +7499,7 @@ MonoBehaviour:
     Keys: 20000000
   - Action: 7
     Index: 0
-    Keys: 13000000
+    Keys: 1300000070000000
   - Action: 8
     Index: 0
     Keys: 16010000
@@ -7538,7 +7526,7 @@ MonoBehaviour:
     Keys: 09000000
   - Action: 16
     Index: 0
-    Keys: 13000000
+    Keys: 69000000
   - Action: 17
     Index: 0
     Keys: 6f000000
@@ -20390,9 +20378,7 @@ MonoBehaviour:
   GameState: {fileID: 0}
   InteractData:
     Type: 2
-    Splash: Chest
-    HealthCurrent: 0
-    HealthMax: 0
+    Name: 
   Inventory:
     Items: []
     MaxCount: 0
@@ -22963,11 +22949,6 @@ MonoBehaviour:
   Inventory:
     Items: []
     MaxCount: 40
-  InteractData:
-    Type: 0
-    Splash: 
-    HealthCurrent: 0
-    HealthMax: 0
   CharacterCanvas: {fileID: 0}
   AbilitySlots:
   - {fileID: 0}

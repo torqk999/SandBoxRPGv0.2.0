@@ -59,7 +59,7 @@ public class Character : Pawn, Interaction
     public Character Target;
     public List<Character> TargettedBy;
     public Inventory Inventory;
-    public InteractData InteractData;
+    //public CharacterData InteractData;
     public GameObject CharacterCanvas;
 
     [Header("Character Slots")]
@@ -75,7 +75,7 @@ public class Character : Pawn, Interaction
 
     public InteractData GetInteractData()
     {
-        return InteractData;
+        return new CharacterData(this);
     }
     public void Interact()
     {
@@ -85,7 +85,7 @@ public class Character : Pawn, Interaction
     {
         InitializeCharacterSheet();
         InitializePassiveRegen();
-        InitializeInteractData();
+        //InitializeInteractData();
     }
 
     #region INITIALIZERS
@@ -143,14 +143,14 @@ public class Character : Pawn, Interaction
 
         return regen;
     }
-    void InitializeInteractData()
+    /*void InitializeInteractData()
     {
         InteractData.Type = TriggerType.CHARACTER;
-        InteractData.Splash = Sheet.Name;
+        InteractData.Name = Sheet.Name;
         //UpdateInteractData();
         //InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
         //InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
-    }
+    }*/
     #endregion
 
     #region ABILITIES
@@ -400,11 +400,11 @@ public class Character : Pawn, Interaction
             if (AbilitySlots[i] != null)
                 AbilitySlots[i].UpdateCooldown();
     }
-    void UpdateInteractData()
+    /*void UpdateInteractData()
     {
         InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
         InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
-    }
+    }*/
     void UpdateAssetTimer()
     {
         if (!bAssetTimer)
@@ -491,6 +491,6 @@ public class Character : Pawn, Interaction
         UpdateAssets();
         UpdateLife();
 
-        UpdateInteractData();
+        //UpdateInteractData();
     }
 }

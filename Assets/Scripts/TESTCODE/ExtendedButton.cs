@@ -84,7 +84,7 @@ public class ExtendedButton : Button
         currentDelta = (Vector2)Input.mousePosition - oldPosMouse;
         this.transform.position = oldPosButton + currentDelta;
     }
-    void Start()
+    protected override void Start()
     {
         MyRect = this.gameObject.GetComponent<RectTransform>();
         ButtonBounds.x = MyRect.rect.width / 2;

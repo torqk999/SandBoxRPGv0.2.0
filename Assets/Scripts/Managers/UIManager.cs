@@ -120,7 +120,7 @@ public class UIManager : MonoBehaviour
     public Sprite EmptyButtonSprite;
 
     [Header("Interaction Logic")]
-    public Text InteractionHUDsplashText;
+    public Text InteractionHUDnameText;
     public Text InteractionHUDvalueText;
     public Slider InteractionHUDslider;
 
@@ -640,9 +640,9 @@ public class UIManager : MonoBehaviour
             return;
 
         if (GameState.Controller.CurrentCharacter.CurrentInteraction == null)
-            UpdateInteractionHUD(false);
+            UpdateInteractionHUD();
         else
-            UpdateInteractionHUD(true, GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData());
+            UpdateInteractionHUD(GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData());
 
     }
     void UpdatePartyPanel()
@@ -770,29 +770,42 @@ public class UIManager : MonoBehaviour
             image.color = (SelectedAbilitySlot == i) ? Selected : Unselected;
         }
     }
-    public void UpdateInteractionHUD(bool state, InteractData data = new InteractData())
+    public void UpdateInteractionHUD(InteractData data = null)
     {
-        Interaction.SetActive(state);
+        Interaction.SetActive(data != null);
+        //Interaction.SetActive(state);
         //GameState.bLootingOpen = Container.activeSelf;
 
-        if (!Interaction.gameObject.activeSelf)
+        if (!Interaction.gameObject.activeSelf ||
+            data == null)
             return;
 
-        if (InteractionHUDsplashText != null)
-            InteractionHUDsplashText.text = data.Splash;
+        if (InteractionHUDnameText != null)
+            InteractionHUDnameText.text = data.Name;
 
-        if (InteractionHUDvalueText != null)
+        
+        if (data is CharacterData)
         {
-            InteractionHUDvalueText.text = (data.HealthCurrent > 0) ?
-                Math.Round(data.HealthCurrent, GlobalConstants.DECIMAL_PLACES) + "/" + Math.Round(data.HealthMax, GlobalConstants.DECIMAL_PLACES)
-                : "DEAD X_X";
+            CharacterData charData = (CharacterData)data;
+            if (InteractionHUDvalueText != null)
+                InteractionHUDvalueText.text = (charData.HealthCurrent > 0) ?
+                    Math.Round(charData.HealthCurrent, GlobalConstants.DECIMAL_PLACES) + "/" + Math.Round(charData.HealthMax, GlobalConstants.DECIMAL_PLACES)
+                    : "DEAD X_X";
+
+            if (InteractionHUDslider != null)
+            {
+                InteractionHUDslider.gameObject.SetActive(data.Type == TriggerType.CHARACTER);
+                InteractionHUDslider.value = (data.Type == TriggerType.CHARACTER) ? charData.HealthCurrent / charData.HealthMax : 0;
+            }
         }
 
-        if (InteractionHUDslider != null)
+        if (data is LootData)
         {
-            InteractionHUDslider.gameObject.SetActive(data.Type == TriggerType.CHARACTER);
-            InteractionHUDslider.value = (data.Type == TriggerType.CHARACTER) ? data.HealthCurrent / data.HealthMax : 0;
+            LootData lootData = (LootData)data;
+            Debug.Log($"{lootData.Quality}");
         }
+
+
     }
     #endregion
 

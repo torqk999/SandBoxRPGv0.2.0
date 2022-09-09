@@ -47,9 +47,9 @@ public class Pawn : MonoBehaviour
 
         bTriggerStateChange = false;
 
-        InteractData data = new InteractData();
+        InteractData data = null;
         data.Type = TriggerType.NONE;
-        bool state;
+        //bool state;
 
         InteractionCount = CurrentInteractions.Count;
 
@@ -57,12 +57,12 @@ public class Pawn : MonoBehaviour
         {
             CurrentInteraction = CurrentInteractions[0];
             data = CurrentInteraction.GetInteractData();
-            state = true;
+            //state = true;
         }
         else
         {
             CurrentInteraction = null;
-            state = false;
+            //state = false;
         }
 
         switch (data.Type)
@@ -73,7 +73,7 @@ public class Pawn : MonoBehaviour
             case TriggerType.CONTAINER:
                 if (!(CurrentInteraction is GenericContainer))
                 {
-                    state = false;
+                    //state = false;
                     break;
                 }
                 break;
@@ -81,7 +81,7 @@ public class Pawn : MonoBehaviour
             case TriggerType.CHARACTER:
                 if (!(CurrentInteraction is Character))
                 {
-                    state = false;
+                    //state = false;
                     break;
                 }
                 break;
@@ -92,7 +92,7 @@ public class Pawn : MonoBehaviour
             //if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
             //    PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
             //GameState.UIman.UpdateContainer();
-            GameState.UIman.UpdateInteractionHUD(state, data);
+            GameState.UIman.UpdateInteractionHUD(data);
         }
     }
 
