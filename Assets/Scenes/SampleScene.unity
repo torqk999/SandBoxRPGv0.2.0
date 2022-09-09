@@ -1762,13 +1762,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 109683110}
+  - component: {fileID: 109683117}
   - component: {fileID: 109683115}
   - component: {fileID: 109683114}
   - component: {fileID: 109683113}
   - component: {fileID: 109683112}
   - component: {fileID: 109683111}
   - component: {fileID: 109683116}
-  - component: {fileID: 109683117}
   m_Layer: 6
   m_Name: Phillip Pilsner
   m_TagString: CHARACTER
@@ -1826,7 +1826,7 @@ MonoBehaviour:
   bControllable: 1
   ID: 0
   Assets: {fileID: 0}
-  Animator: {fileID: 0}
+  Animator: {fileID: 573468433}
   AnimType: 0
   IntentForward: 0
   IntentRight: 0
@@ -1901,7 +1901,7 @@ Rigidbody:
   m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 2
   m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &109683113
@@ -2049,8 +2049,8 @@ MeshCollider:
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1196632888549912729, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
+  m_CookingOptions: -1
+  m_Mesh: {fileID: -1196632888549912729, guid: 42931e5ea3411bc4ea062035ca5f7a56, type: 3}
 --- !u!1 &112136812
 GameObject:
   m_ObjectHideFlags: 0
@@ -13086,10 +13086,6 @@ PrefabInstance:
       propertyPath: m_TagString
       value: GROUND
       objectReference: {fileID: 0}
-    - target: {fileID: 1070795294895529402, guid: 8af42f65d9eb5624f86396ec32f87901, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 2147483647
-      objectReference: {fileID: 0}
     - target: {fileID: 1403674878562445733, guid: 8af42f65d9eb5624f86396ec32f87901, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -15894,7 +15890,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.24
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15940,18 +15936,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3926742795223665608, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
-      propertyPath: m_Quality
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3926742795223665608, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
-      propertyPath: m_UpdateWhenOffscreen
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5024560537132068898, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
       propertyPath: m_Controller
       value: 
@@ -15964,7 +15948,8 @@ PrefabInstance:
       propertyPath: m_CullingMode
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e5ead93313d429e4fb38083f524caaf0, type: 3}
 --- !u!1 &1060503128
 GameObject:
@@ -25997,7 +25982,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1820977877}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 343.51, y: 37.68, z: 99.4}
+  m_LocalPosition: {x: 343.51, y: 15.16, z: 99.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
