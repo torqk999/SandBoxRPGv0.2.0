@@ -34,7 +34,7 @@ public class SimpleAIcontroller : CharacterController
     public bool bIsAgressive;
     public bool bIsFollowing;
     public bool bIsUsingNavMesh;
-    public bool bTestMotion;
+    public bool bTestMotion; // ????????????
     public bool bStrategyActive;
     public bool bDebuggingDisable;
 

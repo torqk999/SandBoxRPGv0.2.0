@@ -19,7 +19,7 @@ public enum WearableType
 public class Wearable : Equipment
 {
     [Header("Wearable Properties")]
-    public WearableType Type;
+    public EquipSlot Type;
     //public EquipSkill EquipSkill;
 
     public Wearable CloneWear()

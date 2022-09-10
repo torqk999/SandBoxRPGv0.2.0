@@ -50,6 +50,21 @@ public class EquipWrapper : ItemWrapper
     */
 }
 [System.Serializable]
+public class RingWrapper : EquipWrapper
+{
+    public Ring Ring;
+    public int CurrentSlotIndex;
+
+    public RingWrapper(Ring ring)
+    {
+        Name = ring.Name;
+        Sprite = ring.Sprite;
+        Ring = ring.CloneRing();
+        Equip = ring;
+        CurrentSlotIndex = -1;
+    }
+}
+[System.Serializable]
 public class WearableWrapper : EquipWrapper
 {
     public Wearable Wear;

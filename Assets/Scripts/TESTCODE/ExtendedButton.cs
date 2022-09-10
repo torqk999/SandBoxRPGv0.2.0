@@ -36,6 +36,7 @@ public enum ButtonType
     LIST_SKILL,
     SLOT_SKILL,
     SLOT_EQUIP,
+    SLOT_RING,
     KEY_MAP
 }
 

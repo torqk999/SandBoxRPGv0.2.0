@@ -41,6 +41,7 @@ public static class CharacterMath
     public static readonly int STATS_LEVELS_COUNT = Enum.GetNames(typeof(SkillType)).Length;
     public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(EquipSlot)).Length;
 
+    public const int RING_SLOT_COUNT = 2;
     public const int PARTY_INVENTORY_MAX = 100;
     public const int ABILITY_SLOTS = 12;
     public const int TACTIC_SLOTS = 8;
@@ -89,7 +90,7 @@ public static class CharacterMath
         1,  // MEDIUM
         2,  // HEAVY
         1,  // ONE HAND
-        1,  // TWO HAND
+        1.25f,  // TWO HAND
         1,  // SHIELD
         1,  // RANGED
         .5f,  // MAGIC

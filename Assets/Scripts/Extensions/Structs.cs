@@ -30,13 +30,13 @@ public enum EffectValue
     PERC_MISS,
     FLAT
 }
-public enum EffectStatus
+/*public enum EffectStatus
 {
     NONE,
     STAT_CURRENT, // Damage, Heal
     STAT_MAX, // MaxHealth, Resistance, etc.
     DOT
-}
+}*/
 public enum CCstatus
 {
     NONE,
@@ -82,12 +82,14 @@ public struct StatPackage
 }
 [System.Serializable]
 public struct ElementPackage
-{
+{   
     public float[] Elements;
+    public Dictionary<Element, float> Defaults;
 
     public ElementPackage(int count)
     {
         Elements = new float[count];
+        Defaults = new Dictionary<Element, float>();
     }
 
     public void Amplify(float amp)

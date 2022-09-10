@@ -15,15 +15,19 @@ public enum AnimatorType
 public enum EquipSlot
 {
     HEAD,
+    NECK,
+    PAULDRON,
     CHEST,
     BELT,
-    LEGS,
-    BOOTS,
-    NECK,
+    GLOVES,
     MAIN,
     OFF,
-    RING_L,
-    RING_R
+    LEGS,
+    BOOTS,
+    
+    //RING
+    //RING_L,
+    //RING_R
 }
 
 public class Character : Pawn, Interaction
@@ -64,6 +68,7 @@ public class Character : Pawn, Interaction
     [Header("Character Slots")]
     public CharacterAbility[] AbilitySlots;
     public EquipWrapper[] EquipmentSlots;
+    public RingWrapper[] RingSlots;
 
     [Header("Interaction")]
     public Interaction CurrentTargetInteraction;
@@ -239,12 +244,17 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region EQUIPPING
-    public bool EquipSelection(int equipIndex, int inventoryIndex)
+    public bool EquipSelection(int equipIndex, int inventoryIndex, bool isRing = false)
     {
         if (inventoryIndex == -1 && equipIndex != -1)
-            return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
+        {
+            if (isRing)
+                return AttemptEquipRemoval(RingSlots, equipIndex);
+            return AttemptEquipRemoval(EquipmentSlots, equipIndex);
+        }
+            //return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
 
-        if (inventoryIndex != -1 && equipIndex == -1)
+        if (inventoryIndex != -1)
         {
             if (Inventory.Items[inventoryIndex] == null || !(Inventory.Items[inventoryIndex] is EquipWrapper))
                 return false;
@@ -254,17 +264,13 @@ public class Character : Pawn, Interaction
             if (equip is WearableWrapper)
             {
                 WearableWrapper wear = (WearableWrapper)equip;
-                //int slotNumber = (int)wear.Wear.Type;
-
-                if (wear.Wear.Type != WearableType.RING)
-                {
-                    EquipWear(wear.Wear.Type, inventoryIndex);
-                    return true;
-                }
-                EquipRing(inventoryIndex);
-                return true;
+                return EquipWear(wear.Wear.Type, inventoryIndex);
             }
 
+            if (equip is RingWrapper)
+                return EquipRing(inventoryIndex);
+            
+                
 
             if (equip is TwoHandWrapper)
                 return EquipTwoHand(inventoryIndex);
@@ -279,19 +285,20 @@ public class Character : Pawn, Interaction
         Debug.Log("How did you get here? >.>");
         return false;
     }
-    void EquipWear(WearableType type, int inventoryIndex)
+    bool EquipWear(EquipSlot equipSlot, int inventoryIndex)
     {
-        int equipIndex = (int)type;
+        //int equipIndex = (int)equipSlot;
 
-        if (EquipmentSlots[equipIndex] == null)
+        if (EquipmentSlots[(int)equipSlot] == null)
         {
-            EquipmentSlots[equipIndex] =
+            EquipmentSlots[(int)equipSlot] =
                 (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return;
+            return true;
         }
 
-        EquipmentSlots[equipIndex] =
-            (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[equipIndex], inventoryIndex);
+        EquipmentSlots[(int)equipSlot] =
+            (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)equipSlot], inventoryIndex);
+        return true;
     }
     bool EquipOneHand(int inventoryIndex, bool main = true)
     {
@@ -356,26 +363,50 @@ public class Character : Pawn, Interaction
         Debug.Log("How did you get here? >.>");
         return false;
     }
-    void EquipRing(int inventoryIndex)
+    bool EquipRing(int inventoryIndex)
     {
-        //int slot = (bLeftHand) ? 8 : 9;
+        /*if (Inventory.Items[inventoryIndex] == null ||
+            !(Inventory.Items[inventoryIndex] is RingWrapper))
+            return false;*/
 
-        if (EquipmentSlots[(int)EquipSlot.RING_L] == null)
+        //RingWrapper ring = (RingWrapper)Inventory.Items[inventoryIndex];
+        
+        for (int i = 0; i < CharacterMath.RING_SLOT_COUNT;i++)
         {
-            EquipmentSlots[(int)EquipSlot.RING_L] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return;
+            if (RingSlots[i] == null)
+            {
+                RingSlots[i] = (RingWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+                return true;
+            }
         }
+        RingSlots[0] = (RingWrapper)Inventory.SwapItemSlots(RingSlots[0], inventoryIndex); // Default first index of rings
+        return true;
+        /*
+        if (RingSlots[ringIndex] == null)
+        {
+            RingSlots[ringIndex] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+            return;
+        }*/
 
-        if (EquipmentSlots[(int)EquipSlot.RING_R] == null)
+        /*if (EquipmentSlots[(int)EquipSlot.RING_R] == null)
         {
             EquipmentSlots[(int)EquipSlot.RING_R] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
             return;
-        }
+        }*/
 
-        EquipmentSlots[(int)EquipSlot.RING_R] = (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)EquipSlot.RING_R], inventoryIndex);
+        
     }
-    bool AttemptEquipRemoval(EquipWrapper equip, int equipIndex)
+    bool AttemptEquipRemoval(EquipWrapper[] slotList, int equipIndex)
     {
+        if (slotList == null ||
+            slotList.Length == 0)
+            return false;
+
+        if (equipIndex < 0 ||
+            equipIndex >= slotList.Length)
+            return false;
+
+        EquipWrapper equip = slotList[equipIndex];
         if (equip == null)
             return false;
 

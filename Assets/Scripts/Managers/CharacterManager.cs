@@ -336,7 +336,8 @@ public class CharacterManager : MonoBehaviour
         character.CCstatus = new bool[3];
         character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
-
+        character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
+        
         // Sheet
         CharacterSheet sheetInstance = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
         sheetInstance.Clone(character.Sheet);
