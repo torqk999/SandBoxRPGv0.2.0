@@ -191,10 +191,10 @@ public class Character : Pawn, Interaction
                 (1 + CharacterMath.RAW_GROWTH[i]);
 
             //Debug.Log($"{Sheet.Name} : {(EffectTarget)i} : {magnitude}");
-            Effects.Add(CreateRegen((EffectType)i, magnitude));
+            Effects.Add(CreateRegen((EffectAction)i, magnitude));
         }
     }
-    Effect CreateRegen(EffectType targetStat, float magnitude)
+    Effect CreateRegen(EffectAction targetStat, float magnitude)
     {
         Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";

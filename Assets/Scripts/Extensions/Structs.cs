@@ -9,28 +9,31 @@ public enum EffectDuration
     PASSIVE,
     SUSTAINED
 }
-public enum EffectType
+public enum EffectAction
 {
     RESISTANCE,
     STAT,
     CROWD_CONTROL,
     SPAWN
 }
-
 public enum EffectValue
 {
     NONE,
     PERC_CURR,
     PERC_MAX,
     PERC_MISS,
-    FLAT
+    FLAT,
+    IMMUNE
 }
 public enum CCstatus
 {
     NONE,
     IMMOBILE,
     UN_ARMED,
-    SILENCED
+    SILENCED,
+    FEARED,
+    CHARMED,
+    DRUNK
 }
 public enum SkillType
 {

@@ -7,7 +7,7 @@ public class Effect : ScriptableObject
     public Sprite Sprite;
     public EffectDuration Duration;
     public EffectValue Value;
-    public EffectType Type;
+    public EffectAction Type;
     //public EffectStatus Status;
     public RawStat TargetStat;
     public CCstatus CCstatus;
