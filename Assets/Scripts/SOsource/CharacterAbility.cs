@@ -32,6 +32,7 @@ public class CharacterAbility : ScriptableObject
     public string Name;
     public Sprite Sprite;
     public bool bTargetEnemy;
+    public bool bIsPassive;
     public RangeType RangeType;
     public RawStat CostType;
     public AbilityType AbilityType;

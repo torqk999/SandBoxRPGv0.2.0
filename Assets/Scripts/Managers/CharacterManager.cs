@@ -144,7 +144,7 @@ public class CharacterManager : MonoBehaviour
                     ApplyRisidualEffect(target, call.Effects[i]);
                     break;
 
-                case EffectDuration.PASSIVE:
+                case EffectDuration.SUSTAINED:
                     ApplyRisidualEffect(target, call.Effects[i]);
                     break;
             }
@@ -156,7 +156,7 @@ public class CharacterManager : MonoBehaviour
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
         {
-            float change = mod.ElementPack.Elements[i].Value * (1 - target.Resistances.Elements[i].Value);
+            float change = mod.ElementPack.Elements[i] * (1 - target.Resistances.Elements[i]);
             totalValue += (Element)i == Element.HEALING ? -change : change;
         }
 

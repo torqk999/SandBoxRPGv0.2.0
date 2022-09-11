@@ -17,7 +17,7 @@ public class Effect : ScriptableObject
     public float Timer;
     public bool bIsBuff;
 
-    public void Clone(Effect source, float amp = 1)
+    public void Clone(Effect source, float amp = 1, bool inject = true)
     {
         Name = source.Name;
         Sprite = source.Sprite;
@@ -27,6 +27,7 @@ public class Effect : ScriptableObject
         //Status = source.Status;
         CCstatus = source.CCstatus;
         ElementPack = source.ElementPack;
+        ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject); // <.<  just wild....
         ElementPack.Amplify(amp);
         DurationLength = source.DurationLength;
         Timer = (Duration == EffectDuration.TIMED) ? DurationLength : 0;

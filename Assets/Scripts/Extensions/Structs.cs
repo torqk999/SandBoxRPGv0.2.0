@@ -7,21 +7,16 @@ public enum EffectDuration
     ONCE,
     TIMED,
     PASSIVE,
-    SPAWN
+    SUSTAINED
 }
 public enum EffectType
 {
     RESISTANCE,
     STAT,
-    CROWD_CONTROL
+    CROWD_CONTROL,
+    SPAWN
 }
-public enum RawStat
-{
-    HEALTH,
-    STAMINA,
-    MANA,
-    SPEED,
-}
+
 public enum EffectValue
 {
     NONE,
@@ -30,13 +25,6 @@ public enum EffectValue
     PERC_MISS,
     FLAT
 }
-/*public enum EffectStatus
-{
-    NONE,
-    STAT_CURRENT, // Damage, Heal
-    STAT_MAX, // MaxHealth, Resistance, etc.
-    DOT
-}*/
 public enum CCstatus
 {
     NONE,
@@ -44,7 +32,6 @@ public enum CCstatus
     UN_ARMED,
     SILENCED
 }
-
 public enum SkillType
 {
     LIGHT,
@@ -57,19 +44,63 @@ public enum SkillType
     RANGED,
     MAGIC,
 }
-/*[System.Serializable]
-public struct StatSingle
+public enum RawStat
 {
-    public RawStat Stat;
-    public float Value;
-}*/
+    HEALTH,
+    STAMINA,
+    MANA,
+    SPEED,
+}
+[System.Serializable]
+public struct StatReflection
+{
+    public float HEALTH;
+    public float STAMINA;
+    public float MANA;
+    public float SPEED;
+
+    public bool Reflect(ref float[] rawStats, bool inject = true)
+    {
+        try
+        {
+            if (inject)
+            {
+                rawStats[(int)RawStat.HEALTH] = HEALTH;
+                rawStats[(int)RawStat.STAMINA] = STAMINA;
+                rawStats[(int)RawStat.MANA] = MANA;
+                rawStats[(int)RawStat.SPEED] = SPEED;
+            }
+            else
+            {
+                HEALTH = rawStats[(int)RawStat.HEALTH];
+                STAMINA = rawStats[(int)RawStat.STAMINA];
+                MANA = rawStats[(int)RawStat.MANA];
+                SPEED = rawStats[(int)RawStat.SPEED];
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
 [System.Serializable]
 public struct StatPackage
 {
     public float[] Stats;
-    public StatPackage(int count)
+    public StatReflection Reflection;
+    public StatPackage(StatPackage source)
     {
-        Stats = new float[count];
+        Reflection = source.Reflection;
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        if (source.Stats != null && source.Stats.Length == CharacterMath.STATS_RAW_COUNT)
+            for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+                Stats[i] = source.Stats[i];
+    }
+    public void Init()
+    {
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
     }
     public void Amplify(float amp)
     {
@@ -77,13 +108,6 @@ public struct StatPackage
             Stats[i] *= amp;
     }
 }
-[System.Serializable]
-public struct ElementSingle
-{
-    public Element Element;
-    public float Value;
-}
-
 public enum Element
 {
     PHYSICAL,
@@ -91,39 +115,77 @@ public enum Element
     WATER,
     EARTH,
     AIR,
-    POSION,
+    POISON,
     HEALING
 }
+[System.Serializable]
+public struct ElementReflection
+{
+    public float PHYSICAL;
+    public float FIRE;
+    public float WATER;
+    public float EARTH;
+    public float AIR;
+    public float POISON;
+    public float HEALING;
 
+    public bool Reflect(ref float[] elements, bool inject = true)
+    {
+        try
+        {
+            if (inject)
+            {
+                elements[(int)Element.PHYSICAL] = PHYSICAL;
+                elements[(int)Element.FIRE] = FIRE;
+                elements[(int)Element.WATER] = WATER;
+                elements[(int)Element.EARTH] = EARTH;
+                elements[(int)Element.AIR] = AIR;
+                elements[(int)Element.POISON] = POISON;
+                elements[(int)Element.HEALING] = HEALING;
+            }
+            else
+            {
+                PHYSICAL = elements[(int)Element.PHYSICAL];
+                FIRE = elements[(int)Element.FIRE];
+                WATER = elements[(int)Element.WATER];
+                EARTH = elements[(int)Element.EARTH];
+                AIR = elements[(int)Element.AIR];
+                POISON = elements[(int)Element.POISON];
+                HEALING = elements[(int)Element.HEALING];
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
 [System.Serializable]
 public struct ElementPackage
 {
-    public ElementSingle[] Elements;
+    public ElementReflection Reflection;
+    public float[] Elements;
 
     public ElementPackage(ElementPackage source)
     {
-        Elements = new ElementSingle[CharacterMath.STATS_ELEMENT_COUNT];
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-            Elements[i].Element = (Element)i;
-
-        if (source.Elements != null)
-            for (int i = 0; i < source.Elements.Length; i++)
-                Elements[(int)source.Elements[i].Element].Value = source.Elements[i].Value;
+        Reflection = source.Reflection; // maybe?
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        if (source.Elements != null && source.Elements.Length == CharacterMath.STATS_ELEMENT_COUNT)
+            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+                Elements[i] = source.Elements[i];
     }
 
     public void Init()
     {
-        Elements = new ElementSingle[CharacterMath.STATS_ELEMENT_COUNT];
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-            Elements[i].Element = (Element)i;
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
     }
 
     public void Amplify(float amp)
     {
         for (int i = 0; i < Elements.Length; i++)
-            Elements[i].Value *= amp;
+            Elements[i] *= amp;
     }
-
 }
 [System.Serializable]
 public struct EXPpackage

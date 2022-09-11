@@ -683,7 +683,7 @@ public class UIManager : MonoBehaviour
             //float[] stats = effect.ElementPack.PullData();
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
             {
-                if (effect.ElementPack.Elements[i].Value == 0)
+                if (effect.ElementPack.Elements[i] == 0)
                     continue;
 
                 output += $"\n{(Element)i}: {effect.ElementPack.Elements[i]}";

@@ -150,8 +150,10 @@ public class Character : Pawn, Interaction
         if (Sheet == null)
             return;
 
-        CurrentStats = new StatPackage(CharacterMath.STATS_RAW_COUNT);
-        MaximumStatValues = new StatPackage(CharacterMath.STATS_RAW_COUNT);
+        CurrentStats = new StatPackage();
+        CurrentStats.Init();
+        MaximumStatValues = new StatPackage();
+        MaximumStatValues.Init();
 
         for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
         {
@@ -169,7 +171,7 @@ public class Character : Pawn, Interaction
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
-            Resistances.Elements[i].Value = CharacterMath.RES_BASE[i] +
+            Resistances.Elements[i] = CharacterMath.RES_BASE[i] +
                 (CharacterMath.RES_GROWTH[i] *
                 CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] *
                 Sheet.Level);
@@ -197,10 +199,10 @@ public class Character : Pawn, Interaction
         Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";
         regen.Type = targetStat;
-        regen.Duration = EffectDuration.PASSIVE;
+        regen.Duration = EffectDuration.SUSTAINED;
         regen.ElementPack = new ElementPackage();
         regen.ElementPack.Init();
-        regen.ElementPack.Elements[(int)Element.HEALING].Value = magnitude;
+        regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
 
         return regen;
     }
