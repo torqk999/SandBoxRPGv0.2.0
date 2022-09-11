@@ -39,7 +39,7 @@ public class Character : Pawn, Interaction
     [Header("Animation")]
     public CharacterAssetPack Assets;
     public AnimatorPlus myAnim;
-    public Animator Animator;
+    public TestAnimation Animator;
     public AnimatorType AnimType;
     public float IntentForward;
     public float IntentRight;
@@ -210,7 +210,6 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region ABILITIES
-
     void UpdateAbilitySlots()
     {
         List<int> equipIDs = new List<int>();

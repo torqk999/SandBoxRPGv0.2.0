@@ -7,7 +7,7 @@ using UnityEditorInternal;
 using UnityEngine;
 
 
-public class TestAnimation : MonoBehaviour
+public class TestAnimation : Animator
 {
     public Animator MyAnimator;
     public GameObject myObject;

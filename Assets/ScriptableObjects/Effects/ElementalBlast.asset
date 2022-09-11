@@ -20,17 +20,15 @@ MonoBehaviour:
   TargetStat: 0
   CCstatus: 0
   ElementPack:
-    Elements:
-    - Element: 1
-      Value: 0
-    - Element: 2
-      Value: 0
-    - Element: 3
-      Value: 0
-    - Element: 4
-      Value: 0
-    - Element: 5
-      Value: 0
+    Reflection:
+      PHYSICAL: 0
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Elements: []
   DurationLength: 0
   Timer: 0
   bIsBuff: 0
