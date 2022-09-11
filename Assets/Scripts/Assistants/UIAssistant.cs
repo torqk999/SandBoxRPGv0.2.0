@@ -14,10 +14,11 @@ public enum UIType
 }
 
 [Serializable]
-public struct UIGraphic
+public struct UIProfile
 {
-    public UIType GraphicType;
-    public Sprite GraphicSprite;
+    public UIType UIType;
+    public Sprite UISprite;
+    public Text UIText;
 }
 
 public class UIAssistant : MonoBehaviour
@@ -25,17 +26,30 @@ public class UIAssistant : MonoBehaviour
     public UIType myType;
     public UIManager myManager;
     public Image myTargetImage;
-    
+    public Text myTargetText;
 
     bool PullMyImage()
     {
-        myTargetImage = this.gameObject.GetComponent<Image>();
+        myTargetImage = gameObject.GetComponent<Image>();
         return myTargetImage != null;
+    }
+
+    bool PullMyTextChild()
+    {
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            if (transform.GetChild(i).GetComponent<Text>() != null)
+            {
+                myTargetText = transform.GetChild(i).GetComponent<Text>();
+                return true;
+            }
+        }
+        return false;
     }
 
     bool DiscoverUIManager()
     {
-        Transform currentParent = this.gameObject.transform.parent;
+        Transform currentParent = gameObject.transform.parent;
         while(currentParent != null)
         {
             myManager = currentParent.GetComponent<UIManager>();
@@ -51,34 +65,33 @@ public class UIAssistant : MonoBehaviour
         if (myManager.UIGraphicBin.Count == 0)
             return false;
 
-        UIGraphic? mySprite = myManager.UIGraphicBin.Find(x => x.GraphicType == myType);
+        UIProfile? mySprite = myManager.UIGraphicBin.Find(x => x.UIType == myType);
         if (!mySprite.HasValue)
             return false;
 
-        myTargetImage.sprite = mySprite.Value.GraphicSprite;
+        myTargetImage.sprite = mySprite.Value.UISprite;
         return true;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        if (!PullMyImage())
+        if (!PullMyImage() && !PullMyTextChild())
         {
-            Debug.Log($"{this.gameObject.name} Has no Image Comp!");
+            Debug.Log($"{gameObject.name} Has nothing to work with Sam!");
             return;
-        }
-            
+        }       
 
         if (!DiscoverUIManager())
         {
-            Debug.Log($"{this.gameObject.name} Has no UIManager in family tree!");
+            Debug.Log($"{gameObject.name} Has no UIManager in family tree!");
             return;
         }
         
         if (FindAndSetMyImage())
-            Debug.Log($"{this.gameObject.name} Found their sprite!");
+            Debug.Log($"{gameObject.name} Found their sprite!");
         else
-            Debug.Log($"{this.gameObject.name} Misplaced their sprite!");
+            Debug.Log($"{gameObject.name} Misplaced their sprite!");
     }
 
     // Update is called once per frame

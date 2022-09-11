@@ -272,7 +272,7 @@ public class SimpleAIpathingController : MonoBehaviour
 
         if (safeCount == GlobalConstants.MAX_PATH_CYCLES)
         {
-            Debug.Log("Naw mang");
+            //Debug.Log("Naw mang");
             return false;
         }
 

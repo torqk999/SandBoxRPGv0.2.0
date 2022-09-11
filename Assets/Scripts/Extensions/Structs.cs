@@ -44,16 +44,7 @@ public enum CCstatus
     UN_ARMED,
     SILENCED
 }
-public enum Element
-{
-    PHYSICAL,
-    FIRE,
-    WATER,
-    EARTH,
-    AIR,
-    POSION,
-    HEALING
-}
+
 public enum SkillType
 {
     LIGHT,
@@ -66,6 +57,12 @@ public enum SkillType
     RANGED,
     MAGIC,
 }
+/*[System.Serializable]
+public struct StatSingle
+{
+    public RawStat Stat;
+    public float Value;
+}*/
 [System.Serializable]
 public struct StatPackage
 {
@@ -81,21 +78,50 @@ public struct StatPackage
     }
 }
 [System.Serializable]
-public struct ElementPackage
-{   
-    public float[] Elements;
-    public Dictionary<Element, float> Defaults;
+public struct ElementSingle
+{
+    public Element Element;
+    public float Value;
+}
 
-    public ElementPackage(int count)
+public enum Element
+{
+    PHYSICAL,
+    FIRE,
+    WATER,
+    EARTH,
+    AIR,
+    POSION,
+    HEALING
+}
+
+[System.Serializable]
+public struct ElementPackage
+{
+    public ElementSingle[] Elements;
+
+    public ElementPackage(ElementPackage source)
     {
-        Elements = new float[count];
-        Defaults = new Dictionary<Element, float>();
+        Elements = new ElementSingle[CharacterMath.STATS_ELEMENT_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            Elements[i].Element = (Element)i;
+
+        if (source.Elements != null)
+            for (int i = 0; i < source.Elements.Length; i++)
+                Elements[(int)source.Elements[i].Element].Value = source.Elements[i].Value;
+    }
+
+    public void Init()
+    {
+        Elements = new ElementSingle[CharacterMath.STATS_ELEMENT_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            Elements[i].Element = (Element)i;
     }
 
     public void Amplify(float amp)
     {
         for (int i = 0; i < Elements.Length; i++)
-            Elements[i] *= amp;
+            Elements[i].Value *= amp;
     }
 
 }

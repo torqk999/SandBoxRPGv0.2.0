@@ -164,17 +164,18 @@ public class Character : Pawn, Interaction
             MaximumStatValues.Stats[i] = stat;
         }
 
-        Resistances = new ElementPackage(CharacterMath.STATS_ELEMENT_COUNT);
+        Resistances = new ElementPackage();// CharacterMath.STATS_ELEMENT_COUNT);
+        Resistances.Init();
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
-            Resistances.Elements[i] = CharacterMath.RES_BASE[i] +
+            Resistances.Elements[i].Value = CharacterMath.RES_BASE[i] +
                 (CharacterMath.RES_GROWTH[i] *
                 CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] *
                 Sheet.Level);
         }
 
-        Debug.Log($"{Sheet.Name}/{name} : {CurrentStats.Stats.Length} : {MaximumStatValues.Stats.Length}");
+        //Debug.Log($"{Sheet.Name}/{name} : {CurrentStats.Stats.Length} : {MaximumStatValues.Stats.Length}");
 
         UpdateAbilites();
     }
@@ -197,8 +198,9 @@ public class Character : Pawn, Interaction
         regen.Name = $"{targetStat} REGEN";
         regen.Type = targetStat;
         regen.Duration = EffectDuration.PASSIVE;
-        regen.ElementPack = new ElementPackage(CharacterMath.STATS_ELEMENT_COUNT);
-        regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
+        regen.ElementPack = new ElementPackage();
+        regen.ElementPack.Init();
+        regen.ElementPack.Elements[(int)Element.HEALING].Value = magnitude;
 
         return regen;
     }
@@ -244,14 +246,20 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region EQUIPPING
-    public bool EquipSelection(int equipIndex, int inventoryIndex, bool isRing = false)
+    public bool EquipSelection(int equipIndex, int ringIndex, int inventoryIndex)
     {
-        if (inventoryIndex == -1 && equipIndex != -1)
+        if (equipIndex != -1)
+            return AttemptEquipRemoval(EquipmentSlots, equipIndex);
+
+        if (ringIndex != -1)
+            return AttemptEquipRemoval(RingSlots, ringIndex);
+
+        /*if (inventoryIndex == -1 && equipIndex != -1)
         {
             if (isRing)
                 return AttemptEquipRemoval(RingSlots, equipIndex);
             return AttemptEquipRemoval(EquipmentSlots, equipIndex);
-        }
+        }*/
             //return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
 
         if (inventoryIndex != -1)
@@ -270,8 +278,6 @@ public class Character : Pawn, Interaction
             if (equip is RingWrapper)
                 return EquipRing(inventoryIndex);
             
-                
-
             if (equip is TwoHandWrapper)
                 return EquipTwoHand(inventoryIndex);
 

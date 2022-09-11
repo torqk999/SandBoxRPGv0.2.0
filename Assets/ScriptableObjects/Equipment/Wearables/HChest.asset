@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: HChest
   m_EditorClassIdentifier: 
   itemID: 0
-  Name: Amulet
-  Sprite: {fileID: 21300000, guid: bfa1ff1b37d8c3e4982d8a0dae4658c3, type: 3}
+  Name: Heavy Chest
+  Sprite: {fileID: 21300000, guid: e95bb4a7c3f25564c8adf0402cf70544, type: 3}
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipSkill: 7
+  EquipSkill: 2
   EquipLevel: 0
   AbilityID: 0
   EquipAbilites: []
-  Type: 1
+  Type: 3

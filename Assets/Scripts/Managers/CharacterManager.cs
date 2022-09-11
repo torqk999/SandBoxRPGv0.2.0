@@ -156,11 +156,10 @@ public class CharacterManager : MonoBehaviour
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
         {
-            float change = mod.ElementPack.Elements[i] * (1 - target.Resistances.Elements[i]);
+            float change = mod.ElementPack.Elements[i].Value * (1 - target.Resistances.Elements[i].Value);
             totalValue += (Element)i == Element.HEALING ? -change : change;
         }
 
-        
         if (totalValue == 0)
             return;
 
@@ -177,23 +176,20 @@ public class CharacterManager : MonoBehaviour
         switch (mod.TargetStat)
         {
             case RawStat.HEALTH:
-                //target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_H;
                 break;
 
             case RawStat.MANA:
-                //target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_M;
                 break;
 
             case RawStat.SPEED:
-                //target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
+
                 break;
 
             case RawStat.STAMINA:
-                //target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_S;
                 break;

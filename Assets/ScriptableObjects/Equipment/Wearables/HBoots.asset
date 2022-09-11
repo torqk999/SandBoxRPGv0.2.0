@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: HBoots
   m_EditorClassIdentifier: 
   itemID: 0
-  Name: Amulet
-  Sprite: {fileID: 21300000, guid: bfa1ff1b37d8c3e4982d8a0dae4658c3, type: 3}
+  Name: Heavy Boots
+  Sprite: {fileID: 21300000, guid: bf8d55edbc0bb584faf74d42086fb794, type: 3}
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipSkill: 7
+  EquipSkill: 2
   EquipLevel: 0
   AbilityID: 0
   EquipAbilites: []
-  Type: 1
+  Type: 9

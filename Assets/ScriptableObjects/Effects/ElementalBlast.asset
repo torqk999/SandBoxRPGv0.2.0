@@ -17,11 +17,20 @@ MonoBehaviour:
   Duration: 0
   Value: 0
   Type: 0
-  Status: 0
   TargetStat: 0
   CCstatus: 0
   ElementPack:
-    Elements: []
+    Elements:
+    - Element: 1
+      Value: 0
+    - Element: 2
+      Value: 0
+    - Element: 3
+      Value: 0
+    - Element: 4
+      Value: 0
+    - Element: 5
+      Value: 0
   DurationLength: 0
   Timer: 0
   bIsBuff: 0

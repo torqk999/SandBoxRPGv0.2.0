@@ -19,8 +19,9 @@ MonoBehaviour:
   RangeType: 3
   CostType: 2
   AbilityType: 1
-  RangeValue: 0
-  CostValue: 0
-  CD_Duration: 0
+  RangeValue: 5
+  CostValue: 10
+  CD_Duration: 3
   CD_Timer: 0
-  Effects: []
+  Effects:
+  - {fileID: 0}

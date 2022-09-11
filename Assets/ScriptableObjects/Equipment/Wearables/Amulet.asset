@@ -18,7 +18,7 @@ MonoBehaviour:
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipSkill: 2
+  EquipSkill: 8
   EquipLevel: 0
   AbilityID: 0
   EquipAbilites: []
