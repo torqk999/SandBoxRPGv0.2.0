@@ -17,7 +17,7 @@ public class GameState : MonoBehaviour
     public Camera GameCamera;
 
     [Header("Controllers")]
-    public PlayerController Controller;
+    public PlayerController pController;
     public SimpleAIcontroller testAI;
     public SimpleAIpathingController testPath;
     public NavMesh NavMesh;
@@ -75,8 +75,8 @@ public class GameState : MonoBehaviour
     }
     public void InteractWithContainer(GenericContainer container)
     {
-        Controller.targetContainer = container;
-        Controller.ToggleCharacterPage(CharPage.Looting);
+        pController.targetContainer = container;
+        pController.ToggleCharacterPage(CharPage.Looting);
     }
     void UpdateHUDstate()
     {

@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81d9d8c8bc7a2cc4f8440b60a362f3b0, type: 3}
-  m_Name: Amulet
+  m_Name: HBelt
   m_EditorClassIdentifier: 
   itemID: 0
-  Name: Amulet
-  Sprite: {fileID: 21300000, guid: bfa1ff1b37d8c3e4982d8a0dae4658c3, type: 3}
+  Name: Heavy Belt
+  Sprite: {fileID: 21300000, guid: ea7a2703ced1c0b4fb6eb4e486622605, type: 3}
   Quality: 0
   GoldValue: 0
   Weight: 0
@@ -22,4 +22,4 @@ MonoBehaviour:
   EquipLevel: 0
   AbilityID: 0
   EquipAbilites: []
-  Type: 1
+  Type: 4

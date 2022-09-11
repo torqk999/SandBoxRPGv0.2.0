@@ -1,5 +1,6 @@
 ﻿- Stat_Change/Adjust by fixed/percent
-- Ai gets stuck in crevises
+- Ai gets stuck in crevises, has the 'zoomies' from time to time
 - Update GUI assistant for text
 - Resolve Multi-Mapping (Mouse/Keyboard/Console)
 - Ramp intent vector to char-animators
+- Entry points for ability particle effects/swing & cast animations

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dc893899ec9787428c4104fc49cd3f8, type: 3}
+  m_Name: ElementalBlast
+  m_EditorClassIdentifier: 
+  Name: 
+  Sprite: {fileID: 0}
+  Duration: 0
+  Value: 0
+  Type: 0
+  TargetStat: 0
+  CCstatus: 0
+  ElementPack:
+    Elements:
+    - Element: 1
+      Value: 0
+    - Element: 2
+      Value: 0
+    - Element: 3
+      Value: 0
+    - Element: 4
+      Value: 0
+    - Element: 5
+      Value: 0
+  DurationLength: 0
+  Timer: 0
+  bIsBuff: 0

@@ -21,16 +21,16 @@ public class SceneManager : MonoBehaviour
         // 1. Check for container
         // 2. Check for lootBag
         // 3. Create lootbag
-        if (GameState.UIman.CurrentPage == CharPage.Looting && GameState.Controller.targetContainer != null &&
-            GameState.Controller.CurrentCharacter.Inventory.TransferItem(GameState.Controller.targetContainer.Inventory, inventoryIndex))
+        if (GameState.UIman.CurrentPage == CharPage.Looting && GameState.pController.targetContainer != null &&
+            GameState.pController.CurrentCharacter.Inventory.TransferItem(GameState.pController.targetContainer.Inventory, inventoryIndex))
             return true;
 
         int index = CheckForLootBagInteractionIndex(character);
         if (index > -1)
         {
             Debug.Log("old bag");
-            Inventory oldLootBag = ((GenericContainer)character.CurrentInteractions[index]).Inventory;
-            if (GameState.Controller.CurrentCharacter.Inventory.TransferItem(oldLootBag, inventoryIndex))
+            Inventory oldLootBag = ((GenericContainer)character.CurrentProximityInteractions[index]).Inventory;
+            if (GameState.pController.CurrentCharacter.Inventory.TransferItem(oldLootBag, inventoryIndex))
                 return true;
         }
 
@@ -41,7 +41,7 @@ public class SceneManager : MonoBehaviour
     }
     int CheckForLootBagInteractionIndex(Character character)
     {
-        return character.CurrentInteractions.FindIndex(x => x.GetInteractData().Type == TriggerType.LOOTBAG);
+        return character.CurrentProximityInteractions.FindIndex(x => x.GetInteractData().Type == TriggerType.LOOTBAG);
     }
     Inventory CreateLootBag(Character character)
     {

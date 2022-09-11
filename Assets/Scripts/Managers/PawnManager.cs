@@ -57,7 +57,7 @@ public class PawnManager : MonoBehaviour
         BuildRigidBody(newPawnObject, currentPawn);
         BuildTriggerVolume(newPawnObject, currentPawn);
 
-        currentPawn.CurrentInteractions = new List<Interaction>();
+        //currentPawn.CurrentProximityInteractions = new List<Interaction>();
 
         prefab.SetActive(false); // disable template
 

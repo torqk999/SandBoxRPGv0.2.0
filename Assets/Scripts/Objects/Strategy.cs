@@ -96,15 +96,15 @@ public class Strategy
         List<Character> candidates = GetDesiredCharacters(tactic);
 
         if (tactic.Condition == TacCondition.GRT)
-            Character.Target = ReturnMostCharacter(tactic, candidates);
+            Character.CurrentTargetCharacter = ReturnMostCharacter(tactic, candidates);
 
         else if (tactic.Condition == TacCondition.LST)
-            Character.Target = ReturnLeastCharacter(tactic, candidates);
+            Character.CurrentTargetCharacter = ReturnLeastCharacter(tactic, candidates);
 
         else
-            Character.Target = ReturnIdealCharacter(tactic, candidates);
+            Character.CurrentTargetCharacter = ReturnIdealCharacter(tactic, candidates);
 
-        return (Character.Target != null);
+        return (Character.CurrentTargetCharacter != null);
     }
     List<Character> GetDesiredCharacters(Tactic tactic)
     {

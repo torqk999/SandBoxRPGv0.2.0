@@ -18,7 +18,6 @@ public class Pawn : MonoBehaviour
 
     [Header("Pawn Components")]
     public GameState GameState;
-    //public CharacterController CurrentController;
     public Transform Socket;
     public Transform Boom;
     public Transform Source;
@@ -29,72 +28,40 @@ public class Pawn : MonoBehaviour
     public Vector3 DefRot;
     public Vector3 CurrentVelocity;
 
-    public Interaction CurrentInteraction;
-    public List<Interaction> CurrentInteractions;
-    public int InteractionCount;
-
     public bool bHasTriggerVolume;
-    public bool bTriggerStateChange = false;
     public bool bUsesGravity;
     public bool bIsGrounded;
     public bool bControllable;
 
-    void UpdateCurrentInteraction()
+    /*
+    public Interaction CurrentTargetInteraction;
+    public List<Interaction> CurrentProximityInteractions;
+    public int InteractionCount;
+
+    public void RemoveInteraction(Interaction interact)
     {
-        if (bTriggerStateChange == false)
+        int index = CurrentProximityInteractions.FindIndex(x => x == interact);
+        if (index == -1)
             return;
-        Debug.Log("UpdatingInteraction");
 
-        bTriggerStateChange = false;
-
-        InteractData data = new InteractData();
-        data.Type = TriggerType.NONE;
-        bool state;
-
-        InteractionCount = CurrentInteractions.Count;
-
-        if (CurrentInteractions.Count > 0)
-        {
-            CurrentInteraction = CurrentInteractions[0];
-            data = CurrentInteraction.GetInteractData();
-            state = true;
-        }
-        else
-        {
-            CurrentInteraction = null;
-            state = false;
-        }
-
-        switch (data.Type)
-        {
-            case TriggerType.NONE:
-                break;
-
-            case TriggerType.CONTAINER:
-                if (!(CurrentInteraction is GenericContainer))
-                {
-                    state = false;
-                    break;
-                }
-                break;
-
-            case TriggerType.CHARACTER:
-                if (!(CurrentInteraction is Character))
-                {
-                    state = false;
-                    break;
-                }
-                break;
-        }
-
-        if (this == GameState.Controller.CurrentPawn)
-        {
-            //if (GameState.Controller.CurrentPawn.CurrentInteraction != null && GameState.Controller.CurrentPawn.CurrentInteraction is GenericContainer)
-            //    PopulateInventoryButtons(((GenericContainer)GameState.Controller.CurrentPawn.CurrentInteraction).Inventory, ButtonType.CONTAINER);
-            //GameState.UIman.UpdateContainer();
-            GameState.UIman.UpdateInteractionHUD(state, data);
-        }
+        ResolveCurrentTargetInteraction(index);
+        CurrentProximityInteractions.Remove(interact);
+        
     }
+    void ResolveCurrentTargetInteraction(int index)
+    {
+        if(index < 0 || index >= CurrentProximityInteractions.Count || CurrentProximityInteractions.Count <= 1)
+        {
+            CurrentTargetInteraction = null;
+            return;
+        }
+
+        index++;
+        index = index >= CurrentProximityInteractions.Count ? 0 : index;
+
+        CurrentTargetInteraction = CurrentProximityInteractions[index];
+    }
+    */
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -114,6 +81,6 @@ public class Pawn : MonoBehaviour
     }
     private void Update()
     {
-        UpdateCurrentInteraction();
+        //UpdateCurrentInteraction();
     }
 }

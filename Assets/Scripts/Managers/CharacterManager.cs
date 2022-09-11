@@ -102,10 +102,10 @@ public class CharacterManager : MonoBehaviour
                 break;
 
             case RangeType.TARGET:
-                if (caller.Target == null)
+                if (caller.CurrentTargetCharacter == null)
                     return;
-                if (Vector3.Distance(caller.Target.Source.position, caller.Source.position) <= call.RangeValue)
-                    ApplyAbilitySingle(caller.Target, call);
+                if (Vector3.Distance(caller.CurrentTargetCharacter.Source.position, caller.Source.position) <= call.RangeValue)
+                    ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
                 break;
 
             case RangeType.AOE:
@@ -144,7 +144,7 @@ public class CharacterManager : MonoBehaviour
                     ApplyRisidualEffect(target, call.Effects[i]);
                     break;
 
-                case EffectDuration.PASSIVE:
+                case EffectDuration.SUSTAINED:
                     ApplyRisidualEffect(target, call.Effects[i]);
                     break;
             }
@@ -160,39 +160,47 @@ public class CharacterManager : MonoBehaviour
             totalValue += (Element)i == Element.HEALING ? -change : change;
         }
 
-        // Healing, it is expected that this element is the last index of all the elements
-        //totalValue -= mod.ElementPack.Elements[CharacterMath.STATS_ELEMENT_COUNT - 1] * (1 - resData[CharacterMath.STATS_ELEMENT_COUNT - 1]);
+        if (totalValue == 0)
+            return;
+
+        target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
+        target.CurrentStats.Stats[(int)mod.TargetStat] =
+            target.CurrentStats.Stats[(int)mod.TargetStat] <= target.MaximumStatValues.Stats[(int)mod.TargetStat] ?
+            target.CurrentStats.Stats[(int)mod.TargetStat] : target.MaximumStatValues.Stats[(int)mod.TargetStat];
+        target.CurrentStats.Stats[(int)mod.TargetStat] =
+            target.CurrentStats.Stats[(int)mod.TargetStat] >= 0 ?
+            target.CurrentStats.Stats[(int)mod.TargetStat] : 0;
+
+        target.bAssetUpdate = true;
 
         switch (mod.TargetStat)
         {
             case RawStat.HEALTH:
-                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_H;
                 break;
 
             case RawStat.MANA:
-                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_M;
                 break;
 
             case RawStat.SPEED:
-                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
+
                 break;
 
             case RawStat.STAMINA:
-                target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
                 if (totalValue > 0)
                     target.DebugState = DebugState.LOSS_S;
                 break;
         }
-        if (totalValue > 0)
-            target.bAssetUpdate = true;
+
+        
     }
     void ApplyRisidualEffect(Character target, Effect mod)
     {
-        Effect modInstance = new Effect(mod);
+        Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
+        modInstance.Clone(mod);
         target.Effects.Add(modInstance);
     }
     #endregion
@@ -310,6 +318,7 @@ public class CharacterManager : MonoBehaviour
         newCharacter.bDebugMode = GameState.bDebugEffects;
         newCharacter.Sheet.Faction = party.Faction;
         newCharacter.Inventory = party.PartyLoot;
+        newCharacter.CurrentProximityInteractions = new List<Interaction>();
 
         SetupAI(newCharacter);
 
@@ -323,7 +332,8 @@ public class CharacterManager : MonoBehaviour
         character.CCstatus = new bool[3];
         character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
-
+        character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
+        
         // Sheet
         CharacterSheet sheetInstance = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
         sheetInstance.Clone(character.Sheet);

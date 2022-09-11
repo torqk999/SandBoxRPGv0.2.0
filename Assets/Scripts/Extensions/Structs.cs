@@ -7,20 +7,14 @@ public enum EffectDuration
     ONCE,
     TIMED,
     PASSIVE,
-    SPAWN
+    SUSTAINED
 }
-public enum EffectType
+public enum EffectAction
 {
     RESISTANCE,
     STAT,
-    CROWD_CONTROL
-}
-public enum RawStat
-{
-    HEALTH,
-    STAMINA,
-    MANA,
-    SPEED,
+    CROWD_CONTROL,
+    SPAWN
 }
 public enum EffectValue
 {
@@ -28,31 +22,18 @@ public enum EffectValue
     PERC_CURR,
     PERC_MAX,
     PERC_MISS,
-    FLAT
-}
-public enum EffectStatus
-{
-    NONE,
-    STAT_CURRENT, // Damage, Heal
-    STAT_MAX, // MaxHealth, Resistance, etc.
-    DOT
+    FLAT,
+    IMMUNE
 }
 public enum CCstatus
 {
     NONE,
     IMMOBILE,
     UN_ARMED,
-    SILENCED
-}
-public enum Element
-{
-    PHYSICAL,
-    FIRE,
-    WATER,
-    EARTH,
-    AIR,
-    POSION,
-    HEALING
+    SILENCED,
+    FEARED,
+    CHARMED,
+    DRUNK
 }
 public enum SkillType
 {
@@ -66,108 +47,148 @@ public enum SkillType
     RANGED,
     MAGIC,
 }
+public enum RawStat
+{
+    HEALTH,
+    STAMINA,
+    MANA,
+    SPEED,
+}
+[System.Serializable]
+public struct StatReflection
+{
+    public float HEALTH;
+    public float STAMINA;
+    public float MANA;
+    public float SPEED;
+
+    public bool Reflect(ref float[] rawStats, bool inject = true)
+    {
+        try
+        {
+            if (inject)
+            {
+                rawStats[(int)RawStat.HEALTH] = HEALTH;
+                rawStats[(int)RawStat.STAMINA] = STAMINA;
+                rawStats[(int)RawStat.MANA] = MANA;
+                rawStats[(int)RawStat.SPEED] = SPEED;
+            }
+            else
+            {
+                HEALTH = rawStats[(int)RawStat.HEALTH];
+                STAMINA = rawStats[(int)RawStat.STAMINA];
+                MANA = rawStats[(int)RawStat.MANA];
+                SPEED = rawStats[(int)RawStat.SPEED];
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
 [System.Serializable]
 public struct StatPackage
 {
     public float[] Stats;
-    public StatPackage(int count)
+    public StatReflection Reflection;
+    public StatPackage(StatPackage source)
     {
-        Stats = new float[count];
+        Reflection = source.Reflection;
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        if (source.Stats != null && source.Stats.Length == CharacterMath.STATS_RAW_COUNT)
+            for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+                Stats[i] = source.Stats[i];
+    }
+    public void Init()
+    {
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
     }
     public void Amplify(float amp)
     {
-        //float[] returnValues = PullData();
         for (int i = 0; i < Stats.Length; i++)
             Stats[i] *= amp;
-        //EnterData(returnValues);
     }
-    /*public void EnterData(float[] input)
+}
+public enum Element
+{
+    PHYSICAL,
+    FIRE,
+    WATER,
+    EARTH,
+    AIR,
+    POISON,
+    HEALING
+}
+[System.Serializable]
+public struct ElementReflection
+{
+    public float PHYSICAL;
+    public float FIRE;
+    public float WATER;
+    public float EARTH;
+    public float AIR;
+    public float POISON;
+    public float HEALING;
+
+    public bool Reflect(ref float[] elements, bool inject = true)
     {
-        if (input.Length != CharacterMath.STATS_RAW_COUNT)
-            return;
-
-        input.CopyTo(Stats, 0);
-
-        //for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
-            //Stats[i] = input[i]
-
-        //HEALTH = input[0];
-        //STAMINA = input[1];
-        //MANA = input[2];
-        //SPEED = input[3];
+        try
+        {
+            if (inject)
+            {
+                elements[(int)Element.PHYSICAL] = PHYSICAL;
+                elements[(int)Element.FIRE] = FIRE;
+                elements[(int)Element.WATER] = WATER;
+                elements[(int)Element.EARTH] = EARTH;
+                elements[(int)Element.AIR] = AIR;
+                elements[(int)Element.POISON] = POISON;
+                elements[(int)Element.HEALING] = HEALING;
+            }
+            else
+            {
+                PHYSICAL = elements[(int)Element.PHYSICAL];
+                FIRE = elements[(int)Element.FIRE];
+                WATER = elements[(int)Element.WATER];
+                EARTH = elements[(int)Element.EARTH];
+                AIR = elements[(int)Element.AIR];
+                POISON = elements[(int)Element.POISON];
+                HEALING = elements[(int)Element.HEALING];
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
-    public float[] PullData()
-    {
-        float[] output = new float[CharacterMath.STATS_RAW_COUNT];
-
-        output[0] = HEALTH;
-        output[1] = STAMINA;
-        output[2] = MANA;
-        output[3] = SPEED;
-
-        return output;
-    }
-    public StatPackage Clone(StatPackage source)
-    {
-        StatPackage clone = new StatPackage();
-
-        clone.EnterData(source.PullData());
-
-        return clone;
-    }*/
 }
 [System.Serializable]
 public struct ElementPackage
 {
+    public ElementReflection Reflection;
     public float[] Elements;
 
-    public ElementPackage(int count)
+    public ElementPackage(ElementPackage source)
     {
-        Elements = new float[count];
+        Reflection = source.Reflection; // maybe?
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        if (source.Elements != null && source.Elements.Length == CharacterMath.STATS_ELEMENT_COUNT)
+            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+                Elements[i] = source.Elements[i];
+    }
+
+    public void Init()
+    {
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
     }
 
     public void Amplify(float amp)
     {
-        //float[] returnValues = PullData();
         for (int i = 0; i < Elements.Length; i++)
             Elements[i] *= amp;
-        //EnterData(returnValues);
     }
-    /*public void EnterData(float[] input)
-    {
-        if (input.Length != CharacterMath.STATS_ELEMENT_COUNT)
-            return;
-
-        PHYSICAL = input[0];
-        FIRE = input[1];
-        WATER = input[2];
-        EARTH = input[3];
-        AIR = input[4];
-        POISON = input[5];
-        HEALING = input[6];
-    }
-    public float[] PullData()
-    {
-        float[] output = new float[CharacterMath.STATS_ELEMENT_COUNT];
-
-        output[0] = PHYSICAL;
-        output[1] = FIRE;
-        output[2] = WATER;
-        output[3] = EARTH;
-        output[4] = AIR;
-        output[5] = POISON;
-        output[6] = HEALING;
-
-        return output;
-    }
-    public ElementPackage Clone(ElementPackage source)
-    {
-        ElementPackage clone = new ElementPackage();
-
-        clone.EnterData(source.PullData());
-
-        return clone;
-    }*/
 }
 [System.Serializable]
 public struct EXPpackage
@@ -177,21 +198,6 @@ public struct EXPpackage
     {
         Experience = new float[count];
     }
-
-    /*public float LIGHT;
-    public float MEDIUM;
-    public float HEAVY;
-    public float ONE_HAND;
-    public float TWO_HAND;
-    public float SHIELD;
-    public float RANGED;
-    public float MAGIC;
-
-    public float LEVEL;*/
-
-    /*public void EnterData(float[] input)
-    {
-    }*/
 }
 [System.Serializable]
 public struct LVLpackage
@@ -201,47 +207,35 @@ public struct LVLpackage
     {
         Levels = new int[count];
     }
-    /*public int LIGHT;
-    public int MEDIUM;
-    public int HEAVY;
-    public int ONE_HAND;
-    public int OFF_HAND;
-    public int TWO_HAND;
-    public int SHIELD;
-    public int RANGED;
-    public int MAGIC;
-
-    public int CHARACTER;*/
-
-    /*public void EnterData(int[] input)
-    {
-
-    }
-    public int[] PullData()
-    {
-        int[] output = new int[CharacterMath.SKILLS_COUNT];
-
-        output[0] = LIGHT;
-        output[1] = MEDIUM;
-        output[2] = HEAVY;
-        output[3] = ONE_HAND;
-        output[4] = OFF_HAND;
-        output[5] = TWO_HAND;
-        output[6] = SHIELD;
-        output[7] = RANGED;
-        output[8] = MAGIC;
-
-        return output;
-    }*/
 }
 [System.Serializable]
-
-public struct InteractData
+public class InteractData
 {
     public TriggerType Type;
-    public string Splash;
+    public string Name;
+}
+
+public class CharacterData : InteractData
+{
+    public Character myCharacter;
+
     public float HealthCurrent;
     public float HealthMax;
+
+    public CharacterData(Character character)
+    {
+        Name = character.Sheet.Name;
+        myCharacter = character;
+
+        HealthCurrent = character.CurrentStats.Stats[(int)RawStat.HEALTH];
+        HealthMax = character.MaximumStatValues.Stats[(int)RawStat.HEALTH];
+    }
+}
+
+public class LootData : InteractData
+{
+    public float Weight;
+    public Quality Quality;
 }
 
 //Interfaces

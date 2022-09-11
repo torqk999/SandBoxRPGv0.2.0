@@ -15,15 +15,19 @@ public enum AnimatorType
 public enum EquipSlot
 {
     HEAD,
+    NECK,
+    PAULDRON,
     CHEST,
     BELT,
-    LEGS,
-    BOOTS,
-    NECK,
+    GLOVES,
     MAIN,
     OFF,
-    RING_L,
-    RING_R
+    LEGS,
+    BOOTS,
+    
+    //RING
+    //RING_L,
+    //RING_R
 }
 
 public class Character : Pawn, Interaction
@@ -56,15 +60,20 @@ public class Character : Pawn, Interaction
     public float ChannelTimer;
 
     [Header("Character Logic")]
-    public Character Target;
+    public Character CurrentTargetCharacter;
     public List<Character> TargettedBy;
     public Inventory Inventory;
-    public InteractData InteractData;
     public GameObject CharacterCanvas;
 
     [Header("Character Slots")]
     public CharacterAbility[] AbilitySlots;
     public EquipWrapper[] EquipmentSlots;
+    public RingWrapper[] RingSlots;
+
+    [Header("Interaction")]
+    public Interaction CurrentTargetInteraction;
+    public List<Interaction> CurrentProximityInteractions;
+    public int InteractionCount;
 
     [Header("Debugging")]
     public DebugState DebugState;
@@ -73,20 +82,67 @@ public class Character : Pawn, Interaction
     public bool bAssetTimer;
     public float AssetTimer;
 
-    public InteractData GetInteractData()
+    public void UpdateAbilites()
     {
-        return InteractData;
-    }
-    public void Interact()
-    {
-        GameState.Controller.CurrentCharacter.Target = this;
+        UpdateAbilitySlots();
+        UpdateAbilityList();
     }
     public void InitializeCharacter()
     {
         InitializeCharacterSheet();
         InitializePassiveRegen();
-        InitializeInteractData();
     }
+
+    #region INTERACTION
+    public void SwapInteractions()
+    {
+        if (CurrentTargetCharacter == null &&
+            CurrentTargetInteraction != null &&
+            CurrentTargetInteraction is Character)
+        {
+            CurrentTargetCharacter = (Character)CurrentTargetInteraction;
+            return;
+        }
+        
+        if (CurrentTargetCharacter != null)
+        {
+            CurrentTargetCharacter = null;
+            RemoveInteraction(CurrentTargetCharacter);
+        }
+
+    }
+    public void RemoveInteraction(Interaction interact)
+    {
+        int index = CurrentProximityInteractions.FindIndex(x => x == interact);
+        ResolveCurrentTargetInteraction(index);
+        //if (index == -1)
+        //{
+        //    return;
+        //}
+        CurrentProximityInteractions.Remove(interact);
+    }
+    void ResolveCurrentTargetInteraction(int index)
+    {
+        if (index < 0 || index >= CurrentProximityInteractions.Count || CurrentProximityInteractions.Count <= 1)
+        {
+            CurrentTargetInteraction = null;
+            return;
+        }
+
+        index++;
+        index = index >= CurrentProximityInteractions.Count ? 0 : index;
+
+        CurrentTargetInteraction = CurrentProximityInteractions[index];
+    }
+    public InteractData GetInteractData()
+    {
+        return new CharacterData(this);
+    }
+    public void Interact()
+    {
+        GameState.pController.CurrentCharacter.CurrentTargetCharacter = this;
+    }
+    #endregion
 
     #region INITIALIZERS
     void InitializeCharacterSheet()
@@ -94,8 +150,10 @@ public class Character : Pawn, Interaction
         if (Sheet == null)
             return;
 
-        CurrentStats = new StatPackage(CharacterMath.STATS_RAW_COUNT);
-        MaximumStatValues = new StatPackage(CharacterMath.STATS_RAW_COUNT);
+        CurrentStats = new StatPackage();
+        CurrentStats.Init();
+        MaximumStatValues = new StatPackage();
+        MaximumStatValues.Init();
 
         for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
         {
@@ -108,7 +166,8 @@ public class Character : Pawn, Interaction
             MaximumStatValues.Stats[i] = stat;
         }
 
-        Resistances = new ElementPackage(CharacterMath.STATS_ELEMENT_COUNT);
+        Resistances = new ElementPackage();// CharacterMath.STATS_ELEMENT_COUNT);
+        Resistances.Init();
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
@@ -117,6 +176,8 @@ public class Character : Pawn, Interaction
                 CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] *
                 Sheet.Level);
         }
+
+        //Debug.Log($"{Sheet.Name}/{name} : {CurrentStats.Stats.Length} : {MaximumStatValues.Stats.Length}");
 
         UpdateAbilites();
     }
@@ -130,35 +191,26 @@ public class Character : Pawn, Interaction
                 (1 + CharacterMath.RAW_GROWTH[i]);
 
             //Debug.Log($"{Sheet.Name} : {(EffectTarget)i} : {magnitude}");
-            Effects.Add(CreateRegen((EffectType)i, magnitude));
+            Effects.Add(CreateRegen((EffectAction)i, magnitude));
         }
     }
-    Effect CreateRegen(EffectType targetStat, float magnitude)
+    Effect CreateRegen(EffectAction targetStat, float magnitude)
     {
-        Effect regen = new Effect();
+        Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";
         regen.Type = targetStat;
-        regen.Duration = EffectDuration.PASSIVE;
+        regen.Duration = EffectDuration.SUSTAINED;
+        regen.ElementPack = new ElementPackage();
+        regen.ElementPack.Init();
         regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
 
         return regen;
     }
-    void InitializeInteractData()
-    {
-        InteractData.Type = TriggerType.CHARACTER;
-        InteractData.Splash = Sheet.Name;
-        //UpdateInteractData();
-        //InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
-        //InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
-    }
+
     #endregion
 
     #region ABILITIES
-    public void UpdateAbilites()
-    {
-        UpdateAbilitySlots();
-        UpdateAbilityList();
-    }
+
     void UpdateAbilitySlots()
     {
         List<int> equipIDs = new List<int>();
@@ -196,12 +248,23 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region EQUIPPING
-    public bool EquipSelection(int equipIndex, int inventoryIndex)
+    public bool EquipSelection(int equipIndex, int ringIndex, int inventoryIndex)
     {
-        if (inventoryIndex == -1 && equipIndex != -1)
-            return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
+        if (equipIndex != -1)
+            return AttemptEquipRemoval(EquipmentSlots, equipIndex);
 
-        if (inventoryIndex != -1 && equipIndex == -1)
+        if (ringIndex != -1)
+            return AttemptEquipRemoval(RingSlots, ringIndex);
+
+        /*if (inventoryIndex == -1 && equipIndex != -1)
+        {
+            if (isRing)
+                return AttemptEquipRemoval(RingSlots, equipIndex);
+            return AttemptEquipRemoval(EquipmentSlots, equipIndex);
+        }*/
+            //return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
+
+        if (inventoryIndex != -1)
         {
             if (Inventory.Items[inventoryIndex] == null || !(Inventory.Items[inventoryIndex] is EquipWrapper))
                 return false;
@@ -211,18 +274,12 @@ public class Character : Pawn, Interaction
             if (equip is WearableWrapper)
             {
                 WearableWrapper wear = (WearableWrapper)equip;
-                //int slotNumber = (int)wear.Wear.Type;
-
-                if (wear.Wear.Type != WearableType.RING)
-                {
-                    EquipWear(wear.Wear.Type, inventoryIndex);
-                    return true;
-                }
-                EquipRing(inventoryIndex);
-                return true;
+                return EquipWear(wear.Wear.Type, inventoryIndex);
             }
 
-
+            if (equip is RingWrapper)
+                return EquipRing(inventoryIndex);
+            
             if (equip is TwoHandWrapper)
                 return EquipTwoHand(inventoryIndex);
 
@@ -236,19 +293,20 @@ public class Character : Pawn, Interaction
         Debug.Log("How did you get here? >.>");
         return false;
     }
-    void EquipWear(WearableType type, int inventoryIndex)
+    bool EquipWear(EquipSlot equipSlot, int inventoryIndex)
     {
-        int equipIndex = (int)type;
+        //int equipIndex = (int)equipSlot;
 
-        if (EquipmentSlots[equipIndex] == null)
+        if (EquipmentSlots[(int)equipSlot] == null)
         {
-            EquipmentSlots[equipIndex] =
+            EquipmentSlots[(int)equipSlot] =
                 (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return;
+            return true;
         }
 
-        EquipmentSlots[equipIndex] =
-            (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[equipIndex], inventoryIndex);
+        EquipmentSlots[(int)equipSlot] =
+            (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)equipSlot], inventoryIndex);
+        return true;
     }
     bool EquipOneHand(int inventoryIndex, bool main = true)
     {
@@ -313,26 +371,50 @@ public class Character : Pawn, Interaction
         Debug.Log("How did you get here? >.>");
         return false;
     }
-    void EquipRing(int inventoryIndex)
+    bool EquipRing(int inventoryIndex)
     {
-        //int slot = (bLeftHand) ? 8 : 9;
+        /*if (Inventory.Items[inventoryIndex] == null ||
+            !(Inventory.Items[inventoryIndex] is RingWrapper))
+            return false;*/
 
-        if (EquipmentSlots[(int)EquipSlot.RING_L] == null)
+        //RingWrapper ring = (RingWrapper)Inventory.Items[inventoryIndex];
+        
+        for (int i = 0; i < CharacterMath.RING_SLOT_COUNT;i++)
         {
-            EquipmentSlots[(int)EquipSlot.RING_L] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return;
+            if (RingSlots[i] == null)
+            {
+                RingSlots[i] = (RingWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+                return true;
+            }
         }
+        RingSlots[0] = (RingWrapper)Inventory.SwapItemSlots(RingSlots[0], inventoryIndex); // Default first index of rings
+        return true;
+        /*
+        if (RingSlots[ringIndex] == null)
+        {
+            RingSlots[ringIndex] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
+            return;
+        }*/
 
-        if (EquipmentSlots[(int)EquipSlot.RING_R] == null)
+        /*if (EquipmentSlots[(int)EquipSlot.RING_R] == null)
         {
             EquipmentSlots[(int)EquipSlot.RING_R] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
             return;
-        }
+        }*/
 
-        EquipmentSlots[(int)EquipSlot.RING_R] = (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)EquipSlot.RING_R], inventoryIndex);
+        
     }
-    bool AttemptEquipRemoval(EquipWrapper equip, int equipIndex)
+    bool AttemptEquipRemoval(EquipWrapper[] slotList, int equipIndex)
     {
+        if (slotList == null ||
+            slotList.Length == 0)
+            return false;
+
+        if (equipIndex < 0 ||
+            equipIndex >= slotList.Length)
+            return false;
+
+        EquipWrapper equip = slotList[equipIndex];
         if (equip == null)
             return false;
 
@@ -400,11 +482,11 @@ public class Character : Pawn, Interaction
             if (AbilitySlots[i] != null)
                 AbilitySlots[i].UpdateCooldown();
     }
-    void UpdateInteractData()
+    /*void UpdateInteractData()
     {
         InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
         InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
-    }
+    }*/
     void UpdateAssetTimer()
     {
         if (!bAssetTimer)
@@ -491,6 +573,6 @@ public class Character : Pawn, Interaction
         UpdateAssets();
         UpdateLife();
 
-        UpdateInteractData();
+        //UpdateInteractData();
     }
 }

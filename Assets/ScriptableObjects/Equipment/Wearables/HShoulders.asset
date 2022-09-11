@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81d9d8c8bc7a2cc4f8440b60a362f3b0, type: 3}
-  m_Name: Ring
+  m_Name: HShoulders
   m_EditorClassIdentifier: 
   itemID: 0
-  Name: Amulet
-  Sprite: {fileID: 21300000, guid: bfa1ff1b37d8c3e4982d8a0dae4658c3, type: 3}
+  Name: Heavy Shoulders
+  Sprite: {fileID: 21300000, guid: 23a90da8ca00757479f97f1c61dc0e22, type: 3}
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipSkill: 0
+  EquipSkill: 2
   EquipLevel: 0
   AbilityID: 0
   EquipAbilites: []
-  Type: 7
+  Type: 2

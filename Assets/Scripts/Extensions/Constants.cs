@@ -15,8 +15,8 @@ public static class GlobalConstants
     public const int MAX_PATH_CYCLES = 1000;
 
     public const string ANIM_BOOL_WALK = "walking";
-    public const string ANIM_VERT_WALK = "VerticalMove";
-    public const string ANIM_HORZ_WALK = "HorizontalMove";
+    public const string ANIM_VERT_WALK = "verticalMove";
+    public const string ANIM_HORZ_WALK = "horizontalMove";
 
     public const string TAG_GROUND = "GROUND";
     public const string TAG_CHARACTER = "CHARACTER";
@@ -41,6 +41,7 @@ public static class CharacterMath
     public static readonly int STATS_LEVELS_COUNT = Enum.GetNames(typeof(SkillType)).Length;
     public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(EquipSlot)).Length;
 
+    public const int RING_SLOT_COUNT = 2;
     public const int PARTY_INVENTORY_MAX = 100;
     public const int ABILITY_SLOTS = 12;
     public const int TACTIC_SLOTS = 8;
@@ -85,13 +86,13 @@ public static class CharacterMath
 
         // ORC
         {
-        1,    // LIGHT
-        1,    // MEDIUM
-        2,    // HEAVY
-        1,    // ONE HAND
-        1,    // TWO HAND
-        1,    // SHIELD
-        1,    // RANGED
+        1,  // LIGHT
+        1,  // MEDIUM
+        2,  // HEAVY
+        1,  // ONE HAND
+        1.25f,  // TWO HAND
+        1,  // SHIELD
+        1,  // RANGED
         .5f,  // MAGIC
         }
     };
@@ -156,7 +157,6 @@ public static class CharacterMath
     };
     public static readonly float[] RAW_GROWTH =
     {
-
         5,
         1,
         1,
@@ -173,5 +173,13 @@ public static class CharacterMath
         0
     };
 
+    /*PHYSICAL;
+    public float FIRE;
+    public float WATER;
+    public float EARTH;
+    public float AIR;
+    public float POISON;
+    public float HEALING;
+     */
 }
 

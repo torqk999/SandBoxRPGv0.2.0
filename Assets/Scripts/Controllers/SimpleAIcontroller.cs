@@ -34,7 +34,7 @@ public class SimpleAIcontroller : CharacterController
     public bool bIsAgressive;
     public bool bIsFollowing;
     public bool bIsUsingNavMesh;
-    public bool bTestMotion;
+    public bool bTestMotion; // ????????????
     public bool bStrategyActive;
     public bool bDebuggingDisable;
 
@@ -81,8 +81,8 @@ public class SimpleAIcontroller : CharacterController
         bIsAwake = !(GameState == null
             || CurrentCharacter == null
             || (CurrentCharacter.bControllable &&
-                GameState.Controller != null &&
-                GameState.Controller.CurrentCharacter == CurrentCharacter));
+                GameState.pController != null &&
+                GameState.pController.CurrentCharacter == CurrentCharacter));
     }
     void FindTarget()
     {
@@ -99,7 +99,7 @@ public class SimpleAIcontroller : CharacterController
 
         if (bIsFollowing)
         {
-            TargetCharacter = GameState.Controller.CurrentCharacter;
+            TargetCharacter = GameState.pController.CurrentCharacter;
             return;
         }
     }

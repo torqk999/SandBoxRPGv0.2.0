@@ -14,6 +14,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<SimpleAIcontroller> myAIpool = new List<SimpleAIcontroller>();
     public List<Stackable> SampleObjects;
     public List<Wearable> SampleGear;
+    public List<Ring> SampleRings;
     public List<OneHand> SampleOneHands;
     public List<OffHand> SampleOffHands;
     public List<TwoHand> SampleTwoHands;
@@ -40,6 +41,18 @@ public class SimpleWorldBuilder : MonoBehaviour
                 continue;
 
             WearableWrapper newWrapper = new WearableWrapper(wear);
+            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            GameState.EQUIPMENT_INDEX++;
+
+            inventory.Items.Add(newWrapper);
+            LootBox.Inventory.Items.Add(newWrapper);
+        }
+        foreach (Ring ring in SampleRings)
+        {
+            if (ring == null)
+                continue;
+
+            RingWrapper newWrapper = new RingWrapper(ring);
             newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
@@ -117,7 +130,7 @@ public class SimpleWorldBuilder : MonoBehaviour
         SpawnMobs();
         
 
-        GameState.Controller.InitialPawnControl();
+        GameState.pController.InitialPawnControl();
 
         GameState.testBuilder.SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);//GameState.Controller.CurrentCharacter);
     }

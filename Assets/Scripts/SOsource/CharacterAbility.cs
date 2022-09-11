@@ -33,6 +33,7 @@ public class CharacterAbility : ScriptableObject
     public string Name;
     public Sprite Sprite;
     public bool bTargetEnemy;
+    public bool bIsPassive;
     public RangeType RangeType;
     public RawStat CostType;
     public AbilityType AbilityType;
@@ -62,8 +63,9 @@ public class CharacterAbility : ScriptableObject
         Effects = new Effect[ability.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
         {
-            Effects[i] = ability.Effects[i];
-            Effects[i].ElementPack.Amplify(potency);
+            Effects[i] = (Effect)ScriptableObject.CreateInstance("Effect");
+            Effects[i].Clone(ability.Effects[i], potency);
+            //Effects[i].ElementPack.Amplify(potency);
         }
     }
     public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
