@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static TestAnimation;
 
 public enum CostType
 {
@@ -35,11 +36,16 @@ public class CharacterAbility : ScriptableObject
     public RangeType RangeType;
     public CostType CostType;
     public AbilityType AbilityType;
+    public CharAnimationState AnimationState;
+    public CharAnimation CharAnimation;
+    public AnimationTarget AnimationTarget;
     public float RangeValue;
     public float CostValue;
     public float CD_Duration;
     public float CD_Timer;
     public Effect[] Effects;
+
+
 
     public void Clone(CharacterAbility ability, float potency = 1)
     {

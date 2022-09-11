@@ -70,13 +70,13 @@ public static class CharacterMath
 
         // ORC
         {
-        1,  // LIGHT
-        1,  // MEDIUM
-        2,  // HEAVY
-        1,  // ONE HAND
-        1,  // TWO HAND
-        1,  // SHIELD
-        1,  // RANGED
+        1,    // LIGHT
+        1,    // MEDIUM
+        2,    // HEAVY
+        1,    // ONE HAND
+        1,    // TWO HAND
+        1,    // SHIELD
+        1,    // RANGED
         .5f,  // MAGIC
         }
     };
@@ -87,7 +87,7 @@ public static class CharacterMath
         0.9f,   // HEALTH
         0.9f,   // STAMINA
         0.9f,   // MANA
-        1f,      // SPEED
+        1f,     // SPEED
 
         1,      // PHYS
         1,      // FIRE
@@ -116,33 +116,33 @@ public static class CharacterMath
     };
     public static readonly float[] BASE_STAT =
     {
-        100,// HEALTH
-        100,// STAMINA
-        100,// MANA
-        3,// SPEED
+        100,    // HEALTH
+        100,    // STAMINA
+        100,    // MANA
+        5,       // SPEED
 
-        0,// PHYS
-        0,// FIRE
-        0,// WATER
-        0,// EARTH
-        0, // AIR
+        0,  // PHYS
+        0,  // FIRE
+        0,  // WATER
+        0,  // EARTH
+        0,  // AIR
         0,  // POISON
-        0// HEALING
+        0   // HEALING
     };
     public static readonly float[] LEVEL_STAT =
     {
-        5,
-        1,
-        1,
-        0,
+        5,  // HEALTH
+        1,  // STAMINA
+        1,  // MANA
+        0,  // SPEED
 
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
+        0,  // PHYS
+        0,  // FIRE
+        0,  // WATER
+        0,  // EARTH
+        0,  // AIR
+        0,  // POISON
+        0   // HEALING
     };
 
     /*PHYSICAL;
