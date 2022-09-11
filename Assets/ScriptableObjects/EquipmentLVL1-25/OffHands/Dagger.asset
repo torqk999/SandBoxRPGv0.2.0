@@ -21,5 +21,6 @@ MonoBehaviour:
   EquipSkill: 3
   EquipLevel: 0
   AbilityID: 0
-  EquipAbilites: []
+  EquipAbilites:
+  - {fileID: 0}
   Type: 0

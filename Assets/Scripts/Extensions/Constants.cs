@@ -85,13 +85,13 @@ public static class CharacterMath
 
         // ORC
         {
-        1,  // LIGHT
-        1,  // MEDIUM
-        2,  // HEAVY
-        1,  // ONE HAND
-        1,  // TWO HAND
-        1,  // SHIELD
-        1,  // RANGED
+        1,    // LIGHT
+        1,    // MEDIUM
+        2,    // HEAVY
+        1,    // ONE HAND
+        1,    // TWO HAND
+        1,    // SHIELD
+        1,    // RANGED
         .5f,  // MAGIC
         }
     };
@@ -156,6 +156,7 @@ public static class CharacterMath
     };
     public static readonly float[] RAW_GROWTH =
     {
+
         5,
         1,
         1,
@@ -172,13 +173,5 @@ public static class CharacterMath
         0
     };
 
-    /*PHYSICAL;
-    public float FIRE;
-    public float WATER;
-    public float EARTH;
-    public float AIR;
-    public float POISON;
-    public float HEALING;
-     */
 }
 
