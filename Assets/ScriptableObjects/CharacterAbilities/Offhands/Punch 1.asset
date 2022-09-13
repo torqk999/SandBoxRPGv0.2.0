@@ -15,28 +15,16 @@ MonoBehaviour:
   WeaponID: 0
   Name: Punch
   Sprite: {fileID: 21300000, guid: 98f008d1f643f174584c747fc67bd8cd, type: 3}
+  bTargetEnemy: 0
+  bIsPassive: 0
   RangeType: 1
   CostType: 2
   AbilityType: 0
+  AnimationState: 0
+  CharAnimation: 0
+  AnimationTarget: 0
   RangeValue: 2
   CostValue: 5
   CD_Duration: 3
   CD_Timer: 0
-  Effects:
-  - Name: OW!
-    Sprite: {fileID: 0}
-    Type: 0
-    Target: 0
-    Status: 0
-    CCstatus: 0
-    ElementPack:
-      PHYSICAL: 5
-      FIRE: 0
-      WATER: 0
-      EARTH: 0
-      AIR: 0
-      POISON: 0
-      HEALING: 0
-    Duration: 0
-    Timer: 0
-    bIsBuff: 0
+  Effects: []
