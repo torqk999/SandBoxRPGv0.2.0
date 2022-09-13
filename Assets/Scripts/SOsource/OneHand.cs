@@ -18,7 +18,7 @@ public class OneHand : Equipment
     [Header("OneHand Properties")]
     public OneHandType Type;
 
-    public OneHand CloneOneHand()
+    public OneHand CloneOneHand(bool inject = false)
     {
         OneHand newOneHand = (OneHand)ScriptableObject.CreateInstance("OneHand");
 
@@ -33,9 +33,8 @@ public class OneHand : Equipment
         newOneHand.EquipSkill = EquipSkill;
         newOneHand.EquipLevel = EquipLevel;
         newOneHand.AbilityID = AbilityID;
-        newOneHand.EquipAbilites = new CharacterAbility[EquipAbilites.Length];
-        for (int i = 0; i < EquipAbilites.Length; i++)
-            newOneHand.EquipAbilites[i] = EquipAbilites[i];
+
+        newOneHand.CloneAbilities(EquipAbilities, 1, inject);
 
         return newOneHand;
     }

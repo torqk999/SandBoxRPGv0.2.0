@@ -12,21 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dc893899ec9787428c4104fc49cd3f8, type: 3}
   m_Name: OUCH
   m_EditorClassIdentifier: 
-  Name: 
+  Name: OUCH!
   Sprite: {fileID: 0}
-  Type: 0
-  Value: 0
-  Target: 0
-  Status: 0
+  Duration: 0
+  Value: 4
+  Type: 1
+  TargetStat: 0
   CCstatus: 0
   ElementPack:
-    PHYSICAL: 0
-    FIRE: 0
-    WATER: 0
-    EARTH: 0
-    AIR: 0
-    POISON: 0
-    HEALING: 0
-  Duration: 0
+    Reflection:
+      PHYSICAL: 5
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Elements: []
+  DurationLength: 0
   Timer: 0
   bIsBuff: 0

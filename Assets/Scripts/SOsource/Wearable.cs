@@ -22,7 +22,7 @@ public class Wearable : Equipment
     public EquipSlot Type;
     //public EquipSkill EquipSkill;
 
-    public Wearable CloneWear()
+    public Wearable CloneWear(bool inject = false)
     {
         Wearable newWear = (Wearable)ScriptableObject.CreateInstance("Wearable");
 
@@ -37,9 +37,8 @@ public class Wearable : Equipment
         newWear.EquipSkill = EquipSkill;
         newWear.EquipLevel = EquipLevel;
         newWear.AbilityID = AbilityID;
-        newWear.EquipAbilites = new CharacterAbility[EquipAbilites.Length];
-        for (int i = 0; i < EquipAbilites.Length; i++)
-            newWear.EquipAbilites[i] = EquipAbilites[i];
+
+        newWear.CloneAbilities(EquipAbilities, 1, inject);
 
         return newWear;
     }

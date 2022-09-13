@@ -32,24 +32,31 @@ public class CharacterSheet : ScriptableObject
     public string Name;
     public int Level;
     public Sprite Portrait;
+    public Race Race;
+    public Faction Faction;
 
     public EXPpackage CurrentEXP;
     public EXPpackage NextLevelEXP;
     public LVLpackage Skills;
     
-    public Race Race;
-    public Faction Faction;
-
     public void Clone(CharacterSheet target)
     {
         Name = target.Name;
         Level = target.Level;
         Portrait = target.Portrait;
+        Race = target.Race;
+        //Faction = target.Faction;
         CurrentEXP = target.CurrentEXP;
         NextLevelEXP = target.NextLevelEXP;
         Skills = target.Skills;
-        Race = target.Race;
-        Skills = target.Skills;
+    }
+
+    public void Fresh()
+    {
+        Level = 0;
+        CurrentEXP = new EXPpackage(CharacterMath.STATS_LEVELS_COUNT);
+        NextLevelEXP = new EXPpackage(CharacterMath.STATS_LEVELS_COUNT);
+        Skills = new LVLpackage(CharacterMath.STATS_LEVELS_COUNT);
     }
 
     /*== GOOD ==
