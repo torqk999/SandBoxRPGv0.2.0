@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Ring", menuName = "ScriptableObjects/Equipment/Ring")]
 public class Ring : Equipment
 {
-    public Ring CloneRing()
+    public Ring CloneRing(bool inject = false)
     {
         Ring newRing = (Ring)ScriptableObject.CreateInstance("OneHand");
 
@@ -20,9 +20,8 @@ public class Ring : Equipment
         newRing.EquipSkill = EquipSkill;
         newRing.EquipLevel = EquipLevel;
         newRing.AbilityID = AbilityID;
-        newRing.EquipAbilites = new CharacterAbility[EquipAbilites.Length];
-        for (int i = 0; i < EquipAbilites.Length; i++)
-            newRing.EquipAbilites[i] = EquipAbilites[i];
+
+        newRing.CloneAbilities(EquipAbilities, 1, inject);
 
         return newRing;
     }

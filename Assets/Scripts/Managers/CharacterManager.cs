@@ -1,12 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public class MaterialProfile
+{
+    public MaterialType Type;
+    public Material Material;
+}
 
 public class CharacterManager : MonoBehaviour
 {
     [Header("References")]
     public GameState GameState;
     public Transform CharacterPartyFolder;
+
+    [Header("CharacterWardrobe")]
+    public List<MaterialProfile> MatProfiles;
 
     [Header("Default Party Defs")]
     public Transform DefaultPartyPrefabs;
@@ -303,16 +314,19 @@ public class CharacterManager : MonoBehaviour
 
         return newParty;
     }
-    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null, int index = -1)
+    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null, int index = -1, bool fresh = true)
     {
         Character newCharacter = (Character)GameState.PawnMan.PawnGeneration(prefab, party.transform, spawnTransform);
         if (newCharacter == null)
             return null;
 
-        SetupCharacter(newCharacter, index);
+        Character source = prefab.GetComponent<Character>();
+
+        if (source != null)
+            SetupCharacter(newCharacter, source, index, fresh);
 
         if (index != -1)
-            newCharacter.Source.name = prefab.name + ":" + index;
+            newCharacter.Source.name = $"{prefab.name} : {index}";
 
         newCharacter.GameState = GameState;
         newCharacter.bDebugMode = GameState.bDebugEffects;
@@ -326,18 +340,24 @@ public class CharacterManager : MonoBehaviour
 
         return newCharacter;
     }
-    void SetupCharacter(Character character, int index)
+    void SetupCharacter(Character character, Character source,  int index, bool fresh)
     {
         // Slots
-        character.CCstatus = new bool[3];
+        character.CCstatus = new bool[CharacterMath.STATS_CC_COUNT];
         character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
-        
+
+        Debug.Log($"sourceSheetName: {source.Sheet.Name}");
+
         // Sheet
-        CharacterSheet sheetInstance = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
-        sheetInstance.Clone(character.Sheet);
-        character.Sheet = sheetInstance;
+        character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
+        if (source != null && source.Sheet != null)
+        {
+            character.Sheet.Clone(source.Sheet);
+            if (fresh)
+                character.Sheet.Fresh();
+        }
 
         if (index > -1)
             character.Sheet.Name += index.ToString();

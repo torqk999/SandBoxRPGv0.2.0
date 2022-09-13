@@ -36,6 +36,7 @@ public static class CharacterMath
     //public static readonly int STATS_REGEN_COUNT = 3;
     //public static readonly int STATS_TOTAL_COUNT = STATS_RAW_COUNT + STATS_ELEMENT_COUNT;
 
+    public static readonly int STATS_CC_COUNT = Enum.GetNames(typeof(CCstatus)).Length;
     public static readonly int STATS_RAW_COUNT = Enum.GetNames(typeof(RawStat)).Length;
     public static readonly int STATS_ELEMENT_COUNT = Enum.GetNames(typeof(Element)).Length;
     public static readonly int STATS_LEVELS_COUNT = Enum.GetNames(typeof(SkillType)).Length;

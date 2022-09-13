@@ -39,7 +39,7 @@ public class Character : Pawn, Interaction
     [Header("Animation")]
     public CharacterAssetPack Assets;
     public AnimatorPlus myAnim;
-    public TestAnimation Animator;
+    public CharacterRender Animator;
     public AnimatorType AnimType;
     public float IntentForward;
     public float IntentRight;
@@ -236,9 +236,9 @@ public class Character : Pawn, Interaction
             if (EquipmentSlots[i] == null)
                 continue;
 
-            for(int j = 0; j < EquipmentSlots[i].Equip.EquipAbilites.Length; j++)
+            for(int j = 0; j < EquipmentSlots[i].Equip.EquipAbilities.Length; j++)
             {
-                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilites[j].EquipAbility(this, EquipmentSlots[i].Equip));
+                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip));
             }
 
         }
@@ -545,12 +545,12 @@ public class Character : Pawn, Interaction
             return;
         if (!bIntent)
         {
-            Animator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
-            Animator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
+            Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
+            Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
             return;
         }
-        Animator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
-        Animator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
+        Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
+        Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
     }
     

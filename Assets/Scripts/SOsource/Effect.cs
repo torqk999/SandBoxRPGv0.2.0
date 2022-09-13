@@ -26,7 +26,7 @@ public class Effect : ScriptableObject
         Type = source.Type;
         //Status = source.Status;
         CCstatus = source.CCstatus;
-        ElementPack = source.ElementPack;
+        ElementPack = new ElementPackage(source.ElementPack);
         ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject); // <.<  just wild....
         ElementPack.Amplify(amp);
         DurationLength = source.DurationLength;

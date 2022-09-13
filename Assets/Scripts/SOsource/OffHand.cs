@@ -15,7 +15,7 @@ public class OffHand : Equipment
     [Header("OffHand Properties")]
     public OffHandType Type;
 
-    public OffHand CloneOneHand()
+    public OffHand CloneOneHand(bool inject = false)
     {
         OffHand newOffHand = (OffHand)ScriptableObject.CreateInstance("OffHand");
 
@@ -30,9 +30,8 @@ public class OffHand : Equipment
         newOffHand.EquipSkill = EquipSkill;
         newOffHand.EquipLevel = EquipLevel;
         newOffHand.AbilityID = AbilityID;
-        newOffHand.EquipAbilites = new CharacterAbility[EquipAbilites.Length];
-        for (int i = 0; i < EquipAbilites.Length; i++)
-            newOffHand.EquipAbilites[i] = EquipAbilites[i];
+
+        newOffHand.CloneAbilities(EquipAbilities, 1, inject);
 
         return newOffHand;
     }

@@ -13,36 +13,31 @@ MonoBehaviour:
   m_Name: HumanNPC
   m_EditorClassIdentifier: 
   Name: Bob
+  Level: 0
   Portrait: {fileID: 21300000, guid: 1e04016e24ed88542878ce8d17ce8747, type: 3}
-  CurrentEXP:
-    LIGHT: 0
-    MEDIUM: 0
-    HEAVY: 0
-    ONE_HAND: 0
-    TWO_HAND: 0
-    SHIELD: 0
-    RANGED: 0
-    MAGIC: 0
-    LEVEL: 0
-  NextLevelEXP:
-    LIGHT: 0
-    MEDIUM: 0
-    HEAVY: 0
-    ONE_HAND: 0
-    TWO_HAND: 0
-    SHIELD: 0
-    RANGED: 0
-    MAGIC: 0
-    LEVEL: 0
-  Level:
-    LIGHT: 0
-    MEDIUM: 0
-    HEAVY: 0
-    ONE_HAND: 0
-    TWO_HAND: 0
-    SHIELD: 0
-    RANGED: 0
-    MAGIC: 0
-    CHARACTER: 0
   Race: 0
   Faction: 1
+  CurrentEXP:
+    Experience:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  NextLevelEXP:
+    Experience:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  Skills:
+    Levels: 000000000000000000000000000000000000000000000000000000000000000000000000

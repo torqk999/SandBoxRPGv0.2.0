@@ -18,9 +18,9 @@ public class Equipment : ItemObject
     public SkillType EquipSkill;
     public int EquipLevel;
     public int AbilityID;
-    public CharacterAbility[] EquipAbilites;
+    public CharacterAbility[] EquipAbilities;
 
-    public Equipment CloneEquip()
+    public Equipment CloneEquip(bool inject = false)
     {
         Equipment newEquip = (Equipment)ScriptableObject.CreateInstance("Equipment");
 
@@ -34,10 +34,18 @@ public class Equipment : ItemObject
         newEquip.EquipSkill = EquipSkill;
         newEquip.EquipLevel = EquipLevel;
         newEquip.AbilityID = AbilityID;
-        newEquip.EquipAbilites = new CharacterAbility[EquipAbilites.Length];
-        for (int i = 0; i < EquipAbilites.Length; i++)
-            newEquip.EquipAbilites[i] = EquipAbilites[i];
+
+        newEquip.CloneAbilities(EquipAbilities, 1, inject);
 
         return newEquip;
+    }
+    public void CloneAbilities(CharacterAbility[] source, float amp = 1, bool inject = false)
+    {
+        EquipAbilities = new CharacterAbility[source.Length];
+        for (int i = 0; i < EquipAbilities.Length; i++)
+        {
+            EquipAbilities[i] = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");
+            EquipAbilities[i].Clone(source[i], amp, inject);
+        }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static TestAnimation;
+using static CharacterRender;
 
 /*public enum CostType
 {
@@ -48,7 +48,7 @@ public class CharacterAbility : ScriptableObject
 
 
 
-    public void Clone(CharacterAbility ability, float potency = 1)
+    public void Clone(CharacterAbility ability, float potency = 1, bool inject = false)
     {
         WeaponID = ability.WeaponID; // <<<--- ?!?!?
         Name = ability.Name;
@@ -64,7 +64,7 @@ public class CharacterAbility : ScriptableObject
         for (int i = 0; i < Effects.Length; i++)
         {
             Effects[i] = (Effect)ScriptableObject.CreateInstance("Effect");
-            Effects[i].Clone(ability.Effects[i], potency);
+            Effects[i].Clone(ability.Effects[i], potency, inject);
             //Effects[i].ElementPack.Amplify(potency);
         }
     }
@@ -74,9 +74,13 @@ public class CharacterAbility : ScriptableObject
         //int[] characterSkillLevels = currentCharacter.Sheet.Level.PullData();
 
         float potency = 1 +
+
             (((currentCharacter.Sheet.Skills.Levels[(int)equip.EquipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +                      // Level
+
             (equip.EquipLevel * CharacterMath.WEP_LEVEL_FACTOR) +                                                                    // Weapon
+
             (currentCharacter.Sheet.Skills.Levels[(int)equip.EquipSkill] * CharacterMath.SKILL_MUL_LEVEL[(int)equip.EquipSkill])) *  // Skill
+
             CharacterMath.SKILL_MUL_RACE[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                                  // Race
 
         CharacterAbility newAbility = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");

@@ -20,7 +20,7 @@ public class TwoHand : Equipment
     [Header("TwoHand Properties")]
     public TwoHandType Type;
 
-    public TwoHand CloneTwoHand()
+    public TwoHand CloneTwoHand(bool inject = false)
     {
         TwoHand newTwoHand = (TwoHand)ScriptableObject.CreateInstance("TwoHand");
 
@@ -35,9 +35,8 @@ public class TwoHand : Equipment
         newTwoHand.EquipSkill = EquipSkill;
         newTwoHand.EquipLevel = EquipLevel;
         newTwoHand.AbilityID = AbilityID;
-        newTwoHand.EquipAbilites = new CharacterAbility[EquipAbilites.Length];
-        for (int i = 0; i < EquipAbilites.Length; i++)
-            newTwoHand.EquipAbilites[i] = EquipAbilites[i];
+
+        newTwoHand.CloneAbilities(EquipAbilities, 1, inject);
 
         return newTwoHand;
     }

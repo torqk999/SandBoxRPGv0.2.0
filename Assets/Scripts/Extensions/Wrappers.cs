@@ -55,11 +55,11 @@ public class RingWrapper : EquipWrapper
     public Ring Ring;
     public int CurrentSlotIndex;
 
-    public RingWrapper(Ring ring)
+    public RingWrapper(Ring ring, bool inject = false)
     {
         Name = ring.Name;
         Sprite = ring.Sprite;
-        Ring = ring.CloneRing();
+        Ring = ring.CloneRing(inject);
         Equip = ring;
         CurrentSlotIndex = -1;
     }
@@ -69,11 +69,11 @@ public class WearableWrapper : EquipWrapper
 {
     public Wearable Wear;
 
-    public WearableWrapper(Wearable wear)
+    public WearableWrapper(Wearable wear, bool inject = false)
     {
         Name = wear.Name;
         Sprite = wear.Sprite;
-        Wear = wear.CloneWear();
+        Wear = wear.CloneWear(inject);
         Equip = Wear;
     }
 
@@ -87,11 +87,11 @@ public class OneHandWrapper : EquipWrapper
 {
     public OneHand Hand;
 
-    public OneHandWrapper(OneHand oneHand)
+    public OneHandWrapper(OneHand oneHand, bool inject = false)
     {
         Name = oneHand.Name;
         Sprite = oneHand.Sprite;
-        Hand = oneHand.CloneOneHand();
+        Hand = oneHand.CloneOneHand(inject);
         Equip = Hand;
     }
 
@@ -105,11 +105,11 @@ public class OffHandWrapper : EquipWrapper
 {
     public OffHand Hand;
 
-    public OffHandWrapper(OffHand offHand)
+    public OffHandWrapper(OffHand offHand, bool inject = false)
     {
         Name = offHand.Name;
         Sprite = offHand.Sprite;
-        Hand = offHand.CloneOneHand();
+        Hand = offHand.CloneOneHand(inject);
         Equip = Hand;
     }
 
@@ -123,11 +123,11 @@ public class TwoHandWrapper : EquipWrapper
 {
     public TwoHand Hand;
 
-    public TwoHandWrapper(TwoHand twoHand)
+    public TwoHandWrapper(TwoHand twoHand, bool inject = false)
     {
         Name = twoHand.Name;
         Sprite = twoHand.Sprite;
-        Hand = twoHand.CloneTwoHand();
+        Hand = twoHand.CloneTwoHand(inject);
         Equip = Hand;
     }
 
