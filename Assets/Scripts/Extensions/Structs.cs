@@ -11,9 +11,12 @@ public enum EffectDuration
 }
 public enum EffectAction
 {
-    RESISTANCE,
+    RES,
     STAT,
     CROWD_CONTROL,
+    IMMUNE_RES,
+    IMMUNE_STAT,
+    IMMUNE_CC,
     SPAWN
 }
 public enum ValueType
@@ -22,8 +25,7 @@ public enum ValueType
     PERC_CURR,
     PERC_MAX,
     PERC_MISS,
-    FLAT,
-    IMMUNE
+    FLAT
 }
 public enum CCstatus
 {

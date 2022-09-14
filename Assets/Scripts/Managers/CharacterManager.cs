@@ -76,19 +76,20 @@ public class CharacterManager : MonoBehaviour
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
         CharacterAbility call = caller.AbilitySlots[abilityIndex];
+        float modifier = caller.GenerateValueModifier(call.CostType, call.CostTarget);
 
-        if (!CheckAbility(call, caller))
+        if (!CheckAbility(call, caller, modifier))
             return false;
 
         //float[] stats = caller.CurrentStats.PullData();
-        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue;
+        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
         //caller.CurrentStats.EnterData(stats);
 
         call.SetCooldown();
         TargetAbility(call, caller);
         return true;
     }
-    public bool CheckAbility(CharacterAbility call, Character caller)
+    public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
     {
         if (call == null) // Am I a joke to you?
             return false;
@@ -99,7 +100,9 @@ public class CharacterManager : MonoBehaviour
         if (caller.CurrentCCstates[(int)call.AbilityType]) // Check CC
             return false;
 
-        if (call.CostValue > caller.CurrentStats.Stats[(int)call.CostTarget])
+        //modifier = caller.GenerateValueModifier(call.CostType, call.CostTarget);
+
+        if (call.CostValue * modifier > caller.CurrentStats.Stats[(int)call.CostTarget])
             return false;
 
         return true; // Good to do things Sam!
@@ -220,25 +223,7 @@ public class CharacterManager : MonoBehaviour
         foreach (Character character in CharacterPool)
             character.bIsPaused = bPause;
     }
-    /*void UpdateRisidualEffects(Character character)
-    {
-        for (int i = character.Effects.Count - 1; i > -1; i--)
-        {
-            //Effect risidual = character.Effects[i];
-            if (character.Effects[i].Duration == EffectDuration.TIMED)
-            {
-                character.Effects[i].Timer -= GlobalConstants.TIME_SCALE;
-                if (character.Effects[i].Timer <= 0)
-                {
-                    character.Effects.RemoveAt(i);
-                    continue;
-                }
-            }
-            //character.Effects[i] = risidual;
 
-            ApplySingleEffect(character, character.Effects[i]);
-        }
-    }*/
     #endregion
 
     #region CHARACTER GENERATION

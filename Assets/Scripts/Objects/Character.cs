@@ -320,10 +320,6 @@ public class Character : Pawn, Interaction
         }
         if (EquipmentSlots[IND] != null)
         {
-            //if (Inventory.Items.Count == Inventory.MaxCount)
-            //    return false;
-
-            //EquipmentSlots[(int)EquipSlot.MAIN] = (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)EquipSlot.MAIN], inventoryIndex);
             if (EquipmentSlots[IND] is TwoHandWrapper)
                 EquipmentSlots[ind] = null;
             EquipmentSlots[IND] = (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[IND], inventoryIndex);
@@ -454,14 +450,47 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region UPDATES
+    public float GenerateValueModifier(ValueType type, RawStat stat)
+    {
+        float changeType = 0;
+        switch (type)
+        {
+            case ValueType.NONE:
+                changeType = 0;
+                break;
 
+            case ValueType.FLAT:
+                changeType = 1;
+                break;
+
+            case ValueType.PERC_CURR:
+                changeType = CurrentStats.Stats[(int)stat] / 100;
+                break;
+
+            case ValueType.PERC_MAX:
+                changeType = MaximumStatValues.Stats[(int)stat] / 100;
+                break;
+
+            case ValueType.PERC_MISS:
+                changeType = (MaximumStatValues.Stats[(int)stat] - CurrentStats.Stats[(int)stat]) / 100;
+                break;
+        }
+        return changeType;
+    }
     public void ApplySingleEffect(Effect mod)
     {
         float totalValue = 0;
+        float changeType = GenerateValueModifier(mod.Value, mod.TargetStat);
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
         {
-            float change = mod.ElementPack.Elements[i] * (1 - Resistances.Elements[i]);
+            if (Effects.Find(x => x.Action == EffectAction.IMMUNE_STAT && x.TargetStat == mod.TargetStat) != null)
+                continue; // Stat immunity
+
+            if (Effects.Find(x => x.Action == EffectAction.IMMUNE_RES && x.TargetElement == (Element)i) != null)
+                continue; // Element immunity
+
+            float change = changeType * mod.ElementPack.Elements[i] * (1 - Resistances.Elements[i]);
             totalValue += (Element)i == Element.HEALING ? -change : change;
         }
 
@@ -476,6 +505,7 @@ public class Character : Pawn, Interaction
             CurrentStats.Stats[(int)mod.TargetStat] >= 0 ?
             CurrentStats.Stats[(int)mod.TargetStat] : 0;
 
+        // Debugging
         bAssetUpdate = true;
 
         switch (mod.TargetStat)
@@ -643,7 +673,5 @@ public class Character : Pawn, Interaction
         UpdateAnimation();
         UpdateAssetTimer();
         UpdateAssets();
-
-        //UpdateInteractData();
     }
 }

@@ -9,6 +9,7 @@ public class Effect : ScriptableObject
     public ValueType Value;
     public EffectAction Action;
     public RawStat TargetStat;
+    public Element TargetElement;
     public CCstatus CCstatus;
     public ElementPackage ElementPack;
     //public ElementPackage PenPackage;
