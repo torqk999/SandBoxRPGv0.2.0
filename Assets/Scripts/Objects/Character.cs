@@ -56,7 +56,7 @@ public class Character : Pawn, Interaction
     public List<Effect> Effects;
 
     public bool bIsAlive;
-    public bool[] CCstatus;
+    public bool[] CurrentCCstates;
     public float ChannelTimer;
 
     [Header("Character Logic")]
@@ -171,10 +171,8 @@ public class Character : Pawn, Interaction
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
-            Resistances.Elements[i] = CharacterMath.RES_BASE[i] +
-                (CharacterMath.RES_GROWTH[i] *
-                CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] *
-                Sheet.Level);
+            Resistances.Elements[i] = CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.RES_BASE[i] +
+                (CharacterMath.RES_GROWTH[i] * Sheet.Level));
         }
 
         //Debug.Log($"{Sheet.Name}/{name} : {CurrentStats.Stats.Length} : {MaximumStatValues.Stats.Length}");
@@ -187,19 +185,21 @@ public class Character : Pawn, Interaction
 
         for (int i = 0; i < 3; i++)
         {
-            float magnitude = (CharacterMath.BASE_REGEN[i] * CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i]) *
-                (1 + CharacterMath.RAW_GROWTH[i]);
+            float magnitude = CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.BASE_REGEN[i] + 
+                (CharacterMath.RAW_GROWTH[i] * Sheet.Level));
 
             //Debug.Log($"{Sheet.Name} : {(EffectTarget)i} : {magnitude}");
-            Effects.Add(CreateRegen((EffectAction)i, magnitude));
+            Effects.Add(CreateRegen((RawStat)i, magnitude));
         }
     }
-    Effect CreateRegen(EffectAction targetStat, float magnitude)
+    Effect CreateRegen(RawStat targetStat, float magnitude)
     {
         Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";
-        regen.Type = targetStat;
+        regen.TargetStat = targetStat;
+        regen.Type = EffectAction.STAT;
         regen.Duration = EffectDuration.SUSTAINED;
+        regen.CCstatus = CCstatus.NONE;
         regen.ElementPack = new ElementPackage();
         regen.ElementPack.Init();
         regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
@@ -490,7 +490,11 @@ public class Character : Pawn, Interaction
     {
         if (!bAssetTimer)
             return;
+
+        Debug.Log($"AssetTimer: {Source.name}");
+
         AssetTimer -= GlobalConstants.TIME_SCALE;
+
         if (AssetTimer <= 0)
         {
             bAssetTimer = false;
@@ -503,6 +507,8 @@ public class Character : Pawn, Interaction
     {
         if (!bDebugMode || Assets == null || !bAssetUpdate)
             return;
+
+        Debug.Log($"AssetUpdate: {Source.name}");
 
         switch (DebugState)
         {

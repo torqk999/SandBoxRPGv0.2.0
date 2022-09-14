@@ -96,7 +96,7 @@ public class CharacterManager : MonoBehaviour
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
 
-        if (caller.CCstatus[(int)call.AbilityType]) // Check CC
+        if (caller.CurrentCCstates[(int)call.AbilityType]) // Check CC
             return false;
 
         if (call.CostValue > caller.CurrentStats.Stats[(int)call.CostType])
@@ -229,17 +229,17 @@ public class CharacterManager : MonoBehaviour
     {
         for (int i = character.Effects.Count - 1; i > -1; i--)
         {
-            Effect risidual = character.Effects[i];
-            if (risidual.Duration == EffectDuration.TIMED)
+            //Effect risidual = character.Effects[i];
+            if (character.Effects[i].Duration == EffectDuration.TIMED)
             {
-                risidual.Timer -= GlobalConstants.TIME_SCALE;
-                if (risidual.Timer <= 0)
+                character.Effects[i].Timer -= GlobalConstants.TIME_SCALE;
+                if (character.Effects[i].Timer <= 0)
                 {
                     character.Effects.RemoveAt(i);
                     continue;
                 }
             }
-            character.Effects[i] = risidual;
+            //character.Effects[i] = risidual;
 
             ApplySingleEffect(character, character.Effects[i]);
         }
@@ -343,7 +343,7 @@ public class CharacterManager : MonoBehaviour
     void SetupCharacter(Character character, Character source,  int index, bool fresh)
     {
         // Slots
-        character.CCstatus = new bool[CharacterMath.STATS_CC_COUNT];
+        character.CurrentCCstates = new bool[CharacterMath.STATS_CC_COUNT];
         character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];

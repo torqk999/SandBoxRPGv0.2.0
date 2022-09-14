@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4350488, g: 0.61271507, b: 0.80330473, a: 1}
+  m_IndirectSpecularColor: {r: 0.4327311, g: 0.6122764, b: 0.8033687, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2042,7 +2042,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
   Effects: []
   bIsAlive: 0
-  CCstatus: 
+  CurrentCCstates: 
   ChannelTimer: 0
   CurrentTargetCharacter: {fileID: 0}
   TargettedBy: []
@@ -2096,7 +2096,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109683109}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -4220,7 +4220,7 @@ MonoBehaviour:
   Abilities: []
   Effects: []
   bIsAlive: 0
-  CCstatus: 
+  CurrentCCstates: 
   ChannelTimer: 0
   CurrentTargetCharacter: {fileID: 0}
   TargettedBy: []
@@ -4268,7 +4268,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234244371}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -9932,7 +9932,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586143228}
   m_LocalRotation: {x: -0, y: 0.6978737, z: -0, w: 0.71622086}
-  m_LocalPosition: {x: 4, y: 1, z: 20}
+  m_LocalPosition: {x: 4, y: 1, z: 20.000002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15124,7 +15124,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 298d27ae3f6560d478503c3f5a1134a7, type: 2}
+  - {fileID: 2100000, guid: e4f11cc185441884bbcc7466bb668d72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16675,7 +16675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2197537653325301141, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_ConstrainProportionsScale
@@ -29000,7 +29000,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1820977877}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -36.8, y: 46.92, z: 279.4}
+  m_LocalPosition: {x: 0, y: 1.28, z: -35.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -30492,7 +30492,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
   Effects: []
   bIsAlive: 0
-  CCstatus: 
+  CurrentCCstates: 
   ChannelTimer: 0
   CurrentTargetCharacter: {fileID: 0}
   TargettedBy: []
@@ -31803,6 +31803,7 @@ MonoBehaviour:
   Gear: []
   MyPrefab: {fileID: 0}
   MyAnimationState: 0
+  bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0
 --- !u!1 &1970811194
