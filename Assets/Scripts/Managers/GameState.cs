@@ -72,6 +72,7 @@ public class GameState : MonoBehaviour
         UIman.UpdateGameMenuCanvasState(UIman.CurrentPage);
         UIman.PauseMenuCanvasNavigation((toggle) ? 0 : -1);
         UpdateRigidBodyPawns();
+        CharacterMan.ToggleCharactersPauseState(bPause);
     }
     public void InteractWithContainer(GenericContainer container)
     {

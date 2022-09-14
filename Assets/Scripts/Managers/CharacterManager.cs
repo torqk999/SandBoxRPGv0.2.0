@@ -148,7 +148,7 @@ public class CharacterManager : MonoBehaviour
             switch (mod.Duration)
             {
                 case EffectDuration.ONCE:
-                    ApplySingleEffect(target, call.Effects[i]);
+                    target.ApplySingleEffect(call.Effects[i]);
                     break;
 
                 case EffectDuration.TIMED:
@@ -161,7 +161,7 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
-    void ApplySingleEffect(Character target, Effect mod)
+    /*void ApplySingleEffect(Character target, Effect mod)
     {
         float totalValue = 0;
 
@@ -205,9 +205,7 @@ public class CharacterManager : MonoBehaviour
                     target.DebugState = DebugState.LOSS_S;
                 break;
         }
-
-        
-    }
+    }*/
     void ApplyRisidualEffect(Character target, Effect mod)
     {
         Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
@@ -217,15 +215,12 @@ public class CharacterManager : MonoBehaviour
     #endregion
 
     #region CHECK-UPS
-    void UpdateCharacters()
+    public void ToggleCharactersPauseState(bool bPause = false)
     {
         foreach (Character character in CharacterPool)
-        {
-            if (character.bIsAlive)
-                UpdateRisidualEffects(character);
-        }
+            character.bIsPaused = bPause;
     }
-    void UpdateRisidualEffects(Character character)
+    /*void UpdateRisidualEffects(Character character)
     {
         for (int i = character.Effects.Count - 1; i > -1; i--)
         {
@@ -243,7 +238,7 @@ public class CharacterManager : MonoBehaviour
 
             ApplySingleEffect(character, character.Effects[i]);
         }
-    }
+    }*/
     #endregion
 
     #region CHARACTER GENERATION
@@ -391,36 +386,18 @@ public class CharacterManager : MonoBehaviour
     }
     #endregion
 
-    #region OLD
-    /*
-    public void EquipAbilities(EquipWrapper equipWrapper, Character character)
-    {
-        foreach(CharacterAbility ability in equipWrapper.Equip.EquipAbilites)
-        {
-            character.Abilities.Add(ability.EquipAbility(character, equipWrapper.Equip));
-            Debug.Log("Ability Added!");
-        }
-    }
-    public void UnEquipAbilities(EquipWrapper equip)
-    {
-
-    }
-    */
-    #endregion
-
     // Start is called before the first frame update
     void Start()
     {
-        //CreateLiteralParty(DefaultPartyPrefabs, Faction.GOODIES);
-        //GameState.testBuilder.SpawnMobs();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameState.bPause)
-            return;
+        //if (GameState.bPause)
+        //    return;
 
-        UpdateCharacters();
+        //UpdateCharacters();
     }
 }

@@ -80,6 +80,7 @@ public class SimpleAIcontroller : CharacterController
     {
         bIsAwake = !(GameState == null
             || CurrentCharacter == null
+            || CurrentCharacter.bIsPaused
             || (CurrentCharacter.bControllable &&
                 GameState.pController != null &&
                 GameState.pController.CurrentCharacter == CurrentCharacter));
@@ -462,9 +463,6 @@ public class SimpleAIcontroller : CharacterController
         CheckAwake();
 
         if (bDebuggingDisable
-            ||GameState == null
-            || CurrentCharacter == null
-            || GameState.bPause
             || !bIsAwake
             || !CurrentCharacter.bIsAlive)
             return;

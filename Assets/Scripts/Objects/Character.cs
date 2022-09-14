@@ -55,6 +55,7 @@ public class Character : Pawn, Interaction
     public List<CharacterAbility> Abilities;
     public List<Effect> Effects;
 
+    public bool bIsPaused;
     public bool bIsAlive;
     public bool[] CurrentCCstates;
     public float ChannelTimer;
@@ -454,6 +455,52 @@ public class Character : Pawn, Interaction
 
     #region UPDATES
 
+    public void ApplySingleEffect(Effect mod)
+    {
+        float totalValue = 0;
+
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
+        {
+            float change = mod.ElementPack.Elements[i] * (1 - Resistances.Elements[i]);
+            totalValue += (Element)i == Element.HEALING ? -change : change;
+        }
+
+        if (totalValue == 0)
+            return;
+
+        CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
+        CurrentStats.Stats[(int)mod.TargetStat] =
+            CurrentStats.Stats[(int)mod.TargetStat] <= MaximumStatValues.Stats[(int)mod.TargetStat] ?
+            CurrentStats.Stats[(int)mod.TargetStat] : MaximumStatValues.Stats[(int)mod.TargetStat];
+        CurrentStats.Stats[(int)mod.TargetStat] =
+            CurrentStats.Stats[(int)mod.TargetStat] >= 0 ?
+            CurrentStats.Stats[(int)mod.TargetStat] : 0;
+
+        bAssetUpdate = true;
+
+        switch (mod.TargetStat)
+        {
+            case RawStat.HEALTH:
+                if (totalValue > 0)
+                    DebugState = DebugState.LOSS_H;
+                break;
+
+            case RawStat.MANA:
+                if (totalValue > 0)
+                    DebugState = DebugState.LOSS_M;
+                break;
+
+            case RawStat.SPEED:
+
+                break;
+
+            case RawStat.STAMINA:
+                if (totalValue > 0)
+                    DebugState = DebugState.LOSS_S;
+                break;
+        }
+    }
+
     void UpdateLife() // Get a life...
     {
         for (int i = 0; i < 3; i++)
@@ -482,17 +529,31 @@ public class Character : Pawn, Interaction
             if (AbilitySlots[i] != null)
                 AbilitySlots[i].UpdateCooldown();
     }
-    /*void UpdateInteractData()
+    void UpdateRisidualEffects()
     {
-        InteractData.HealthCurrent = CurrentStats.Stats[(int)RawStat.HEALTH];
-        InteractData.HealthMax = MaximumStatValues.Stats[(int)RawStat.HEALTH];
-    }*/
+        for (int i = Effects.Count - 1; i > -1; i--)
+        {
+            //Effect risidual = character.Effects[i];
+            if (Effects[i].Duration == EffectDuration.TIMED)
+            {
+                Effects[i].Timer -= GlobalConstants.TIME_SCALE;
+                if (Effects[i].Timer <= 0)
+                {
+                    Effects.RemoveAt(i);
+                    continue;
+                }
+            }
+            //character.Effects[i] = risidual;
+
+            ApplySingleEffect(Effects[i]);
+        }
+    }
     void UpdateAssetTimer()
     {
         if (!bAssetTimer)
             return;
 
-        Debug.Log($"AssetTimer: {Source.name}");
+        //Debug.Log($"AssetTimer: {Source.name}");
 
         AssetTimer -= GlobalConstants.TIME_SCALE;
 
@@ -509,7 +570,7 @@ public class Character : Pawn, Interaction
         if (!bDebugMode || Assets == null || !bAssetUpdate || bAssetTimer)
             return;
 
-        Debug.Log($"AssetUpdate: {Source.name}");
+        //Debug.Log($"AssetUpdate: {Source.name}");
 
         switch (DebugState)
         {
@@ -573,12 +634,15 @@ public class Character : Pawn, Interaction
     // Update is called once per frame
     void Update()
     {
-        UpdateCooldowns();
+        if (bIsPaused)
+            return;
 
+        UpdateRisidualEffects();
+        UpdateLife();
+        UpdateCooldowns();
         UpdateAnimation();
         UpdateAssetTimer();
         UpdateAssets();
-        UpdateLife();
 
         //UpdateInteractData();
     }
