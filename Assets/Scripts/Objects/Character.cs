@@ -465,6 +465,7 @@ public class Character : Pawn, Interaction
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
             bIsAlive = false;
+            bAssetUpdate = true;
             DebugState = DebugState.DEAD;
             //Source.GetComponent<Collider>().enabled = false;
 
@@ -505,7 +506,7 @@ public class Character : Pawn, Interaction
     }
     void UpdateAssets()
     {
-        if (!bDebugMode || Assets == null || !bAssetUpdate)
+        if (!bDebugMode || Assets == null || !bAssetUpdate || bAssetTimer)
             return;
 
         Debug.Log($"AssetUpdate: {Source.name}");
@@ -535,7 +536,8 @@ public class Character : Pawn, Interaction
         }
 
         AssetTimer = GlobalConstants.TIME_BLIP;
-        bAssetTimer = true;
+        bAssetTimer = !(DebugState == DebugState.DEFAULT 
+                     || DebugState == DebugState.DEAD);
         bAssetUpdate = false;
     }
     public void UpdateAnimationIntents(float forward, float right)
