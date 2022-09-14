@@ -6,9 +6,8 @@ public class Effect : ScriptableObject
     public string Name;
     public Sprite Sprite;
     public EffectDuration Duration;
-    public EffectValue Value;
-    public EffectAction Type;
-    //public EffectStatus Status;
+    public ValueType Value;
+    public EffectAction Action;
     public RawStat TargetStat;
     public CCstatus CCstatus;
     public ElementPackage ElementPack;
@@ -23,7 +22,7 @@ public class Effect : ScriptableObject
         Sprite = source.Sprite;
         Duration = source.Duration;
         Value = source.Value;
-        Type = source.Type;
+        Action = source.Action;
         //Status = source.Status;
         CCstatus = source.CCstatus;
         ElementPack = new ElementPackage(source.ElementPack);

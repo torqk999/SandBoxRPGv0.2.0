@@ -198,7 +198,7 @@ public class Character : Pawn, Interaction
         Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";
         regen.TargetStat = targetStat;
-        regen.Type = EffectAction.STAT;
+        regen.Action = EffectAction.STAT;
         regen.Duration = EffectDuration.SUSTAINED;
         regen.CCstatus = CCstatus.NONE;
         regen.ElementPack = new ElementPackage();

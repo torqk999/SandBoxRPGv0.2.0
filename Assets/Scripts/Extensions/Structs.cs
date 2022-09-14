@@ -16,7 +16,7 @@ public enum EffectAction
     CROWD_CONTROL,
     SPAWN
 }
-public enum EffectValue
+public enum ValueType
 {
     NONE,
     PERC_CURR,
@@ -214,7 +214,6 @@ public class InteractData
     public TriggerType Type;
     public string Name;
 }
-
 public class CharacterData : InteractData
 {
     public Character myCharacter;
@@ -231,7 +230,6 @@ public class CharacterData : InteractData
         HealthMax = character.MaximumStatValues.Stats[(int)RawStat.HEALTH];
     }
 }
-
 public class LootData : InteractData
 {
     public float Weight;

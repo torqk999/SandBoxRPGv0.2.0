@@ -81,7 +81,7 @@ public class CharacterManager : MonoBehaviour
             return false;
 
         //float[] stats = caller.CurrentStats.PullData();
-        caller.CurrentStats.Stats[(int)call.CostType] -= call.CostValue;
+        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue;
         //caller.CurrentStats.EnterData(stats);
 
         call.SetCooldown();
@@ -99,7 +99,7 @@ public class CharacterManager : MonoBehaviour
         if (caller.CurrentCCstates[(int)call.AbilityType]) // Check CC
             return false;
 
-        if (call.CostValue > caller.CurrentStats.Stats[(int)call.CostType])
+        if (call.CostValue > caller.CurrentStats.Stats[(int)call.CostTarget])
             return false;
 
         return true; // Good to do things Sam!

@@ -10,14 +10,7 @@ public class Stackable : ItemObject
 
     public virtual Stackable CloneStackable()
     {
-        Stackable newStackable = (Stackable)ScriptableObject.CreateInstance("Stackable");
-
-        newStackable.itemID = itemID;
-        newStackable.Name = Name;
-        newStackable.Sprite = Sprite;
-        newStackable.Quality = Quality;
-        newStackable.GoldValue = GoldValue;
-        newStackable.Weight = Weight;
+        Stackable newStackable = (Stackable)CloneItem("Stackable");
 
         newStackable.MaxQuantity = MaxQuantity;
 

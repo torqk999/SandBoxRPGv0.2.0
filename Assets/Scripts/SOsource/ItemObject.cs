@@ -16,9 +16,9 @@ public class ItemObject : ScriptableObject
     public int GoldValue;
     public float Weight;
 
-    public virtual ItemObject CloneItem()
+    public virtual ItemObject CloneItem(string instanceType)
     {
-        ItemObject newItemObject = (ItemObject)ScriptableObject.CreateInstance("ItemObject");
+        ItemObject newItemObject = (ItemObject)ScriptableObject.CreateInstance(instanceType);
 
         newItemObject.itemID = itemID ;
         newItemObject.Name = Name;

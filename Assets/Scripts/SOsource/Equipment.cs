@@ -2,16 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
-/*public enum EquipType
-{
-    WEARABLE,
-    ONEHAND,
-    OFFHAND,
-    TWOHAND
-}*/
-
 public class Equipment : ItemObject
 {
     [Header("Equipment Properties")]
@@ -20,16 +10,9 @@ public class Equipment : ItemObject
     public int AbilityID;
     public CharacterAbility[] EquipAbilities;
 
-    public Equipment CloneEquip(bool inject = false)
+    public Equipment CloneEquip(string instanceType = "Equipment", bool inject = false)
     {
-        Equipment newEquip = (Equipment)ScriptableObject.CreateInstance("Equipment");
-
-        newEquip.itemID = itemID;
-        newEquip.Name = Name;
-        newEquip.Sprite = Sprite;
-        newEquip.Quality = Quality;
-        newEquip.GoldValue = GoldValue;
-        newEquip.Weight = Weight;
+        Equipment newEquip = (Equipment)CloneItem(instanceType);
 
         newEquip.EquipSkill = EquipSkill;
         newEquip.EquipLevel = EquipLevel;
