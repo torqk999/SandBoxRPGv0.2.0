@@ -1,6 +1,30 @@
-﻿- Stat_Change/Adjust by fixed/percent
+﻿== TO DO LIST ==========
+
+- Stat_Change/Adjust by fixed/percent
 - Ai gets stuck in crevises, has the 'zoomies' "BYEEEE!!!!" from time to time
 - Update GUI assistant for text
 - Resolve Multi-Mapping (Mouse/Keyboard/Console)   Possible walkthrew/plugin for port
 - Ramp intent vector to char-animators
-- Entry points for ability particle effects/swing & cast animations
+$ Entry points for ability particle effects/swing & cast animations
+
+========================
+
+    /*== GOOD ==
+     * =MAINSTATS
+     * health
+     * stamina
+     * mana
+     * speed
+     * 
+     * =SIDESTATS
+     * evade
+     * block
+     * parry
+     * resistance
+     * CoolDownBar
+     * level scaling
+     * race modifiers
+     * 
+     * == MAYBE ==
+     * phase? ghost?
+     */

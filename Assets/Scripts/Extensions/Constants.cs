@@ -54,7 +54,7 @@ public static class CharacterMath
 
     public static readonly float[] BASE_REGEN =
     {
-        0.001f,
+        0.0005f,
         0.01f,
         0.01f
     };

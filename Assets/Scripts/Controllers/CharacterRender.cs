@@ -79,6 +79,38 @@ public class HandProfile : WardrobeProfile
     public GameObject thisSource;
 }
 
+public enum CharAnimationState
+{
+    Idle,
+    Walking,
+    Running,
+    Jumping,
+    Falling,
+    Attacking,
+    Casting
+}
+public enum CharAnimation
+{
+    OneHandChop,
+    OneHandSlice,
+    OneHandPoke,
+    TwoHandSwordChop,
+    TwoHandSwordSlice,
+    TwoHandSwordPoke,
+    HAxeChop,
+    HAxeSlice,
+    HAxePoke,
+    BowShot,
+    XBowShot,
+    ShieldBash,
+    ShieldBlock
+}
+public enum AnimationTarget
+{
+    ElementalBall,
+    ElementalArrow
+}
+
 public class CharacterRender : MonoBehaviour
 {
     public CharacterManager CharManager;
@@ -87,43 +119,10 @@ public class CharacterRender : MonoBehaviour
     public List<GearProfile> Gear;
     public GameObject MyPrefab;
     public CharAnimationState MyAnimationState;
+
+    public bool bRunning;
     public int AnimationLayer;
-
     public float AniCombatTimer;
-
-    public enum CharAnimationState
-    {
-        Any,
-        Idle,
-        Walking,
-        Running,
-        Jumping,
-        Falling,
-        Attacking,
-        Casting
-    }
-    public enum CharAnimation
-    {
-        OneHandChop,
-        OneHandSlice,
-        OneHandPoke,
-        TwoHandSwordChop,
-        TwoHandSwordSlice,
-        TwoHandSwordPoke,
-        HAxeChop,
-        HAxeSlice,
-        HAxePoke,
-        BowShot,
-        XBowShot,
-        ShieldBash,
-        ShieldBlock
-    }
-    public enum AnimationTarget
-    {
-        None,
-        ElementalBall,
-        ElementalArrow
-    }
 
     public void CombatTimer()
     {
@@ -160,7 +159,6 @@ public class CharacterRender : MonoBehaviour
 
             if (MyAnimator.GetBool("Attacking") == false)
             {
-
                 Quaternion CurrentQuat = MyAnimator.rootRotation;
                 MyAnimator.SetBoneLocalRotation(HumanBodyBones.UpperChest, CurrentQuat);
             }
@@ -176,27 +174,23 @@ public class CharacterRender : MonoBehaviour
             if (MyAnimator.GetLayerWeight(CombatLayer) == 0)
             {
                 MyAnimator.ResetTrigger("inCombat");
-
             }
 
             return;
         }
-
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
-        
-        
-    
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        return;
+        if (!bRunning)
+            return;
        
         if (Input.GetKey(KeyCode.W))
             MyAnimator.SetBool("Walking", true);

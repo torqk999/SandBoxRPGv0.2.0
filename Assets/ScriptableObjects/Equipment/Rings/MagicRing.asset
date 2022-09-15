@@ -21,5 +21,5 @@ MonoBehaviour:
   EquipSkill: 8
   EquipLevel: 3
   AbilityID: 0
-  EquipAbilites:
-  - {fileID: 0}
+  EquipAbilities:
+  - {fileID: 11400000, guid: 71489bca443e9084abfd927107e42678, type: 2}
