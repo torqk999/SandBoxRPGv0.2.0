@@ -460,7 +460,7 @@ public class Character : Pawn, Interaction
         }
         return changeType;
     }
-    public void ApplySingleEffect(Effect mod)
+    public void ApplySingleEffect(Effect effect)
     {
         if (mod.bIsImmune)
             return;

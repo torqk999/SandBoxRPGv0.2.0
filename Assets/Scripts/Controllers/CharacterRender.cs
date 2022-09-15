@@ -79,6 +79,38 @@ public class HandProfile : WardrobeProfile
     public GameObject thisSource;
 }
 
+public enum CharAnimationState
+{
+    Idle,
+    Walking,
+    Running,
+    Jumping,
+    Falling,
+    Attacking,
+    Casting
+}
+public enum CharAnimation
+{
+    OneHandChop,
+    OneHandSlice,
+    OneHandPoke,
+    TwoHandSwordChop,
+    TwoHandSwordSlice,
+    TwoHandSwordPoke,
+    HAxeChop,
+    HAxeSlice,
+    HAxePoke,
+    BowShot,
+    XBowShot,
+    ShieldBash,
+    ShieldBlock
+}
+public enum AnimationTarget
+{
+    ElementalBall,
+    ElementalArrow
+}
+
 public class CharacterRender : MonoBehaviour
 {
     public CharacterManager CharManager;
@@ -91,38 +123,6 @@ public class CharacterRender : MonoBehaviour
     public bool bRunning;
     public int AnimationLayer;
     public float AniCombatTimer;
-
-    public enum CharAnimationState
-    {
-        Idle,
-        Walking,
-        Running,
-        Jumping,
-        Falling,
-        Attacking,
-        Casting
-    }
-    public enum CharAnimation
-    {
-        OneHandChop,
-        OneHandSlice,
-        OneHandPoke,
-        TwoHandSwordChop,
-        TwoHandSwordSlice,
-        TwoHandSwordPoke,
-        HAxeChop,
-        HAxeSlice,
-        HAxePoke,
-        BowShot,
-        XBowShot,
-        ShieldBash,
-        ShieldBlock
-    }
-    public enum AnimationTarget
-    {
-        ElementalBall,
-        ElementalArrow
-    }
 
     public void CombatTimer()
     {
