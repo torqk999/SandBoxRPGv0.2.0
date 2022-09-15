@@ -462,13 +462,13 @@ public class Character : Pawn, Interaction
     }
     public void ApplySingleEffect(Effect effect)
     {
-        if (mod.bIsImmune)
+        if (effect.bIsImmune)
             return;
 
-        switch(mod.Action)
+        switch(effect.Action)
         {
             case EffectAction.DMG_HEAL:
-                ApplyDamage(mod);
+                ApplyDamage(effect);
                 break;
 
             case EffectAction.SPAWN:
