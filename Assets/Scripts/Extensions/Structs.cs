@@ -10,9 +10,9 @@ public enum EffectDuration
     SUSTAINED
 }
 public enum EffectAction
-{
-    RESISTANCE,
+{   
     STAT,
+    RESISTANCE,
     CROWD_CONTROL,
     SPAWN
 }
@@ -53,6 +53,10 @@ public enum RawStat
     STAMINA,
     MANA,
     SPEED,
+    
+
+ 
+
 }
 [System.Serializable]
 public struct StatReflection

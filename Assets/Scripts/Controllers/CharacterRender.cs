@@ -93,6 +93,7 @@ public class CharacterRender : MonoBehaviour
 
     public enum CharAnimationState
     {
+        Any,
         Idle,
         Walking,
         Running,
@@ -119,6 +120,7 @@ public class CharacterRender : MonoBehaviour
     }
     public enum AnimationTarget
     {
+        None,
         ElementalBall,
         ElementalArrow
     }
