@@ -477,38 +477,38 @@ public class Character : Pawn, Interaction
         }
         return changeType;
     }
-    public void ApplySingleEffect(Effect mod)
+    public void ApplySingleEffect(Effect effect)
     {
         float totalValue = 0;
-        float changeType = GenerateValueModifier(mod.Value, mod.TargetStat);
+        float changeType = GenerateValueModifier(effect.Value, effect.TargetStat);
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
         {
-            if (Effects.Find(x => x.Action == EffectAction.IMMUNE_STAT && x.TargetStat == mod.TargetStat) != null)
+            if (Effects.Find(x => x.Action == EffectAction.IMMUNE_STAT && x.TargetStat == effect.TargetStat) != null)
                 continue; // Stat immunity
 
             if (Effects.Find(x => x.Action == EffectAction.IMMUNE_RES && x.TargetElement == (Element)i) != null)
                 continue; // Element immunity
 
-            float change = changeType * mod.ElementPack.Elements[i] * (1 - Resistances.Elements[i]);
+            float change = changeType * effect.ElementPack.Elements[i] * (1 - Resistances.Elements[i]);
             totalValue += (Element)i == Element.HEALING ? -change : change;
         }
 
         if (totalValue == 0)
             return;
 
-        CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
-        CurrentStats.Stats[(int)mod.TargetStat] =
-            CurrentStats.Stats[(int)mod.TargetStat] <= MaximumStatValues.Stats[(int)mod.TargetStat] ?
-            CurrentStats.Stats[(int)mod.TargetStat] : MaximumStatValues.Stats[(int)mod.TargetStat];
-        CurrentStats.Stats[(int)mod.TargetStat] =
-            CurrentStats.Stats[(int)mod.TargetStat] >= 0 ?
-            CurrentStats.Stats[(int)mod.TargetStat] : 0;
+        CurrentStats.Stats[(int)effect.TargetStat] -= totalValue;
+        CurrentStats.Stats[(int)effect.TargetStat] =
+            CurrentStats.Stats[(int)effect.TargetStat] <= MaximumStatValues.Stats[(int)effect.TargetStat] ?
+            CurrentStats.Stats[(int)effect.TargetStat] : MaximumStatValues.Stats[(int)effect.TargetStat];
+        CurrentStats.Stats[(int)effect.TargetStat] =
+            CurrentStats.Stats[(int)effect.TargetStat] >= 0 ?
+            CurrentStats.Stats[(int)effect.TargetStat] : 0;
 
         // Debugging
         bAssetUpdate = true;
 
-        switch (mod.TargetStat)
+        switch (effect.TargetStat)
         {
             case RawStat.HEALTH:
                 if (totalValue > 0)
@@ -637,7 +637,6 @@ public class Character : Pawn, Interaction
         IntentRight = right;
         bIntent = true;
     }
-    
     void UpdateAnimation()
     {
         if (Animator == null)

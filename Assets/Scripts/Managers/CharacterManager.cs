@@ -164,51 +164,6 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
-    /*void ApplySingleEffect(Character target, Effect mod)
-    {
-        float totalValue = 0;
-
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
-        {
-            float change = mod.ElementPack.Elements[i] * (1 - target.Resistances.Elements[i]);
-            totalValue += (Element)i == Element.HEALING ? -change : change;
-        }
-
-        if (totalValue == 0)
-            return;
-
-        target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
-        target.CurrentStats.Stats[(int)mod.TargetStat] =
-            target.CurrentStats.Stats[(int)mod.TargetStat] <= target.MaximumStatValues.Stats[(int)mod.TargetStat] ?
-            target.CurrentStats.Stats[(int)mod.TargetStat] : target.MaximumStatValues.Stats[(int)mod.TargetStat];
-        target.CurrentStats.Stats[(int)mod.TargetStat] =
-            target.CurrentStats.Stats[(int)mod.TargetStat] >= 0 ?
-            target.CurrentStats.Stats[(int)mod.TargetStat] : 0;
-
-        target.bAssetUpdate = true;
-
-        switch (mod.TargetStat)
-        {
-            case RawStat.HEALTH:
-                if (totalValue > 0)
-                    target.DebugState = DebugState.LOSS_H;
-                break;
-
-            case RawStat.MANA:
-                if (totalValue > 0)
-                    target.DebugState = DebugState.LOSS_M;
-                break;
-
-            case RawStat.SPEED:
-
-                break;
-
-            case RawStat.STAMINA:
-                if (totalValue > 0)
-                    target.DebugState = DebugState.LOSS_S;
-                break;
-        }
-    }*/
     void ApplyRisidualEffect(Character target, Effect mod)
     {
         Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
