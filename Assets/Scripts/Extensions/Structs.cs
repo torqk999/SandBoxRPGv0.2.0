@@ -11,19 +11,21 @@ public enum EffectDuration
 }
 public enum EffectAction
 {
-    RESISTANCE,
+    RES,
     STAT,
     CROWD_CONTROL,
+    IMMUNE_RES,
+    IMMUNE_STAT,
+    IMMUNE_CC,
     SPAWN
 }
-public enum EffectValue
+public enum ValueType
 {
     NONE,
     PERC_CURR,
     PERC_MAX,
     PERC_MISS,
-    FLAT,
-    IMMUNE
+    FLAT
 }
 public enum CCstatus
 {
@@ -214,7 +216,6 @@ public class InteractData
     public TriggerType Type;
     public string Name;
 }
-
 public class CharacterData : InteractData
 {
     public Character myCharacter;
@@ -231,7 +232,6 @@ public class CharacterData : InteractData
         HealthMax = character.MaximumStatValues.Stats[(int)RawStat.HEALTH];
     }
 }
-
 public class LootData : InteractData
 {
     public float Weight;

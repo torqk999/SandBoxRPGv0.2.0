@@ -76,19 +76,20 @@ public class CharacterManager : MonoBehaviour
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
         CharacterAbility call = caller.AbilitySlots[abilityIndex];
+        float modifier = caller.GenerateValueModifier(call.CostType, call.CostTarget);
 
-        if (!CheckAbility(call, caller))
+        if (!CheckAbility(call, caller, modifier))
             return false;
 
         //float[] stats = caller.CurrentStats.PullData();
-        caller.CurrentStats.Stats[(int)call.CostType] -= call.CostValue;
+        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
         //caller.CurrentStats.EnterData(stats);
 
         call.SetCooldown();
         TargetAbility(call, caller);
         return true;
     }
-    public bool CheckAbility(CharacterAbility call, Character caller)
+    public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
     {
         if (call == null) // Am I a joke to you?
             return false;
@@ -96,10 +97,12 @@ public class CharacterManager : MonoBehaviour
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
 
-        if (caller.CCstatus[(int)call.AbilityType]) // Check CC
+        if (caller.CurrentCCstates[(int)call.AbilityType]) // Check CC
             return false;
 
-        if (call.CostValue > caller.CurrentStats.Stats[(int)call.CostType])
+        //modifier = caller.GenerateValueModifier(call.CostType, call.CostTarget);
+
+        if (call.CostValue * modifier > caller.CurrentStats.Stats[(int)call.CostTarget])
             return false;
 
         return true; // Good to do things Sam!
@@ -148,7 +151,7 @@ public class CharacterManager : MonoBehaviour
             switch (mod.Duration)
             {
                 case EffectDuration.ONCE:
-                    ApplySingleEffect(target, call.Effects[i]);
+                    target.ApplySingleEffect(call.Effects[i]);
                     break;
 
                 case EffectDuration.TIMED:
@@ -161,7 +164,7 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
-    void ApplySingleEffect(Character target, Effect mod)
+    /*void ApplySingleEffect(Character target, Effect mod)
     {
         float totalValue = 0;
 
@@ -205,9 +208,7 @@ public class CharacterManager : MonoBehaviour
                     target.DebugState = DebugState.LOSS_S;
                 break;
         }
-
-        
-    }
+    }*/
     void ApplyRisidualEffect(Character target, Effect mod)
     {
         Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
@@ -217,33 +218,12 @@ public class CharacterManager : MonoBehaviour
     #endregion
 
     #region CHECK-UPS
-    void UpdateCharacters()
+    public void ToggleCharactersPauseState(bool bPause = false)
     {
         foreach (Character character in CharacterPool)
-        {
-            if (character.bIsAlive)
-                UpdateRisidualEffects(character);
-        }
+            character.bIsPaused = bPause;
     }
-    void UpdateRisidualEffects(Character character)
-    {
-        for (int i = character.Effects.Count - 1; i > -1; i--)
-        {
-            Effect risidual = character.Effects[i];
-            if (risidual.Duration == EffectDuration.TIMED)
-            {
-                risidual.Timer -= GlobalConstants.TIME_SCALE;
-                if (risidual.Timer <= 0)
-                {
-                    character.Effects.RemoveAt(i);
-                    continue;
-                }
-            }
-            character.Effects[i] = risidual;
 
-            ApplySingleEffect(character, character.Effects[i]);
-        }
-    }
     #endregion
 
     #region CHARACTER GENERATION
@@ -343,7 +323,7 @@ public class CharacterManager : MonoBehaviour
     void SetupCharacter(Character character, Character source,  int index, bool fresh)
     {
         // Slots
-        character.CCstatus = new bool[CharacterMath.STATS_CC_COUNT];
+        character.CurrentCCstates = new bool[CharacterMath.STATS_CC_COUNT];
         character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
@@ -391,36 +371,18 @@ public class CharacterManager : MonoBehaviour
     }
     #endregion
 
-    #region OLD
-    /*
-    public void EquipAbilities(EquipWrapper equipWrapper, Character character)
-    {
-        foreach(CharacterAbility ability in equipWrapper.Equip.EquipAbilites)
-        {
-            character.Abilities.Add(ability.EquipAbility(character, equipWrapper.Equip));
-            Debug.Log("Ability Added!");
-        }
-    }
-    public void UnEquipAbilities(EquipWrapper equip)
-    {
-
-    }
-    */
-    #endregion
-
     // Start is called before the first frame update
     void Start()
     {
-        //CreateLiteralParty(DefaultPartyPrefabs, Faction.GOODIES);
-        //GameState.testBuilder.SpawnMobs();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (GameState.bPause)
-            return;
+        //if (GameState.bPause)
+        //    return;
 
-        UpdateCharacters();
+        //UpdateCharacters();
     }
 }

@@ -24,22 +24,10 @@ public class Wearable : Equipment
 
     public Wearable CloneWear(bool inject = false)
     {
-        Wearable newWear = (Wearable)ScriptableObject.CreateInstance("Wearable");
-
-        newWear.itemID = itemID;
-        newWear.Name = Name;
-        newWear.Sprite = Sprite;
-        newWear.Quality = Quality;
-        newWear.GoldValue = GoldValue;
-        newWear.Weight = Weight;
+        Wearable newWear = (Wearable)CloneEquip("Wearable",inject);
 
         newWear.Type = Type;
-        newWear.EquipSkill = EquipSkill;
-        newWear.EquipLevel = EquipLevel;
-        newWear.AbilityID = AbilityID;
-
-        newWear.CloneAbilities(EquipAbilities, 1, inject);
-
+        
         return newWear;
     }
 }

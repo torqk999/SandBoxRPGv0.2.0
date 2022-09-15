@@ -35,7 +35,8 @@ public class CharacterAbility : ScriptableObject
     public bool bTargetEnemy;
     public bool bIsPassive;
     public RangeType RangeType;
-    public RawStat CostType;
+    public RawStat CostTarget;
+    public ValueType CostType;
     public AbilityType AbilityType;
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
@@ -46,15 +47,13 @@ public class CharacterAbility : ScriptableObject
     public float CD_Timer;
     public Effect[] Effects;
 
-
-
     public void Clone(CharacterAbility ability, float potency = 1, bool inject = false)
     {
         WeaponID = ability.WeaponID; // <<<--- ?!?!?
         Name = ability.Name;
         Sprite = ability.Sprite;
         RangeType = ability.RangeType;
-        CostType = ability.CostType;
+        CostTarget = ability.CostTarget;
         AbilityType = ability.AbilityType;
         RangeValue = ability.RangeValue;
         CostValue = ability.CostValue;

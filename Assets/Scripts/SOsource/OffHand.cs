@@ -17,21 +17,9 @@ public class OffHand : Equipment
 
     public OffHand CloneOneHand(bool inject = false)
     {
-        OffHand newOffHand = (OffHand)ScriptableObject.CreateInstance("OffHand");
-
-        newOffHand.itemID = itemID;
-        newOffHand.Name = Name;
-        newOffHand.Sprite = Sprite;
-        newOffHand.Quality = Quality;
-        newOffHand.GoldValue = GoldValue;
-        newOffHand.Weight = Weight;
+        OffHand newOffHand = (OffHand)CloneEquip("OffHand", inject);
 
         newOffHand.Type = Type;
-        newOffHand.EquipSkill = EquipSkill;
-        newOffHand.EquipLevel = EquipLevel;
-        newOffHand.AbilityID = AbilityID;
-
-        newOffHand.CloneAbilities(EquipAbilities, 1, inject);
 
         return newOffHand;
     }

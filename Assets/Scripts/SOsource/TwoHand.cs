@@ -22,21 +22,9 @@ public class TwoHand : Equipment
 
     public TwoHand CloneTwoHand(bool inject = false)
     {
-        TwoHand newTwoHand = (TwoHand)ScriptableObject.CreateInstance("TwoHand");
-
-        newTwoHand.itemID = itemID;
-        newTwoHand.Name = Name;
-        newTwoHand.Sprite = Sprite;
-        newTwoHand.Quality = Quality;
-        newTwoHand.GoldValue = GoldValue;
-        newTwoHand.Weight = Weight;
+        TwoHand newTwoHand = (TwoHand)CloneEquip("TwoHand",inject);
 
         newTwoHand.Type = Type;
-        newTwoHand.EquipSkill = EquipSkill;
-        newTwoHand.EquipLevel = EquipLevel;
-        newTwoHand.AbilityID = AbilityID;
-
-        newTwoHand.CloneAbilities(EquipAbilities, 1, inject);
 
         return newTwoHand;
     }

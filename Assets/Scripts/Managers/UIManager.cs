@@ -688,7 +688,11 @@ public class UIManager : MonoBehaviour
 
                 output += $"\n{(Element)i}: {effect.ElementPack.Elements[i]}";
             }
+
             newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = output;
+
+            if (effect.Sprite != null)
+                newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.Sprite;
         }
     }
 

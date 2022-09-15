@@ -90,7 +90,7 @@ public class Strategy
 
     bool CheckTacticConditions(Tactic tactic)
     {
-        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character))
+        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
             return false;
 
         List<Character> candidates = GetDesiredCharacters(tactic);
