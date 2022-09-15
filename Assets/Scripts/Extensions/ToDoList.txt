@@ -6,6 +6,8 @@
 - Resolve Multi-Mapping (Mouse/Keyboard/Console)   Possible walkthrew/plugin for port
 - Ramp intent vector to char-animators
 $ Entry points for ability particle effects/swing & cast animations
+- Item spawning at runtime (custom dev entry point)
+- Character Canvas (Name, Level, HealthBar, Effects, Toggle)
 
 ========================
 

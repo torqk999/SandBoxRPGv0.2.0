@@ -42,6 +42,7 @@ public static class CharacterMath
     public static readonly int STATS_LEVELS_COUNT = Enum.GetNames(typeof(SkillType)).Length;
     public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(EquipSlot)).Length;
 
+    public const int RES_PRIME_DENOM = 100;
     public const int RING_SLOT_COUNT = 2;
     public const int PARTY_INVENTORY_MAX = 100;
     public const int ABILITY_SLOTS = 12;

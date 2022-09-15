@@ -10,12 +10,14 @@ public class Effect : ScriptableObject
     public EffectAction Action;
     public RawStat TargetStat;
     public Element TargetElement;
-    public CCstatus CCstatus;
+    public CCstatus TargetCCstatus;
     public ElementPackage ElementPack;
+    public StatPackage StatAdjustPack;
     //public ElementPackage PenPackage;
     public float DurationLength;
     public float Timer;
-    public bool bIsBuff;
+    public bool bIsImmune;
+    public bool bAllImmune;
 
     public void Clone(Effect source, float amp = 1, bool inject = true)
     {
@@ -24,13 +26,25 @@ public class Effect : ScriptableObject
         Duration = source.Duration;
         Value = source.Value;
         Action = source.Action;
-        //Status = source.Status;
-        CCstatus = source.CCstatus;
-        ElementPack = new ElementPackage(source.ElementPack);
-        ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject); // <.<  just wild....
-        ElementPack.Amplify(amp);
+        TargetCCstatus = source.TargetCCstatus;
+
+        if (source.Action == EffectAction.DMG_HEAL ||
+            source.Action == EffectAction.RES_ADJ)
+        {
+            ElementPack = new ElementPackage(source.ElementPack);
+            ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject);
+            ElementPack.Amplify(amp);
+        }
+        
+        if (source.Action == EffectAction.STAT_ADJ)
+        {
+            StatAdjustPack = new StatPackage(source.StatAdjustPack);
+            StatAdjustPack.Reflection.Reflect(ref StatAdjustPack.Stats, inject);
+            StatAdjustPack.Amplify(amp);
+        }
+        
         DurationLength = source.DurationLength;
         Timer = (Duration == EffectDuration.TIMED) ? DurationLength : 0;
-        bIsBuff = source.bIsBuff;
+        bIsImmune = source.bIsImmune;
     }
 }

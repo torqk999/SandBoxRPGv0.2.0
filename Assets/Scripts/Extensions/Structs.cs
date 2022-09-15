@@ -11,13 +11,11 @@ public enum EffectDuration
 }
 public enum EffectAction
 {
-    RES,
-    STAT,
+    DMG_HEAL,
+    SPAWN,
     CROWD_CONTROL,
-    IMMUNE_RES,
-    IMMUNE_STAT,
-    IMMUNE_CC,
-    SPAWN
+    RES_ADJ,
+    STAT_ADJ,
 }
 public enum ValueType
 {
@@ -29,13 +27,13 @@ public enum ValueType
 }
 public enum CCstatus
 {
-    NONE,
     IMMOBILE,
     UN_ARMED,
     SILENCED,
     FEARED,
     CHARMED,
-    DRUNK
+    DRUNK,
+    STUNNED
 }
 public enum SkillType
 {

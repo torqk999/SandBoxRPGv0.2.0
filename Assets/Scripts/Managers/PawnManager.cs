@@ -73,7 +73,7 @@ public class PawnManager : MonoBehaviour
     void BuildCameraRig(GameObject pawnObject, Pawn currentPawn)
     {
         GameObject empty = new GameObject();
-        currentPawn.Source = pawnObject.transform;
+        currentPawn.Root = pawnObject.transform;
 
         // Boom
         GameObject boom = Instantiate(empty, pawnObject.transform.position, Quaternion.Euler(0, 0, 0), pawnObject.transform);

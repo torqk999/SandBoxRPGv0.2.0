@@ -97,7 +97,7 @@ public class PlayerController : CharacterController
     }
     public bool PossessPawn(Pawn targetPawn)
     {
-        if (targetPawn == null || !targetPawn.Source.gameObject.activeSelf)
+        if (targetPawn == null || !targetPawn.Root.gameObject.activeSelf)
         {
             Debug.Log("PawnMan failed possession");
             return false;
@@ -286,22 +286,22 @@ public class PlayerController : CharacterController
     {
         // Actions
         if (Input.GetButton("Focus") && Focus != null)
-            CurrentPawn.Source.LookAt(Focus, Vector3.up);
+            CurrentPawn.Root.LookAt(Focus, Vector3.up);
 
         if (!bIsInControl)
             return;
 
         // Looking
         if (!CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED))
-            CurrentPawn.Source.Rotate(-y, x, z, Space.Self);
+            CurrentPawn.Root.Rotate(-y, x, z, Space.Self);
 
         if (CurrentPawn.RigidBody == null)
             return;
 
         // Movement
-        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Forward") * CurrentPawn.Source.forward * KeyAxisScale, ForceMode.Impulse);
-        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Right") * CurrentPawn.Source.right * KeyAxisScale, ForceMode.Impulse);
-        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Up") * CurrentPawn.Source.transform.up * KeyAxisScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Forward") * CurrentPawn.Root.forward * KeyAxisScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Right") * CurrentPawn.Root.right * KeyAxisScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(Input.GetAxis("Up") * CurrentPawn.Root.transform.up * KeyAxisScale, ForceMode.Impulse);
 
         if (Input.GetButton("Break"))
         {
@@ -315,14 +315,14 @@ public class PlayerController : CharacterController
         if (Input.GetMouseButton(0))
         {
 
-            CurrentPawn.Source.Rotate(-y, 0, 0, Space.Self);
-            CurrentPawn.Source.Rotate(0, x, 0, Space.World);
+            CurrentPawn.Root.Rotate(-y, 0, 0, Space.Self);
+            CurrentPawn.Root.Rotate(0, x, 0, Space.World);
         }
 
         // Movement
-        CurrentPawn.Source.position += Input.GetAxis("Forward") * CurrentPawn.Source.forward * KeyAxisScale;
-        CurrentPawn.Source.position += Input.GetAxis("Right") * CurrentPawn.Source.right * KeyAxisScale;
-        CurrentPawn.Source.position += Input.GetAxis("Up") * CurrentPawn.Source.up * KeyAxisScale;
+        CurrentPawn.Root.position += Input.GetAxis("Forward") * CurrentPawn.Root.forward * KeyAxisScale;
+        CurrentPawn.Root.position += Input.GetAxis("Right") * CurrentPawn.Root.right * KeyAxisScale;
+        CurrentPawn.Root.position += Input.GetAxis("Up") * CurrentPawn.Root.up * KeyAxisScale;
 
         if (Input.GetButtonDown("TacticalMode"))
             TacticalModeChange();
@@ -380,7 +380,7 @@ public class PlayerController : CharacterController
     {
         // Turning
         if (!(CheckAction(KeyAction.CAM_LOOK, KeyState.PRESSED) && bCameraLookEnabled))
-            CurrentPawn.Source.Rotate(0, x, 0, Space.World);
+            CurrentPawn.Root.Rotate(0, x, 0, Space.World);
 
         // Action Bar
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
@@ -401,7 +401,7 @@ public class PlayerController : CharacterController
             return;
 
         if (CheckAction(KeyAction.JUMP))
-            CurrentPawn.RigidBody.AddForce(JumpForce * CurrentPawn.Source.up, ForceMode.Impulse);
+            CurrentPawn.RigidBody.AddForce(JumpForce * CurrentPawn.Root.up, ForceMode.Impulse);
 
         // Max Velocity
         if (CurrentPawn == CurrentCharacter && CurrentPawn.RigidBody.velocity.magnitude >= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
@@ -428,8 +428,8 @@ public class PlayerController : CharacterController
             right -= 1;
         }
 
-        CurrentPawn.RigidBody.AddForce(forward * CurrentPawn.Source.forward * KeyAxisScale * forceScale, ForceMode.Impulse);
-        CurrentPawn.RigidBody.AddForce(right * CurrentPawn.Source.right * KeyAxisScale * forceScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(forward * CurrentPawn.Root.forward * KeyAxisScale * forceScale, ForceMode.Impulse);
+        CurrentPawn.RigidBody.AddForce(right * CurrentPawn.Root.right * KeyAxisScale * forceScale, ForceMode.Impulse);
 
         IntentVector.x = right;
         IntentVector.z = forward;
@@ -493,8 +493,8 @@ public class PlayerController : CharacterController
     }
     void JumpHome()
     {
-        CurrentPawn.Source.position = CurrentPawn.DefPos;
-        CurrentPawn.Source.rotation = Quaternion.Euler(CurrentPawn.DefRot);
+        CurrentPawn.Root.position = CurrentPawn.DefPos;
+        CurrentPawn.Root.rotation = Quaternion.Euler(CurrentPawn.DefRot);
 
         if (CurrentPawn.RigidBody != null)
             CurrentPawn.RigidBody.velocity = Vector3.zero;
@@ -530,8 +530,8 @@ public class PlayerController : CharacterController
             return;
 
         Focus = selection.MassTransform;
-        CurrentPawn.Source.rotation = selection.CameraSnapPoint.rotation;
-        CurrentPawn.Source.position = selection.CameraSnapPoint.position;
+        CurrentPawn.Root.rotation = selection.CameraSnapPoint.rotation;
+        CurrentPawn.Root.position = selection.CameraSnapPoint.position;
     }
     void DeleteSelect(RaycastHit hit)
     {

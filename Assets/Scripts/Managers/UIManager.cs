@@ -340,7 +340,7 @@ public class UIManager : MonoBehaviour
     }
     public void LootSelectedContainerItem()
     {
-        GameState.pController.CurrentCharacter.LootContainer(GameState.pController.targetContainer, ContainerListSelection, InventoryListSelection);
+        GameState.pController.CurrentCharacter.Inventory.LootContainer(GameState.pController.targetContainer, ContainerListSelection, InventoryListSelection);
         UpdateGameMenuCanvasState(CharPage.Looting);
     }
     void EquipmentSlotClick(int index)

@@ -57,8 +57,12 @@ public class Character : Pawn, Interaction
 
     public bool bIsPaused;
     public bool bIsAlive;
-    public bool[] CurrentCCstates;
+    public bool bIsSpawn;
+    public bool bTimedSpawn;
+    public float SpawnTimer;
     public float ChannelTimer;
+
+    public Character SpawnParent;
 
     [Header("Character Logic")]
     public Character CurrentTargetCharacter;
@@ -198,9 +202,8 @@ public class Character : Pawn, Interaction
         Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";
         regen.TargetStat = targetStat;
-        regen.Action = EffectAction.STAT;
+        regen.Action = EffectAction.DMG_HEAL;
         regen.Duration = EffectDuration.SUSTAINED;
-        regen.CCstatus = CCstatus.NONE;
         regen.ElementPack = new ElementPackage();
         regen.ElementPack.Init();
         regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
@@ -429,28 +432,8 @@ public class Character : Pawn, Interaction
     }
     #endregion
 
-    #region LOOTING
-    public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
-    {
-        if (loot.Inventory.Items[containerIndex] is StackableWrapper &&
-            Inventory.PushItemIntoStack((StackableWrapper)loot.Inventory.Items[containerIndex]))
-        {
-            loot.Inventory.RemoveIndexFromInventory(containerIndex);
-            return true;
-            //Debug.Log("found stackable!: " + Inventory.Items[containerIndex].Name);
-        }
-
-        if (Inventory.PushItemIntoInventory(loot.Inventory.Items[containerIndex]))
-        {
-            loot.Inventory.RemoveIndexFromInventory(containerIndex);
-            return true;
-        }
-        return false;
-    }
-    #endregion
-
-    #region UPDATES
-    public float GenerateValueModifier(ValueType type, RawStat stat)
+    #region COMBAT
+    public float GenerateStatModifier(ValueType type, RawStat stat)
     {
         float changeType = 0;
         switch (type)
@@ -479,36 +462,51 @@ public class Character : Pawn, Interaction
     }
     public void ApplySingleEffect(Effect mod)
     {
-        float totalValue = 0;
-        float changeType = GenerateValueModifier(mod.Value, mod.TargetStat);
+        if (mod.bIsImmune)
+            return;
 
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
+        switch(mod.Action)
         {
-            if (Effects.Find(x => x.Action == EffectAction.IMMUNE_STAT && x.TargetStat == mod.TargetStat) != null)
-                continue; // Stat immunity
+            case EffectAction.DMG_HEAL:
+                ApplyDamage(mod);
+                break;
 
-            if (Effects.Find(x => x.Action == EffectAction.IMMUNE_RES && x.TargetElement == (Element)i) != null)
-                continue; // Element immunity
+            case EffectAction.SPAWN:
+                break;
+        }
+    }
+    void ApplyDamage(Effect damage)
+    {
+        if (CheckDamageImmune(damage.TargetStat))
+            return;
 
-            float change = changeType * mod.ElementPack.Elements[i] * (1 - Resistances.Elements[i]);
-            totalValue += (Element)i == Element.HEALING ? -change : change;
+        float totalValue = 0;
+        float changeType = GenerateStatModifier(damage.Value, damage.TargetStat);
+
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+        {
+            if (CheckElementalImmune((Element)i))
+                continue;
+
+            float change = (changeType * damage.ElementPack.Elements[i]) * (1 - (Resistances.Elements[i] / (Resistances.Elements[i] + CharacterMath.RES_PRIME_DENOM)));
+            totalValue += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
 
         if (totalValue == 0)
             return;
 
-        CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
-        CurrentStats.Stats[(int)mod.TargetStat] =
-            CurrentStats.Stats[(int)mod.TargetStat] <= MaximumStatValues.Stats[(int)mod.TargetStat] ?
-            CurrentStats.Stats[(int)mod.TargetStat] : MaximumStatValues.Stats[(int)mod.TargetStat];
-        CurrentStats.Stats[(int)mod.TargetStat] =
-            CurrentStats.Stats[(int)mod.TargetStat] >= 0 ?
-            CurrentStats.Stats[(int)mod.TargetStat] : 0;
+        CurrentStats.Stats[(int)damage.TargetStat] -= totalValue;
+        CurrentStats.Stats[(int)damage.TargetStat] =
+            CurrentStats.Stats[(int)damage.TargetStat] <= MaximumStatValues.Stats[(int)damage.TargetStat] ?
+            CurrentStats.Stats[(int)damage.TargetStat] : MaximumStatValues.Stats[(int)damage.TargetStat];
+        CurrentStats.Stats[(int)damage.TargetStat] =
+            CurrentStats.Stats[(int)damage.TargetStat] >= 0 ?
+            CurrentStats.Stats[(int)damage.TargetStat] : 0;
 
         // Debugging
         bAssetUpdate = true;
 
-        switch (mod.TargetStat)
+        switch (damage.TargetStat)
         {
             case RawStat.HEALTH:
                 if (totalValue > 0)
@@ -530,7 +528,50 @@ public class Character : Pawn, Interaction
                 break;
         }
     }
+    public void UpdateResAdjust(Effect adjust, bool apply = true)
+    {
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+        {
+            float change = adjust.ElementPack.Elements[i];
+            change = apply ? change : -change;
+            Resistances.Elements[i] += change;
+        }
+    }
+    public void UpdateStatAdjust(Effect adjust, bool apply = true)
+    {
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+        {
+            float change = adjust.StatAdjustPack.Stats[i];
+            change = apply ? change : -change;
+            MaximumStatValues.Stats[i] += change;
+        }
+    }
+    public bool CheckCCstatus(CCstatus status)
+    {
+        return Effects.Find(x => x.Action == EffectAction.CROWD_CONTROL &&
+                                 x.TargetCCstatus == status) != null;
+    }
+    public bool CheckCCimmune(CCstatus status)
+    {
+        return Effects.Find(x => x.Action == EffectAction.CROWD_CONTROL &&
+                                 x.bIsImmune &&
+                                 x.TargetCCstatus == status) != null;
+    }
+    public bool CheckElementalImmune(Element element)
+    {
+        return Effects.Find(x => x.Action == EffectAction.RES_ADJ &&
+                                 x.bIsImmune &&
+                                 x.TargetElement == element) != null;
+    }
+    public bool CheckDamageImmune(RawStat stat)
+    {
+        return Effects.Find(x => x.Action == EffectAction.DMG_HEAL &&
+                                 x.bIsImmune &&
+                                 x.TargetStat == stat) != null;
+    }
+    #endregion
 
+    #region UPDATES
     void UpdateLife() // Get a life...
     {
         for (int i = 0; i < 3; i++)
@@ -574,7 +615,6 @@ public class Character : Pawn, Interaction
                 }
             }
             //character.Effects[i] = risidual;
-
             ApplySingleEffect(Effects[i]);
         }
     }
@@ -606,23 +646,23 @@ public class Character : Pawn, Interaction
         {
             case DebugState.DEAD:
                 if (Assets.Dead != null)
-                    Source.gameObject.GetComponent<Renderer>().material = Assets.Dead;
+                    Root.gameObject.GetComponent<Renderer>().material = Assets.Dead;
                 break;
             case DebugState.DEFAULT:
                 if (Assets.Default != null)
-                    Source.gameObject.GetComponent<Renderer>().material = Assets.Default;
+                    Root.gameObject.GetComponent<Renderer>().material = Assets.Default;
                 break;
             case DebugState.LOSS_H:
                 if (Assets.HealthLoss != null)
-                    Source.gameObject.GetComponent<Renderer>().material = Assets.HealthLoss;
+                    Root.gameObject.GetComponent<Renderer>().material = Assets.HealthLoss;
                 break;
             case DebugState.LOSS_M:
                 if (Assets.ManaLoss != null)
-                    Source.gameObject.GetComponent<Renderer>().material = Assets.ManaLoss;
+                    Root.gameObject.GetComponent<Renderer>().material = Assets.ManaLoss;
                 break;
             case DebugState.LOSS_S:
                 if (Assets.StamLoss != null)
-                    Source.gameObject.GetComponent<Renderer>().material = Assets.StamLoss;
+                    Root.gameObject.GetComponent<Renderer>().material = Assets.StamLoss;
                 break;
         }
 
@@ -637,7 +677,6 @@ public class Character : Pawn, Interaction
         IntentRight = right;
         bIntent = true;
     }
-    
     void UpdateAnimation()
     {
         if (Animator == null)
@@ -652,7 +691,13 @@ public class Character : Pawn, Interaction
         Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
     }
-    
+    void UpdateCanvas()
+    {
+        if (CharacterCanvas == null)
+            return;
+
+
+    }
     #endregion
 
     // Start is called before the first frame update

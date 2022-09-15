@@ -67,7 +67,7 @@ public class PawnTriggerVolume : MonoBehaviour
         //Debug.Log("I'm Triggered! SJW!!!");
 
         if (Parent == null ||
-            Parent.Source.gameObject == other.gameObject)
+            Parent.Root.gameObject == other.gameObject)
             return;
 
         //Debug.Log("I have a parent");
@@ -101,7 +101,7 @@ public class PawnTriggerVolume : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (Parent == null ||
-            Parent.Source.gameObject == other.gameObject)
+            Parent.Root.gameObject == other.gameObject)
             return;
 
         switch(other.tag)
@@ -133,6 +133,6 @@ public class PawnTriggerVolume : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.gameObject.transform.position = Parent.Source.position;
+        this.gameObject.transform.position = Parent.Root.position;
     }
 }
