@@ -149,11 +149,15 @@ public class Strategy
     Character ReturnMostCharacter(Tactic tactic, List<Character> characterPool)
     {
         Character output = null;
+
+
         return output;
     }
     Character ReturnLeastCharacter(Tactic tactic, List<Character> characterPool)
     {
         Character output = null;
+
+
         return output;
     }
     Character ReturnIdealCharacter(Tactic tactic, List<Character> characterPool)
