@@ -397,7 +397,8 @@ public class PlayerController : CharacterController
         if (CurrentPawn.RigidBody == null
             || !CurrentPawn.bIsGrounded
             || !CurrentPawn.bControllable
-            || !GameState.CharacterMan.PullCurrentCharacter().bIsAlive)
+            || !CurrentCharacter.bIsAlive/*!GameState.CharacterMan.PullCurrentCharacter().bIsAlive*/
+            || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
 
         if (CheckAction(KeyAction.JUMP))

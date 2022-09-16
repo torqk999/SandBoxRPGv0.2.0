@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.ComponentModel;
 using System.Collections.Generic;
 using UnityEngine;
@@ -669,30 +670,42 @@ public class UIManager : MonoBehaviour
 
         foreach (Effect effect in GameState.pController.CurrentCharacter.Abilities[SkillListSelection].Effects)
         {
-            GameObject newEffectPanel = Instantiate(EffectPanelPrefab, EffectStatsContent);
-            string output = string.Empty;
+            GameObject newEffectPanel = Instantiate(EffectPanelPrefab);
+            StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);
+            outputBuild.Append($"Effect: {effect.Name}\n");
+            outputBuild.Append($"Action: {effect.Action}\n");
+            outputBuild.Append($"Duration: {(effect.Duration == EffectDuration.TIMED ? effect.DurationLength.ToString() : effect.Duration.ToString())}\n");
 
-            output += $"Effect: {effect.Name}\n";
-            output += "Duration: ";
-            string duration = "Instant\n";
-            duration = (effect.DurationLength < 0) ? "Forever\n" : duration;
-            duration = (effect.DurationLength > 0) ? $"{effect.DurationLength}\n" : duration;
-            output += duration;
-            output += "Values:";
-
-            //float[] stats = effect.ElementPack.PullData();
-            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            switch(effect.Action)
             {
-                if (effect.ElementPack.Elements[i] == 0)
-                    continue;
+                case EffectAction.DMG_HEAL:
+                    outputBuild.Append($"Target: {effect.TargetStat}\n");
+                    outputBuild.Append($"Amount: {effect.Value}\n");
 
-                output += $"\n{(Element)i}: {effect.ElementPack.Elements[i]}";
+                    for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+                    {
+                        if (effect.ElementPack.Elements[i] == 0)
+                            continue;
+
+                        outputBuild.Append($"\n{(Element)i} : {effect.ElementPack.Elements[i]}");
+                    }
+                    break;
+
+                case EffectAction.SPAWN:
+                    break;
+
+                case EffectAction.CROWD_CONTROL:
+                    outputBuild.Append($"Type: {effect.TargetCCstatus}");
+                    break;
             }
-
-            newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = output;
 
             if (effect.Sprite != null)
                 newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.Sprite;
+
+            newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = outputBuild.ToString();
+
+            newEffectPanel.transform.parent = EffectStatsContent;
+            newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
         }
     }
 

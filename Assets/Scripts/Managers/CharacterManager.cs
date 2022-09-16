@@ -184,6 +184,7 @@ public class CharacterManager : MonoBehaviour
         switch(modInstance.Action)
         {
             case EffectAction.CROWD_CONTROL:
+                Debug.Log($"{target.Root.name} : {mod.TargetCCstatus}");
                 break;
 
             case EffectAction.RES_ADJ:

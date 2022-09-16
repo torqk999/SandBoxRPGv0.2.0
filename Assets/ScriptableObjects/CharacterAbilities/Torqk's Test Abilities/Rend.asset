@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5400cf6a5811e9b41b7b3fd4b58f06cd, type: 3}
-  m_Name: Swing
+  m_Name: Rend
   m_EditorClassIdentifier: 
   WeaponID: 0
-  Name: Swing
-  Sprite: {fileID: 21300000, guid: 653bfd86f6d3ef842aa3b48eca37d6e0, type: 3}
+  Name: Rend
+  Sprite: {fileID: 21300000, guid: e97fbe8f0121aee418c2171b48665218, type: 3}
   bTargetEnemy: 1
   bIsPassive: 0
   RangeType: 1
@@ -25,8 +25,8 @@ MonoBehaviour:
   CharAnimation: 0
   AnimationTarget: 0
   RangeValue: 5
-  CostValue: 5
-  CD_Duration: 1
+  CostValue: 10
+  CD_Duration: 3
   CD_Timer: 0
   Effects:
-  - {fileID: 11400000, guid: 4d3c7a8a6307f2746b20f91dae99e7e5, type: 2}
+  - {fileID: 11400000, guid: a3d13ff5e63857f44a015cfdbc1c4483, type: 2}

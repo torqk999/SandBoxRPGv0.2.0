@@ -93,8 +93,8 @@ public class SimpleAIcontroller : CharacterController
         if (bIsAgressive)
         {
             TargetCharacter = GameState.CharacterMan.CharacterPool.Find(
-                x => x.Sheet.Faction != base.CurrentCharacter.Sheet.Faction &&
-                Vector3.Distance(x.Root.position, base.CurrentCharacter.Root.position) <= AggroRange);
+                x => x.Sheet.Faction != CurrentCharacter.Sheet.Faction &&
+                Vector3.Distance(x.Root.position, CurrentCharacter.Root.position) <= AggroRange);
             return;
         }
 
@@ -109,27 +109,27 @@ public class SimpleAIcontroller : CharacterController
         if (TargetCharacter == null || !bIsAgressive)
             return;
 
-        if (bIsAggro && Vector3.Distance(TargetCharacter.Root.position, base.CurrentCharacter.Root.position) > DisengageRange)
+        if (bIsAggro && Vector3.Distance(TargetCharacter.Root.position, CurrentCharacter.Root.position) > DisengageRange)
         {
             bIsAggro = false;
             TargetCharacter = null;
             ResetStaticSequence();
         }
-        else if (!bIsAggro && Vector3.Distance(TargetCharacter.Root.position, base.CurrentCharacter.Root.position) < AggroRange)
+        else if (!bIsAggro && Vector3.Distance(TargetCharacter.Root.position, CurrentCharacter.Root.position) < AggroRange)
             bIsAggro = true;
     }
     void MoveAggro()
     {
-        Rigidbody rigidBody = base.CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
+        Rigidbody rigidBody = CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
 
         Vector3 newVector = rigidBody.transform.rotation.eulerAngles;
-        newVector.y = GenerateYbearing(base.CurrentCharacter.Root.position, TargetCharacter.Root.position);
+        newVector.y = GenerateYbearing(CurrentCharacter.Root.position, TargetCharacter.Root.position);
         rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-        if (rigidBody.velocity.magnitude <= base.CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED] && Vector3.Distance(base.CurrentCharacter.Root.position, TargetCharacter.Root.position) > TargetMaintainRange)
-            rigidBody.AddForce(base.CurrentCharacter.Root.forward * AIwalkForce, ForceMode.Impulse);
+        if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED] && Vector3.Distance(CurrentCharacter.Root.position, TargetCharacter.Root.position) > TargetMaintainRange)
+            rigidBody.AddForce(CurrentCharacter.Root.forward * AIwalkForce, ForceMode.Impulse);
     }
     void UpdateSequenceIndex()
     {
@@ -298,8 +298,8 @@ public class SimpleAIcontroller : CharacterController
         {
             case AIoperationType.ROTATE:
                 CurrentCharacter.Root.rotation = Quaternion.Lerp(Quaternion.Euler(new Vector3(0, oldRot, 0)),
-                                                        Quaternion.Euler(new Vector3(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0)),
-                                                        1 - (CurrentOperationTime / TotalOperationTime));
+                                                 Quaternion.Euler(new Vector3(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0)),
+                                                 1 - (CurrentOperationTime / TotalOperationTime));
                 break;
         }
 
@@ -354,7 +354,7 @@ public class SimpleAIcontroller : CharacterController
 
             float turningFactor = (180 - magnitude) / 180;
             Vector3 newDirection = TravelPoint - rigidBody.position;
-            //rigidBody.velocity = newDirection * (turningFactor * Character.MaximumStatValues.SPEED); // Maybe? : |
+
             if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
                 rigidBody.AddForce(newDirection * (turningFactor * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED]))), ForceMode.Impulse);
         }
@@ -464,7 +464,8 @@ public class SimpleAIcontroller : CharacterController
 
         if (bDebuggingDisable
             || !bIsAwake
-            || !CurrentCharacter.bIsAlive)
+            || !CurrentCharacter.bIsAlive
+            || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
 
         FindTarget();

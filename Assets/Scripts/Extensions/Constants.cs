@@ -12,6 +12,7 @@ public static class GlobalConstants
     public const int ACTION_KEY_COUNT = 2;
     public const int TOTAL_MOUSE_BUTTONS = 7;
 
+    public const int STR_BUILD_CAP = 512;
     public const int MAX_PATH_CYCLES = 1000;
 
     public const string ANIM_BOOL_WALK = "walking";

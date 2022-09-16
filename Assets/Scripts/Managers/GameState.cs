@@ -35,7 +35,6 @@ public class GameState : MonoBehaviour
     public ObjectBuilder Builder;
 
     [Header("Game Logic")]
-    //public GameMode GameMode;
     public bool bDebugEffects;
     public bool bGravity;
     public bool bPause;
@@ -45,11 +44,6 @@ public class GameState : MonoBehaviour
     public bool bPauseMenuOpen;
     public bool bHUDactive;
     public bool bGameMenuOpen;
-    //public bool bInventoryOpen;
-    //public bool bEquipmentOpen;
-    //public bool bLootingOpen;
-    //public bool bSkillsOpen;
-    //public bool bStrategyOpen;
     
     [Header("Generated Indices")]
     public int EQUIPMENT_INDEX;

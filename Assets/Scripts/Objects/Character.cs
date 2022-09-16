@@ -202,6 +202,7 @@ public class Character : Pawn, Interaction
         Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
         regen.Name = $"{targetStat} REGEN";
         regen.TargetStat = targetStat;
+        regen.Value = ValueType.FLAT;
         regen.Action = EffectAction.DMG_HEAL;
         regen.Duration = EffectDuration.SUSTAINED;
         regen.ElementPack = new ElementPackage();
@@ -462,12 +463,14 @@ public class Character : Pawn, Interaction
     }
     public void ApplySingleEffect(Effect effect)
     {
+        //Debug.Log($"{Root.name} : {effect.Name}");
         if (effect.bIsImmune)
             return;
-
+        //Debug.Log("yo0");
         switch(effect.Action)
         {
             case EffectAction.DMG_HEAL:
+                //Debug.Log("yo1");
                 ApplyDamage(effect);
                 break;
 
@@ -604,6 +607,7 @@ public class Character : Pawn, Interaction
     {
         for (int i = Effects.Count - 1; i > -1; i--)
         {
+            //Debug.Log($"{Root.name} : {Effects[i].Name}");
             //Effect risidual = character.Effects[i];
             if (Effects[i].Duration == EffectDuration.TIMED)
             {
