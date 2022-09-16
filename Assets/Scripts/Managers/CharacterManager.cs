@@ -85,11 +85,7 @@ public class CharacterManager : MonoBehaviour
         if (!CheckAbility(call, caller, modifier))
             return false;
 
-        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
-
-        call.SetCooldown();
-        TargetAbility(call, caller);
-        return true;
+        return TargetAbility(call, caller, modifier);
     }
     public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
     {
@@ -117,7 +113,7 @@ public class CharacterManager : MonoBehaviour
 
         return true; // Good to do things Sam!
     }
-    void TargetAbility(CharacterAbility call, Character caller)
+    bool TargetAbility(CharacterAbility call, Character caller, float modifier)
     {
         switch (call.RangeType)
         {
@@ -127,7 +123,7 @@ public class CharacterManager : MonoBehaviour
 
             case RangeType.TARGET:
                 if (caller.CurrentTargetCharacter == null)
-                    return;
+                    return false;
                 if (Vector3.Distance(caller.CurrentTargetCharacter.Root.position, caller.Root.position) <= call.RangeValue)
                     ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
                 break;
@@ -135,11 +131,18 @@ public class CharacterManager : MonoBehaviour
             case RangeType.AOE:
                 List<Character> targets = AOEtargetting(call, caller);
                 if (targets.Count < 1)
-                    return;
+                    return false;
                 foreach (Character target in targets)
                     ApplyAbilitySingle(target, call);
                 break;
         }
+        UseAbility(call, caller, modifier);
+        return true;
+    }
+    void UseAbility(CharacterAbility call, Character caller, float modifier)
+    {
+        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
+        call.SetCooldown();
     }
     List<Character> AOEtargetting(CharacterAbility call, Character caller)
     {

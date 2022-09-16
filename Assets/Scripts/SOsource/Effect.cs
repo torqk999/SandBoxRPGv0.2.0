@@ -5,23 +5,27 @@ public class Effect : ScriptableObject
 {
     public string Name;
     public Sprite Sprite;
+
     public EffectDuration Duration;
     public ValueType Value;
     public EffectAction Action;
     public RawStat TargetStat;
     public Element TargetElement;
     public CCstatus TargetCCstatus;
+
     public ElementPackage ElementPack;
     public StatPackage StatAdjustPack;
     //public ElementPackage PenPackage;
+    public int EquipID; // for resolving passives/sustained lost on equip removal
     public float DurationLength;
     public float Timer;
     public bool bIsImmune;
     public bool bAllImmune;
 
-    public void Clone(Effect source, float amp = 1, bool inject = true)
+    public void Clone(Effect source, int equipId = -1, float amp = 1, bool inject = true)
     {
         Name = source.Name;
+        EquipID = equipId;
         Sprite = source.Sprite;
         Duration = source.Duration;
         Value = source.Value;

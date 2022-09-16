@@ -29,7 +29,7 @@ public enum AbilityType
 [CreateAssetMenu(fileName = "CharacterSheet", menuName = "ScriptableObjects/CharacterAbility")]
 public class CharacterAbility : ScriptableObject
 {
-    public int WeaponID;
+    public int EquipID;
     public string Name;
     public Sprite Sprite;
     public bool bTargetEnemy;
@@ -47,9 +47,9 @@ public class CharacterAbility : ScriptableObject
     public float CD_Timer;
     public Effect[] Effects;
 
-    public void Clone(CharacterAbility ability, float potency = 1, bool inject = false)
+    public void Clone(CharacterAbility ability, int equipId = -1, float potency = 1, bool inject = false)
     {
-        WeaponID = ability.WeaponID; // <<<--- ?!?!?
+        EquipID = equipId;// ability.WeaponID; // <<<--- ?!?!?
         Name = ability.Name;
         Sprite = ability.Sprite;
         RangeType = ability.RangeType;
@@ -63,7 +63,7 @@ public class CharacterAbility : ScriptableObject
         for (int i = 0; i < Effects.Length; i++)
         {
             Effects[i] = (Effect)ScriptableObject.CreateInstance("Effect");
-            Effects[i].Clone(ability.Effects[i], potency, inject);
+            Effects[i].Clone(ability.Effects[i], equipId, potency, inject);
             //Effects[i].ElementPack.Amplify(potency);
         }
     }
@@ -83,7 +83,7 @@ public class CharacterAbility : ScriptableObject
             CharacterMath.SKILL_MUL_RACE[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                                  // Race
 
         CharacterAbility newAbility = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");
-        newAbility.Clone(this, potency);
+        newAbility.Clone(this, equip.EquipID, potency);
         return newAbility;
     }
     public void SetCooldown()

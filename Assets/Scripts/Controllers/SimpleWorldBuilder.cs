@@ -41,7 +41,7 @@ public class SimpleWorldBuilder : MonoBehaviour
                 continue;
 
             WearableWrapper newWrapper = new WearableWrapper(wear, true);
-            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -53,7 +53,7 @@ public class SimpleWorldBuilder : MonoBehaviour
                 continue;
 
             RingWrapper newWrapper = new RingWrapper(ring, true);
-            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -66,7 +66,7 @@ public class SimpleWorldBuilder : MonoBehaviour
                 continue;
 
             OneHandWrapper newWrapper = new OneHandWrapper(oneHand, true);
-            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -79,7 +79,7 @@ public class SimpleWorldBuilder : MonoBehaviour
                 continue;
 
             OffHandWrapper newWrapper = new OffHandWrapper(offHand, true);
-            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -91,7 +91,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             if (twoHand == null)
                 continue;
             TwoHandWrapper newWrapper = new TwoHandWrapper(twoHand, true);
-            newWrapper.Equip.AbilityID = GameState.EQUIPMENT_INDEX;
+            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);

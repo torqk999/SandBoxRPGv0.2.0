@@ -18,8 +18,6 @@ public class GameState : MonoBehaviour
 
     [Header("Controllers")]
     public PlayerController pController;
-    public SimpleAIcontroller testAI;
-    public SimpleAIpathingController testPath;
     public NavMesh NavMesh;
     public KeyMapper KeyMap;
 

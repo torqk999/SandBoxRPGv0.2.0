@@ -229,7 +229,7 @@ public class Character : Pawn, Interaction
         */
 
         for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
-            if (AbilitySlots[i] != null && equipIDs.FindIndex(x => x == AbilitySlots[i].WeaponID) < 0)
+            if (AbilitySlots[i] != null && equipIDs.FindIndex(x => x == AbilitySlots[i].EquipID) < 0)
                 AbilitySlots[i] = null;
     }
     void UpdateAbilityList()
