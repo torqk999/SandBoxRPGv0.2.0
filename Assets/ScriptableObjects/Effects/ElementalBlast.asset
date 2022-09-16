@@ -16,10 +16,10 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: 5cd385a478da6e247b15e5441b37ef40, type: 3}
   Duration: 0
   Value: 1
-  Action: 1
+  Action: 0
   TargetStat: 0
   TargetElement: 0
-  CCstatus: 0
+  TargetCCstatus: 0
   ElementPack:
     Reflection:
       PHYSICAL: 0
@@ -30,6 +30,15 @@ MonoBehaviour:
       POISON: 5
       HEALING: 0
     Elements: []
+  StatAdjustPack:
+    Stats: []
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+  EquipID: 0
   DurationLength: 0
   Timer: 0
-  bIsBuff: 0
+  bIsImmune: 0
+  bAllImmune: 0

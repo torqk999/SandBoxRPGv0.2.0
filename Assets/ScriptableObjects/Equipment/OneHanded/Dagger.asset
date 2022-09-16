@@ -20,8 +20,9 @@ MonoBehaviour:
   Weight: 0
   EquipSkill: 3
   EquipLevel: 0
-  AbilityID: 0
+  EquipID: 0
   EquipAbilities:
   - {fileID: 11400000, guid: 886272930e95e8344ad842c295b767aa, type: 2}
   - {fileID: 11400000, guid: 0e007141d9cd7e64eb48036ba29ccd21, type: 2}
+  - {fileID: 11400000, guid: 71489bca443e9084abfd927107e42678, type: 2}
   Type: 0
