@@ -15,7 +15,7 @@ public class OffHand : Equipment
     [Header("OffHand Properties")]
     public OffHandType Type;
 
-    public OffHand CloneOneHand(int equipId = -1, bool inject = false)
+    public OffHand CloneOffHand(int equipId = -1, bool inject = false)
     {
         OffHand newOffHand = (OffHand)CloneEquip("OffHand", equipId, inject);
 

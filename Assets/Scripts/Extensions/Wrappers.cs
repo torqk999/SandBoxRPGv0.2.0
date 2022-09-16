@@ -48,6 +48,11 @@ public class RingWrapper : EquipWrapper
         Equip = ring;
         CurrentSlotIndex = -1;
     }
+
+    public RingWrapper CloneWrapper()
+    {
+        return new RingWrapper(Ring);
+    }
 }
 [System.Serializable]
 public class WearableWrapper : EquipWrapper
@@ -94,11 +99,11 @@ public class OffHandWrapper : EquipWrapper
     {
         Name = offHand.Name;
         Sprite = offHand.Sprite;
-        Hand = offHand.CloneOneHand(equipId, inject);
+        Hand = offHand.CloneOffHand(equipId, inject);
         Equip = Hand;
     }
 
-    public OffHandWrapper CloneOneHandWrapper()
+    public OffHandWrapper CloneOffHandWrapper()
     {
         return new OffHandWrapper(Hand);
     }

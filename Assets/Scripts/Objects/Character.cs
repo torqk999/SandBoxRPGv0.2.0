@@ -383,12 +383,6 @@ public class Character : Pawn, Interaction
     }
     bool EquipRing(int inventoryIndex)
     {
-        /*if (Inventory.Items[inventoryIndex] == null ||
-            !(Inventory.Items[inventoryIndex] is RingWrapper))
-            return false;*/
-
-        //RingWrapper ring = (RingWrapper)Inventory.Items[inventoryIndex];
-        
         for (int i = 0; i < CharacterMath.RING_SLOT_COUNT;i++)
         {
             if (RingSlots[i] == null)
@@ -397,22 +391,9 @@ public class Character : Pawn, Interaction
                 return true;
             }
         }
+
         RingSlots[0] = (RingWrapper)Inventory.SwapItemSlots(RingSlots[0], inventoryIndex); // Default first index of rings
         return true;
-        /*
-        if (RingSlots[ringIndex] == null)
-        {
-            RingSlots[ringIndex] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return;
-        }*/
-
-        /*if (EquipmentSlots[(int)EquipSlot.RING_R] == null)
-        {
-            EquipmentSlots[(int)EquipSlot.RING_R] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return;
-        }*/
-
-        
     }
     bool AttemptEquipRemoval(EquipWrapper[] slotList, int equipIndex)
     {

@@ -36,7 +36,9 @@ public class Effect : ScriptableObject
             source.Action == EffectAction.RES_ADJ)
         {
             ElementPack = new ElementPackage(source.ElementPack);
-            ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject);
+            Debug.Log($"Reflection of :{Name}\n" +
+                $"Injection: {inject}\n" +
+                $"Success: {ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject)}");
             ElementPack.Amplify(amp);
         }
         

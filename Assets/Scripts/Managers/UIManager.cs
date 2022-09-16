@@ -682,10 +682,12 @@ public class UIManager : MonoBehaviour
                     outputBuild.Append($"Target: {effect.TargetStat}\n");
                     outputBuild.Append($"Amount: {effect.Value}\n");
 
+                    //Debug.Log($"{effect.Name} : {effect.ElementPack.Elements.Length}");
+
                     for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
                     {
-                        if (effect.ElementPack.Elements[i] == 0)
-                            continue;
+                        //if (effect.ElementPack.Elements[i] == 0)
+                        //    continue;
 
                         outputBuild.Append($"\n{(Element)i} : {effect.ElementPack.Elements[i]}");
                     }
@@ -709,7 +711,6 @@ public class UIManager : MonoBehaviour
             //newEffectPanel.transform.parent = EffectStatsContent;
         }
     }
-
     void PopulateEquipAndRingSlotButtons()
     {
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
