@@ -271,11 +271,13 @@ public class SimpleAIcontroller : CharacterController
     float GenerateYbearing(Vector3 source, Vector3 target) // Source ------------> Target
     {
         float output = 0;
+        float magnitude = Vector3.Distance(source, target);
+
+        if (magnitude == 0)
+            return output;
 
         float deltaX = target.x - source.x;
         float deltaZ = target.z - source.z;
-
-        float magnitude = Vector3.Distance(source, target);
 
         output = (180 / Mathf.PI) * Mathf.Asin(deltaX / magnitude);
         output = (Mathf.Sign(deltaZ) > 0) ? output : 180 - output;
@@ -297,9 +299,11 @@ public class SimpleAIcontroller : CharacterController
         switch (operation.Type)
         {
             case AIoperationType.ROTATE:
-                CurrentCharacter.Root.rotation = Quaternion.Lerp(Quaternion.Euler(new Vector3(0, oldRot, 0)),
-                                                 Quaternion.Euler(new Vector3(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0)),
-                                                 1 - (CurrentOperationTime / TotalOperationTime));
+                Debug.Log($"{CurrentCharacter.Root.name} : {CurrentCharacter.Root.position}");
+                Quaternion start = Quaternion.Euler(0, oldRot, 0);
+                Quaternion end = Quaternion.Euler(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0);
+                float lerp = 1 - (CurrentOperationTime / TotalOperationTime);
+                CurrentCharacter.Root.rotation = Quaternion.Lerp(start, end, lerp);
                 break;
         }
 

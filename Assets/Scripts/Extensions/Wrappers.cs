@@ -32,22 +32,7 @@ public class StackableWrapper : ItemWrapper
 [System.Serializable]
 public class EquipWrapper : ItemWrapper
 {
-    //public int AbilityID;
     public Equipment Equip;
-    /*
-    public EquipWrapper(Equipment equip)
-    {
-        Name = equip.Name;
-        Sprite = equip.Sprite;
-        //Equip = equip.CloneEquip();
-    }
-
-    
-    public EquipWrapper CloneEquipWrapper()
-    {
-        return new EquipWrapper(Equip);
-    }
-    */
 }
 [System.Serializable]
 public class RingWrapper : EquipWrapper

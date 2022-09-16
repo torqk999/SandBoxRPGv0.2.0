@@ -129,10 +129,9 @@ public class SimpleWorldBuilder : MonoBehaviour
             GameState.CharacterMan.DefaultPartyFormation, PartyStartLocation); // Migrations -______-
         SpawnMobs();
         
-
         GameState.pController.InitialPawnControl();
 
-        GameState.testBuilder.SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);//GameState.Controller.CurrentCharacter);
+        //GameState.testBuilder.SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);//GameState.Controller.CurrentCharacter);
     }
 
     // Start is called before the first frame update
