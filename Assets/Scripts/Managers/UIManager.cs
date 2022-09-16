@@ -702,7 +702,7 @@ public class UIManager : MonoBehaviour
         {
             if (EquipButtons[i] != null)
             {
-                Debug.Log($"GearCallback: {i}");
+                //Debug.Log($"GearCallback: {i}");
                 CreateCallBackIdentity(EquipButtons[i], i, ButtonType.SLOT_EQUIP);
             }
         }
@@ -711,7 +711,7 @@ public class UIManager : MonoBehaviour
         {
             if (RingButtons[i] != null)
             {
-                Debug.Log($"RingCallbacks: {i}");
+                //Debug.Log($"RingCallbacks: {i}");
                 CreateCallBackIdentity(RingButtons[i], i, ButtonType.SLOT_RING);
             }
         }
@@ -821,7 +821,7 @@ public class UIManager : MonoBehaviour
                 continue;
             }
 
-            Debug.Log($"Updating slot:{i}");
+            //Debug.Log($"Updating slot:{i}");
 
             slider.value = 1 - (GameState.pController.CurrentCharacter.AbilitySlots[i].CD_Timer /
                 GameState.pController.CurrentCharacter.AbilitySlots[i].CD_Duration);

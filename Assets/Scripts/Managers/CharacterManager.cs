@@ -328,7 +328,7 @@ public class CharacterManager : MonoBehaviour
         if (source == null)
             return;
 
-        Debug.Log($"sourceSheetName: {source.Sheet.Name}");
+        //Debug.Log($"sourceSheetName: {source.Sheet.Name}");
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");

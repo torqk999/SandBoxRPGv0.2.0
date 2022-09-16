@@ -193,7 +193,7 @@ public class Character : Pawn, Interaction
             float magnitude = CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.BASE_REGEN[i] + 
                 (CharacterMath.RAW_GROWTH[i] * Sheet.Level));
 
-            //Debug.Log($"{Sheet.Name} : {(EffectTarget)i} : {magnitude}");
+            //Debug.Log($"{Sheet.Name} : REGEN {(RawStat)i} : {magnitude}");
             Effects.Add(CreateRegen((RawStat)i, magnitude));
         }
     }

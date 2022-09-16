@@ -95,6 +95,9 @@ public class SimpleAIpathingController : MonoBehaviour
         GameState.NavMesh.ClearObstructions();
         return result;
     }
+
+
+
     void GenerateStartAndEndCoords( Vector3 startLocation, Vector3 endLocation = new Vector3(), bool bGenEnd = false)
     {
         StartCoord[0] = -1;

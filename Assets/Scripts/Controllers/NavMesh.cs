@@ -39,6 +39,10 @@ public class NavMesh : MonoBehaviour
 
     public NavNode[,] NavNodes;
 
+    void FindClosestNavIndex(Vector3 location, ref int[] index)
+    {
+
+    }
     public void GenerateMesh()
     {
         if (bounds[0] == null || bounds[1] == null || Resolution <= 0)

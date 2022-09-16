@@ -18,7 +18,7 @@ MonoBehaviour:
   bTargetEnemy: 1
   bIsPassive: 0
   RangeType: 3
-  CostTarget: 0
+  CostTarget: 2
   CostType: 4
   AbilityType: 1
   AnimationState: 0
