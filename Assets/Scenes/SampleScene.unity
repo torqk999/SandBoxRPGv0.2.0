@@ -4592,7 +4592,7 @@ MonoBehaviour:
       SpecificTarget: {fileID: 0}
     CurrentlyActiveTacticIndex: 0
     bTargetAssigned: 0
-  bIsAgressive: 0
+  bIsAgressive: 1
   bIsFollowing: 0
   bIsUsingNavMesh: 1
   bTestMotion: 1

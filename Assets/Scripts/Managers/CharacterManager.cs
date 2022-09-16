@@ -77,14 +77,15 @@ public class CharacterManager : MonoBehaviour
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
         CharacterAbility call = caller.AbilitySlots[abilityIndex];
+        if (call == null) // Am I a joke to you?
+            return false;
+
         float modifier = caller.GenerateStatModifier(call.CostType, call.CostTarget);
 
         if (!CheckAbility(call, caller, modifier))
             return false;
 
-        //float[] stats = caller.CurrentStats.PullData();
         caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
-        //caller.CurrentStats.EnterData(stats);
 
         call.SetCooldown();
         TargetAbility(call, caller);
@@ -92,9 +93,6 @@ public class CharacterManager : MonoBehaviour
     }
     public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
     {
-        if (call == null) // Am I a joke to you?
-            return false;
-
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
 

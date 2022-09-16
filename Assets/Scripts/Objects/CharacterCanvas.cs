@@ -31,7 +31,11 @@ public class CharacterCanvas : MonoBehaviour
     void BuildEffectImages()
     {
         for (int i = EffectContainer.childCount - 1; i > -1; i--)
-            Destroy(EffectContainer.GetChild(i));
+        {
+            Debug.Log("Destroying effect");
+            Destroy(EffectContainer.GetChild(i).gameObject);
+        }
+            
 
         foreach(Effect effect in Character.Effects)
         {
