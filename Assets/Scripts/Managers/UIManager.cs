@@ -704,8 +704,9 @@ public class UIManager : MonoBehaviour
 
             newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = outputBuild.ToString();
 
-            newEffectPanel.transform.parent = EffectStatsContent;
+            newEffectPanel.transform.SetParent(EffectStatsContent);
             newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
+            //newEffectPanel.transform.parent = EffectStatsContent;
         }
     }
 

@@ -10,13 +10,13 @@ public class Equipment : ItemObject
     public int EquipID;
     public CharacterAbility[] EquipAbilities;
 
-    public Equipment CloneEquip(string instanceType = "Equipment", bool inject = false)
+    public Equipment CloneEquip(string instanceType = "Equipment", int equipId = -1, bool inject = false)
     {
         Equipment newEquip = (Equipment)CloneItem(instanceType);
 
         newEquip.EquipSkill = EquipSkill;
         newEquip.EquipLevel = EquipLevel;
-        newEquip.EquipID = EquipID;
+        newEquip.EquipID = equipId;
 
         newEquip.CloneAbilities(EquipAbilities, 1, inject);
 

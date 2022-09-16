@@ -245,7 +245,17 @@ public class Character : Pawn, Interaction
             {
                 Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip));
             }
+        }
 
+        for (int i = 0; i < CharacterMath.RING_SLOT_COUNT; i++)
+        {
+            if (RingSlots[i] == null)
+                continue;
+
+            for (int j = 0; j < RingSlots[i].Equip.EquipAbilities.Length; j++)
+            {
+                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipAbility(this, RingSlots[i].Equip));
+            }
         }
     }
 

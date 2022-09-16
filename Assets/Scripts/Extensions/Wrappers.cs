@@ -40,11 +40,11 @@ public class RingWrapper : EquipWrapper
     public Ring Ring;
     public int CurrentSlotIndex;
 
-    public RingWrapper(Ring ring, bool inject = false)
+    public RingWrapper(Ring ring, int equipId = -1, bool inject = false)
     {
         Name = ring.Name;
         Sprite = ring.Sprite;
-        Ring = ring.CloneRing(inject);
+        Ring = ring.CloneRing(equipId, inject);
         Equip = ring;
         CurrentSlotIndex = -1;
     }
@@ -54,11 +54,11 @@ public class WearableWrapper : EquipWrapper
 {
     public Wearable Wear;
 
-    public WearableWrapper(Wearable wear, bool inject = false)
+    public WearableWrapper(Wearable wear, int equipId = -1, bool inject = false)
     {
         Name = wear.Name;
         Sprite = wear.Sprite;
-        Wear = wear.CloneWear(inject);
+        Wear = wear.CloneWear(equipId, inject);
         Equip = Wear;
     }
 
@@ -72,11 +72,11 @@ public class OneHandWrapper : EquipWrapper
 {
     public OneHand Hand;
 
-    public OneHandWrapper(OneHand oneHand, bool inject = false)
+    public OneHandWrapper(OneHand oneHand, int equipId = -1, bool inject = false)
     {
         Name = oneHand.Name;
         Sprite = oneHand.Sprite;
-        Hand = oneHand.CloneOneHand(inject);
+        Hand = oneHand.CloneOneHand(equipId, inject);
         Equip = Hand;
     }
 
@@ -90,11 +90,11 @@ public class OffHandWrapper : EquipWrapper
 {
     public OffHand Hand;
 
-    public OffHandWrapper(OffHand offHand, bool inject = false)
+    public OffHandWrapper(OffHand offHand, int equipId = -1, bool inject = false)
     {
         Name = offHand.Name;
         Sprite = offHand.Sprite;
-        Hand = offHand.CloneOneHand(inject);
+        Hand = offHand.CloneOneHand(equipId, inject);
         Equip = Hand;
     }
 
@@ -108,11 +108,11 @@ public class TwoHandWrapper : EquipWrapper
 {
     public TwoHand Hand;
 
-    public TwoHandWrapper(TwoHand twoHand, bool inject = false)
+    public TwoHandWrapper(TwoHand twoHand, int equipId = -1, bool inject = false)
     {
         Name = twoHand.Name;
         Sprite = twoHand.Sprite;
-        Hand = twoHand.CloneTwoHand(inject);
+        Hand = twoHand.CloneTwoHand(equipId, inject);
         Equip = Hand;
     }
 

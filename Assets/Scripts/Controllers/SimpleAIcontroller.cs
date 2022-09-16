@@ -299,7 +299,7 @@ public class SimpleAIcontroller : CharacterController
         switch (operation.Type)
         {
             case AIoperationType.ROTATE:
-                Debug.Log($"{CurrentCharacter.Root.name} : {CurrentCharacter.Root.position}");
+                //Debug.Log($"{CurrentCharacter.Root.name} : {CurrentCharacter.Root.position}");
                 Quaternion start = Quaternion.Euler(0, oldRot, 0);
                 Quaternion end = Quaternion.Euler(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0);
                 float lerp = 1 - (CurrentOperationTime / TotalOperationTime);

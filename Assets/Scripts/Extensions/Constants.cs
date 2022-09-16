@@ -81,6 +81,7 @@ public static class CharacterMath
         1,  // MEDIUM
         1,  // HEAVY
         1,  // ONE HAND
+        1,  // OFF HAND
         1,  // TWO HAND
         1,  // SHIELD
         1,  // RANGED
@@ -89,14 +90,15 @@ public static class CharacterMath
 
         // ORC
         {
-        1,  // LIGHT
-        1,  // MEDIUM
-        2,  // HEAVY
-        1,  // ONE HAND
+        1,      // LIGHT
+        1,      // MEDIUM
+        2,      // HEAVY
+        1,      // ONE HAND
+        1,      // OFF HAND
         1.25f,  // TWO HAND
-        1,  // SHIELD
-        1,  // RANGED
-        .5f,  // MAGIC
+        1,      // SHIELD
+        1,      // RANGED
+        .5f,    // MAGIC
         }
     };
     public static readonly float[,] RAW_MUL_RACE =

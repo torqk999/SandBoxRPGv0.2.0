@@ -16566,9 +16566,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SPAWN: 0
-  Inventory:
-    Items: []
-    MaxCount: 0
+  STACK_COUNT: 0
+  GameState: {fileID: 559339747}
+  Character: {fileID: 0}
   Item: {fileID: 0}
 --- !u!1 &1014358363
 GameObject:

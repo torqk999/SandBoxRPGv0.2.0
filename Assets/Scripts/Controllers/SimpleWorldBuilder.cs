@@ -40,8 +40,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             if (wear == null)
                 continue;
 
-            WearableWrapper newWrapper = new WearableWrapper(wear, true);
-            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
+            WearableWrapper newWrapper = new WearableWrapper(wear, GameState.EQUIPMENT_INDEX, true);
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -52,8 +51,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             if (ring == null)
                 continue;
 
-            RingWrapper newWrapper = new RingWrapper(ring, true);
-            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
+            RingWrapper newWrapper = new RingWrapper(ring, GameState.EQUIPMENT_INDEX, true);
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -65,8 +63,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             if (oneHand == null)
                 continue;
 
-            OneHandWrapper newWrapper = new OneHandWrapper(oneHand, true);
-            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
+            OneHandWrapper newWrapper = new OneHandWrapper(oneHand, GameState.EQUIPMENT_INDEX, true);
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -78,8 +75,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             if (offHand == null)
                 continue;
 
-            OffHandWrapper newWrapper = new OffHandWrapper(offHand, true);
-            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
+            OffHandWrapper newWrapper = new OffHandWrapper(offHand, GameState.EQUIPMENT_INDEX, true);
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
@@ -90,8 +86,7 @@ public class SimpleWorldBuilder : MonoBehaviour
         {
             if (twoHand == null)
                 continue;
-            TwoHandWrapper newWrapper = new TwoHandWrapper(twoHand, true);
-            newWrapper.Equip.EquipID = GameState.EQUIPMENT_INDEX;
+            TwoHandWrapper newWrapper = new TwoHandWrapper(twoHand, GameState.EQUIPMENT_INDEX, true);
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);

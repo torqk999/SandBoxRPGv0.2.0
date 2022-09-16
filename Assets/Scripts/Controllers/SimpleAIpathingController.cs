@@ -261,7 +261,7 @@ public class SimpleAIpathingController : MonoBehaviour
             Current = Generated.Find(x => x.bIsOpen);
             if (Current == null)
             {
-                Debug.Log("SCIENCE BITCH!");
+                //Debug.Log("SCIENCE BITCH!");
                 return false;
             }
 
