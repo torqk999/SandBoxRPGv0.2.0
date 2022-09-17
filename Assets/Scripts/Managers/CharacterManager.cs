@@ -180,7 +180,7 @@ public class CharacterManager : MonoBehaviour
     void ApplyRisidualEffect(Character target, Effect mod)
     {
         Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
-        modInstance.Clone(mod);
+        modInstance.CloneEffect(mod);
 
         switch(modInstance.Action)
         {

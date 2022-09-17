@@ -47,7 +47,7 @@ public class CharacterAbility : ScriptableObject
     public float CD_Timer;
     public Effect[] Effects;
 
-    public void Clone(CharacterAbility ability, int equipId = -1, float potency = 1, bool inject = false)
+    public void CloneAbility(CharacterAbility ability, int equipId = -1, float potency = 1, bool inject = false)
     {
         EquipID = equipId;// ability.WeaponID; // <<<--- ?!?!?
         Name = ability.Name;
@@ -63,7 +63,7 @@ public class CharacterAbility : ScriptableObject
         for (int i = 0; i < Effects.Length; i++)
         {
             Effects[i] = (Effect)ScriptableObject.CreateInstance("Effect");
-            Effects[i].Clone(ability.Effects[i], equipId, potency, inject);
+            Effects[i].CloneEffect(ability.Effects[i], equipId, potency, inject);
             //Effects[i].ElementPack.Amplify(potency);
         }
     }
@@ -83,7 +83,7 @@ public class CharacterAbility : ScriptableObject
             CharacterMath.SKILL_MUL_RACE[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                                  // Race
 
         CharacterAbility newAbility = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");
-        newAbility.Clone(this, equip.EquipID, potency);
+        newAbility.CloneAbility(this, equip.EquipID, potency);
         return newAbility;
     }
     public void SetCooldown()

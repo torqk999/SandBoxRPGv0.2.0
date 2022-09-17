@@ -37,92 +37,92 @@ public class EquipWrapper : ItemWrapper
 [System.Serializable]
 public class RingWrapper : EquipWrapper
 {
-    public Ring Ring;
+    //public Ring Ring;
     public int CurrentSlotIndex;
 
     public RingWrapper(Ring ring, int equipId = -1, bool inject = false)
     {
         Name = ring.Name;
         Sprite = ring.Sprite;
-        Ring = ring.CloneRing(equipId, inject);
-        Equip = ring;
+        Equip = ring.CloneRing(equipId, inject);
+        //Equip = ring;
         CurrentSlotIndex = -1;
     }
 
     public RingWrapper CloneWrapper()
     {
-        return new RingWrapper(Ring);
+        return new RingWrapper((Ring)Equip);
     }
 }
 [System.Serializable]
 public class WearableWrapper : EquipWrapper
 {
-    public Wearable Wear;
+    //public Wearable Wear;
 
     public WearableWrapper(Wearable wear, int equipId = -1, bool inject = false)
     {
         Name = wear.Name;
         Sprite = wear.Sprite;
-        Wear = wear.CloneWear(equipId, inject);
-        Equip = Wear;
+        Equip = wear.CloneWear(equipId, inject);
+        //Equip = Wear;
     }
 
     public WearableWrapper CloneWearWrapper()
     {
-        return new WearableWrapper(Wear);
+        return new WearableWrapper((Wearable)Equip);
     }
 }
 [System.Serializable]
 public class OneHandWrapper : EquipWrapper
 {
-    public OneHand Hand;
+    //public OneHand Hand;
 
     public OneHandWrapper(OneHand oneHand, int equipId = -1, bool inject = false)
     {
         Name = oneHand.Name;
         Sprite = oneHand.Sprite;
-        Hand = oneHand.CloneOneHand(equipId, inject);
-        Equip = Hand;
+        Equip = oneHand.CloneOneHand(equipId, inject);
+        //Equip = Hand;
     }
 
     public OneHandWrapper CloneOneHandWrapper()
     {
-        return new OneHandWrapper(Hand);
+        return new OneHandWrapper((OneHand)Equip);
     }
 }
 [System.Serializable]
 public class OffHandWrapper : EquipWrapper
 {
-    public OffHand Hand;
+    //public OffHand Hand;
 
     public OffHandWrapper(OffHand offHand, int equipId = -1, bool inject = false)
     {
         Name = offHand.Name;
         Sprite = offHand.Sprite;
-        Hand = offHand.CloneOffHand(equipId, inject);
-        Equip = Hand;
+        Equip = offHand.CloneOffHand(equipId, inject);
+        //Equip = Hand;
     }
 
     public OffHandWrapper CloneOffHandWrapper()
     {
-        return new OffHandWrapper(Hand);
+        return new OffHandWrapper((OffHand)Equip);
     }
 }
 [System.Serializable]
 public class TwoHandWrapper : EquipWrapper
 {
-    public TwoHand Hand;
+    //public TwoHand Hand;
 
     public TwoHandWrapper(TwoHand twoHand, int equipId = -1, bool inject = false)
     {
         Name = twoHand.Name;
         Sprite = twoHand.Sprite;
-        Hand = twoHand.CloneTwoHand(equipId, inject);
-        Equip = Hand;
+        Equip = twoHand.CloneTwoHand(equipId, inject);
+        //Equip = Hand;
     }
 
     public TwoHandWrapper CloneTwoHandWrapper()
     {
-        return new TwoHandWrapper(Hand);
+        return new TwoHandWrapper((TwoHand)Equip);
     }
 }

@@ -287,8 +287,8 @@ public class Character : Pawn, Interaction
 
             if (equip is WearableWrapper)
             {
-                WearableWrapper wear = (WearableWrapper)equip;
-                return EquipWear(wear.Wear.Type, inventoryIndex);
+                //WearableWrapper wear = (WearableWrapper)equip;
+                return EquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
             }
 
             if (equip is RingWrapper)
