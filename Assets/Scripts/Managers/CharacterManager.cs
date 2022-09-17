@@ -148,13 +148,18 @@ public class CharacterManager : MonoBehaviour
     {
         List<Character> AOEcandidates = new List<Character>();
 
-        
-
         foreach (Character target in CharacterPool)
-            if ( ((target.Sheet.Faction != caller.Sheet.Faction) == call.bTargetEnemy)
-                && Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)
-                AOEcandidates.Add(target);
+        {
+            if (call.Target == TargetType.ALLY && target.Sheet.Faction != caller.Sheet.Faction)
+                continue;
 
+            if (call.Target == TargetType.ENEMY && target.Sheet.Faction == caller.Sheet.Faction)
+                continue;
+
+            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)
+                AOEcandidates.Add(target);
+        }
+            
         return AOEcandidates;
     }
     void ApplyAbilitySingle(Character target, CharacterAbility call)

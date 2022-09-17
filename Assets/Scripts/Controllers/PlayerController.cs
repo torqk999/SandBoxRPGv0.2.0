@@ -262,17 +262,8 @@ public class PlayerController : CharacterController
     void UpdateCharacterInput()
     {
         if (CurrentCharacter.bControllable && CheckAction(KeyAction.INTERACT))
-        {
             CurrentCharacter.SwapInteractions();
-            //CurrentCharacter.RemoveInteraction(CurrentCharacter.CurrentTargetInteraction);
-            /*Debug.Log("Interacting");
-            if (CurrentCharacter.CurrentTargetInteraction != null &&
-                CurrentCharacter.CurrentTargetInteraction is Character)
-                CurrentCharacter.CurrentTargetInteraction.Interact();
-            else
-                ClearTarget();*/
-        }
-
+        
         if (CheckAction(KeyAction.CHARACTER))
             ToggleCharacterPage(CharPage.Character);
 
@@ -397,7 +388,7 @@ public class PlayerController : CharacterController
         if (CurrentPawn.RigidBody == null
             || !CurrentPawn.bIsGrounded
             || !CurrentPawn.bControllable
-            || !CurrentCharacter.bIsAlive/*!GameState.CharacterMan.PullCurrentCharacter().bIsAlive*/
+            || !CurrentCharacter.bIsAlive
             || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
 

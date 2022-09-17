@@ -222,12 +222,6 @@ public class Character : Pawn, Interaction
             if (EquipmentSlots[i] != null)
                 equipIDs.Add(EquipmentSlots[i].ItemID);
 
-        /*
-        for  (int i = Abilities.Count - 1; i > -1; i--)
-            if (equipIDs.FindIndex(x => x == Abilities[i].WeaponID) < 0)
-                Abilities.RemoveAt(i);
-        */
-
         for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
             if (AbilitySlots[i] != null && equipIDs.FindIndex(x => x == AbilitySlots[i].EquipID) < 0)
                 AbilitySlots[i] = null;
