@@ -270,14 +270,6 @@ public class Character : Pawn, Interaction
         if (ringIndex != -1)
             return AttemptEquipRemoval(RingSlots, ringIndex);
 
-        /*if (inventoryIndex == -1 && equipIndex != -1)
-        {
-            if (isRing)
-                return AttemptEquipRemoval(RingSlots, equipIndex);
-            return AttemptEquipRemoval(EquipmentSlots, equipIndex);
-        }*/
-            //return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
-
         if (inventoryIndex != -1)
         {
             if (Inventory.Items[inventoryIndex] == null || !(Inventory.Items[inventoryIndex] is EquipWrapper))
@@ -285,23 +277,28 @@ public class Character : Pawn, Interaction
 
             EquipWrapper equip = (EquipWrapper)Inventory.Items[inventoryIndex];
 
-            if (equip is WearableWrapper)
+            switch(equip)
             {
-                //WearableWrapper wear = (WearableWrapper)equip;
+                //if (equip is WearableWrapper)
+                case WearableWrapper:
                 return EquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
-            }
 
-            if (equip is RingWrapper)
+                //if (equip is RingWrapper)
+                case RingWrapper:
                 return EquipRing(inventoryIndex);
-            
-            if (equip is TwoHandWrapper)
+
+                //if (equip is TwoHandWrapper)
+                case TwoHandWrapper:
                 return EquipTwoHand(inventoryIndex);
 
-            if (equip is OneHandWrapper)
+                //if (equip is OneHandWrapper)
+                case OneHandWrapper:
                 return EquipOneHand(inventoryIndex);
 
-            if (equip is OffHandWrapper)
+                //if (equip is OffHandWrapper)
+                case OffHandWrapper:
                 return EquipOneHand(inventoryIndex, false);
+            }
         }
 
         Debug.Log("How did you get here? >.>");

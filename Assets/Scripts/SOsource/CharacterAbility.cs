@@ -34,17 +34,21 @@ public class CharacterAbility : ScriptableObject
     public Sprite Sprite;
     public bool bTargetEnemy;
     public bool bIsPassive;
+
     public RangeType RangeType;
     public RawStat CostTarget;
     public ValueType CostType;
     public AbilityType AbilityType;
+
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
     public AnimationTarget AnimationTarget;
+
     public float RangeValue;
     public float CostValue;
     public float CD_Duration;
     public float CD_Timer;
+
     public Effect[] Effects;
 
     public void CloneAbility(CharacterAbility ability, int equipId = -1, float potency = 1, bool inject = false)
@@ -52,13 +56,23 @@ public class CharacterAbility : ScriptableObject
         EquipID = equipId;// ability.WeaponID; // <<<--- ?!?!?
         Name = ability.Name;
         Sprite = ability.Sprite;
+        bTargetEnemy = ability.bTargetEnemy;
+        bIsPassive = ability.bIsPassive;
+
         RangeType = ability.RangeType;
+        CostType = ability.CostType;
         CostTarget = ability.CostTarget;
         AbilityType = ability.AbilityType;
+
+        AnimationState = ability.AnimationState;
+        CharAnimation = ability.CharAnimation;
+        AnimationTarget = ability.AnimationTarget;
+
         RangeValue = ability.RangeValue;
         CostValue = ability.CostValue;
         CD_Duration = ability.CD_Duration;
         CD_Timer = 0;
+
         Effects = new Effect[ability.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
         {

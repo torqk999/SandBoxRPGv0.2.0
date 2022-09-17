@@ -148,9 +148,11 @@ public class CharacterManager : MonoBehaviour
     {
         List<Character> AOEcandidates = new List<Character>();
 
+        
+
         foreach (Character target in CharacterPool)
-            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)// &&
-                //target.Sheet.Faction != caller.Sheet.Faction)
+            if ( ((target.Sheet.Faction != caller.Sheet.Faction) == call.bTargetEnemy)
+                && Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)
                 AOEcandidates.Add(target);
 
         return AOEcandidates;
