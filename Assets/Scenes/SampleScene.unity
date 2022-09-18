@@ -1597,8 +1597,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c776a16cc05723e4cb87a57b1daa6855, type: 2}
   - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
   Effects: []
+  bIsPaused: 0
   bIsAlive: 0
-  CCstatus: 
+  CurrentCCstates: 
   ChannelTimer: 0
   CurrentTargetCharacter: {fileID: 0}
   TargettedBy: []
@@ -3270,8 +3271,9 @@ MonoBehaviour:
   Sheet: {fileID: 11400000, guid: 9bc71a162292fc149b29dbc1ec528e91, type: 2}
   Abilities: []
   Effects: []
+  bIsPaused: 0
   bIsAlive: 0
-  CCstatus: 
+  CurrentCCstates: 
   ChannelTimer: 0
   CurrentTargetCharacter: {fileID: 0}
   TargettedBy: []
@@ -4777,6 +4779,7 @@ MonoBehaviour:
   Gear: []
   MyPrefab: {fileID: 0}
   MyAnimationState: 0
+  bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0
 --- !u!95 &357001565 stripped
@@ -18616,7 +18619,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1510554438
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22798,7 +22801,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1818358550
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24309,8 +24312,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c776a16cc05723e4cb87a57b1daa6855, type: 2}
   - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
   Effects: []
+  bIsPaused: 0
   bIsAlive: 0
-  CCstatus: 
+  CurrentCCstates: 
   ChannelTimer: 0
   CurrentTargetCharacter: {fileID: 0}
   TargettedBy: []
@@ -24942,6 +24946,7 @@ MonoBehaviour:
   Gear: []
   MyPrefab: {fileID: 0}
   MyAnimationState: 0
+  bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0
 --- !u!1 &1942137927
@@ -25126,6 +25131,7 @@ MonoBehaviour:
   Gear: []
   MyPrefab: {fileID: 0}
   MyAnimationState: 0
+  bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0
 --- !u!1 &1970811194
@@ -26908,19 +26914,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3595734069091194076, guid: 38010396d30d5674d9f00700a678fc50, type: 3}
       propertyPath: m_BoundingSphereOverride.w
-      value: 0.5
+      value: 1.8037294e+28
       objectReference: {fileID: 0}
     - target: {fileID: 3595734069091194076, guid: 38010396d30d5674d9f00700a678fc50, type: 3}
       propertyPath: m_BoundingSphereOverride.x
-      value: 0.5
+      value: 1.8491149e+31
       objectReference: {fileID: 0}
     - target: {fileID: 3595734069091194076, guid: 38010396d30d5674d9f00700a678fc50, type: 3}
       propertyPath: m_BoundingSphereOverride.y
-      value: 0.5
+      value: 7.2734805e+22
       objectReference: {fileID: 0}
     - target: {fileID: 3595734069091194076, guid: 38010396d30d5674d9f00700a678fc50, type: 3}
       propertyPath: m_BoundingSphereOverride.z
-      value: 0.5
+      value: 4.966442e+28
       objectReference: {fileID: 0}
     - target: {fileID: 3595734069123613974, guid: 38010396d30d5674d9f00700a678fc50, type: 3}
       propertyPath: NoiseModule.enabled

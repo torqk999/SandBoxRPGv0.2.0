@@ -10,24 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dc893899ec9787428c4104fc49cd3f8, type: 3}
-  m_Name: ElementalBlast
+  m_Name: FRENZY
   m_EditorClassIdentifier: 
-  Name: Elemental Blast!
-  Sprite: {fileID: 21300000, guid: 5cd385a478da6e247b15e5441b37ef40, type: 3}
-  Duration: 0
+  Name: 
+  Sprite: {fileID: 0}
+  Duration: 2
   Value: 1
-  Action: 1
-  TargetStat: 0
-  TargetElement: 0
+  Type: 1
+  TargetStat: 3
   CCstatus: 0
   ElementPack:
     Reflection:
       PHYSICAL: 0
-      FIRE: 5
-      WATER: 5
-      EARTH: 5
-      AIR: 5
-      POISON: 5
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
       HEALING: 0
     Elements: []
   DurationLength: 0
