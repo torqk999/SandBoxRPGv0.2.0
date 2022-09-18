@@ -10,6 +10,7 @@ public class CharacterController : MonoBehaviour
     public Pawn CurrentPawn;
     public Character CurrentCharacter;
     public Character TargetCharacter;
+    //public CharacterRender Render;
 
     public Vector3 IntentVector;
     public Vector3 IntentRotations;

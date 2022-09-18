@@ -114,6 +114,7 @@ public enum AnimationTarget
 public class CharacterRender : MonoBehaviour
 {
     public CharacterManager CharManager;
+    public Character MyCharacter;
     public Animator MyAnimator;
     public List<HandProfile> Hands;
     public List<GearProfile> Gear;
