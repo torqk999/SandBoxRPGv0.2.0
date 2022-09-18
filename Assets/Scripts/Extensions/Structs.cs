@@ -13,6 +13,7 @@ public enum EffectAction
 {
     DMG_HEAL,
     SPAWN,
+    CLEANSE,
     CROWD_CONTROL,
     RES_ADJ,
     STAT_ADJ,

@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TacTarget
+/*public enum TacTarget
 {
     SELF,
     TARGET,
     ALLY,
     FOE
-}
+}*/
 public enum TacCondition
 {
     GT,
@@ -42,7 +42,7 @@ public struct Tactic
 {
     public bool bTacticEnabled;
 
-    public TacTarget Target;
+    public ThreatRelation Target;
     public Element Resistance;
     public TacStat CharStat;
     public TacType Type;
@@ -111,20 +111,20 @@ public class Strategy
         List<Character> desiredCharacters = new List<Character>();
         //targetCharacter = null;
 
-        if (tactic.Target == TacTarget.SELF)
+        if (tactic.Target == ThreatRelation.SELF)
             desiredCharacters.Add(Character);
 
-        else if (tactic.Target == TacTarget.TARGET)
+        else if (tactic.Target == ThreatRelation.TARGET)
             desiredCharacters.Add(tactic.SpecificTarget);
 
         else
             foreach (Party party in GameState.CharacterMan.Parties)
             {
-                if (tactic.Target == TacTarget.ALLY &&
+                if (tactic.Target == ThreatRelation.ALLY &&
                     party.Faction != Character.Sheet.Faction)
                     continue;
 
-                if (tactic.Target == TacTarget.FOE &&
+                if (tactic.Target == ThreatRelation.FOE &&
                     party.Faction == Character.Sheet.Faction)
                     continue;
 
