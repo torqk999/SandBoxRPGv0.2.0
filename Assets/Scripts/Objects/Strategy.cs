@@ -90,7 +90,7 @@ public class Strategy
 
     bool CheckTacticConditions(Tactic tactic)
     {
-        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
+        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateStatModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
             return false;
 
         List<Character> candidates = GetDesiredCharacters(tactic);
@@ -149,11 +149,15 @@ public class Strategy
     Character ReturnMostCharacter(Tactic tactic, List<Character> characterPool)
     {
         Character output = null;
+
+
         return output;
     }
     Character ReturnLeastCharacter(Tactic tactic, List<Character> characterPool)
     {
         Character output = null;
+
+
         return output;
     }
     Character ReturnIdealCharacter(Tactic tactic, List<Character> characterPool)

@@ -15,13 +15,14 @@ public class CharacterManager : MonoBehaviour
     [Header("References")]
     public GameState GameState;
     public Transform CharacterPartyFolder;
+    public GameObject CharCanvasPrefab;
 
     [Header("CharacterWardrobe")]
     public List<MaterialProfile> MatProfiles;
 
     [Header("Default Party Defs")]
     public Transform DefaultPartyPrefabs;
-    public Transform DefaultPartyStart;
+    //public Transform DefaultPartyStart;
     public Formation DefaultPartyFormation;
 
     [Header("Logic")]
@@ -76,38 +77,43 @@ public class CharacterManager : MonoBehaviour
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
         CharacterAbility call = caller.AbilitySlots[abilityIndex];
-        float modifier = caller.GenerateValueModifier(call.CostType, call.CostTarget);
+        if (call == null) // Am I a joke to you?
+            return false;
+
+        float modifier = caller.GenerateStatModifier(call.CostType, call.CostTarget);
 
         if (!CheckAbility(call, caller, modifier))
             return false;
 
-        //float[] stats = caller.CurrentStats.PullData();
-        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
-        //caller.CurrentStats.EnterData(stats);
-
-        call.SetCooldown();
-        TargetAbility(call, caller);
-        return true;
+        return TargetAbility(call, caller, modifier);
     }
     public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
     {
-        if (call == null) // Am I a joke to you?
-            return false;
-
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
 
-        if (caller.CurrentCCstates[(int)call.AbilityType]) // Check CC
-            return false;
+        switch(call.AbilityType) // Check CC
+        {
+            case AbilityType.ATTACK:
+                if (caller.CheckCCstatus(CCstatus.UN_ARMED))
+                    return false;
+                break;
 
-        //modifier = caller.GenerateValueModifier(call.CostType, call.CostTarget);
+            case AbilityType.SPELL:
+                if (caller.CheckCCstatus(CCstatus.SILENCED))
+                    return false;
+                break;
+
+            case AbilityType.POWER:
+                break;
+        }
 
         if (call.CostValue * modifier > caller.CurrentStats.Stats[(int)call.CostTarget])
             return false;
 
         return true; // Good to do things Sam!
     }
-    void TargetAbility(CharacterAbility call, Character caller)
+    bool TargetAbility(CharacterAbility call, Character caller, float modifier)
     {
         switch (call.RangeType)
         {
@@ -117,26 +123,33 @@ public class CharacterManager : MonoBehaviour
 
             case RangeType.TARGET:
                 if (caller.CurrentTargetCharacter == null)
-                    return;
-                if (Vector3.Distance(caller.CurrentTargetCharacter.Source.position, caller.Source.position) <= call.RangeValue)
+                    return false;
+                if (Vector3.Distance(caller.CurrentTargetCharacter.Root.position, caller.Root.position) <= call.RangeValue)
                     ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
                 break;
 
             case RangeType.AOE:
                 List<Character> targets = AOEtargetting(call, caller);
                 if (targets.Count < 1)
-                    return;
+                    return false;
                 foreach (Character target in targets)
                     ApplyAbilitySingle(target, call);
                 break;
         }
+        UseAbility(call, caller, modifier);
+        return true;
+    }
+    void UseAbility(CharacterAbility call, Character caller, float modifier)
+    {
+        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
+        call.SetCooldown();
     }
     List<Character> AOEtargetting(CharacterAbility call, Character caller)
     {
         List<Character> AOEcandidates = new List<Character>();
 
         foreach (Character target in CharacterPool)
-            if (Vector3.Distance(target.Source.position, caller.Source.position) <= call.RangeValue)// &&
+            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)// &&
                 //target.Sheet.Faction != caller.Sheet.Faction)
                 AOEcandidates.Add(target);
 
@@ -164,55 +177,24 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
-    /*void ApplySingleEffect(Character target, Effect mod)
-    {
-        float totalValue = 0;
-
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++) // Everything but healing
-        {
-            float change = mod.ElementPack.Elements[i] * (1 - target.Resistances.Elements[i]);
-            totalValue += (Element)i == Element.HEALING ? -change : change;
-        }
-
-        if (totalValue == 0)
-            return;
-
-        target.CurrentStats.Stats[(int)mod.TargetStat] -= totalValue;
-        target.CurrentStats.Stats[(int)mod.TargetStat] =
-            target.CurrentStats.Stats[(int)mod.TargetStat] <= target.MaximumStatValues.Stats[(int)mod.TargetStat] ?
-            target.CurrentStats.Stats[(int)mod.TargetStat] : target.MaximumStatValues.Stats[(int)mod.TargetStat];
-        target.CurrentStats.Stats[(int)mod.TargetStat] =
-            target.CurrentStats.Stats[(int)mod.TargetStat] >= 0 ?
-            target.CurrentStats.Stats[(int)mod.TargetStat] : 0;
-
-        target.bAssetUpdate = true;
-
-        switch (mod.TargetStat)
-        {
-            case RawStat.HEALTH:
-                if (totalValue > 0)
-                    target.DebugState = DebugState.LOSS_H;
-                break;
-
-            case RawStat.MANA:
-                if (totalValue > 0)
-                    target.DebugState = DebugState.LOSS_M;
-                break;
-
-            case RawStat.SPEED:
-
-                break;
-
-            case RawStat.STAMINA:
-                if (totalValue > 0)
-                    target.DebugState = DebugState.LOSS_S;
-                break;
-        }
-    }*/
     void ApplyRisidualEffect(Character target, Effect mod)
     {
         Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
         modInstance.Clone(mod);
+
+        switch(modInstance.Action)
+        {
+            case EffectAction.CROWD_CONTROL:
+                Debug.Log($"{target.Root.name} : {mod.TargetCCstatus}");
+                break;
+
+            case EffectAction.RES_ADJ:
+                break;
+
+            case EffectAction.STAT_ADJ:
+                break;
+        }
+
         target.Effects.Add(modInstance);
     }
     #endregion
@@ -302,33 +284,53 @@ public class CharacterManager : MonoBehaviour
 
         Character source = prefab.GetComponent<Character>();
 
-        if (source != null)
-            SetupCharacter(newCharacter, source, index, fresh);
-
         if (index != -1)
-            newCharacter.Source.name = $"{prefab.name} : {index}";
+            newCharacter.Root.name = $"{prefab.name} : {index}";
 
-        newCharacter.GameState = GameState;
-        newCharacter.bDebugMode = GameState.bDebugEffects;
-        newCharacter.Sheet.Faction = party.Faction;
-        newCharacter.Inventory = party.PartyLoot;
-        newCharacter.CurrentProximityInteractions = new List<Interaction>();
-
+        SetupSheet(newCharacter, source, index, fresh);
         SetupAI(newCharacter);
+        SetupCharacterCanvas(newCharacter);
+        SetupCharacter(newCharacter, party);
 
         CharacterPool.Add(newCharacter);
 
         return newCharacter;
     }
-    void SetupCharacter(Character character, Character source,  int index, bool fresh)
+    void SetupCharacterCanvas(Character character)
     {
+        if (CharCanvasPrefab == null)
+            return;
+
+        GameObject newCanvasObject = Instantiate(CharCanvasPrefab, character.Root);
+        CharacterCanvas newCanvas = newCanvasObject.GetComponent<CharacterCanvas>();
+        newCanvasObject.transform.localPosition = newCanvas.Offset;
+        newCanvas.Cam = GameState.GameCamera;
+        newCanvas.Character = character;
+    }
+    void SetupCharacter(Character character, Party party)
+    {
+        // References
+        character.GameState = GameState;
+        character.bDebugMode = GameState.bDebugEffects;
+        character.Sheet.Faction = party.Faction;
+        character.Inventory = party.PartyLoot;
+        character.CurrentProximityInteractions = new List<Interaction>();
+
         // Slots
-        character.CurrentCCstates = new bool[CharacterMath.STATS_CC_COUNT];
         character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
 
-        Debug.Log($"sourceSheetName: {source.Sheet.Name}");
+        // Initialize
+        character.bIsAlive = true;
+        character.InitializeCharacter();
+    }
+    void SetupSheet(Character character, Character source, int index, bool fresh)
+    {
+        if (source == null)
+            return;
+
+        //Debug.Log($"sourceSheetName: {source.Sheet.Name}");
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
@@ -341,9 +343,6 @@ public class CharacterManager : MonoBehaviour
 
         if (index > -1)
             character.Sheet.Name += index.ToString();
-
-        character.bIsAlive = true;
-        character.InitializeCharacter();
     }
     void SetupAI(Character newCharacter, bool bAwake = true)
     {
@@ -369,6 +368,10 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    #region CHARACTER REMOVAL
+
     #endregion
 
     // Start is called before the first frame update

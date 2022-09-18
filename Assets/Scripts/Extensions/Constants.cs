@@ -12,6 +12,7 @@ public static class GlobalConstants
     public const int ACTION_KEY_COUNT = 2;
     public const int TOTAL_MOUSE_BUTTONS = 7;
 
+    public const int STR_BUILD_CAP = 512;
     public const int MAX_PATH_CYCLES = 1000;
 
     public const string ANIM_BOOL_WALK = "walking";
@@ -42,6 +43,7 @@ public static class CharacterMath
     public static readonly int STATS_LEVELS_COUNT = Enum.GetNames(typeof(SkillType)).Length;
     public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(EquipSlot)).Length;
 
+    public const int RES_PRIME_DENOM = 100;
     public const int RING_SLOT_COUNT = 2;
     public const int PARTY_INVENTORY_MAX = 100;
     public const int ABILITY_SLOTS = 12;
@@ -79,6 +81,7 @@ public static class CharacterMath
         1,  // MEDIUM
         1,  // HEAVY
         1,  // ONE HAND
+        1,  // OFF HAND
         1,  // TWO HAND
         1,  // SHIELD
         1,  // RANGED
@@ -87,14 +90,15 @@ public static class CharacterMath
 
         // ORC
         {
-        1,  // LIGHT
-        1,  // MEDIUM
-        2,  // HEAVY
-        1,  // ONE HAND
+        1,      // LIGHT
+        1,      // MEDIUM
+        2,      // HEAVY
+        1,      // ONE HAND
+        1,      // OFF HAND
         1.25f,  // TWO HAND
-        1,  // SHIELD
-        1,  // RANGED
-        .5f,  // MAGIC
+        1,      // SHIELD
+        1,      // RANGED
+        .5f,    // MAGIC
         }
     };
     public static readonly float[,] RAW_MUL_RACE =

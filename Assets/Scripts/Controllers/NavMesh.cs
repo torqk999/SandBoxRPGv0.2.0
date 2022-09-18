@@ -39,6 +39,19 @@ public class NavMesh : MonoBehaviour
 
     public NavNode[,] NavNodes;
 
+    public void FindClosestNavIndex(Vector3 location, ref int[] index)
+    {
+        float deltaX = Mathf.Abs(location.x - bounds[0].position.x);
+        float deltaZ = Mathf.Abs(location.z - bounds[0].position.z);
+
+        index[0] = (int)(deltaX / Resolution);
+        index[0] = index[0] < 0 ? 0 : index[0];
+        index[0] = index[0] >= AxisCounts[0] ? AxisCounts[0] - 1 : index[0];
+
+        index[1] = (int)(deltaZ / Resolution);
+        index[1] = index[1] < 0 ? 0 : index[1];
+        index[1] = index[1] >= AxisCounts[1] ? AxisCounts[1] - 1 : index[1];
+    }
     public void GenerateMesh()
     {
         if (bounds[0] == null || bounds[1] == null || Resolution <= 0)
@@ -53,9 +66,9 @@ public class NavMesh : MonoBehaviour
             for (int j = 0; j < AxisCounts[1]; j++)
             {
                 Vector3 newSkyPoint = new Vector3(
-                    bounds[0].position.x + (i * Resolution * -Mathf.Sign(bounds[0].position.x - bounds[1].position.x)),
+                    bounds[0].position.x + (i * Resolution * Mathf.Sign(bounds[1].position.x - bounds[0].position.x)),
                     bounds[0].position.y,
-                    bounds[0].position.z + (j * Resolution * -Mathf.Sign(bounds[0].position.z - bounds[1].position.z)));
+                    bounds[0].position.z + (j * Resolution * Mathf.Sign(bounds[1].position.z - bounds[0].position.z)));
 
                 RaycastHit hit;
                 if (Physics.Raycast(newSkyPoint, Vector3.down * MaxDetectionRange, out hit))

@@ -48,7 +48,7 @@ public class SceneManager : MonoBehaviour
         if (LootBagPrefab == null || LootBagPrefab.GetComponent<GenericContainer>() == null)
             return null;
 
-        GameObject newLootBag = Instantiate(LootBagPrefab, character.Source.position, character.Source.rotation, LootBagFolder);
+        GameObject newLootBag = Instantiate(LootBagPrefab, character.Root.position, character.Root.rotation, LootBagFolder);
         newLootBag.name = newLootBag.name.Replace("(Clone)", ":" + CurrentLootBagIndex);
 
         GameObject newTriggerVolume = Instantiate(LootTriggerVolumePrefab,

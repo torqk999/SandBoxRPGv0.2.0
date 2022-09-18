@@ -93,8 +93,8 @@ public class SimpleAIcontroller : CharacterController
         if (bIsAgressive)
         {
             TargetCharacter = GameState.CharacterMan.CharacterPool.Find(
-                x => x.Sheet.Faction != base.CurrentCharacter.Sheet.Faction &&
-                Vector3.Distance(x.Source.position, base.CurrentCharacter.Source.position) <= AggroRange);
+                x => x.Sheet.Faction != CurrentCharacter.Sheet.Faction &&
+                Vector3.Distance(x.Root.position, CurrentCharacter.Root.position) <= AggroRange);
             return;
         }
 
@@ -109,27 +109,27 @@ public class SimpleAIcontroller : CharacterController
         if (TargetCharacter == null || !bIsAgressive)
             return;
 
-        if (bIsAggro && Vector3.Distance(TargetCharacter.Source.position, base.CurrentCharacter.Source.position) > DisengageRange)
+        if (bIsAggro && Vector3.Distance(TargetCharacter.Root.position, CurrentCharacter.Root.position) > DisengageRange)
         {
             bIsAggro = false;
             TargetCharacter = null;
             ResetStaticSequence();
         }
-        else if (!bIsAggro && Vector3.Distance(TargetCharacter.Source.position, base.CurrentCharacter.Source.position) < AggroRange)
+        else if (!bIsAggro && Vector3.Distance(TargetCharacter.Root.position, CurrentCharacter.Root.position) < AggroRange)
             bIsAggro = true;
     }
     void MoveAggro()
     {
-        Rigidbody rigidBody = base.CurrentCharacter.Source.gameObject.GetComponent<Rigidbody>();
+        Rigidbody rigidBody = CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
 
         Vector3 newVector = rigidBody.transform.rotation.eulerAngles;
-        newVector.y = GenerateYbearing(base.CurrentCharacter.Source.position, TargetCharacter.Source.position);
+        newVector.y = GenerateYbearing(CurrentCharacter.Root.position, TargetCharacter.Root.position);
         rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
-        if (rigidBody.velocity.magnitude <= base.CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED] && Vector3.Distance(base.CurrentCharacter.Source.position, TargetCharacter.Source.position) > TargetMaintainRange)
-            rigidBody.AddForce(base.CurrentCharacter.Source.forward * AIwalkForce, ForceMode.Impulse);
+        if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED] && Vector3.Distance(CurrentCharacter.Root.position, TargetCharacter.Root.position) > TargetMaintainRange)
+            rigidBody.AddForce(CurrentCharacter.Root.forward * AIwalkForce, ForceMode.Impulse);
     }
     void UpdateSequenceIndex()
     {
@@ -198,7 +198,7 @@ public class SimpleAIcontroller : CharacterController
 
             //Debug.Log($"{randCoords[0]} : {randCoords[1]}");
 
-            if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, randCoords))
+            if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, randCoords))
             {
                 //Debug.Log("Shits not workin dawg!");
                 return;
@@ -214,7 +214,7 @@ public class SimpleAIcontroller : CharacterController
             TravelPoint.y = 0;
             TravelPoint.z = UnityEngine.Random.Range(FollowerBoxRadius, -FollowerBoxRadius);
 
-            if (!Pathing.GenerateNewPath(CurrentCharacter.Source.position, TravelPoint))
+            if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, TravelPoint))
             {
                 //Debug.Log("Shits not workin dawg!");
                 return;
@@ -257,7 +257,7 @@ public class SimpleAIcontroller : CharacterController
             case AIoperationType.ROTATE:
                 TotalOperationTime = operation.duration;
                 CurrentOperationTime = TotalOperationTime;
-                oldRot = CurrentCharacter.Source.rotation.eulerAngles.y;
+                oldRot = CurrentCharacter.Root.rotation.eulerAngles.y;
                 bLerping = true;
                 break;
 
@@ -271,11 +271,13 @@ public class SimpleAIcontroller : CharacterController
     float GenerateYbearing(Vector3 source, Vector3 target) // Source ------------> Target
     {
         float output = 0;
+        float magnitude = Vector3.Distance(source, target);
+
+        if (magnitude == 0)
+            return output;
 
         float deltaX = target.x - source.x;
         float deltaZ = target.z - source.z;
-
-        float magnitude = Vector3.Distance(source, target);
 
         output = (180 / Mathf.PI) * Mathf.Asin(deltaX / magnitude);
         output = (Mathf.Sign(deltaZ) > 0) ? output : 180 - output;
@@ -292,14 +294,16 @@ public class SimpleAIcontroller : CharacterController
         CurrentOperationTime -= GlobalConstants.TIME_SCALE;
         CurrentOperationTime = (CurrentOperationTime < 0) ? 0 : CurrentOperationTime;
 
-        Vector3 target = (bIsFollowing) ? TargetCharacter.Source.position + TravelPoint : TravelPoint;
+        Vector3 target = (bIsFollowing) ? TargetCharacter.Root.position + TravelPoint : TravelPoint;
 
         switch (operation.Type)
         {
             case AIoperationType.ROTATE:
-                CurrentCharacter.Source.rotation = Quaternion.Lerp(Quaternion.Euler(new Vector3(0, oldRot, 0)),
-                                                        Quaternion.Euler(new Vector3(0, GenerateYbearing(CurrentCharacter.Source.position, target), 0)),
-                                                        1 - (CurrentOperationTime / TotalOperationTime));
+                //Debug.Log($"{CurrentCharacter.Root.name} : {CurrentCharacter.Root.position}");
+                Quaternion start = Quaternion.Euler(0, oldRot, 0);
+                Quaternion end = Quaternion.Euler(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0);
+                float lerp = 1 - (CurrentOperationTime / TotalOperationTime);
+                CurrentCharacter.Root.rotation = Quaternion.Lerp(start, end, lerp);
                 break;
         }
 
@@ -312,21 +316,21 @@ public class SimpleAIcontroller : CharacterController
         if (!bMoving || bIsUsingNavMesh)
             return;
 
-        Rigidbody rigidBody = CurrentCharacter.Source.gameObject.GetComponent<Rigidbody>();
+        Rigidbody rigidBody = CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
 
         // When following, use the TravelPoint as an offset of the followed character's position instead
-        Vector3 target = (bIsFollowing) ? TargetCharacter.Source.position + TravelPoint : TravelPoint;
+        Vector3 target = (bIsFollowing) ? TargetCharacter.Root.position + TravelPoint : TravelPoint;
 
         Vector3 newVector = rigidBody.transform.rotation.eulerAngles;
-        newVector.y = GenerateYbearing(CurrentCharacter.Source.position, target);
+        newVector.y = GenerateYbearing(CurrentCharacter.Root.position, target);
         rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
         if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
-            rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
+            rigidBody.AddForce(CurrentCharacter.Root.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
 
-        bMoving = Vector3.Distance(CurrentCharacter.Source.position, target) > TargetArrivalThreshold;
+        bMoving = Vector3.Distance(CurrentCharacter.Root.position, target) > TargetArrivalThreshold;
         bOperationComplete = !bMoving;
         IntentVector.z = bMoving ? 1 : 0;
     }
@@ -335,7 +339,7 @@ public class SimpleAIcontroller : CharacterController
         if (!bMoving || !bIsUsingNavMesh)
             return;
 
-        Rigidbody rigidBody = CurrentCharacter.Source.gameObject.GetComponent<Rigidbody>();
+        Rigidbody rigidBody = CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
 
@@ -343,7 +347,7 @@ public class SimpleAIcontroller : CharacterController
 
         if (bTestMotion)
         {
-            float newBearing = GenerateYbearing(CurrentCharacter.Source.position, TravelPoint);
+            float newBearing = GenerateYbearing(CurrentCharacter.Root.position, TravelPoint);
             float currentBearing = rigidBody.transform.rotation.eulerAngles.y;
 
             newVector.y = newBearing;
@@ -354,20 +358,20 @@ public class SimpleAIcontroller : CharacterController
 
             float turningFactor = (180 - magnitude) / 180;
             Vector3 newDirection = TravelPoint - rigidBody.position;
-            //rigidBody.velocity = newDirection * (turningFactor * Character.MaximumStatValues.SPEED); // Maybe? : |
+
             if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
                 rigidBody.AddForce(newDirection * (turningFactor * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED]))), ForceMode.Impulse);
         }
         else
         {
-            newVector.y = GenerateYbearing(CurrentCharacter.Source.position, TravelPoint);
+            newVector.y = GenerateYbearing(CurrentCharacter.Root.position, TravelPoint);
             rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
             if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
-                rigidBody.AddForce(CurrentCharacter.Source.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
+                rigidBody.AddForce(CurrentCharacter.Root.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
         }
 
-        bNavPointReached = Vector3.Distance(CurrentCharacter.Source.position, TravelPoint) < TargetArrivalThreshold;
+        bNavPointReached = Vector3.Distance(CurrentCharacter.Root.position, TravelPoint) < TargetArrivalThreshold;
 
         if (bNavPointReached)
         {
@@ -380,7 +384,7 @@ public class SimpleAIcontroller : CharacterController
         CurrentTimeOutRemaining -= GlobalConstants.TIME_SCALE;
         if (CurrentTimeOutRemaining <= 0)
         {
-            bMoving = Pathing.Repath(CurrentCharacter.Source.position) &&
+            bMoving = Pathing.Repath(CurrentCharacter.Root.position) &&
                 Pathing.RequestNextTravelPoint(out TravelPoint);
 
             //bDebuggingDisable = true;
@@ -421,7 +425,7 @@ public class SimpleAIcontroller : CharacterController
     }
     void testDelta()
     {
-        delta = Vector3.Distance(TravelPoint, CurrentCharacter.Source.position);
+        delta = Vector3.Distance(TravelPoint, CurrentCharacter.Root.position);
     }
     void ResetStaticSequence()
     {
@@ -464,7 +468,8 @@ public class SimpleAIcontroller : CharacterController
 
         if (bDebuggingDisable
             || !bIsAwake
-            || !CurrentCharacter.bIsAlive)
+            || !CurrentCharacter.bIsAlive
+            || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
 
         FindTarget();

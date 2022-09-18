@@ -30,24 +30,24 @@ public class Formation
             return;
 
         if (location == null)
-            location = Parent.Members[0].Source;
+            location = Parent.Members[0].Root;
 
         if (Parent.Members.Count == 1) // -__-
         {
-            Parent.Members[0].Source.position = location.position;
+            Parent.Members[0].Root.position = location.position;
             return;
         }
 
         if (Parent.Members.Count == 2) // "Hold my hand"
         {
-            Vector3 uno = Parent.Members[0].Source.position;
-            Vector3 dos = Parent.Members[1].Source.position;
+            Vector3 uno = Parent.Members[0].Root.position;
+            Vector3 dos = Parent.Members[1].Root.position;
 
             uno.x += Displacement / 2;
             dos.x -= Displacement / 2;
 
-            Parent.Members[0].Source.position = uno;
-            Parent.Members[1].Source.position = dos;
+            Parent.Members[0].Root.position = uno;
+            Parent.Members[1].Root.position = dos;
             return;
         }
 
@@ -68,9 +68,9 @@ public class Formation
 
         for(int i = 0; i < Parent.Members.Count; i++)
         {
-            Parent.Members[i].Source.position = position;
-            Parent.Members[i].Source.Rotate(0, i * angleA, 0);
-            Parent.Members[i].Source.position += Parent.Members[i].Source.forward * sideB;
+            Parent.Members[i].Root.position = position;
+            Parent.Members[i].Root.Rotate(0, i * angleA, 0);
+            Parent.Members[i].Root.position += Parent.Members[i].Root.forward * sideB;
             //Debug.Log($"{Parent.Members[i].Source.name} : {Parent.Members[i].Source.position}");
         }
     }

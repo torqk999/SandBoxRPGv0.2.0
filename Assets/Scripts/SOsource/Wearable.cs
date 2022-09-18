@@ -22,9 +22,9 @@ public class Wearable : Equipment
     public EquipSlot Type;
     //public EquipSkill EquipSkill;
 
-    public Wearable CloneWear(bool inject = false)
+    public Wearable CloneWear(int equipId = -1, bool inject = false)
     {
-        Wearable newWear = (Wearable)CloneEquip("Wearable",inject);
+        Wearable newWear = (Wearable)CloneEquip("Wearable", equipId, inject);
 
         newWear.Type = Type;
         

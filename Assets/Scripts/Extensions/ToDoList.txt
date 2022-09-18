@@ -1,11 +1,14 @@
 ﻿== TO DO LIST ==========
 
-- Stat_Change/Adjust by fixed/percent
+$ Stat_Change/Adjust by fixed/percent
 - Ai gets stuck in crevises, has the 'zoomies' "BYEEEE!!!!" from time to time
 - Update GUI assistant for text
 - Resolve Multi-Mapping (Mouse/Keyboard/Console)   Possible walkthrew/plugin for port
 - Ramp intent vector to char-animators
 $ Entry points for ability particle effects/swing & cast animations
+$ Item spawning at runtime (custom dev entry point)
+$ Character Canvas (Name, Level, HealthBar, Effects, Toggle)
+- Item stacking?
 
 ========================
 

@@ -64,7 +64,10 @@ public class SimpleAIpathingController : MonoBehaviour
             GameState.NavMesh.AxisCounts[1] <= 0)
             return false;
 
-        GenerateStartAndEndCoords(startLocation, destination, true);
+        GameState.NavMesh.FindClosestNavIndex(startLocation, ref StartCoord);
+        GameState.NavMesh.FindClosestNavIndex(destination, ref EndCoord);
+
+        //GenerateStartAndEndCoords(startLocation, destination, true);
 
         return AstarPathing(ref StartCoord, ref EndCoord);
     }
@@ -83,7 +86,9 @@ public class SimpleAIpathingController : MonoBehaviour
             destinationCoords.Length != 2)
             return false;
 
-        GenerateStartAndEndCoords(startLocation);
+        GameState.NavMesh.FindClosestNavIndex(startLocation, ref StartCoord);
+        
+        //GenerateStartAndEndCoords(startLocation);
         EndCoord = destinationCoords;
 
         return AstarPathing(ref StartCoord, ref EndCoord);
@@ -95,8 +100,14 @@ public class SimpleAIpathingController : MonoBehaviour
         GameState.NavMesh.ClearObstructions();
         return result;
     }
-    void GenerateStartAndEndCoords( Vector3 startLocation, Vector3 endLocation = new Vector3(), bool bGenEnd = false)
+
+
+
+    void GenerateStartAndEndCoords(Vector3 startLocation, Vector3 endLocation = new Vector3(), bool bGenEnd = false)
     {
+        
+
+        /*
         StartCoord[0] = -1;
         StartCoord[1] = -1;
 
@@ -136,6 +147,7 @@ public class SimpleAIpathingController : MonoBehaviour
                 }
             }
         }
+        */
     }
     float GenerateYbearing(Vector3 source, Vector3 target) // Source ------------> Target
     {
@@ -247,6 +259,11 @@ public class SimpleAIpathingController : MonoBehaviour
         while (safeCount < GlobalConstants.MAX_PATH_CYCLES)
         {
             Current = Generated.Find(x => x.bIsOpen);
+            if (Current == null)
+            {
+                //Debug.Log("SCIENCE BITCH!");
+                return false;
+            }
 
             for (int i = 0; i < Generated.Count; i++)
             {

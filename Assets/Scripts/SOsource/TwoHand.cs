@@ -20,9 +20,9 @@ public class TwoHand : Equipment
     [Header("TwoHand Properties")]
     public TwoHandType Type;
 
-    public TwoHand CloneTwoHand(bool inject = false)
+    public TwoHand CloneTwoHand(int equipId, bool inject = false)
     {
-        TwoHand newTwoHand = (TwoHand)CloneEquip("TwoHand",inject);
+        TwoHand newTwoHand = (TwoHand)CloneEquip("TwoHand", equipId, inject);
 
         newTwoHand.Type = Type;
 
