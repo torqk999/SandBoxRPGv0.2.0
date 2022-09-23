@@ -49,24 +49,20 @@ public class Character : Pawn, Interaction
     public StatPackage CurrentStats;
     public StatPackage MaximumStatValues;
     public ElementPackage Resistances;
-    //public ElementPackage MaximumResistances; // ??
 
     public CharacterSheet Sheet;
     public List<CharacterAbility> Abilities;
     public List<Effect> Effects;
 
+    [Header("Character Logic")]
     public bool bIsPaused;
-    public bool bIsAlive;
     public bool bIsSpawn;
     public bool bTimedSpawn;
     public float SpawnTimer;
     public float ChannelTimer;
 
-    public Character SpawnParent;
-
-    [Header("Character Logic")]
+    public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
-    public List<Character> TargettedBy;
     public Inventory Inventory;
     public GameObject CharacterCanvas;
 
@@ -458,7 +454,29 @@ public class Character : Pawn, Interaction
 
             case EffectAction.SPAWN:
                 break;
+
+            case EffectAction.CROWD_CONTROL:
+                break;
         }
+    }
+    public void ApplyRisidualEffect(Effect mod)
+    {
+        Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
+        modInstance.CloneEffect(mod);
+
+        switch (modInstance.Action)
+        {
+            //case EffectAction.CROWD_CONTROL:
+            //    break;
+
+            case EffectAction.RES_ADJ:
+                break;
+
+            case EffectAction.STAT_ADJ:
+                break;
+        }
+
+        Effects.Add(modInstance);
     }
     void ApplyDamage(Effect damage)
     {
@@ -567,7 +585,7 @@ public class Character : Pawn, Interaction
 
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
-            bIsAlive = false;
+            Effects.Add(new Effect("Death", CCstatus.DEAD));
             bAssetUpdate = true;
             DebugState = DebugState.DEAD;
             //Source.GetComponent<Collider>().enabled = false;

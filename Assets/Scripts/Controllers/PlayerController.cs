@@ -388,7 +388,7 @@ public class PlayerController : CharacterController
         if (CurrentPawn.RigidBody == null
             || !CurrentPawn.bIsGrounded
             || !CurrentPawn.bControllable
-            || !CurrentCharacter.bIsAlive
+            || CurrentCharacter.CheckCCstatus(CCstatus.DEAD)
             || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
 

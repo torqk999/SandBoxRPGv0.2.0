@@ -12,7 +12,7 @@ int(Target.Res[(int)Element] / RampValue)
 public enum ThreatRelation
 {
     SELF,
-    TARGET,
+    //TARGET,
     ALLY,
     FOE
 }

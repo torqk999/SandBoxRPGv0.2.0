@@ -468,7 +468,7 @@ public class SimpleAIcontroller : CharacterController
 
         if (bDebuggingDisable
             || !bIsAwake
-            || !CurrentCharacter.bIsAlive
+            || CurrentCharacter.CheckCCstatus(CCstatus.DEAD)
             || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
 

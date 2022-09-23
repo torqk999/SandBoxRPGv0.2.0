@@ -22,6 +22,15 @@ public class Effect : ScriptableObject
     public bool bIsImmune;
     public bool bAllImmune;
 
+    public Effect(string name, CCstatus status, Sprite sprite = null) // Hard indefinite CC creation (ez death)
+    {
+        Name = name;
+        Sprite = sprite;
+        Duration = EffectDuration.PASSIVE;
+        Action = EffectAction.CROWD_CONTROL;
+        TargetCCstatus = status;
+    }
+
     public void CloneEffect(Effect source, int equipId = -1, float amp = 1, bool inject = true)
     {
         Name = source.Name;
@@ -35,24 +44,8 @@ public class Effect : ScriptableObject
         if (source.Action == EffectAction.DMG_HEAL ||
             source.Action == EffectAction.RES_ADJ)
         {
-            Debug.Log($"Source:\nair:{source.ElementPack.Reflection.AIR}\n" +
-                $"water:{source.ElementPack.Reflection.WATER}\n" +
-                $"fire:{source.ElementPack.Reflection.FIRE}\n" +
-                $"earth:{source.ElementPack.Reflection.EARTH}\n" +
-                $"physical:{source.ElementPack.Reflection.PHYSICAL}\n" +
-                $"poison:{source.ElementPack.Reflection.POISON}\n" +
-                $"healing:{source.ElementPack.Reflection.HEALING}\n");
             ElementPack = new ElementPackage(source.ElementPack);
-            Debug.Log($"Local:\nair:{ElementPack.Reflection.AIR}\n" +
-                $"water:{ElementPack.Reflection.WATER}\n" +
-                $"fire:{ElementPack.Reflection.FIRE}\n" +
-                $"earth:{ElementPack.Reflection.EARTH}\n" +
-                $"physical:{ElementPack.Reflection.PHYSICAL}\n" +
-                $"poison:{ElementPack.Reflection.POISON}\n" +
-                $"healing:{ElementPack.Reflection.HEALING}\n");
-            Debug.Log($"Reflection of :{Name}\n" +
-                $"Injection: {inject}\n" +
-                $"Success: {ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject)}");
+            ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject);
             ElementPack.Amplify(amp);
         }
         

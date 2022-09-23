@@ -28,6 +28,7 @@ public enum ValueType
 }
 public enum CCstatus
 {
+    DEAD,
     IMMOBILE,
     UN_ARMED,
     SILENCED,

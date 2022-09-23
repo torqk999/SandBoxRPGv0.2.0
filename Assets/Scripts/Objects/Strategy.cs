@@ -1,57 +1,94 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-/*public enum TacTarget
+public enum Relation
 {
     SELF,
-    TARGET,
     ALLY,
     FOE
-}*/
-public enum TacCondition
-{
-    GT,
-    GTE,
-    GRT,
-    LT,
-    LTE,
-    LST,
-    IS,
-    NOT
 }
-public enum TacType
+public enum TacFloatType
 {
-    //RANGE_MIN,
-    //RANGE_MAX,
-    ALIVE,
-    CC_STATE,
     STAT_CURRENT,
-    STAT_MAX,
+    STAT_RELATIVE,
     RESISTANCE,
-    TARGETTING // TARGETTED_BY??
 }
-public enum TacStat
+public enum TacFixedType
 {
-    HEALTH,
-    STAMINA,
-    MANA
+    TARGET,
+    NEAREST,
+    FURTHEST
 }
 [System.Serializable]
-public struct Tactic
+public class Tactic
 {
     public bool bTacticEnabled;
-
-    public ThreatRelation Target;
-    public Element Resistance;
-    public TacStat CharStat;
-    public TacType Type;
-    public TacCondition Condition;
-    public float Trigger;
-    public bool State;
-
+    public Relation Relation;
     public CharacterAbility Ability;
-    public Character SpecificTarget;
+
+    public Tactic(Relation relation, CharacterAbility ability, bool enabled = true)
+    {
+        Relation = relation;
+        Ability = ability;
+        bTacticEnabled = enabled;
+    }
+}
+[System.Serializable]
+public class FloatTactic : Tactic
+{
+    public TacFloatType Type;
+    public RawStat TargetStat;
+    public Element TargetElement;
+    public bool GTE;
+    public float Value;
+
+    public FloatTactic(Relation relation, CharacterAbility ability, TacFloatType type, float value, RawStat stat = RawStat.HEALTH, Element element = Element.PHYSICAL, bool gte = true,bool enabled = true) : base(relation, ability, enabled)
+    {
+        Type = type;
+        TargetStat = stat;
+        TargetElement = element;
+        GTE = gte;
+        Value = value;
+    }
+}
+[System.Serializable]
+public class ProxyTactic : Tactic
+{
+    public bool Allies;
+    public bool Targetted;
+    public int Count;
+    public float Range;
+
+    public ProxyTactic(Relation relation, CharacterAbility ability, int count, float range, bool allies = true, bool targetted = false, bool enabled = true) : base(relation, ability, enabled)
+    {
+        Allies = allies;
+        Targetted = targetted;
+        Count = count;
+        Range = range;
+    }
+}
+[System.Serializable]
+public class CCstateTactic : Tactic
+{
+    public bool[] CCstates;
+    public bool AND_OR;
+
+    public CCstateTactic(Relation relation, CharacterAbility ability, bool and_or = true, bool enabled = true) : base(relation, ability, enabled)
+    {
+        CCstates = new bool[CharacterMath.STATS_CC_COUNT];
+        AND_OR = and_or;
+    }
+}
+public class FixedTactic : Tactic
+{
+    public TacFixedType Type;
+    public Character Target;
+
+    public FixedTactic(Relation relation, CharacterAbility ability, TacFixedType type, Character target = null, bool enabled = true) : base(relation, ability, enabled)
+    {
+        Type = type;
+        Target = target;
+    }
 }
 [System.Serializable]
 public class Strategy
@@ -60,8 +97,7 @@ public class Strategy
     public Character Character;
 
     public Tactic[] TacticSlots;
-    public int CurrentlyActiveTacticIndex;
-    public bool bTargetAssigned;
+    //public int CurrentlyActiveTacticIndex;
 
     public Strategy(Character parent, Tactic[] preset = null)
     {
@@ -71,13 +107,10 @@ public class Strategy
         if (preset != null)
             for (int i = 0; i < preset.Length && i < CharacterMath.TACTIC_SLOTS; i++)
                 TacticSlots[i] = preset[i];
-        CurrentlyActiveTacticIndex = 0;
-        bTargetAssigned = false;
+        //CurrentlyActiveTacticIndex = 0;
     }
     public void UpdateCurrentTactic()
     {
-        bTargetAssigned = false;
-
         for (int i = 0; i < TacticSlots.Length; i++)
         {
             if (!TacticSlots[i].bTacticEnabled)
@@ -95,13 +128,13 @@ public class Strategy
 
         List<Character> candidates = GetDesiredCharacters(tactic);
 
-        if (tactic.Condition == TacCondition.GRT)
+        //if (tactic.Condition == TacCondition.GRT)
             Character.CurrentTargetCharacter = ReturnMostCharacter(tactic, candidates);
 
-        else if (tactic.Condition == TacCondition.LST)
+        //else if (tactic.Condition == TacCondition.LST)
             Character.CurrentTargetCharacter = ReturnLeastCharacter(tactic, candidates);
 
-        else
+        //else
             Character.CurrentTargetCharacter = ReturnIdealCharacter(tactic, candidates);
 
         return (Character.CurrentTargetCharacter != null);
@@ -111,20 +144,20 @@ public class Strategy
         List<Character> desiredCharacters = new List<Character>();
         //targetCharacter = null;
 
-        if (tactic.Target == ThreatRelation.SELF)
+        if (tactic.Relation == Relation.SELF)
             desiredCharacters.Add(Character);
 
-        else if (tactic.Target == ThreatRelation.TARGET)
-            desiredCharacters.Add(tactic.SpecificTarget);
+        //else if (tactic.Target == ThreatRelation.TARGET)
+        //    desiredCharacters.Add(tactic.SpecificTarget);
 
         else
             foreach (Party party in GameState.CharacterMan.Parties)
             {
-                if (tactic.Target == ThreatRelation.ALLY &&
+                if (tactic.Relation == Relation.ALLY &&
                     party.Faction != Character.Sheet.Faction)
                     continue;
 
-                if (tactic.Target == ThreatRelation.FOE &&
+                if (tactic.Relation == Relation.FOE &&
                     party.Faction == Character.Sheet.Faction)
                     continue;
 

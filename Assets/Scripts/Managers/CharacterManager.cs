@@ -148,6 +148,7 @@ public class CharacterManager : MonoBehaviour
     {
         List<Character> AOEcandidates = new List<Character>();
 
+
         foreach (Character target in CharacterPool)
         {
             if (call.Target == TargetType.ALLY && target.Sheet.Faction != caller.Sheet.Faction)
@@ -175,16 +176,16 @@ public class CharacterManager : MonoBehaviour
                     break;
 
                 case EffectDuration.TIMED:
-                    ApplyRisidualEffect(target, call.Effects[i]);
+                    target.ApplyRisidualEffect(call.Effects[i]);
                     break;
 
                 case EffectDuration.SUSTAINED:
-                    ApplyRisidualEffect(target, call.Effects[i]);
+                    target.ApplyRisidualEffect(call.Effects[i]);
                     break;
             }
         }
     }
-    void ApplyRisidualEffect(Character target, Effect mod)
+    /*void ApplyRisidualEffect(Character target, Effect mod)
     {
         Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
         modInstance.CloneEffect(mod);
@@ -203,7 +204,7 @@ public class CharacterManager : MonoBehaviour
         }
 
         target.Effects.Add(modInstance);
-    }
+    }*/
     #endregion
 
     #region CHECK-UPS
@@ -329,7 +330,7 @@ public class CharacterManager : MonoBehaviour
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
 
         // Initialize
-        character.bIsAlive = true;
+        //character.bIsAlive = true;
         character.InitializeCharacter();
     }
     void SetupSheet(Character character, Character source, int index, bool fresh)
