@@ -63,6 +63,7 @@ public class Character : Pawn, Interaction
 
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
+    public CharacterAbility CurrentAction;
     public Inventory Inventory;
     public GameObject CharacterCanvas;
 

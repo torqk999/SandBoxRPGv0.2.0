@@ -60,6 +60,7 @@ public class SimpleAIcontroller : CharacterController
     public float FollowerBoxRadius;
 
     [Header("Just Stahp :-| ")]
+    public int[] RandomBuffer = new int[2];
     public int CurrentOperationIndex;
     public float CurrentOperationTime;
     public float CurrentTimeOutRemaining;
@@ -143,6 +144,10 @@ public class SimpleAIcontroller : CharacterController
         bSequenceComplete = CurrentOperationIndex == 0;
         bOperationComplete = CurrentOperationIndex != 0;
     }
+    void GenerateTargetTravelPoint()
+    {
+
+    }
     void GenerateNewRandomRawTravelPoint()
     {
         if (!bSequenceComplete || bIsUsingNavMesh)
@@ -187,18 +192,18 @@ public class SimpleAIcontroller : CharacterController
         if (!bSequenceComplete || !bIsUsingNavMesh)
             return;
 
-        int[] randCoords = new int[2];
+        //int[] randCoords = new int[2];
 
         if (!bIsFollowing)
         {
-            randCoords[0] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[0]);
-            randCoords[1] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[1]);
+            RandomBuffer[0] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[0]);
+            RandomBuffer[1] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[1]);
 
             //Debug.Log($"{bOperationComplete} : {bSequenceComplete}");
 
             //Debug.Log($"{randCoords[0]} : {randCoords[1]}");
 
-            if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, randCoords))
+            if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, RandomBuffer))
             {
                 //Debug.Log("Shits not workin dawg!");
                 return;
@@ -435,9 +440,11 @@ public class SimpleAIcontroller : CharacterController
     }
     void RunSequence()
     {
-        if (bStrategyActive)
+        if (bStrategyActive
+         && CurrentCharacter.CurrentTargetCharacter != null
+         && CurrentCharacter.CurrentAction != null)
         {
-            Strategy.UpdateCurrentTactic();
+            //Strategy.UpdateCurrentTactic();
         }
         else
         {

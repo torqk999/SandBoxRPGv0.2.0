@@ -10,7 +10,7 @@ public enum Relation
 public enum TacFloatType
 {
     STAT_CURRENT,
-    STAT_RELATIVE,
+    STAT_MAXIMUM,
     RESISTANCE,
 }
 public enum TacFixedType
@@ -39,15 +39,18 @@ public class FloatTactic : Tactic
     public TacFloatType Type;
     public RawStat TargetStat;
     public Element TargetElement;
-    public bool GTE;
+    public bool GTE_LT;
+    public bool Relative;
     public float Value;
 
-    public FloatTactic(Relation relation, CharacterAbility ability, TacFloatType type, float value, RawStat stat = RawStat.HEALTH, Element element = Element.PHYSICAL, bool gte = true,bool enabled = true) : base(relation, ability, enabled)
+    public FloatTactic(Relation relation, CharacterAbility ability,
+        TacFloatType type, float value, RawStat stat = RawStat.HEALTH, Element element = Element.PHYSICAL,
+        bool gte = true, bool relative = false, bool enabled = true) : base(relation, ability, enabled)
     {
         Type = type;
         TargetStat = stat;
         TargetElement = element;
-        GTE = gte;
+        GTE_LT = gte;
         Value = value;
     }
 }
@@ -59,7 +62,8 @@ public class ProxyTactic : Tactic
     public int Count;
     public float Range;
 
-    public ProxyTactic(Relation relation, CharacterAbility ability, int count, float range, bool allies = true, bool targetted = false, bool enabled = true) : base(relation, ability, enabled)
+    public ProxyTactic(Relation relation, CharacterAbility ability, int count, float range,
+        bool allies = true, bool targetted = false, bool enabled = true) : base(relation, ability, enabled)
     {
         Allies = allies;
         Targetted = targetted;
@@ -73,31 +77,34 @@ public class CCstateTactic : Tactic
     public bool[] CCstates;
     public bool AND_OR;
 
-    public CCstateTactic(Relation relation, CharacterAbility ability, bool and_or = true, bool enabled = true) : base(relation, ability, enabled)
+    public CCstateTactic(Relation relation, CharacterAbility ability,
+        bool and_or = true, bool enabled = true) : base(relation, ability, enabled)
     {
         CCstates = new bool[CharacterMath.STATS_CC_COUNT];
         AND_OR = and_or;
     }
 }
+[System.Serializable]
 public class FixedTactic : Tactic
 {
     public TacFixedType Type;
     public Character Target;
 
-    public FixedTactic(Relation relation, CharacterAbility ability, TacFixedType type, Character target = null, bool enabled = true) : base(relation, ability, enabled)
+    public FixedTactic(Relation relation, CharacterAbility ability, TacFixedType type, Character target = null,
+        bool enabled = true) : base(relation, ability, enabled)
     {
         Type = type;
         Target = target;
     }
 }
-[System.Serializable]
-public class Strategy
+//[System.Serializable]
+public class Strategy : MonoBehaviour
 {
     public GameState GameState;
     public Character Character;
 
     public Tactic[] TacticSlots;
-    //public int CurrentlyActiveTacticIndex;
+    //public CharacterAbility CurrentAction;
 
     public Strategy(Character parent, Tactic[] preset = null)
     {
@@ -107,9 +114,8 @@ public class Strategy
         if (preset != null)
             for (int i = 0; i < preset.Length && i < CharacterMath.TACTIC_SLOTS; i++)
                 TacticSlots[i] = preset[i];
-        //CurrentlyActiveTacticIndex = 0;
     }
-    public void UpdateCurrentTactic()
+    void UpdateCurrentTactic()
     {
         for (int i = 0; i < TacticSlots.Length; i++)
         {
@@ -118,86 +124,127 @@ public class Strategy
 
             if (!CheckTacticConditions(TacticSlots[i]))
                 continue;
-        }
-    }
 
+            Character.CurrentAction = TacticSlots[i].Ability;
+            break;
+        }
+        Character.CurrentAction = null;
+    }
     bool CheckTacticConditions(Tactic tactic)
     {
         if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateStatModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
             return false;
 
-        List<Character> candidates = GetDesiredCharacters(tactic);
+        List<Character> candidates = ReturnDesiredCharacters(tactic);
 
-        //if (tactic.Condition == TacCondition.GRT)
-            Character.CurrentTargetCharacter = ReturnMostCharacter(tactic, candidates);
-
-        //else if (tactic.Condition == TacCondition.LST)
-            Character.CurrentTargetCharacter = ReturnLeastCharacter(tactic, candidates);
-
-        //else
-            Character.CurrentTargetCharacter = ReturnIdealCharacter(tactic, candidates);
+        Character.CurrentTargetCharacter = ReturnIdealCharacter(tactic, candidates);
 
         return (Character.CurrentTargetCharacter != null);
     }
-    List<Character> GetDesiredCharacters(Tactic tactic)
+    List<Character> ReturnDesiredCharacters(Tactic tactic)
     {
         List<Character> desiredCharacters = new List<Character>();
         //targetCharacter = null;
 
-        if (tactic.Relation == Relation.SELF)
-            desiredCharacters.Add(Character);
+        switch(tactic)
+        {
+            case FixedTactic:
+                desiredCharacters.Add(ReturnFixedCharacter((FixedTactic)tactic));
+                break;
 
-        //else if (tactic.Target == ThreatRelation.TARGET)
-        //    desiredCharacters.Add(tactic.SpecificTarget);
+            case FloatTactic:
+                desiredCharacters.AddRange(ReturnFloatCharacters((FloatTactic)tactic));
+                break;
 
-        else
-            foreach (Party party in GameState.CharacterMan.Parties)
-            {
-                if (tactic.Relation == Relation.ALLY &&
-                    party.Faction != Character.Sheet.Faction)
-                    continue;
+            case CCstateTactic:
+                desiredCharacters.AddRange(ReturnCCstateCharacters((CCstateTactic)tactic));
+                break;
 
-                if (tactic.Relation == Relation.FOE &&
-                    party.Faction == Character.Sheet.Faction)
-                    continue;
-
-                desiredCharacters.AddRange(party.Members);
-            }
-
+            case ProxyTactic:
+                desiredCharacters.AddRange(ReturnProxyCharacters((ProxyTactic)tactic));
+                break;
+        }
+        
         return desiredCharacters;
     }
-
-    void GetApplicableCharacters(Tactic tactic, List<Character> characterPool)
+    Character ReturnFixedCharacter(FixedTactic tactic)
     {
-        //if (tactic.Condition == TacCondition.GRT)
-
-        //if (tactic.Condition == TacCondition.LST)
-
-        for (int i = characterPool.Count - 1; i > -1; i--)
+        switch(tactic.Type)
         {
-            //float check;
+            case TacFixedType.TARGET:
+                return tactic.Target;
+
+            case TacFixedType.NEAREST:
+            case TacFixedType.FURTHEST:
+                Character fix = null;
+                float best = 0;
+                foreach(Character next in GameState.CharacterMan.CharacterPool)
+                {
+                    float distance = Vector3.Distance(next.Root.position, Character.Root.position);
+                    if (fix == null
+                        || (tactic.Type == TacFixedType.NEAREST && distance < best)
+                        || (tactic.Type == TacFixedType.FURTHEST && distance > best))
+                    {
+                        fix = next;
+                        best = distance;
+                    }
+                }
+                return fix;
+        }
+        Debug.Log("ReturnFixedCharacter Failed!");
+        return null;
+    }
+    List<Character> ReturnFloatCharacters(FloatTactic tactic)
+    {
+        List<Character> floatCandidates = new List<Character>();
+        foreach (Character next in GameState.CharacterMan.CharacterPool)
+        {
+            switch (tactic.Type)
+            {
+                case TacFloatType.STAT_CURRENT:
+                    if ((tactic.Relative &&
+                       ((tactic.GTE_LT && (next.CurrentStats.Stats[(int)tactic.TargetStat] >= Character.CurrentStats.Stats[(int)tactic.TargetStat]))
+                    || (!tactic.GTE_LT && (next.CurrentStats.Stats[(int)tactic.TargetStat] < Character.CurrentStats.Stats[(int)tactic.TargetStat]))))
+                    || (!tactic.Relative &&
+                       ((tactic.GTE_LT && (next.CurrentStats.Stats[(int)tactic.TargetStat] >= tactic.Value))
+                    || (!tactic.GTE_LT && (next.CurrentStats.Stats[(int)tactic.TargetStat] < tactic.Value)))))
+                    {
+                        goto Append;
+                        //floatCandidates.Add(next);
+                    }
+                    break;
+
+                case TacFloatType.STAT_MAXIMUM:
+                    break;
+
+                case TacFloatType.RESISTANCE:
+                    break;
+            }
+            continue;
+        Append:;
+            floatCandidates.Add(next);
 
         }
+        
+        return floatCandidates;
     }
-    Character ReturnMostCharacter(Tactic tactic, List<Character> characterPool)
+    List<Character> ReturnProxyCharacters(ProxyTactic tactic)
     {
-        Character output = null;
+        List<Character> floatCandidates = new List<Character>();
 
-
-        return output;
+        return floatCandidates;
     }
-    Character ReturnLeastCharacter(Tactic tactic, List<Character> characterPool)
+    List<Character> ReturnCCstateCharacters(CCstateTactic tactic)
     {
-        Character output = null;
+        List<Character> floatCandidates = new List<Character>();
 
-
-        return output;
+        return floatCandidates;
     }
     Character ReturnIdealCharacter(Tactic tactic, List<Character> characterPool)
     {
         Character output = null;
 
-        GetApplicableCharacters(tactic, characterPool);
+        //GetApplicableCharacters(tactic, characterPool);
         GetCharactersInRange(tactic, characterPool);
 
         if (characterPool.Count > 0)
@@ -205,55 +252,17 @@ public class Strategy
 
         return output;
     }
-
-    /*
-    bool PerformFloatConditional(Tactic tactic, Character character)
-    {
-        float value;
-        float[] data;
-
-        switch (tactic.Type)
-        {
-            case TacType.RESISTANCE:
-                data = character.Resistances.PullData();
-                value = data[(int)tactic.Resistance];
-                break;
-
-            case TacType.STAT_CURRENT:
-                data = character.CurrentStats.PullData();
-                value = data[(int)tactic.CharStat];
-                break;
-
-            case TacType.STAT_MAX:
-                data = character.MaximumStatValues.PullData();
-                value = data[(int)tactic.CharStat];
-                break;
-        }
-
-        switch (tactic.Condition)
-        {
-            case TacCondition.GRT:
-                break;
-
-            case TacCondition.LST:
-                break;
-        }
-    }
-    bool PerformStateConditional(Tactic tactic, Character character)
-    {
-        bool state;
-        switch (tactic.Type)
-        {
-            case TacType.ALIVE:
-                return (tactic.State != character.bIsAlive);
-
-            case TacType.CC_STATE:
-
-        }
-    }
-    */
     void GetCharactersInRange(Tactic tactic, List<Character> characterPool)
     {
 
+    }
+
+    private void Start()
+    {
+        
+    }
+    private void Update()
+    {
+        UpdateCurrentTactic();
     }
 }
