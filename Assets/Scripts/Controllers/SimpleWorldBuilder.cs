@@ -123,7 +123,7 @@ public class SimpleWorldBuilder : MonoBehaviour
         GameState.CharacterMan.CreateLiteralParty(GameState.CharacterMan.DefaultPartyPrefabs, Faction.GOODIES,
             GameState.CharacterMan.DefaultPartyFormation, PartyStartLocation); // Migrations -______-
         SpawnMobs();
-        
+        GameState.CharacterMan.UpdatePartyFoes();
         GameState.pController.InitialPawnControl();
 
         //GameState.testBuilder.SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);//GameState.Controller.CurrentCharacter);

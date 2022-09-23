@@ -32,6 +32,8 @@ public enum EquipSlot
 
 public class Character : Pawn, Interaction
 {
+    #region VARS
+
     [Header("Character Defs")]
     [Header("==== CHARACTER CLASS ====")]
     public int ID;
@@ -58,9 +60,11 @@ public class Character : Pawn, Interaction
     public bool bIsPaused;
     public bool bIsSpawn;
     public bool bTimedSpawn;
+    public int CountBuffer; // Currently used by the strategy system
     public float SpawnTimer;
     public float ChannelTimer;
 
+    public Party CurrentParty;
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
     public CharacterAbility CurrentAction;
@@ -83,6 +87,8 @@ public class Character : Pawn, Interaction
     public bool bAssetUpdate;
     public bool bAssetTimer;
     public float AssetTimer;
+
+    #endregion
 
     public void UpdateAbilites()
     {

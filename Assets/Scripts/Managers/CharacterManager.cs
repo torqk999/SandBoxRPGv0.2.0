@@ -185,26 +185,6 @@ public class CharacterManager : MonoBehaviour
             }
         }
     }
-    /*void ApplyRisidualEffect(Character target, Effect mod)
-    {
-        Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
-        modInstance.CloneEffect(mod);
-
-        switch(modInstance.Action)
-        {
-            case EffectAction.CROWD_CONTROL:
-                Debug.Log($"{target.Root.name} : {mod.TargetCCstatus}");
-                break;
-
-            case EffectAction.RES_ADJ:
-                break;
-
-            case EffectAction.STAT_ADJ:
-                break;
-        }
-
-        target.Effects.Add(modInstance);
-    }*/
     #endregion
 
     #region CHECK-UPS
@@ -212,6 +192,13 @@ public class CharacterManager : MonoBehaviour
     {
         foreach (Character character in CharacterPool)
             character.bIsPaused = bPause;
+    }
+    public void UpdatePartyFoes()
+    {
+        foreach (Party source in Parties)
+            foreach (Party target in Parties)
+                if (source != target)
+                    source.Foes.AddRange(target.Members);   
     }
 
     #endregion
@@ -319,6 +306,7 @@ public class CharacterManager : MonoBehaviour
     {
         // References
         character.GameState = GameState;
+        character.CurrentParty = party;
         character.bDebugMode = GameState.bDebugEffects;
         character.Sheet.Faction = party.Faction;
         character.Inventory = party.PartyLoot;
