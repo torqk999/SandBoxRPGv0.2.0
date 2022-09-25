@@ -24,6 +24,7 @@ public class PawnManager : MonoBehaviour
     public GameObject CharacterCanvasPrefab;
 
     [Header("Pawn Logic")]
+    public Vector3 BoomOffset;
     public Pawn[] PlayerPawns;
     #endregion
 
@@ -77,6 +78,7 @@ public class PawnManager : MonoBehaviour
 
         // Boom
         GameObject boom = Instantiate(empty, pawnObject.transform.position, Quaternion.Euler(0, 0, 0), pawnObject.transform);
+        boom.transform.localPosition = BoomOffset;
         boom.transform.localRotation = Quaternion.Euler(currentPawn.DefRot);
         boom.name = "CAM:BOOM:" + pawnObject.name;
         currentPawn.Boom = boom.transform;

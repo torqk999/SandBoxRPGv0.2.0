@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4327311, g: 0.6122764, b: 0.8033687, a: 1}
+  m_IndirectSpecularColor: {r: 0.4350488, g: 0.61271507, b: 0.80330473, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1269,6 +1269,7 @@ MonoBehaviour:
   TriggerVolumePrefab: {fileID: 92358842}
   CharacterBlockerPrefab: {fileID: 500085282}
   CharacterCanvasPrefab: {fileID: 704980465}
+  BoomOffset: {x: 0, y: 1.5, z: 0}
   PlayerPawns: []
 --- !u!4 &77159615
 Transform:
@@ -2102,14 +2103,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
   Effects: []
   bIsPaused: 0
-  bIsAlive: 0
   bIsSpawn: 0
   bTimedSpawn: 0
+  CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  CurrentParty: {fileID: 0}
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
-  TargettedBy: []
+  CurrentAction: {fileID: 0}
   Inventory:
     Items: []
     MaxCount: 40
@@ -2226,22 +2228,7 @@ MonoBehaviour:
   myStaticSequence:
     Operations: []
   BoundaryTransforms: []
-  Strategy:
-    GameState: {fileID: 0}
-    Character: {fileID: 0}
-    TacticSlots:
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    CurrentlyActiveTacticIndex: 0
-    bTargetAssigned: 0
+  Strategy: {fileID: 0}
   bIsAgressive: 0
   bIsFollowing: 1
   bIsUsingNavMesh: 0
@@ -2265,6 +2252,7 @@ MonoBehaviour:
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 0
+  RandomBuffer: 0000000000000000
   CurrentOperationIndex: 0
   CurrentOperationTime: 0
   CurrentTimeOutRemaining: 0
@@ -4403,14 +4391,15 @@ MonoBehaviour:
   Abilities: []
   Effects: []
   bIsPaused: 0
-  bIsAlive: 0
   bIsSpawn: 0
   bTimedSpawn: 0
+  CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  CurrentParty: {fileID: 0}
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
-  TargettedBy: []
+  CurrentAction: {fileID: 0}
   Inventory:
     Items: []
     MaxCount: 0
@@ -4529,92 +4518,7 @@ MonoBehaviour:
   BoundaryTransforms:
   - {fileID: 993416059}
   - {fileID: 2045316613}
-  Strategy:
-    GameState: {fileID: 0}
-    Character: {fileID: 0}
-    TacticSlots:
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    - bTacticEnabled: 0
-      Target: 0
-      Resistance: 0
-      CharStat: 0
-      Type: 0
-      Condition: 0
-      Trigger: 0
-      State: 0
-      Ability: {fileID: 0}
-      SpecificTarget: {fileID: 0}
-    CurrentlyActiveTacticIndex: 0
-    bTargetAssigned: 0
+  Strategy: {fileID: 0}
   bIsAgressive: 1
   bIsFollowing: 0
   bIsUsingNavMesh: 1
@@ -4638,6 +4542,7 @@ MonoBehaviour:
   AggroRange: 5
   DisengageRange: 10
   FollowerBoxRadius: 0
+  RandomBuffer: 0000000000000000
   CurrentOperationIndex: 0
   CurrentOperationTime: 0
   CurrentTimeOutRemaining: 0
@@ -31171,12 +31076,7 @@ MonoBehaviour:
     - Type: 2
       duration: 0
   BoundaryTransforms: []
-  Strategy:
-    GameState: {fileID: 0}
-    Character: {fileID: 0}
-    TacticSlots: []
-    CurrentlyActiveTacticIndex: 0
-    bTargetAssigned: 0
+  Strategy: {fileID: 0}
   bIsAgressive: 0
   bIsFollowing: 1
   bIsUsingNavMesh: 0
@@ -31200,6 +31100,7 @@ MonoBehaviour:
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 5
+  RandomBuffer: 0000000000000000
   CurrentOperationIndex: 0
   CurrentOperationTime: 0
   CurrentTimeOutRemaining: 0
@@ -31277,14 +31178,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
   Effects: []
   bIsPaused: 0
-  bIsAlive: 0
   bIsSpawn: 0
   bTimedSpawn: 0
+  CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  CurrentParty: {fileID: 0}
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
-  TargettedBy: []
+  CurrentAction: {fileID: 0}
   Inventory:
     Items: []
     MaxCount: 40
@@ -32624,6 +32526,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharManager: {fileID: 0}
+  MyCharacter: {fileID: 0}
   MyAnimator: {fileID: 0}
   Hands: []
   Gear: []
