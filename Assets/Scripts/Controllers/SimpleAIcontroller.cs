@@ -39,7 +39,7 @@ public class SimpleAIcontroller : CharacterController
     public bool bDebuggingDisable;
 
     [Header("don't touch dees bools...")]
-    public bool bIsAwake;
+    public bool IsAIawake;
     public bool bOperationComplete;
     public bool bSequenceComplete;
     public bool bLerping;
@@ -79,7 +79,7 @@ public class SimpleAIcontroller : CharacterController
 
     void CheckAwake()
     {
-        bIsAwake = !(GameState == null
+        IsAIawake = !(GameState == null
             || CurrentCharacter == null
             || CurrentCharacter.bIsPaused
             || (CurrentCharacter.bControllable &&
@@ -114,7 +114,7 @@ public class SimpleAIcontroller : CharacterController
         {
             bIsAggro = false;
             TargetCharacter = null;
-            ResetStaticSequence();
+            ResetPassiveSequence();
         }
         else if (!bIsAggro && Vector3.Distance(TargetCharacter.Root.position, CurrentCharacter.Root.position) < AggroRange)
             bIsAggro = true;
@@ -432,13 +432,13 @@ public class SimpleAIcontroller : CharacterController
     {
         delta = Vector3.Distance(TravelPoint, CurrentCharacter.Root.position);
     }
-    void ResetStaticSequence()
+    void ResetPassiveSequence()
     {
         CurrentOperationIndex = 0;
         bSequenceComplete = true;
         bOperationComplete = false;
     }
-    void RunSequence()
+    void RunPassiveSequence()
     {
         if (bStrategyActive
          && CurrentCharacter.CurrentTargetCharacter != null
@@ -459,12 +459,16 @@ public class SimpleAIcontroller : CharacterController
 
         UpdateSequenceIndex();
     }
+    void RunCombatTactics()
+    {
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         bDebuggingDisable = false;
-        ResetStaticSequence();
+        ResetPassiveSequence();
     }
 
     // Update is called once per frame
@@ -474,16 +478,17 @@ public class SimpleAIcontroller : CharacterController
         CheckAwake();
 
         if (bDebuggingDisable
-            || !bIsAwake
+            || !IsAIawake
             || CurrentCharacter.CheckCCstatus(CCstatus.DEAD)
             || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
+
 
         FindTarget();
         CheckAggro();
 
         if (!bIsAggro)
-            RunSequence();
+            RunPassiveSequence();
         else
             MoveAggro();
 
