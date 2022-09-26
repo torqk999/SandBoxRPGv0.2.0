@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dc893899ec9787428c4104fc49cd3f8, type: 3}
-  m_Name: GUARDED 12
+  m_Name: WEAK
   m_EditorClassIdentifier: 
   Name: 
   Sprite: {fileID: 0}

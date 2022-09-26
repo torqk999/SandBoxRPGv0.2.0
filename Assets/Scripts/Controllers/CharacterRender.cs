@@ -91,19 +91,10 @@ public enum CharAnimationState
 }
 public enum CharAnimation
 {
-    OneHandChop,
-    OneHandSlice,
-    OneHandPoke,
-    TwoHandSwordChop,
-    TwoHandSwordSlice,
-    TwoHandSwordPoke,
-    HAxeChop,
-    HAxeSlice,
-    HAxePoke,
-    BowShot,
-    XBowShot,
-    ShieldBash,
-    ShieldBlock
+  Chop,
+  Slice,
+  Poke,
+  Self
 }
 public enum AnimationTarget
 {

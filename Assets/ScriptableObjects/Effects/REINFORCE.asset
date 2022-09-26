@@ -16,9 +16,10 @@ MonoBehaviour:
   Sprite: {fileID: 0}
   Duration: 2
   Value: 4
-  Type: 1
+  Action: 3
   TargetStat: 4
-  CCstatus: 0
+  TargetElement: 0
+  TargetCCstatus: 0
   ElementPack:
     Reflection:
       PHYSICAL: 0
@@ -29,6 +30,15 @@ MonoBehaviour:
       POISON: 0
       HEALING: 0
     Elements: []
+  StatAdjustPack:
+    Stats: []
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+  EquipID: 0
   DurationLength: 0
   Timer: 0
-  bIsBuff: 0
+  bIsImmune: 0
+  bAllImmune: 0

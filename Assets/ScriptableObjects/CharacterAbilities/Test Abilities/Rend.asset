@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5400cf6a5811e9b41b7b3fd4b58f06cd, type: 3}
   m_Name: Rend
   m_EditorClassIdentifier: 
-  WeaponID: 0
+  EquipID: 0
   Name: Rend
   Sprite: {fileID: 21300000, guid: e97fbe8f0121aee418c2171b48665218, type: 3}
   bTargetEnemy: 1
@@ -22,7 +22,7 @@ MonoBehaviour:
   CostType: 1
   AbilityType: 0
   AnimationState: 0
-  CharAnimation: 0
+  CharAnimation: 1
   AnimationTarget: 0
   RangeValue: 5
   CostValue: 10

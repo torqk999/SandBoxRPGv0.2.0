@@ -10,35 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7dc893899ec9787428c4104fc49cd3f8, type: 3}
-  m_Name: ElementalBlast
+  m_Name: POISON
   m_EditorClassIdentifier: 
-  Name: Elemental Blast!
-  Sprite: {fileID: 21300000, guid: 5cd385a478da6e247b15e5441b37ef40, type: 3}
+  Name: 
+  Sprite: {fileID: 0}
   Duration: 0
-  Value: 1
-  Action: 0
+  Value: 0
+  Type: 0
   TargetStat: 0
-  TargetElement: 0
-  TargetCCstatus: 0
+  CCstatus: 0
   ElementPack:
     Reflection:
       PHYSICAL: 0
-      FIRE: 5
-      WATER: 5
-      EARTH: 5
-      AIR: 5
-      POISON: 5
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
       HEALING: 0
     Elements: []
-  StatAdjustPack:
-    Stats: []
-    Reflection:
-      HEALTH: 0
-      STAMINA: 0
-      MANA: 0
-      SPEED: 0
-  EquipID: 0
   DurationLength: 0
   Timer: 0
-  bIsImmune: 0
-  bAllImmune: 0
+  bIsBuff: 0
