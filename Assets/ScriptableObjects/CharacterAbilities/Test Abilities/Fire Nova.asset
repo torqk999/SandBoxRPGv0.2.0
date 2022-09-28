@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5400cf6a5811e9b41b7b3fd4b58f06cd, type: 3}
+  m_Name: Fire Nova
+  m_EditorClassIdentifier: 
+  EquipID: 0
+  Name: ArcaneNova
+  Sprite: {fileID: 21300000, guid: 7236b740d5139d9418a0bbc946ee200e, type: 3}
+  bIsPassive: 0
+  Target: 2
+  RangeType: 3
+  CostTarget: 2
+  CostType: 4
+  AbilityType: 1
+  AnimationState: 0
+  CharAnimation: 1
+  AnimationTarget: 0
+  RangeValue: 5
+  CostValue: 10
+  CD_Duration: 3
+  CD_Timer: 0
+  Effects:
+  - {fileID: 11400000, guid: 84add48f029ae004b80d25e902f4d087, type: 2}
