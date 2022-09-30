@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bTacticEnabled: 0
   Relation: 2
-  Ability: {fileID: 0}
+  Ability: {fileID: 11400000, guid: 8191931c0782a04498b0763c65f392bb, type: 2}
   Type: 1
   Target: {fileID: 0}

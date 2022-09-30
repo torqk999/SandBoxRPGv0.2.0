@@ -92,7 +92,8 @@ public class Character : Pawn, Interaction
 
     public void UpdateAbilites()
     {
-        UpdateAbilitySlots();
+        List<int> nullEquips = UpdateEquipSlots();
+        UpdateAbilitySlots(nullEquips);
         UpdateAbilityList();
     }
     public void InitializeCharacter()
@@ -218,16 +219,20 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region ABILITIES
-    void UpdateAbilitySlots()
+    void UpdateAbilitySlots(List<int> equipIDs)
+    {
+        for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
+            if (AbilitySlots[i] != null && equipIDs.FindIndex(x => x == AbilitySlots[i].EquipID) < 0)
+                AbilitySlots[i] = null;
+    }
+    List<int> UpdateEquipSlots()
     {
         List<int> equipIDs = new List<int>();
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
             if (EquipmentSlots[i] != null)
                 equipIDs.Add(EquipmentSlots[i].ItemID);
 
-        for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
-            if (AbilitySlots[i] != null && equipIDs.FindIndex(x => x == AbilitySlots[i].EquipID) < 0)
-                AbilitySlots[i] = null;
+        return equipIDs;
     }
     void UpdateAbilityList()
     {
@@ -259,7 +264,7 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region EQUIPPING
-    public bool EquipSelection(int equipIndex, int ringIndex, int inventoryIndex)
+    public bool InventoryEquipSelection(int equipIndex, int ringIndex, int inventoryIndex)
     {
         if (equipIndex != -1)
             return AttemptEquipRemoval(EquipmentSlots, equipIndex);
@@ -278,30 +283,30 @@ public class Character : Pawn, Interaction
             {
                 //if (equip is WearableWrapper)
                 case WearableWrapper:
-                return EquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
+                return InventoryEquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
 
                 //if (equip is RingWrapper)
                 case RingWrapper:
-                return EquipRing(inventoryIndex);
+                return InventoryEquipRing(inventoryIndex);
 
                 //if (equip is TwoHandWrapper)
                 case TwoHandWrapper:
-                return EquipTwoHand(inventoryIndex);
+                return InventoryEquipTwoHand(inventoryIndex);
 
                 //if (equip is OneHandWrapper)
                 case OneHandWrapper:
-                return EquipOneHand(inventoryIndex);
+                return InventoryEquipOneHand(inventoryIndex);
 
                 //if (equip is OffHandWrapper)
                 case OffHandWrapper:
-                return EquipOneHand(inventoryIndex, false);
+                return InventoryEquipOneHand(inventoryIndex, false);
             }
         }
 
         Debug.Log("How did you get here? >.>");
         return false;
     }
-    bool EquipWear(EquipSlot equipSlot, int inventoryIndex)
+    public bool InventoryEquipWear(EquipSlot equipSlot, int inventoryIndex)
     {
         //int equipIndex = (int)equipSlot;
 
@@ -316,7 +321,7 @@ public class Character : Pawn, Interaction
             (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)equipSlot], inventoryIndex);
         return true;
     }
-    bool EquipOneHand(int inventoryIndex, bool main = true)
+    public bool InventoryEquipOneHand(int inventoryIndex, bool main = true)
     {
         int IND = main ? (int)EquipSlot.MAIN : (int)EquipSlot.OFF;
         int ind = main ? (int)EquipSlot.OFF : (int)EquipSlot.MAIN;
@@ -336,7 +341,7 @@ public class Character : Pawn, Interaction
         
         return false;
     }
-    bool EquipTwoHand(int inventoryIndex)
+    public bool InventoryEquipTwoHand(int inventoryIndex)
     {
         if (EquipmentSlots[(int)EquipSlot.MAIN] == null && EquipmentSlots[(int)EquipSlot.OFF] == null) // none occupied
         {
@@ -375,7 +380,7 @@ public class Character : Pawn, Interaction
         Debug.Log("How did you get here? >.>");
         return false;
     }
-    bool EquipRing(int inventoryIndex)
+    public bool InventoryEquipRing(int inventoryIndex)
     {
         for (int i = 0; i < CharacterMath.RING_SLOT_COUNT;i++)
         {
@@ -389,7 +394,7 @@ public class Character : Pawn, Interaction
         RingSlots[0] = (RingWrapper)Inventory.SwapItemSlots(RingSlots[0], inventoryIndex); // Default first index of rings
         return true;
     }
-    bool AttemptEquipRemoval(EquipWrapper[] slotList, int equipIndex)
+    public bool AttemptEquipRemoval(EquipWrapper[] slotList, int equipIndex)
     {
         if (slotList == null ||
             slotList.Length == 0)

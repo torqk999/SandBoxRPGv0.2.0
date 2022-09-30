@@ -3278,17 +3278,7 @@ MonoBehaviour:
     Items: []
     MaxCount: 0
   CharacterCanvas: {fileID: 0}
-  AbilitySlots:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  AbilitySlots: []
   EquipmentSlots: []
   RingSlots: []
   InteractionCount: 0

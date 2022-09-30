@@ -271,7 +271,7 @@ public class CharacterManager : MonoBehaviour
 
         return newParty;
     }
-    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null, int index = -1, bool fresh = true)
+    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null, Wardrobe wardrobe = null, int index = -1, bool fresh = true)
     {
         Character newCharacter = (Character)GameState.PawnMan.PawnGeneration(prefab, party.transform, spawnTransform);
         if (newCharacter == null)
@@ -287,10 +287,18 @@ public class CharacterManager : MonoBehaviour
         SetupCharacterCanvas(newCharacter);
         SetupCharacter(newCharacter, party);
 
+        if (wardrobe != null)
+            GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
+
         CharacterPool.Add(newCharacter);
 
         return newCharacter;
     }
+    void EquipWardobe(Character character, Wardrobe wardrobe)
+    {
+
+    }
+
     void SetupCharacterCanvas(Character character)
     {
         if (CharCanvasPrefab == null)
@@ -318,7 +326,6 @@ public class CharacterManager : MonoBehaviour
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
 
         // Initialize
-        //character.bIsAlive = true;
         character.InitializeCharacter();
     }
     void SetupSheet(Character character, Character source, int index, bool fresh)

@@ -47,18 +47,17 @@ public class Strategy : MonoBehaviour
             if (!TacticSlots[i].bTacticEnabled)
                 continue;
 
+            Character.CurrentAction = ReturnComparableAbility(TacticSlots[i].Ability);
+
+            if (Character.CurrentAction == null)
+                continue;
+
             if (!CheckTacticConditions(TacticSlots[i])) // <<< Target Assignment
                 continue;
 
-            Character.CurrentAction = TacticSlots[i].Ability; // <<< Ability Assignment
             return;
         }
         Character.CurrentAction = null;
-    }
-    bool CheckTacticAbility(Tactic tactic)
-    {
-        //tactic.Ability
-        return false;
     }
     CharacterAbility ReturnComparableAbility(CharacterAbility source)
     {
@@ -69,13 +68,54 @@ public class Strategy : MonoBehaviour
 
             foreach (Effect effect in source.Effects) // Check for atleast one matching effect
             {
-                //if (Array.Find(ability.Effects, x => x.Action == effect.Action))
+                if (CheckForComparableEffect(ability, effect))
+                    return ability;
             }
         }
         return null;
     }
-    bool CheckForComparableEffect(CharacterAbility target, CharacterAbility source)
+    bool CheckForComparableEffect(CharacterAbility target, Effect source)
     {
+        Effect effect = Array.Find(target.Effects, x => x.Action == source.Action);
+        if (effect == null)
+            return false;
+
+        switch(effect.Action)
+        {
+            case EffectAction.DMG_HEAL:
+                if (effect.Duration != source.Duration
+                 || effect.TargetStat != source.TargetStat
+                 || effect.Value != source.Value)
+                    return false;
+                return true;
+
+            case EffectAction.SPAWN:
+                return true;
+
+            case EffectAction.CLEANSE:
+                if (effect.TargetCCstatus != source.TargetCCstatus)
+                    return false;
+                return true;
+
+            case EffectAction.CROWD_CONTROL:
+                if (effect.TargetCCstatus != source.TargetCCstatus)
+                    return false;
+                return true;
+
+            case EffectAction.RES_ADJ:
+                if (effect.Duration != source.Duration
+                 || effect.TargetElement != source.TargetElement
+                 || effect.Value != source.Value)
+                    return false;
+                return true;
+
+            case EffectAction.STAT_ADJ:
+                if (effect.Duration != source.Duration
+                 || effect.TargetStat != source.TargetStat
+                 || effect.Value != source.Value)
+                    return false;
+                return true;
+        }
         return false;
     }
     bool CheckTacticConditions(Tactic tactic)

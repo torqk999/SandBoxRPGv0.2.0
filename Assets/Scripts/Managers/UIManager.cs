@@ -318,7 +318,7 @@ public class UIManager : MonoBehaviour
     }
     public void EquipSelection()
     {
-        if (!GameState.pController.CurrentCharacter.EquipSelection(SelectedEquipSlot, SelectedRingSlot, InventoryListSelection))
+        if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(SelectedEquipSlot, SelectedRingSlot, InventoryListSelection))
             return;
 
         GameState.pController.CurrentCharacter.UpdateAbilites();

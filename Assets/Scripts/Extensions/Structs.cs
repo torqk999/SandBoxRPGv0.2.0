@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 
 // Enums
+public enum ClassType
+{
+    WARRIOR,
+    MAGE,
+    ROGUE
+}
 public enum EffectDuration
 {
     ONCE,

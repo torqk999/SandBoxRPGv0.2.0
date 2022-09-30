@@ -6,6 +6,7 @@ public class Equipment : ItemObject
 {
     [Header("Equipment Properties")]
     public SkillType EquipSkill;
+    public ClassType ClassType;
     public int EquipLevel;
     public int EquipID;
     public CharacterAbility[] EquipAbilities;
@@ -15,6 +16,7 @@ public class Equipment : ItemObject
         Equipment newEquip = (Equipment)CloneItem(instanceType);
 
         newEquip.EquipSkill = EquipSkill;
+        newEquip.ClassType = ClassType;
         newEquip.EquipLevel = EquipLevel;
         newEquip.EquipID = equipId;
 

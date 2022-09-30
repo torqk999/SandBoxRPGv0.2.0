@@ -28,4 +28,5 @@ MonoBehaviour:
   CostValue: 10
   CD_Duration: 3
   CD_Timer: 0
-  Effects: []
+  Effects:
+  - {fileID: 11400000, guid: bb217b624dafd5a40bafec9104f73818, type: 2}
