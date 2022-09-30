@@ -44,6 +44,7 @@ public class Wardrobe : ScriptableObject
             AttemptCloneAndEquipHand(character, MyOffHand, ref equipId);
         }
 
+        character.UpdateAbilites();
         return equipId;
     }
     void AttemptCloneAndEquipRing(Character character, Ring ring, int slotIndex, ref int equipId)

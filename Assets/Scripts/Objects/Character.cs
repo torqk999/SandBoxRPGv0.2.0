@@ -92,9 +92,8 @@ public class Character : Pawn, Interaction
 
     public void UpdateAbilites()
     {
-        List<int> nullEquips = UpdateEquipSlots();
-        UpdateAbilitySlots(nullEquips);
         UpdateAbilityList();
+        UpdateAbilitySlots();
     }
     public void InitializeCharacter()
     {
@@ -219,20 +218,11 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region ABILITIES
-    void UpdateAbilitySlots(List<int> equipIDs)
+    void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
-            if (AbilitySlots[i] != null && equipIDs.FindIndex(x => x == AbilitySlots[i].EquipID) < 0)
+            if (AbilitySlots[i] != null && Abilities.FindIndex(x => x.EquipID == AbilitySlots[i].EquipID) < 0)
                 AbilitySlots[i] = null;
-    }
-    List<int> UpdateEquipSlots()
-    {
-        List<int> equipIDs = new List<int>();
-        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
-            if (EquipmentSlots[i] != null)
-                equipIDs.Add(EquipmentSlots[i].ItemID);
-
-        return equipIDs;
     }
     void UpdateAbilityList()
     {
@@ -702,7 +692,8 @@ public class Character : Pawn, Interaction
             Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
             Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
             return;
-        }
+        }         
+        
         Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
         Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
