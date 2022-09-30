@@ -10,6 +10,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public GameObject MobPrefab;
     public Transform MobFolder;
     public GenericContainer LootBox;
+    public Wardrobe CloneWardrobe;
 
     public List<SimpleAIcontroller> myAIpool = new List<SimpleAIcontroller>();
     public List<Stackable> SampleObjects;
@@ -112,7 +113,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        GameState.CharacterMan.CreateCloneParty(MobPrefab, SpawnLocations, Faction.BADDIES);
+        GameState.CharacterMan.CreateCloneParty(MobPrefab, SpawnLocations, Faction.BADDIES, CloneWardrobe);
     }
     void BuildTestWorld()
     {

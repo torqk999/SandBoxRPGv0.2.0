@@ -229,7 +229,7 @@ public class CharacterManager : MonoBehaviour
 
         Parties.Add(literalParty);
     }
-    public void CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction)
+    public void CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction, Wardrobe wardrobe)
     {
         Party cloneParty = GenerateParty(faction);
 
@@ -238,7 +238,7 @@ public class CharacterManager : MonoBehaviour
             if (!spawnPointFolder.GetChild(i).gameObject.activeSelf)
                 continue;
 
-            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i), i);
+            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i), wardrobe, i);
             if (newCharacter == null)
             {
                 Debug.Log("Clone Character generation failed");
