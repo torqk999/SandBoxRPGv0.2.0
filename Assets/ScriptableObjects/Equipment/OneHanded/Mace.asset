@@ -20,6 +20,6 @@ MonoBehaviour:
   Weight: 0
   EquipSkill: 3
   EquipLevel: 0
-  AbilityID: 0
-  EquipAbilites: []
+  EquipID: 0
+  EquipAbilities: []
   Type: 4
