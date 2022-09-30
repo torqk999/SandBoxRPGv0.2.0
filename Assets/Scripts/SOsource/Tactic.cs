@@ -16,4 +16,9 @@ public class Tactic : ScriptableObject
         Ability = ability;
         bTacticEnabled = enabled;
     }
+
+    public virtual void Init()
+    {
+
+    }
 }

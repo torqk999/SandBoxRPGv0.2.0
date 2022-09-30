@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -37,6 +38,52 @@ public enum CCstatus
     DRUNK,
     STUNNED
 }
+[Serializable]
+public struct CCstateReflection
+{
+    public bool DEAD;
+    public bool IMMOBILE;
+    public bool UN_ARMED;
+    public bool SILENCED;
+    public bool FEARED;
+    public bool CHARMED;
+    public bool DRUNK;
+    public bool STUNNED;
+
+    public bool Reflect(ref bool[] ccStates, bool inject = true)
+    {
+        try
+        {
+            if (inject)
+            {
+                ccStates[(int)CCstatus.DEAD] = DEAD;
+                ccStates[(int)CCstatus.IMMOBILE] = IMMOBILE;
+                ccStates[(int)CCstatus.UN_ARMED] = UN_ARMED;
+                ccStates[(int)CCstatus.SILENCED] = SILENCED;
+                ccStates[(int)CCstatus.FEARED] = FEARED;
+                ccStates[(int)CCstatus.CHARMED] = CHARMED;
+                ccStates[(int)CCstatus.DRUNK] = DRUNK;
+                ccStates[(int)CCstatus.STUNNED] = STUNNED;
+            }
+            else
+            {
+                DEAD = ccStates[(int)CCstatus.DEAD];
+                IMMOBILE = ccStates[(int)CCstatus.IMMOBILE];
+                UN_ARMED = ccStates[(int)CCstatus.UN_ARMED];
+                SILENCED = ccStates[(int)CCstatus.SILENCED];
+                FEARED = ccStates[(int)CCstatus.FEARED];
+                CHARMED = ccStates[(int)CCstatus.CHARMED];
+                DRUNK = ccStates[(int)CCstatus.DRUNK];
+                STUNNED = ccStates[(int)CCstatus.STUNNED];
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
 public enum SkillType
 {
     LIGHT,
@@ -56,7 +103,7 @@ public enum RawStat
     MANA,
     SPEED,
 }
-[System.Serializable]
+[Serializable]
 public struct StatReflection
 {
     public float HEALTH;
@@ -90,7 +137,7 @@ public struct StatReflection
         }
     }
 }
-[System.Serializable]
+[Serializable]
 public struct StatPackage
 {
     public float[] Stats;
@@ -123,7 +170,7 @@ public enum Element
     POISON,
     HEALING
 }
-[System.Serializable]
+[Serializable]
 public struct ElementReflection
 {
     public float PHYSICAL;
@@ -166,7 +213,7 @@ public struct ElementReflection
         }
     }
 }
-[System.Serializable]
+[Serializable]
 public struct ElementPackage
 {
     public ElementReflection Reflection;
@@ -192,7 +239,7 @@ public struct ElementPackage
             Elements[i] *= amp;
     }
 }
-[System.Serializable]
+[Serializable]
 public struct EXPpackage
 {
     public float[] Experience;
@@ -201,7 +248,7 @@ public struct EXPpackage
         Experience = new float[count];
     }
 }
-[System.Serializable]
+[Serializable]
 public struct LVLpackage
 {
     public int[] Levels;
@@ -210,7 +257,7 @@ public struct LVLpackage
         Levels = new int[count];
     }
 }
-[System.Serializable]
+[Serializable]
 public class InteractData
 {
     public TriggerType Type;

@@ -326,8 +326,6 @@ public class CharacterManager : MonoBehaviour
         if (source == null)
             return;
 
-        //Debug.Log($"sourceSheetName: {source.Sheet.Name}");
-
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
         if (source != null && source.Sheet != null)
@@ -347,12 +345,12 @@ public class CharacterManager : MonoBehaviour
 
         SimpleAIcontroller newAI = newCharacter.gameObject.GetComponent<SimpleAIcontroller>();
         SimpleAIpathingController newPathing = newCharacter.gameObject.GetComponent<SimpleAIpathingController>();
-        //Strategy newStrategy = newCharacter.gameObject.GetComponent<Strategy>();
+        Strategy newStrat = newCharacter.gameObject.GetComponent<Strategy>();
 
         if (newAI != null)
         {
             newAI.GameState = GameState;
-            newAI.Strategy = new Strategy(newCharacter); // Simple solution for now, will need presets
+            
             newAI.CurrentCharacter = newCharacter;
             newAI.IsAIawake = bAwake;
 
@@ -361,6 +359,13 @@ public class CharacterManager : MonoBehaviour
                 newPathing.GameState = GameState;
                 newAI.Pathing = newPathing;
                 newAI.Pathing.myAI = newAI;
+            }
+
+            if (newStrat != null)
+            {
+                newAI.Strategy = newStrat;
+                newStrat.GameState = GameState;
+                newStrat.Character = newCharacter;
             }
         }
     }

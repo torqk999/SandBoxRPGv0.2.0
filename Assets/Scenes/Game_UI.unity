@@ -1737,14 +1737,15 @@ MonoBehaviour:
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
-  bIsAggro: 0
+  State: 0
+  oldState: 0
   bNavPointReached: 0
   TotalOperationTime: 0
   TargetTimeOutThreshold: 0
   TargetArrivalThreshold: 0
   AIwalkForce: 0
   AIturnRate: 0
-  TargetMaintainRange: 0
+  AbilityRangeScalar: 0
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 0
@@ -3160,6 +3161,7 @@ GameObject:
   - component: {fileID: 234244374}
   - component: {fileID: 234244378}
   - component: {fileID: 234244379}
+  - component: {fileID: 234244380}
   m_Layer: 6
   m_Name: Mob1
   m_TagString: TRIGGER
@@ -3403,16 +3405,17 @@ MonoBehaviour:
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
-  bIsAggro: 0
+  State: 0
+  oldState: 0
   bNavPointReached: 0
   TotalOperationTime: 0
   TargetTimeOutThreshold: 2
   TargetArrivalThreshold: 0.2
   AIwalkForce: 2
   AIturnRate: 0.01
-  TargetMaintainRange: 2
-  AggroRange: 5
-  DisengageRange: 10
+  AbilityRangeScalar: 0
+  AggroRange: 10
+  DisengageRange: 30
   FollowerBoxRadius: 0
   RandomBuffer: 0000000000000000
   CurrentOperationIndex: 0
@@ -3460,6 +3463,22 @@ MonoBehaviour:
   CurrentPathIndex: 0
   EndCoord: 0000000000000000
   StartCoord: 0000000000000000
+--- !u!114 &234244380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234244371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756703e29d7922741baf4e3db8de771c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameState: {fileID: 0}
+  Character: {fileID: 0}
+  TacticSlots:
+  - {fileID: 11400000, guid: ab7b82c859cba26448a0f90815af89fc, type: 2}
 --- !u!1 &238540833
 GameObject:
   m_ObjectHideFlags: 0
@@ -12862,14 +12881,15 @@ MonoBehaviour:
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
-  bIsAggro: 0
+  State: 0
+  oldState: 0
   bNavPointReached: 0
   TotalOperationTime: 0
   TargetTimeOutThreshold: 0
   TargetArrivalThreshold: 0
   AIwalkForce: 0
   AIturnRate: 0
-  TargetMaintainRange: 0
+  AbilityRangeScalar: 0
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 0
@@ -23839,14 +23859,15 @@ MonoBehaviour:
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
-  bIsAggro: 0
+  State: 0
+  oldState: 0
   bNavPointReached: 0
   TotalOperationTime: 0
   TargetTimeOutThreshold: 0
   TargetArrivalThreshold: 1.5
   AIwalkForce: 4
   AIturnRate: 0
-  TargetMaintainRange: 0
+  AbilityRangeScalar: 0
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 5

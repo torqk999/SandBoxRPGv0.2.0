@@ -51,9 +51,32 @@ public class Strategy : MonoBehaviour
                 continue;
 
             Character.CurrentAction = TacticSlots[i].Ability; // <<< Ability Assignment
-            break;
+            return;
         }
         Character.CurrentAction = null;
+    }
+    bool CheckTacticAbility(Tactic tactic)
+    {
+        //tactic.Ability
+        return false;
+    }
+    CharacterAbility ReturnComparableAbility(CharacterAbility source)
+    {
+        foreach (CharacterAbility ability in Character.Abilities) // Check all abilities
+        {
+            if (ability.AbilityType != source.AbilityType)
+                continue;
+
+            foreach (Effect effect in source.Effects) // Check for atleast one matching effect
+            {
+                //if (Array.Find(ability.Effects, x => x.Action == effect.Action))
+            }
+        }
+        return null;
+    }
+    bool CheckForComparableEffect(CharacterAbility target, CharacterAbility source)
+    {
+        return false;
     }
     bool CheckTacticConditions(Tactic tactic)
     {
@@ -243,7 +266,13 @@ public class Strategy : MonoBehaviour
 
     private void Start()
     {
-        
+        foreach(Tactic tac in TacticSlots)
+        {
+            if (tac != null)
+            {
+                tac.Init();
+            }
+        }
     }
     private void Update()
     {
