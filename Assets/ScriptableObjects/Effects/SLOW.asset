@@ -12,11 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dc893899ec9787428c4104fc49cd3f8, type: 3}
   m_Name: SLOW
   m_EditorClassIdentifier: 
-  Name: 
-  Sprite: {fileID: 0}
+  Name: ElementalBlast
+  Sprite: {fileID: 21300000, guid: 5cd385a478da6e247b15e5441b37ef40, type: 3}
   Duration: 0
+<<<<<<< Updated upstream:Assets/ScriptableObjects/Effects/SLOW.asset
   Value: 0
   Type: 0
+=======
+  Value: 4
+  Type: 1
+>>>>>>> Stashed changes:Assets/ScriptableObjects/Effects/ElementalBlast.asset
   TargetStat: 0
   CCstatus: 0
   ElementPack:
