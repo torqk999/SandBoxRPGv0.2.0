@@ -1690,6 +1690,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RoadTerrain
       objectReference: {fileID: 0}
+    - target: {fileID: 1070795294895529402, guid: 8af42f65d9eb5624f86396ec32f87901, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1403674878562445733, guid: 8af42f65d9eb5624f86396ec32f87901, type: 3}
       propertyPath: m_RootOrder
       value: 2

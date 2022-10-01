@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public enum AIstate
@@ -120,6 +121,7 @@ public class SimpleAIcontroller : CharacterController
 
         if (State == AIstate.AGGRO && !CheckAggroRange())
         {
+            Debug.Log("De-Aggro");
             State = oldState;
             //bIsAggro = false;
             TargetCharacter = null;
@@ -127,22 +129,23 @@ public class SimpleAIcontroller : CharacterController
         }
         else if (State != AIstate.AGGRO && CheckAggroRange())
         {
+            Debug.Log("Aggro");
             oldState = State;
             State = AIstate.AGGRO;
         } //bIsAggro = true;
     }
     bool CheckAggroRange()
     {
-        bool aggro = false;
         foreach (Character enemy in CurrentCharacter.CurrentParty.Foes)
         {
             if (Vector3.Distance(enemy.Root.position, CurrentCharacter.Root.position) < AggroRange)
                 return true;
 
-            if (Vector3.Distance(enemy.Root.position, CurrentCharacter.Root.position) < DisengageRange)
-                aggro = true;
+            if (State == AIstate.AGGRO &&
+                Vector3.Distance(enemy.Root.position, CurrentCharacter.Root.position) < DisengageRange)
+                return true;
         }
-        return aggro;
+        return false;
     }
     bool CheckAbilityRange()
     {
@@ -214,10 +217,11 @@ public class SimpleAIcontroller : CharacterController
     void GenerateNewRandomPath()
     {
         if (Pathing == null ||
+            !bIsUsingNavMesh ||
             GameState.NavMesh.NavNodes.Length == 0)
             return;
 
-        if (!bSequenceComplete || !bIsUsingNavMesh)
+        if (!bSequenceComplete)
             return;
 
         if (CheckAbilityRange())
@@ -261,7 +265,7 @@ public class SimpleAIcontroller : CharacterController
                 break;
         }
 
-        if (!Pathing.RequestNextTravelPoint(out TravelPoint))
+        if (!Pathing.RequestNextTravelPoint(ref TravelPoint))
         {
             Debug.Log("Failed to request first point!");
             return;
@@ -417,7 +421,8 @@ public class SimpleAIcontroller : CharacterController
             CurrentTimeOutRemaining = TargetTimeOutThreshold;
             rigidBody.velocity = Vector3.zero;
             //Debug.Log("Reached the navPoint!");
-            bMoving = Pathing.RequestNextTravelPoint(out TravelPoint);
+            bMoving = Pathing.RequestNextTravelPoint(ref TravelPoint);
+            bOperationComplete = !bMoving;
         }
 
         if (CheckAbilityRange())
@@ -429,14 +434,21 @@ public class SimpleAIcontroller : CharacterController
         CurrentTimeOutRemaining -= GlobalConstants.TIME_SCALE;
         if (CurrentTimeOutRemaining <= 0)
         {
-            bMoving = Pathing.Repath(CurrentCharacter.Root.position) &&
-                Pathing.RequestNextTravelPoint(out TravelPoint);
-
-            //bDebuggingDisable = true;
-            CurrentTimeOutRemaining = TargetTimeOutThreshold;
+            if (!Pathing.Repath(CurrentCharacter.Root.position))
+            {
+                bSequenceComplete = true;
+                bOperationComplete = true;
+                bMoving = false;
+            }
+            else
+            {
+                bMoving = Pathing.RequestNextTravelPoint(ref TravelPoint);
+                bOperationComplete = !bMoving;
+                CurrentTimeOutRemaining = TargetTimeOutThreshold;
+            }  
         }
 
-        bOperationComplete = !bMoving;
+        
         IntentVector.z = bMoving ? 1 : 0;
     }
     float GenerateBearingTurnMagnitude(float currentBearing, float newBearing)
@@ -483,10 +495,6 @@ public class SimpleAIcontroller : CharacterController
         CommenceOperation();
         Lerping();
         UpdateSequenceIndex();
-    }
-    void RunCombatTactics()
-    {
-        
     }
 
     // Start is called before the first frame update
