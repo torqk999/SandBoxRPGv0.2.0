@@ -45,6 +45,7 @@ public class PawnManager : MonoBehaviour
         newPawnObject.transform.parent = targetFolder;
 
         currentPawn.GameState = GameState;
+        currentPawn.Collider = newPawnObject.GetComponent<Collider>();
         currentPawn.DefPos = newPawnObject.transform.position;
         currentPawn.DefRot = newPawnObject.transform.rotation.eulerAngles;
 
@@ -94,28 +95,28 @@ public class PawnManager : MonoBehaviour
     void BuildRigidBody(GameObject pawnObject, Pawn currentPawn)
     {
         Rigidbody rigidBody = pawnObject.GetComponent<Rigidbody>();
-        if (rigidBody != null)
-        {
-            currentPawn.RigidBody = rigidBody;
-            currentPawn.bUsesGravity = rigidBody.useGravity;
-            if (GameState != null)
-                GameState.RigidBodyPawns.Add(currentPawn);
-            //State.grav.Affected.Add(pawnObject);
-        }
+        if (rigidBody == null)
+            return;
+
+        currentPawn.RigidBody = rigidBody;
+        currentPawn.bUsesGravity = rigidBody.useGravity;
+        if (GameState != null)
+            GameState.RigidBodyPawns.Add(currentPawn);
     }
     void BuildTriggerVolume(GameObject pawnObject, Pawn currentPawn)
     {
-        if (currentPawn.bHasTriggerVolume && currentPawn is Character)
-        {
-            GameObject newTriggerVolume = Instantiate(TriggerVolumePrefab,
-                pawnObject.transform.position,
-                pawnObject.transform.rotation,
-                pawnObject.transform);
-            newTriggerVolume.SetActive(true);
-            newTriggerVolume.name = "TRIGGER VOLUME:" + pawnObject.name;
-            PawnTriggerVolume newTriggerScript = newTriggerVolume.GetComponent<PawnTriggerVolume>();
-            newTriggerScript.Parent = (Character)currentPawn;
-        }
+        if (!currentPawn.bHasTriggerVolume || !(currentPawn is Character))
+            return;
+
+        GameObject newTriggerVolume = Instantiate(TriggerVolumePrefab,
+            pawnObject.transform.position,
+            pawnObject.transform.rotation,
+            pawnObject.transform);
+        newTriggerVolume.SetActive(true);
+        newTriggerVolume.name = "TRIGGER VOLUME:" + pawnObject.name;
+        PawnTriggerVolume newTriggerScript = newTriggerVolume.GetComponent<PawnTriggerVolume>();
+        newTriggerScript.Parent = (Character)currentPawn;
+
     }
     void BuildCharacterBlocker(GameObject pawnObject)
     {
@@ -149,7 +150,7 @@ public class PawnManager : MonoBehaviour
     void AutoEquipAbilities(Character character)
     {
         int index = 0;
-        foreach(CharacterAbility ability in character.Abilities)
+        foreach (CharacterAbility ability in character.Abilities)
         {
             character.AbilitySlots[index] = ability;
             index++;
@@ -170,7 +171,7 @@ public class PawnManager : MonoBehaviour
     }
 
     #endregion
-    
+
     // Start is called before the first frame update
     void Start()
     {

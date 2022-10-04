@@ -48,7 +48,7 @@ public class SimpleAIcontroller : CharacterController
     [Header("don't touch dees bools...")]
     public bool IsAIawake;
     public bool bOperationComplete;
-    public bool bSequenceComplete;
+    //public bool bSequenceComplete;
     public bool bLerping;
     public bool bMoving;
     public bool bTargetArrival;
@@ -63,7 +63,7 @@ public class SimpleAIcontroller : CharacterController
     public float TargetArrivalThreshold;
     public float AIwalkForce;
     public float AIturnRate;
-    public float AbilityRangeScalar;
+    //public float AbilityRangeScalar;
     public float AggroRange;
     public float DisengageRange;
     public float FollowerBoxRadius;
@@ -152,7 +152,7 @@ public class SimpleAIcontroller : CharacterController
         return (State == AIstate.AGGRO
     && CurrentCharacter.CurrentAction != null
     && CurrentCharacter.CurrentTargetCharacter != null
-    && Vector3.Distance(CurrentCharacter.Root.position, CurrentCharacter.CurrentTargetCharacter.Root.position) <= (CurrentCharacter.CurrentAction.RangeValue * AbilityRangeScalar));
+    && Vector3.Distance(CurrentCharacter.Root.position, CurrentCharacter.CurrentTargetCharacter.Root.position) <= (CurrentCharacter.CurrentAction.RangeValue)); //* AbilityRangeScalar));
     }
     /*void MoveAggro()
     {
@@ -167,18 +167,7 @@ public class SimpleAIcontroller : CharacterController
         if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED] && Vector3.Distance(CurrentCharacter.Root.position, TargetCharacter.Root.position) > TargetMaintainRange)
             rigidBody.AddForce(CurrentCharacter.Root.forward * AIwalkForce, ForceMode.Impulse);
     }*/
-    void UpdateSequenceIndex()
-    {
-        if (!bOperationComplete)
-            return;
 
-        //Debug.Log("Updating");
-
-        CurrentOperationIndex++;
-        CurrentOperationIndex = (CurrentOperationIndex >= myStaticSequence.Operations.Length) ? 0 : CurrentOperationIndex;
-        bSequenceComplete = CurrentOperationIndex == 0;
-        bOperationComplete = CurrentOperationIndex != 0;
-    }
     /*void GenerateNewRandomRawTravelPoint()
     {
         if (!bSequenceComplete || bIsUsingNavMesh)
@@ -214,18 +203,15 @@ public class SimpleAIcontroller : CharacterController
         bSequenceComplete = false;
         bOperationComplete = true;
     }*/
-    void GenerateNewRandomPath()
+    bool GenerateNewRandomPath()
     {
         if (Pathing == null ||
             !bIsUsingNavMesh ||
             GameState.NavMesh.NavNodes.Length == 0)
-            return;
-
-        if (!bSequenceComplete)
-            return;
+            return false;
 
         if (CheckAbilityRange())
-            return;
+            return false;
 
         switch(State)
         {
@@ -235,13 +221,13 @@ public class SimpleAIcontroller : CharacterController
 
                 if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, RandomBuffer))
                 {
-                    return;
+                    return false;
                 }
                 break;
 
             case AIstate.FOLLOW:
                 if (TargetCharacter == null)
-                    return;
+                    return false;
 
                 TravelPoint.x = UnityEngine.Random.Range(FollowerBoxRadius, -FollowerBoxRadius);
                 TravelPoint.y = 0;
@@ -249,18 +235,18 @@ public class SimpleAIcontroller : CharacterController
 
                 if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, TravelPoint))
                 {
-                    return;
+                    return false;
                 }
                 break;
 
             case AIstate.AGGRO:
                 if (TargetCharacter == null)
-                    return;
+                    return false;
 
                 TravelPoint = TargetCharacter.Root.position;
                 if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, TravelPoint))
                 {
-                    return;
+                    return false;
                 }
                 break;
         }
@@ -268,32 +254,36 @@ public class SimpleAIcontroller : CharacterController
         if (!Pathing.RequestNextTravelPoint(ref TravelPoint))
         {
             Debug.Log("Failed to request first point!");
-            return;
+            return false;
         }
 
         // Target Magic Here!
 
-        CurrentTimeOutRemaining = TargetTimeOutThreshold;
-        bSequenceComplete = false;
-        bOperationComplete = true;
+        //CurrentTimeOutRemaining = TargetTimeOutThreshold;
+        //bSequenceComplete = false;
+        //bOperationComplete = true;
+        return true;
     }
-    void CommenceOperation()
+    void UpdateOperation()
     {
-        if (!bOperationComplete || bSequenceComplete)
+        if (!bOperationComplete)// || bSequenceComplete)
             return;
 
         if (myStaticSequence.Operations.Length < 1)
             return;
 
-        //Debug.Log("Commencing");
+        //Debug.Log($"{CurrentCharacter.Root.name} || OPind: {CurrentOperationIndex}");
 
         AIoperation operation = myStaticSequence.Operations[CurrentOperationIndex];
 
         switch (operation.Type)
         {
             case AIoperationType.WAIT:
+                if (!GenerateNewRandomPath())
+                    return;
                 TotalOperationTime = operation.duration;
                 CurrentOperationTime = TotalOperationTime;
+                bMoving = false;
                 bLerping = true;
                 break;
 
@@ -305,10 +295,14 @@ public class SimpleAIcontroller : CharacterController
                 break;
 
             case AIoperationType.WALK:
+                CurrentTimeOutRemaining = TargetTimeOutThreshold;
                 bMoving = true;
+                bLerping = false;
                 break;
         }
 
+        CurrentOperationIndex++;
+        CurrentOperationIndex = (CurrentOperationIndex >= myStaticSequence.Operations.Length) ? 0 : CurrentOperationIndex;
         bOperationComplete = false;
     }
     float GenerateYbearing(Vector3 source, Vector3 target) // Source ------------> Target
@@ -382,6 +376,8 @@ public class SimpleAIcontroller : CharacterController
         if (!bMoving || !bIsUsingNavMesh)
             return;
 
+        Debug.Log($"{CurrentCharacter.Root.name} is moving");
+
         Rigidbody rigidBody = CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
         if (rigidBody == null)
             return;
@@ -422,13 +418,13 @@ public class SimpleAIcontroller : CharacterController
             rigidBody.velocity = Vector3.zero;
             //Debug.Log("Reached the navPoint!");
             bMoving = Pathing.RequestNextTravelPoint(ref TravelPoint);
-            bOperationComplete = !bMoving;
+            //bOperationComplete = !bMoving;
         }
 
         if (CheckAbilityRange())
         { 
             bMoving = false;
-            bSequenceComplete = true;
+            //bOperationComplete = true;
         }
 
         CurrentTimeOutRemaining -= GlobalConstants.TIME_SCALE;
@@ -436,20 +432,24 @@ public class SimpleAIcontroller : CharacterController
         {
             if (!Pathing.Repath(CurrentCharacter.Root.position))
             {
-                bSequenceComplete = true;
-                bOperationComplete = true;
+                //bSequenceComplete = true;
+                //bOperationComplete = true;
                 bMoving = false;
             }
             else
             {
                 bMoving = Pathing.RequestNextTravelPoint(ref TravelPoint);
-                bOperationComplete = !bMoving;
+                //bOperationComplete = !bMoving;
                 CurrentTimeOutRemaining = TargetTimeOutThreshold;
             }  
         }
 
-        
+        bOperationComplete = !bMoving;
         IntentVector.z = bMoving ? 1 : 0;
+    }
+    void CollisionMoving()
+    {
+       
     }
     float GenerateBearingTurnMagnitude(float currentBearing, float newBearing)
     {
@@ -487,14 +487,13 @@ public class SimpleAIcontroller : CharacterController
     void ResetPassiveSequence()
     {
         CurrentOperationIndex = 0;
-        bSequenceComplete = true;
-        bOperationComplete = false;
+        //bSequenceComplete = true;
+        bOperationComplete = true;
     }
     void RunPassiveSequence()
     {
-        CommenceOperation();
+        UpdateOperation();
         Lerping();
-        UpdateSequenceIndex();
     }
 
     // Start is called before the first frame update
@@ -519,10 +518,20 @@ public class SimpleAIcontroller : CharacterController
 
         FindTarget();
         CheckAggro();
-        GenerateNewRandomPath();
+        //GenerateNewRandomPath();
 
-        if (State != AIstate.AGGRO)
-            RunPassiveSequence();
+        switch(State)
+        {
+            case AIstate.PASSIVE:
+            case AIstate.FOLLOW:
+                RunPassiveSequence();
+                break;
+
+            case AIstate.AGGRO:
+                break;
+        }
+        //if (State != AIstate.AGGRO)
+            
         //else
         //    RunCombatTactics();
 

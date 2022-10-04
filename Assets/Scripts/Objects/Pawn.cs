@@ -22,6 +22,7 @@ public class Pawn : MonoBehaviour
     public Transform Boom;
     public Transform Root;
     public Rigidbody RigidBody;
+    public Collider Collider;
 
     [Header("Pawn Logic")]
     public Vector3 DefPos; // Used for homeTeleport

@@ -145,7 +145,7 @@ public class SimpleAIpathingController : MonoBehaviour
         //int remaining = Path.Count - CurrentPathIndex;
         
         int targetIndex = CurrentPathIndex + range;
-        Debug.Log($"PathCount: {Path.Count} | CurrentIndex: {CurrentPathIndex} | TargetIndex {targetIndex}");
+        //Debug.Log($"PathCount: {Path.Count} | CurrentIndex: {CurrentPathIndex} | TargetIndex {targetIndex}");
         if (targetIndex >= Path.Count)
             return false;
 
@@ -176,7 +176,7 @@ public class SimpleAIpathingController : MonoBehaviour
     }
     public bool RequestNextTravelPoint(ref Vector3 travelPoint)
     {
-        Debug.Log($"Mob: {myAI.CurrentCharacter.Root.name} | CurrentPathIndex: {CurrentPathIndex}");
+        //Debug.Log($"Mob: {myAI.CurrentCharacter.Root.name} | CurrentPathIndex: {CurrentPathIndex}");
 
         if (Path.Count < 1)
             return false;
