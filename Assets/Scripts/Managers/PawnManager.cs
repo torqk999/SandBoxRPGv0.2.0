@@ -116,7 +116,6 @@ public class PawnManager : MonoBehaviour
         newTriggerVolume.name = "TRIGGER VOLUME:" + pawnObject.name;
         PawnTriggerVolume newTriggerScript = newTriggerVolume.GetComponent<PawnTriggerVolume>();
         newTriggerScript.Parent = (Character)currentPawn;
-
     }
     void BuildCharacterBlocker(GameObject pawnObject)
     {

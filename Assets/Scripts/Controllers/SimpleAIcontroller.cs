@@ -41,7 +41,7 @@ public class SimpleAIcontroller : CharacterController
     public bool bIsAgressive;
     public bool bIsFollowing;
     public bool bIsUsingNavMesh;
-    public bool bTestMotion; // ????????????
+    //public bool bTestMotion; // ????????????
     public bool bStrategyActive;
     public bool bDebuggingDisable;
 
@@ -60,10 +60,11 @@ public class SimpleAIcontroller : CharacterController
     [Header("\"You sure you know what you're doing son?\"")]
     public float TotalOperationTime;
     public float TargetTimeOutThreshold;
-    public float TargetArrivalThreshold;
+    public float TargetArrivalDistanceThreshold;
     public float AIwalkForce;
     public float AIturnRate;
-    //public float AbilityRangeScalar;
+    public float CollisionAvoidanceRange;
+    //public float CollisionAvoidanceForceScalar;
     public float AggroRange;
     public float DisengageRange;
     public float FollowerBoxRadius;
@@ -77,6 +78,7 @@ public class SimpleAIcontroller : CharacterController
     public float newRot;
     public float delta;
     public Vector3 TravelPoint;
+    //public Vector3 BufferVector;
 
     ////////////////////
     /// TEST SECTION ///
@@ -257,11 +259,6 @@ public class SimpleAIcontroller : CharacterController
             return false;
         }
 
-        // Target Magic Here!
-
-        //CurrentTimeOutRemaining = TargetTimeOutThreshold;
-        //bSequenceComplete = false;
-        //bOperationComplete = true;
         return true;
     }
     void UpdateOperation()
@@ -336,7 +333,7 @@ public class SimpleAIcontroller : CharacterController
         switch (operation.Type)
         {
             case AIoperationType.ROTATE:
-                //Debug.Log($"{CurrentCharacter.Root.name} : {CurrentCharacter.Root.position}");
+                Debug.Log($"{CurrentCharacter.Root.name} is rotating!");// : {CurrentCharacter.Root.position}");
                 Quaternion start = Quaternion.Euler(0, oldRot, 0);
                 Quaternion end = Quaternion.Euler(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0);
                 float lerp = 1 - (CurrentOperationTime / TotalOperationTime);
@@ -367,7 +364,7 @@ public class SimpleAIcontroller : CharacterController
         if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
             rigidBody.AddForce(CurrentCharacter.Root.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
 
-        bMoving = Vector3.Distance(CurrentCharacter.Root.position, target) > TargetArrivalThreshold;
+        bMoving = Vector3.Distance(CurrentCharacter.Root.position, target) > TargetArrivalDistanceThreshold;
         bOperationComplete = !bMoving;
         IntentVector.z = bMoving ? 1 : 0;
     }
@@ -376,47 +373,53 @@ public class SimpleAIcontroller : CharacterController
         if (!bMoving || !bIsUsingNavMesh)
             return;
 
-        Debug.Log($"{CurrentCharacter.Root.name} is moving");
+        //Debug.Log($"{CurrentCharacter.Root.name} is moving");
 
-        Rigidbody rigidBody = CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
-        if (rigidBody == null)
+        //Rigidbody rigidBody = CurrentCharacter.Root.gameObject.GetComponent<Rigidbody>();
+        if (CurrentCharacter.RigidBody == null)
             return;
 
-        Vector3 newVector = rigidBody.transform.rotation.eulerAngles;
+        Vector3 newVector = CurrentCharacter.Root.transform.rotation.eulerAngles;
 
-        if (bTestMotion)
+        //if (bTestMotion)
         {
             float newBearing = GenerateYbearing(CurrentCharacter.Root.position, TravelPoint);
-            float currentBearing = rigidBody.transform.rotation.eulerAngles.y;
+
+            Debug.Log($"{CurrentCharacter.Root.name} || newBearing: {newBearing} || TravelPoint: {TravelPoint}");
+            float currentBearing = CurrentCharacter.Root.transform.rotation.eulerAngles.y;
 
             newVector.y = newBearing;
 
-            rigidBody.transform.rotation = Quaternion.Lerp(rigidBody.transform.rotation, Quaternion.Euler(newVector), AIturnRate);
+            CurrentCharacter.Root.transform.rotation = Quaternion.Lerp(CurrentCharacter.Root.transform.rotation, Quaternion.Euler(newVector), AIturnRate);
 
             float magnitude = GenerateBearingTurnMagnitude(currentBearing, newBearing);
 
             float turningFactor = (180 - magnitude) / 180;
-            Vector3 newDirection = TravelPoint - rigidBody.position;
+            Vector3 newDirection = TravelPoint - CurrentCharacter.Root.position;
 
-            if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
-                rigidBody.AddForce(newDirection * (turningFactor * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED]))), ForceMode.Impulse);
+            // Hope //
+            CollisionVectorAdjust(ref newDirection, GameState.CharacterMan.CharacterPool);
+            //////////
+
+            if (CurrentCharacter.RigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
+                CurrentCharacter.RigidBody.AddForce(newDirection * (turningFactor * (1 - (CurrentCharacter.RigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED]))), ForceMode.Impulse);
         }
-        else
+        /*else
         {
             newVector.y = GenerateYbearing(CurrentCharacter.Root.position, TravelPoint);
             rigidBody.transform.rotation = Quaternion.Euler(newVector);
 
             if (rigidBody.velocity.magnitude <= CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])
                 rigidBody.AddForce(CurrentCharacter.Root.forward * AIwalkForce * (1 - (rigidBody.velocity.magnitude / CurrentCharacter.MaximumStatValues.Stats[(int)RawStat.SPEED])), ForceMode.Impulse);
-        }
+        }*/
 
-        bNavPointReached = Vector3.Distance(CurrentCharacter.Root.position, TravelPoint) < TargetArrivalThreshold;
+        bNavPointReached = Vector3.Distance(CurrentCharacter.Root.position, TravelPoint) < TargetArrivalDistanceThreshold;
 
         if (bNavPointReached)
         {
             CurrentTimeOutRemaining = TargetTimeOutThreshold;
-            rigidBody.velocity = Vector3.zero;
-            //Debug.Log("Reached the navPoint!");
+            //CurrentCharacter.RigidBody.velocity = Vector3.zero;
+            Debug.Log($"{CurrentCharacter.Root.name} Reached the navPoint!");
             bMoving = Pathing.RequestNextTravelPoint(ref TravelPoint);
             //bOperationComplete = !bMoving;
         }
@@ -447,9 +450,27 @@ public class SimpleAIcontroller : CharacterController
         bOperationComplete = !bMoving;
         IntentVector.z = bMoving ? 1 : 0;
     }
-    void CollisionMoving()
+    void CollisionVectorAdjust(ref Vector3 init, List<Character> pool)
     {
-       
+        Vector3 bufferVector = Vector3.zero;
+        Vector3 initNorm = Vector3.Normalize(init);
+        float initMag = Vector3.Distance(init, Vector3.zero);
+
+        foreach(Character character in pool)
+        {
+            float colMag = Vector3.Distance(CurrentCharacter.Root.position , character.Root.position);
+            if (colMag > CollisionAvoidanceRange)
+                continue;
+
+            Vector3 colNorm = Vector3.Normalize(CurrentCharacter.Root.position - character.Root.position);
+            Vector3 colFinal = AIwalkForce * (1 - (colMag / CollisionAvoidanceRange)) * colNorm;
+            bufferVector += colFinal;
+        }
+
+        float colFinalMag = Vector3.Distance(bufferVector, Vector3.zero);
+        float blah = 2;
+        init = (((1 - (colFinalMag / (colFinalMag + blah))) * initMag) * initNorm) + bufferVector;
+        Debug.Log($"{CurrentCharacter.Root.name} || finalVector: {init} || bufferVector: {bufferVector}");
     }
     float GenerateBearingTurnMagnitude(float currentBearing, float newBearing)
     {
