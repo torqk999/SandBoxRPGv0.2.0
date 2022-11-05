@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ac740ac8fcfec84181c300c7e49bc86, type: 3}
   m_Name: FloatTactic
   m_EditorClassIdentifier: 
-  bTacticEnabled: 0
-  Relation: 0
+  bTacticEnabled: 1
+  Relation: 1
   Ability: {fileID: 0}
   Type: 0
   TargetStat: 0
   TargetElement: 0
-  GTE_LT: 0
+  GTE_LT: 1
   Relative: 0
-  Value: 0
+  Value: 25

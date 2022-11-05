@@ -1010,7 +1010,7 @@ MonoBehaviour:
   TriggerVolumePrefab: {fileID: 92358842}
   CharacterBlockerPrefab: {fileID: 500085282}
   CharacterCanvasPrefab: {fileID: 0}
-  BoomOffset: {x: 0, y: 0, z: 0}
+  BoomOffset: {x: 0, y: 1, z: 0}
   PlayerPawns: []
 --- !u!4 &77159615
 Transform:
@@ -1521,7 +1521,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 109683109}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.94, y: 45.259, z: 219.79}
+  m_LocalPosition: {x: 0, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1551,6 +1551,7 @@ MonoBehaviour:
   Boom: {fileID: 0}
   Root: {fileID: 0}
   RigidBody: {fileID: 0}
+  Collider: {fileID: 0}
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 30, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
@@ -1728,12 +1729,10 @@ MonoBehaviour:
   bIsAgressive: 0
   bIsFollowing: 1
   bIsUsingNavMesh: 0
-  bTestMotion: 0
   bStrategyActive: 0
   bDebuggingDisable: 0
   IsAIawake: 0
   bOperationComplete: 0
-  bSequenceComplete: 0
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
@@ -1742,10 +1741,10 @@ MonoBehaviour:
   bNavPointReached: 0
   TotalOperationTime: 0
   TargetTimeOutThreshold: 0
-  TargetArrivalThreshold: 0
+  TargetArrivalDistanceThreshold: 0
   AIwalkForce: 0
   AIturnRate: 0
-  AbilityRangeScalar: 0
+  CollisionAvoidanceRange: 0
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 0
@@ -3222,6 +3221,7 @@ MonoBehaviour:
   Boom: {fileID: 0}
   Root: {fileID: 0}
   RigidBody: {fileID: 0}
+  Collider: {fileID: 0}
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 0, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
@@ -3308,7 +3308,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234244371}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3374,9 +3374,9 @@ MonoBehaviour:
   myStaticSequence:
     Operations:
     - Type: 0
-      duration: 3
+      duration: 0.5
     - Type: 1
-      duration: 3
+      duration: 1
     - Type: 2
       duration: 0
   BoundaryTransforms:
@@ -3386,12 +3386,10 @@ MonoBehaviour:
   bIsAgressive: 0
   bIsFollowing: 0
   bIsUsingNavMesh: 1
-  bTestMotion: 1
   bStrategyActive: 0
   bDebuggingDisable: 0
   IsAIawake: 0
   bOperationComplete: 0
-  bSequenceComplete: 0
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
@@ -3399,11 +3397,11 @@ MonoBehaviour:
   oldState: 0
   bNavPointReached: 0
   TotalOperationTime: 0
-  TargetTimeOutThreshold: 2
-  TargetArrivalThreshold: 0.2
+  TargetTimeOutThreshold: 1
+  TargetArrivalDistanceThreshold: 0.5
   AIwalkForce: 2
   AIturnRate: 0.01
-  AbilityRangeScalar: 0
+  CollisionAvoidanceRange: 2
   AggroRange: 10
   DisengageRange: 30
   FollowerBoxRadius: 0
@@ -5780,9 +5778,9 @@ RectTransform:
   m_Father: {fileID: 1848762254}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 11.666666, y: -55}
   m_SizeDelta: {x: 15, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &438920720
@@ -11677,6 +11675,7 @@ MonoBehaviour:
   Boom: {fileID: 0}
   Root: {fileID: 0}
   RigidBody: {fileID: 0}
+  Collider: {fileID: 0}
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 0, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
@@ -12862,12 +12861,10 @@ MonoBehaviour:
   bIsAgressive: 0
   bIsFollowing: 0
   bIsUsingNavMesh: 0
-  bTestMotion: 0
   bStrategyActive: 0
   bDebuggingDisable: 0
   IsAIawake: 0
   bOperationComplete: 0
-  bSequenceComplete: 0
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
@@ -12876,10 +12873,10 @@ MonoBehaviour:
   bNavPointReached: 0
   TotalOperationTime: 0
   TargetTimeOutThreshold: 0
-  TargetArrivalThreshold: 0
+  TargetArrivalDistanceThreshold: 0
   AIwalkForce: 0
   AIturnRate: 0
-  AbilityRangeScalar: 0
+  CollisionAvoidanceRange: 0
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 0
@@ -12909,6 +12906,7 @@ MonoBehaviour:
   MobPrefab: {fileID: 234244371}
   MobFolder: {fileID: 814169861}
   LootBox: {fileID: 1727547780}
+  CloneWardrobe: {fileID: 0}
   myAIpool: []
   SampleObjects:
   - {fileID: 11400000, guid: b08c981076332594a9cc282f96607025, type: 2}
@@ -18229,6 +18227,7 @@ MonoBehaviour:
   Boom: {fileID: 0}
   Root: {fileID: 0}
   RigidBody: {fileID: 0}
+  Collider: {fileID: 0}
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 0, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
@@ -18747,9 +18746,9 @@ RectTransform:
   m_Father: {fileID: 1848762254}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 35, y: -55}
   m_SizeDelta: {x: 15, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1561399610
@@ -20185,9 +20184,9 @@ RectTransform:
   m_Father: {fileID: 1848762254}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 58.33333, y: -55}
   m_SizeDelta: {x: 15, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1654780194
@@ -22545,7 +22544,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1820977877}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -36.8, y: 46.92, z: 279.4}
+  m_LocalPosition: {x: 0, y: 1.42, z: -10.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -23799,7 +23798,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1879192410}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23840,12 +23839,10 @@ MonoBehaviour:
   bIsAgressive: 0
   bIsFollowing: 1
   bIsUsingNavMesh: 0
-  bTestMotion: 0
   bStrategyActive: 0
   bDebuggingDisable: 0
   IsAIawake: 0
   bOperationComplete: 0
-  bSequenceComplete: 1
   bLerping: 0
   bMoving: 0
   bTargetArrival: 0
@@ -23854,10 +23851,10 @@ MonoBehaviour:
   bNavPointReached: 0
   TotalOperationTime: 0
   TargetTimeOutThreshold: 0
-  TargetArrivalThreshold: 1.5
+  TargetArrivalDistanceThreshold: 0
   AIwalkForce: 4
   AIturnRate: 0
-  AbilityRangeScalar: 0
+  CollisionAvoidanceRange: 0
   AggroRange: 0
   DisengageRange: 0
   FollowerBoxRadius: 5
@@ -23891,6 +23888,7 @@ MonoBehaviour:
   Boom: {fileID: 0}
   Root: {fileID: 0}
   RigidBody: {fileID: 0}
+  Collider: {fileID: 0}
   DefPos: {x: 0, y: 0, z: 0}
   DefRot: {x: 30, y: 0, z: 0}
   CurrentVelocity: {x: 0, y: 0, z: 0}
