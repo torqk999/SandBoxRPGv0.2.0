@@ -13,6 +13,7 @@ public enum EffectAction
 {
     DMG_HEAL,
     SPAWN,
+    CLEANSE,
     CROWD_CONTROL,
     RES_ADJ,
     STAT_ADJ,
@@ -27,6 +28,7 @@ public enum ValueType
 }
 public enum CCstatus
 {
+    DEAD,
     IMMOBILE,
     UN_ARMED,
     SILENCED,
@@ -172,7 +174,7 @@ public struct ElementPackage
 
     public ElementPackage(ElementPackage source)
     {
-        Reflection = source.Reflection; // maybe?
+        Reflection = source.Reflection;
         Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
         if (source.Elements != null && source.Elements.Length == CharacterMath.STATS_ELEMENT_COUNT)
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)

@@ -22,6 +22,22 @@ Tactic Priority (index)
 
 //////////////////
 
+ThreatScore?
+
+- ThreatCondition
+	- Condition (stat/res/cc/buffed/debuffed/distance/targetted)
+	- Value (per/unit)(flat)
+
+- TargetCondition
+	- Target (self/ally/enemy)
+	- Threshold (sum of threatConditions)
+
+- TargetAction
+	- TargetCondition
+	- Ability
+
+//////////////////
+
 AI pathing Guide
 - Aggro/Combat ?
 - Pick Tactic
@@ -76,6 +92,5 @@ Condition:
 
 Targetting:
 - Faction
-
 
 Ability/Action:

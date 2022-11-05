@@ -39,7 +39,7 @@ public class SimpleAIcontroller : CharacterController
     public bool bDebuggingDisable;
 
     [Header("don't touch dees bools...")]
-    public bool bIsAwake;
+    public bool IsAIawake;
     public bool bOperationComplete;
     public bool bSequenceComplete;
     public bool bLerping;
@@ -60,6 +60,7 @@ public class SimpleAIcontroller : CharacterController
     public float FollowerBoxRadius;
 
     [Header("Just Stahp :-| ")]
+    public int[] RandomBuffer = new int[2];
     public int CurrentOperationIndex;
     public float CurrentOperationTime;
     public float CurrentTimeOutRemaining;
@@ -78,7 +79,7 @@ public class SimpleAIcontroller : CharacterController
 
     void CheckAwake()
     {
-        bIsAwake = !(GameState == null
+        IsAIawake = !(GameState == null
             || CurrentCharacter == null
             || CurrentCharacter.bIsPaused
             || (CurrentCharacter.bControllable &&
@@ -113,7 +114,7 @@ public class SimpleAIcontroller : CharacterController
         {
             bIsAggro = false;
             TargetCharacter = null;
-            ResetStaticSequence();
+            ResetPassiveSequence();
         }
         else if (!bIsAggro && Vector3.Distance(TargetCharacter.Root.position, CurrentCharacter.Root.position) < AggroRange)
             bIsAggro = true;
@@ -142,6 +143,10 @@ public class SimpleAIcontroller : CharacterController
         CurrentOperationIndex = (CurrentOperationIndex >= myStaticSequence.Operations.Length) ? 0 : CurrentOperationIndex;
         bSequenceComplete = CurrentOperationIndex == 0;
         bOperationComplete = CurrentOperationIndex != 0;
+    }
+    void GenerateTargetTravelPoint()
+    {
+
     }
     void GenerateNewRandomRawTravelPoint()
     {
@@ -187,18 +192,18 @@ public class SimpleAIcontroller : CharacterController
         if (!bSequenceComplete || !bIsUsingNavMesh)
             return;
 
-        int[] randCoords = new int[2];
+        //int[] randCoords = new int[2];
 
         if (!bIsFollowing)
         {
-            randCoords[0] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[0]);
-            randCoords[1] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[1]);
+            RandomBuffer[0] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[0]);
+            RandomBuffer[1] = (int)(UnityEngine.Random.value * GameState.NavMesh.AxisCounts[1]);
 
             //Debug.Log($"{bOperationComplete} : {bSequenceComplete}");
 
             //Debug.Log($"{randCoords[0]} : {randCoords[1]}");
 
-            if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, randCoords))
+            if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, RandomBuffer))
             {
                 //Debug.Log("Shits not workin dawg!");
                 return;
@@ -427,17 +432,19 @@ public class SimpleAIcontroller : CharacterController
     {
         delta = Vector3.Distance(TravelPoint, CurrentCharacter.Root.position);
     }
-    void ResetStaticSequence()
+    void ResetPassiveSequence()
     {
         CurrentOperationIndex = 0;
         bSequenceComplete = true;
         bOperationComplete = false;
     }
-    void RunSequence()
+    void RunPassiveSequence()
     {
-        if (bStrategyActive)
+        if (bStrategyActive
+         && CurrentCharacter.CurrentTargetCharacter != null
+         && CurrentCharacter.CurrentAction != null)
         {
-            Strategy.UpdateCurrentTactic();
+            //Strategy.UpdateCurrentTactic();
         }
         else
         {
@@ -452,12 +459,16 @@ public class SimpleAIcontroller : CharacterController
 
         UpdateSequenceIndex();
     }
+    void RunCombatTactics()
+    {
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         bDebuggingDisable = false;
-        ResetStaticSequence();
+        ResetPassiveSequence();
     }
 
     // Update is called once per frame
@@ -467,16 +478,17 @@ public class SimpleAIcontroller : CharacterController
         CheckAwake();
 
         if (bDebuggingDisable
-            || !bIsAwake
-            || !CurrentCharacter.bIsAlive
+            || !IsAIawake
+            || CurrentCharacter.CheckCCstatus(CCstatus.DEAD)
             || CurrentCharacter.CheckCCstatus(CCstatus.IMMOBILE))
             return;
+
 
         FindTarget();
         CheckAggro();
 
         if (!bIsAggro)
-            RunSequence();
+            RunPassiveSequence();
         else
             MoveAggro();
 

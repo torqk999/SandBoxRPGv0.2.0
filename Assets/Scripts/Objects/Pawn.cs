@@ -33,36 +33,6 @@ public class Pawn : MonoBehaviour
     public bool bIsGrounded;
     public bool bControllable;
 
-    /*
-    public Interaction CurrentTargetInteraction;
-    public List<Interaction> CurrentProximityInteractions;
-    public int InteractionCount;
-
-    public void RemoveInteraction(Interaction interact)
-    {
-        int index = CurrentProximityInteractions.FindIndex(x => x == interact);
-        if (index == -1)
-            return;
-
-        ResolveCurrentTargetInteraction(index);
-        CurrentProximityInteractions.Remove(interact);
-        
-    }
-    void ResolveCurrentTargetInteraction(int index)
-    {
-        if(index < 0 || index >= CurrentProximityInteractions.Count || CurrentProximityInteractions.Count <= 1)
-        {
-            CurrentTargetInteraction = null;
-            return;
-        }
-
-        index++;
-        index = index >= CurrentProximityInteractions.Count ? 0 : index;
-
-        CurrentTargetInteraction = CurrentProximityInteractions[index];
-    }
-    */
-
     private void OnCollisionEnter(Collision collision)
     {
 
@@ -81,6 +51,5 @@ public class Pawn : MonoBehaviour
     }
     private void Update()
     {
-        //UpdateCurrentInteraction();
     }
 }

@@ -148,11 +148,19 @@ public class CharacterManager : MonoBehaviour
     {
         List<Character> AOEcandidates = new List<Character>();
 
-        foreach (Character target in CharacterPool)
-            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)// &&
-                //target.Sheet.Faction != caller.Sheet.Faction)
-                AOEcandidates.Add(target);
 
+        foreach (Character target in CharacterPool)
+        {
+            if (call.Target == TargetType.ALLY && target.Sheet.Faction != caller.Sheet.Faction)
+                continue;
+
+            if (call.Target == TargetType.ENEMY && target.Sheet.Faction == caller.Sheet.Faction)
+                continue;
+
+            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)
+                AOEcandidates.Add(target);
+        }
+            
         return AOEcandidates;
     }
     void ApplyAbilitySingle(Character target, CharacterAbility call)
@@ -168,34 +176,14 @@ public class CharacterManager : MonoBehaviour
                     break;
 
                 case EffectDuration.TIMED:
-                    ApplyRisidualEffect(target, call.Effects[i]);
+                    target.ApplyRisidualEffect(call.Effects[i]);
                     break;
 
                 case EffectDuration.SUSTAINED:
-                    ApplyRisidualEffect(target, call.Effects[i]);
+                    target.ApplyRisidualEffect(call.Effects[i]);
                     break;
             }
         }
-    }
-    void ApplyRisidualEffect(Character target, Effect mod)
-    {
-        Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
-        modInstance.Clone(mod);
-
-        switch(modInstance.Action)
-        {
-            case EffectAction.CROWD_CONTROL:
-                Debug.Log($"{target.Root.name} : {mod.TargetCCstatus}");
-                break;
-
-            case EffectAction.RES_ADJ:
-                break;
-
-            case EffectAction.STAT_ADJ:
-                break;
-        }
-
-        target.Effects.Add(modInstance);
     }
     #endregion
 
@@ -204,6 +192,13 @@ public class CharacterManager : MonoBehaviour
     {
         foreach (Character character in CharacterPool)
             character.bIsPaused = bPause;
+    }
+    public void UpdatePartyFoes()
+    {
+        foreach (Party source in Parties)
+            foreach (Party target in Parties)
+                if (source != target)
+                    source.Foes.AddRange(target.Members);   
     }
 
     #endregion
@@ -311,6 +306,7 @@ public class CharacterManager : MonoBehaviour
     {
         // References
         character.GameState = GameState;
+        character.CurrentParty = party;
         character.bDebugMode = GameState.bDebugEffects;
         character.Sheet.Faction = party.Faction;
         character.Inventory = party.PartyLoot;
@@ -322,7 +318,7 @@ public class CharacterManager : MonoBehaviour
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
 
         // Initialize
-        character.bIsAlive = true;
+        //character.bIsAlive = true;
         character.InitializeCharacter();
     }
     void SetupSheet(Character character, Character source, int index, bool fresh)
@@ -358,7 +354,7 @@ public class CharacterManager : MonoBehaviour
             newAI.GameState = GameState;
             newAI.Strategy = new Strategy(newCharacter); // Simple solution for now, will need presets
             newAI.CurrentCharacter = newCharacter;
-            newAI.bIsAwake = bAwake;
+            newAI.IsAIawake = bAwake;
 
             if (newPathing != null)
             {

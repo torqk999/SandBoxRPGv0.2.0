@@ -22,7 +22,16 @@ public class Effect : ScriptableObject
     public bool bIsImmune;
     public bool bAllImmune;
 
-    public void Clone(Effect source, int equipId = -1, float amp = 1, bool inject = true)
+    public Effect(string name, CCstatus status, Sprite sprite = null) // Hard indefinite CC creation (ez death)
+    {
+        Name = name;
+        Sprite = sprite;
+        Duration = EffectDuration.PASSIVE;
+        Action = EffectAction.CROWD_CONTROL;
+        TargetCCstatus = status;
+    }
+
+    public void CloneEffect(Effect source, int equipId = -1, float amp = 1, bool inject = true)
     {
         Name = source.Name;
         EquipID = equipId;
@@ -36,9 +45,7 @@ public class Effect : ScriptableObject
             source.Action == EffectAction.RES_ADJ)
         {
             ElementPack = new ElementPackage(source.ElementPack);
-            Debug.Log($"Reflection of :{Name}\n" +
-                $"Injection: {inject}\n" +
-                $"Success: {ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject)}");
+            ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject);
             ElementPack.Amplify(amp);
         }
         

@@ -4,13 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using static CharacterRender;
 
-/*public enum CostType
-{
-    HEALTH,
-    STAMINA,
-    MANA,
-    NONE
-}*/
 public enum RangeType
 {
     SELF,
@@ -19,6 +12,12 @@ public enum RangeType
     AOE,
     SHAPED_VOLUME,
     SUMMON
+}
+public enum TargetType
+{
+    ALL,
+    ALLY,
+    ENEMY
 }
 public enum AbilityType
 {
@@ -32,46 +31,56 @@ public class CharacterAbility : ScriptableObject
     public int EquipID;
     public string Name;
     public Sprite Sprite;
-    public bool bTargetEnemy;
     public bool bIsPassive;
+
+    public TargetType Target;
     public RangeType RangeType;
     public RawStat CostTarget;
     public ValueType CostType;
     public AbilityType AbilityType;
+
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
     public AnimationTarget AnimationTarget;
+
     public float RangeValue;
     public float CostValue;
     public float CD_Duration;
     public float CD_Timer;
+
     public Effect[] Effects;
 
-    public void Clone(CharacterAbility ability, int equipId = -1, float potency = 1, bool inject = false)
+    public void CloneAbility(CharacterAbility ability, int equipId = -1, float potency = 1, bool inject = false)
     {
-        EquipID = equipId;// ability.WeaponID; // <<<--- ?!?!?
+        EquipID = equipId;
         Name = ability.Name;
         Sprite = ability.Sprite;
+        bIsPassive = ability.bIsPassive;
+
+        Target = ability.Target;
         RangeType = ability.RangeType;
+        CostType = ability.CostType;
         CostTarget = ability.CostTarget;
         AbilityType = ability.AbilityType;
+
+        AnimationState = ability.AnimationState;
+        CharAnimation = ability.CharAnimation;
+        AnimationTarget = ability.AnimationTarget;
+
         RangeValue = ability.RangeValue;
         CostValue = ability.CostValue;
         CD_Duration = ability.CD_Duration;
         CD_Timer = 0;
+
         Effects = new Effect[ability.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
         {
-            Effects[i] = (Effect)ScriptableObject.CreateInstance("Effect");
-            Effects[i].Clone(ability.Effects[i], equipId, potency, inject);
-            //Effects[i].ElementPack.Amplify(potency);
+            Effects[i] = (Effect)CreateInstance("Effect");
+            Effects[i].CloneEffect(ability.Effects[i], equipId, potency, inject);
         }
     }
     public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
     {
-        
-        //int[] characterSkillLevels = currentCharacter.Sheet.Level.PullData();
-
         float potency = 1 +
 
             (((currentCharacter.Sheet.Skills.Levels[(int)equip.EquipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +                      // Level
@@ -82,8 +91,8 @@ public class CharacterAbility : ScriptableObject
 
             CharacterMath.SKILL_MUL_RACE[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                                  // Race
 
-        CharacterAbility newAbility = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");
-        newAbility.Clone(this, equip.EquipID, potency);
+        CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
+        newAbility.CloneAbility(this, equip.EquipID, potency);
         return newAbility;
     }
     public void SetCooldown()

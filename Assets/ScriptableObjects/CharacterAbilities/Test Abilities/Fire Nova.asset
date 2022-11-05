@@ -15,8 +15,8 @@ MonoBehaviour:
   EquipID: 0
   Name: ArcaneNova
   Sprite: {fileID: 21300000, guid: 7236b740d5139d9418a0bbc946ee200e, type: 3}
-  bTargetEnemy: 1
   bIsPassive: 0
+  Target: 2
   RangeType: 3
   CostTarget: 2
   CostType: 4

@@ -32,6 +32,8 @@ public enum EquipSlot
 
 public class Character : Pawn, Interaction
 {
+    #region VARS
+
     [Header("Character Defs")]
     [Header("==== CHARACTER CLASS ====")]
     public int ID;
@@ -49,24 +51,23 @@ public class Character : Pawn, Interaction
     public StatPackage CurrentStats;
     public StatPackage MaximumStatValues;
     public ElementPackage Resistances;
-    //public ElementPackage MaximumResistances; // ??
 
     public CharacterSheet Sheet;
     public List<CharacterAbility> Abilities;
     public List<Effect> Effects;
 
+    [Header("Character Logic")]
     public bool bIsPaused;
-    public bool bIsAlive;
     public bool bIsSpawn;
     public bool bTimedSpawn;
+    public int CountBuffer; // Currently used by the strategy system
     public float SpawnTimer;
     public float ChannelTimer;
 
-    public Character SpawnParent;
-
-    [Header("Character Logic")]
+    public Party CurrentParty;
+    public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
-    public List<Character> TargettedBy;
+    public CharacterAbility CurrentAction;
     public Inventory Inventory;
     public GameObject CharacterCanvas;
 
@@ -86,6 +87,8 @@ public class Character : Pawn, Interaction
     public bool bAssetUpdate;
     public bool bAssetTimer;
     public float AssetTimer;
+
+    #endregion
 
     public void UpdateAbilites()
     {
@@ -222,12 +225,6 @@ public class Character : Pawn, Interaction
             if (EquipmentSlots[i] != null)
                 equipIDs.Add(EquipmentSlots[i].ItemID);
 
-        /*
-        for  (int i = Abilities.Count - 1; i > -1; i--)
-            if (equipIDs.FindIndex(x => x == Abilities[i].WeaponID) < 0)
-                Abilities.RemoveAt(i);
-        */
-
         for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
             if (AbilitySlots[i] != null && equipIDs.FindIndex(x => x == AbilitySlots[i].EquipID) < 0)
                 AbilitySlots[i] = null;
@@ -270,14 +267,6 @@ public class Character : Pawn, Interaction
         if (ringIndex != -1)
             return AttemptEquipRemoval(RingSlots, ringIndex);
 
-        /*if (inventoryIndex == -1 && equipIndex != -1)
-        {
-            if (isRing)
-                return AttemptEquipRemoval(RingSlots, equipIndex);
-            return AttemptEquipRemoval(EquipmentSlots, equipIndex);
-        }*/
-            //return AttemptEquipRemoval(EquipmentSlots[equipIndex], equipIndex);
-
         if (inventoryIndex != -1)
         {
             if (Inventory.Items[inventoryIndex] == null || !(Inventory.Items[inventoryIndex] is EquipWrapper))
@@ -285,23 +274,28 @@ public class Character : Pawn, Interaction
 
             EquipWrapper equip = (EquipWrapper)Inventory.Items[inventoryIndex];
 
-            if (equip is WearableWrapper)
+            switch(equip)
             {
-                WearableWrapper wear = (WearableWrapper)equip;
-                return EquipWear(wear.Wear.Type, inventoryIndex);
-            }
+                //if (equip is WearableWrapper)
+                case WearableWrapper:
+                return EquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
 
-            if (equip is RingWrapper)
+                //if (equip is RingWrapper)
+                case RingWrapper:
                 return EquipRing(inventoryIndex);
-            
-            if (equip is TwoHandWrapper)
+
+                //if (equip is TwoHandWrapper)
+                case TwoHandWrapper:
                 return EquipTwoHand(inventoryIndex);
 
-            if (equip is OneHandWrapper)
+                //if (equip is OneHandWrapper)
+                case OneHandWrapper:
                 return EquipOneHand(inventoryIndex);
 
-            if (equip is OffHandWrapper)
+                //if (equip is OffHandWrapper)
+                case OffHandWrapper:
                 return EquipOneHand(inventoryIndex, false);
+            }
         }
 
         Debug.Log("How did you get here? >.>");
@@ -467,7 +461,29 @@ public class Character : Pawn, Interaction
 
             case EffectAction.SPAWN:
                 break;
+
+            case EffectAction.CROWD_CONTROL:
+                break;
         }
+    }
+    public void ApplyRisidualEffect(Effect mod)
+    {
+        Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
+        modInstance.CloneEffect(mod);
+
+        switch (modInstance.Action)
+        {
+            //case EffectAction.CROWD_CONTROL:
+            //    break;
+
+            case EffectAction.RES_ADJ:
+                break;
+
+            case EffectAction.STAT_ADJ:
+                break;
+        }
+
+        Effects.Add(modInstance);
     }
     void ApplyDamage(Effect damage)
     {
@@ -576,7 +592,7 @@ public class Character : Pawn, Interaction
 
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
-            bIsAlive = false;
+            Effects.Add(new Effect("Death", CCstatus.DEAD));
             bAssetUpdate = true;
             DebugState = DebugState.DEAD;
             //Source.GetComponent<Collider>().enabled = false;

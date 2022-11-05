@@ -12,48 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5400cf6a5811e9b41b7b3fd4b58f06cd, type: 3}
   m_Name: FireBall
   m_EditorClassIdentifier: 
-  WeaponID: 0
+  EquipID: 0
   Name: FireBall
-  Sprite: {fileID: 21300000, guid: 93e88002a78ed0148829a11b1950cc1d, type: 3}
+  Sprite: {fileID: 21300000, guid: 67be5c17b14c6924d818bb426caba20d, type: 3}
+  bIsPassive: 0
+  Target: 2
   RangeType: 1
-  CostType: 3
+  CostTarget: 0
+  CostType: 4
   AbilityType: 1
+  AnimationState: 0
+  CharAnimation: 2
+  AnimationTarget: 0
   RangeValue: 100
   CostValue: 5
   CD_Duration: 5
   CD_Timer: 0
   Effects:
-  - Name: Impact
-    Sprite: {fileID: 0}
-    Type: 0
-    Target: 0
-    Status: 0
-    CCstatus: 0
-    ElementPack:
-      PHYSICAL: 0
-      FIRE: 5
-      WATER: 0
-      EARTH: 0
-      AIR: 0
-      POISON: 0
-      HEALING: 0
-    Duration: 0
-    Timer: 0
-    bIsBuff: 0
-  - Name: Burn
-    Sprite: {fileID: 0}
-    Type: 1
-    Target: 0
-    Status: 0
-    CCstatus: 0
-    ElementPack:
-      PHYSICAL: 0
-      FIRE: 0.03
-      WATER: 0
-      EARTH: 0
-      AIR: 0
-      POISON: 0
-      HEALING: 0
-    Duration: 5
-    Timer: 0
-    bIsBuff: 0
+  - {fileID: 11400000, guid: 7c0a6380480218c48b1639d0c19af25b, type: 2}
+  - {fileID: 11400000, guid: 08a36ec1c23727447a6e9371b18ede79, type: 2}

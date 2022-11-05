@@ -28,7 +28,7 @@ public class Equipment : ItemObject
         for (int i = 0; i < EquipAbilities.Length; i++)
         {
             EquipAbilities[i] = (CharacterAbility)ScriptableObject.CreateInstance("CharacterAbility");
-            EquipAbilities[i].Clone(source[i], EquipID, amp, inject);
+            EquipAbilities[i].CloneAbility(source[i], EquipID, amp, inject);
         }
     }
 }

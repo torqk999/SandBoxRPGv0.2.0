@@ -1,5 +1,7 @@
 ﻿== TO DO LIST ==========
 
+- Saving/Loading/NewGame
+- Load Screen/Scene
 $ Stat_Change/Adjust by fixed/percent
 - Ai gets stuck in crevises, has the 'zoomies' "BYEEEE!!!!" from time to time
 - Update GUI assistant for text

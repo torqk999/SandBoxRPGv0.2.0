@@ -5,6 +5,7 @@ using UnityEngine;
 public class Party : MonoBehaviour
 {
     public List<Character> Members;
+    public List<Character> Foes;
     public Inventory PartyLoot;
     public Formation Formation;
     public Faction Faction;
@@ -13,6 +14,7 @@ public class Party : MonoBehaviour
     public Party()
     {
         Members = new List<Character>();
+        Foes = new List<Character>();
         PartyLoot = new Inventory();
     }
 }
