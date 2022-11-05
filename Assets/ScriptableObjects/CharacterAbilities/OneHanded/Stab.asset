@@ -12,14 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5400cf6a5811e9b41b7b3fd4b58f06cd, type: 3}
   m_Name: Stab
   m_EditorClassIdentifier: 
-  WeaponID: 0
+  EquipID: 0
   Name: Kick
-  Sprite: {fileID: 21300000, guid: 69332f4dbccd1f140bc76d28e306b9c0, type: 3}
-  RangeType: 0
-  CostType: 0
+  Sprite: {fileID: 21300000, guid: 9edcf2e6ce26ee9458caa500025ec2d5, type: 3}
+  bIsPassive: 0
+  Target: 2
+  RangeType: 1
+  CostTarget: 1
+  CostType: 4
   AbilityType: 0
-  RangeValue: 0
-  CostValue: 0
-  CD_Duration: 0
+  AnimationState: 5
+  CharAnimation: 2
+  AnimationTarget: 0
+  RangeValue: 10
+  CostValue: 10
+  CD_Duration: 2
   CD_Timer: 0
-  Effects: []
+  Effects:
+  - {fileID: 11400000, guid: 4d3c7a8a6307f2746b20f91dae99e7e5, type: 2}

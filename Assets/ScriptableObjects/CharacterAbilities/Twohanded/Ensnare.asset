@@ -12,31 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5400cf6a5811e9b41b7b3fd4b58f06cd, type: 3}
   m_Name: Ensnare
   m_EditorClassIdentifier: 
-  WeaponID: 0
-<<<<<<< Updated upstream:Assets/ScriptableObjects/CharacterAbilities/Twohanded/Ensnare.asset
+  EquipID: 0
   Name: 
   Sprite: {fileID: 0}
-  bTargetEnemy: 0
-  RangeType: 0
-  CostType: 0
-  AbilityType: 0
-  AnimationState: 0
-  CharAnimation: 0
-  AnimationTarget: 0
-  RangeValue: 0
-  CostValue: 0
-  CD_Duration: 0
-=======
-  Name: ArcaneNova
-  Sprite: {fileID: 21300000, guid: 7236b740d5139d9418a0bbc946ee200e, type: 3}
-  bTargetEnemy: 1
-  RangeType: 3
-  CostType: 2
+  bIsPassive: 0
+  Target: 2
+  RangeType: 1
+  CostTarget: 2
+  CostType: 4
   AbilityType: 1
-  RangeValue: 5
+  AnimationState: 6
+  CharAnimation: 2
+  AnimationTarget: 0
+  RangeValue: 100
   CostValue: 10
-  CD_Duration: 3
->>>>>>> Stashed changes:Assets/ScriptableObjects/CharacterAbilities/Torqk's Test Abilities/ArcaneNova.asset
+  CD_Duration: 4
   CD_Timer: 0
   Effects:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 9b99e503e9435af409ecc5a62d15cf49, type: 2}
