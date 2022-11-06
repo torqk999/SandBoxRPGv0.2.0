@@ -1671,9 +1671,7 @@ MonoBehaviour:
   CharManager: {fileID: 77159617}
   MyCharacter: {fileID: 0}
   MyAnimator: {fileID: 357001565}
-  Hands: []
   Gear: []
-  MyAnimationState: 0
   Base: {fileID: 0}
   MainHandSlot: {fileID: 0}
   OffHandSlot: {fileID: 0}
@@ -3481,7 +3479,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3708,11 +3706,6 @@ PrefabInstance:
 --- !u!4 &1031166396 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
-  m_PrefabInstance: {fileID: 1031166395}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1031166397 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
   m_PrefabInstance: {fileID: 1031166395}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1033571286
@@ -4144,7 +4137,7 @@ GameObject:
   - component: {fileID: 1313191866}
   - component: {fileID: 1313191865}
   m_Layer: 0
-  m_Name: EventSystem || DONT LEAVE ME BEHIND!!!
+  m_Name: EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5598,17 +5591,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharManager: {fileID: 77159617}
-  MyCharacter: {fileID: 109683111}
-  MyAnimator: {fileID: 1031166397}
-  Hands: []
+  MyCharacter: {fileID: 0}
+  MyAnimator: {fileID: 1941637740}
   Gear: []
-  MyAnimationState: 0
   Base: {fileID: 1031166396}
   MainHandSlot: {fileID: 755799079}
   OffHandSlot: {fileID: 1779050871}
-  bRunning: 0
+  bRunning: 1
   AnimationLayer: 0
   AniCombatTimer: 0
+--- !u!95 &1941637740 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+  m_PrefabInstance: {fileID: 1031166395}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1954012998
 GameObject:
   m_ObjectHideFlags: 0
@@ -5712,9 +5708,7 @@ MonoBehaviour:
   CharManager: {fileID: 0}
   MyCharacter: {fileID: 0}
   MyAnimator: {fileID: 0}
-  Hands: []
   Gear: []
-  MyAnimationState: 0
   Base: {fileID: 0}
   MainHandSlot: {fileID: 0}
   OffHandSlot: {fileID: 0}

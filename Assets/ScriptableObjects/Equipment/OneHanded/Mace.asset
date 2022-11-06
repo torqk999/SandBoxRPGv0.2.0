@@ -19,7 +19,11 @@ MonoBehaviour:
   GoldValue: 0
   Weight: 0
   EquipSkill: 3
+  ClassType: 0
   EquipLevel: 0
   EquipID: 0
   EquipAbilities: []
+  Base: 2
+  Handle: 3
+  Details: 
   Type: 4

@@ -99,7 +99,7 @@ public class CharacterRender : MonoBehaviour
     public Animator MyAnimator;
     //public List<HandProfile> Hands;
     public List<GearProfile> Gear;
-    public CharAnimationState MyAnimationState;
+    //public CharAnimationState MyAnimationState;
 
     public Transform Base;
     public Transform MainHandSlot;
@@ -121,13 +121,15 @@ public class CharacterRender : MonoBehaviour
 
         if (MyAnimator.GetFloat("horizontalMove") + MyAnimator.GetFloat("verticalMove") != 0f)
         {
+            //Debug.Log("LayerON");
             MyAnimator.SetLayerWeight(WalkingLayer, 1);
         }
 
-        if (MyAnimator.GetFloat("horizontalMove") + MyAnimator.GetFloat("verticalMove") == 0)
+        /*if (MyAnimator.GetFloat("horizontalMove") + MyAnimator.GetFloat("verticalMove") == 0)
         {
+            //Debug.Log("LayerOFF");
             MyAnimator.SetLayerWeight(WalkingLayer, 0);
-        }
+        }*/
     }
     public void AnimationAttempt(CharacterAbility AttemptedAbility = null)
 
@@ -175,7 +177,8 @@ public class CharacterRender : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        //int WalkingLayer = MyAnimator.GetLayerIndex("MovementLayer");
+       // MyAnimator.SetLayerWeight(WalkingLayer, 1);
     }
 
     // Update is called once per frame

@@ -7,6 +7,8 @@ public class Wearable : Equipment
 {
     [Header("Wearable Properties")]
     public EquipSlot Type;
+    public MaterialType Base;
+    public MaterialType Trim;
     //public EquipSkill EquipSkill;
 
     public Wearable CloneWear(int equipId = -1, bool inject = false)

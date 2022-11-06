@@ -690,6 +690,7 @@ public class Character : Pawn, Interaction
     }
     public void UpdateAnimationIntents(float forward, float right)
     {
+        //Debug.Log("Intentions");
         IntentForward = forward;
         IntentRight = right;
         bIntent = true;
@@ -698,6 +699,9 @@ public class Character : Pawn, Interaction
     {
         if (Render == null)
             return;
+
+        //Debug.Log("Animating");
+
         if (!bIntent)
         {
             Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
