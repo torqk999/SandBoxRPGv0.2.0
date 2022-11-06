@@ -29,8 +29,6 @@ public class GameState : MonoBehaviour
 
     [Header("Test References")]
     public SimpleWorldBuilder testBuilder;
-    //public GravityController Gravity;
-    //public ObjectBuilder Builder;
 
     [Header("Game Logic")]
     public bool bDebugEffects;

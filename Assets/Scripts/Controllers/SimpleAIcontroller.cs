@@ -333,7 +333,7 @@ public class SimpleAIcontroller : CharacterController
         switch (operation.Type)
         {
             case AIoperationType.ROTATE:
-                Debug.Log($"{CurrentCharacter.Root.name} is rotating!");// : {CurrentCharacter.Root.position}");
+                //Debug.Log($"{CurrentCharacter.Root.name} is rotating!");// : {CurrentCharacter.Root.position}");
                 Quaternion start = Quaternion.Euler(0, oldRot, 0);
                 Quaternion end = Quaternion.Euler(0, GenerateYbearing(CurrentCharacter.Root.position, target), 0);
                 float lerp = 1 - (CurrentOperationTime / TotalOperationTime);
@@ -385,7 +385,7 @@ public class SimpleAIcontroller : CharacterController
         {
             float newBearing = GenerateYbearing(CurrentCharacter.Root.position, TravelPoint);
 
-            Debug.Log($"{CurrentCharacter.Root.name} || newBearing: {newBearing} || TravelPoint: {TravelPoint}");
+            //Debug.Log($"{CurrentCharacter.Root.name} || newBearing: {newBearing} || TravelPoint: {TravelPoint}");
             float currentBearing = CurrentCharacter.Root.transform.rotation.eulerAngles.y;
 
             newVector.y = newBearing;
@@ -419,7 +419,7 @@ public class SimpleAIcontroller : CharacterController
         {
             CurrentTimeOutRemaining = TargetTimeOutThreshold;
             //CurrentCharacter.RigidBody.velocity = Vector3.zero;
-            Debug.Log($"{CurrentCharacter.Root.name} Reached the navPoint!");
+            //Debug.Log($"{CurrentCharacter.Root.name} Reached the navPoint!");
             bMoving = Pathing.RequestNextTravelPoint(ref TravelPoint);
             //bOperationComplete = !bMoving;
         }
@@ -470,7 +470,7 @@ public class SimpleAIcontroller : CharacterController
         float colFinalMag = Vector3.Distance(bufferVector, Vector3.zero);
         float blah = 2;
         init = (((1 - (colFinalMag / (colFinalMag + blah))) * initMag) * initNorm) + bufferVector;
-        Debug.Log($"{CurrentCharacter.Root.name} || finalVector: {init} || bufferVector: {bufferVector}");
+        //Debug.Log($"{CurrentCharacter.Root.name} || finalVector: {init} || bufferVector: {bufferVector}");
     }
     float GenerateBearingTurnMagnitude(float currentBearing, float newBearing)
     {

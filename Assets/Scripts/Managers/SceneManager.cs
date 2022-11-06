@@ -9,6 +9,10 @@ public class SceneManager : MonoBehaviour
     public GameObject LootTriggerVolumePrefab;
     public Transform LootBagFolder;
 
+    public List<GameObject> OneHandPrefabs;
+    public List<GameObject> TwoHandPrefabs;
+    public List<GameObject> OffHandPrefabs;
+
     public int CurrentLootBagIndex;
 
     public bool TakeFromContainer(Character character, GenericContainer lootBag, int index)
@@ -70,7 +74,51 @@ public class SceneManager : MonoBehaviour
     {
 
     }
+    public bool InstantiateHandEquip(EquipWrapper equip, CharacterRender render)
+    {
+        GameObject newEquipObject = null;
 
+        if (equip == null ||
+            render == null)
+            return false;
+
+        try
+        {
+            switch (equip)
+            {
+                case OneHandWrapper:
+                    newEquipObject = Instantiate(OneHandPrefabs[(int)((OneHand)equip.Equip).Type], render.MainHandSlot);
+                    break;
+
+                case TwoHandWrapper:
+                    newEquipObject = Instantiate(TwoHandPrefabs[(int)((TwoHand)equip.Equip).Type], render.MainHandSlot);
+                    break;
+
+                case OffHandWrapper:
+                    newEquipObject = Instantiate(OffHandPrefabs[(int)((OffHand)equip.Equip).Type], render.OffHandSlot);
+                    break;
+
+                default:
+                    Debug.Log("Wasn't a hand equip...");
+                    return false;
+            }
+        }
+        catch
+        {
+            Debug.Log("Prefab missing! Could not generate!");
+            return false;
+        }
+
+        if (newEquipObject != null)
+        {
+            equip.Instantiation = newEquipObject;
+            newEquipObject.transform.localPosition = new Vector3(0, 0, 0);
+            newEquipObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
+            newEquipObject.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        }
+        
+        return true;
+    }
 
     // Start is called before the first frame update
     void Start()

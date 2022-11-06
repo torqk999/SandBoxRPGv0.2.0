@@ -109,8 +109,11 @@ public class CharacterRender : MonoBehaviour
     public Animator MyAnimator;
     public List<HandProfile> Hands;
     public List<GearProfile> Gear;
-    public GameObject MyPrefab;
     public CharAnimationState MyAnimationState;
+
+    public Transform Base;
+    public Transform MainHandSlot;
+    public Transform OffHandSlot;
 
     public bool bRunning;
     public int AnimationLayer;
@@ -170,6 +173,8 @@ public class CharacterRender : MonoBehaviour
             return;
         }
     }
+
+
 
     // Start is called before the first frame update
     void Start()

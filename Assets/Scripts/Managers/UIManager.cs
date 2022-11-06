@@ -323,6 +323,7 @@ public class UIManager : MonoBehaviour
         if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(SelectedEquipSlot, SelectedRingSlot, InventoryListSelection))
             return;
 
+        
         GameState.pController.CurrentCharacter.UpdateAbilites();
         RefreshGameMenuCanvas();
         UpdateActionBar(); // may have lost equipped abillities

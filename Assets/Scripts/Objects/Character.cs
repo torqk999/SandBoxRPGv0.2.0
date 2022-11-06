@@ -24,10 +24,6 @@ public enum EquipSlot
     OFF,
     LEGS,
     BOOTS,
-    
-    //RING
-    //RING_L,
-    //RING_R
 }
 
 public class Character : Pawn, Interaction
@@ -38,10 +34,8 @@ public class Character : Pawn, Interaction
     [Header("==== CHARACTER CLASS ====")]
     public int ID;
 
-    [Header("Animation")]
-    public CharacterAssetPack Assets;
-    public AnimatorPlus myAnim;
-    public CharacterRender Animator;
+    [Header("Rendering")]
+    public CharacterRender Render;
     public AnimatorType AnimType;
     public float IntentForward;
     public float IntentRight;
@@ -82,6 +76,7 @@ public class Character : Pawn, Interaction
     public int InteractionCount;
 
     [Header("Debugging")]
+    public CharacterAssetPack Assets;
     public DebugState DebugState;
     public bool bDebugMode;
     public bool bAssetUpdate;
@@ -268,32 +263,38 @@ public class Character : Pawn, Interaction
                 return false;
 
             EquipWrapper equip = (EquipWrapper)Inventory.Items[inventoryIndex];
+            bool check = false;
 
             switch(equip)
             {
-                //if (equip is WearableWrapper)
                 case WearableWrapper:
-                return InventoryEquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
+                    check = InventoryEquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
+                    break;
 
-                //if (equip is RingWrapper)
                 case RingWrapper:
-                return InventoryEquipRing(inventoryIndex);
+                    check = InventoryEquipRing(inventoryIndex);
+                    break;
 
-                //if (equip is TwoHandWrapper)
-                case TwoHandWrapper:
-                return InventoryEquipTwoHand(inventoryIndex);
-
-                //if (equip is OneHandWrapper)
                 case OneHandWrapper:
-                return InventoryEquipOneHand(inventoryIndex);
+                    check = InventoryEquipOneHand(inventoryIndex);
+                    break;
 
-                //if (equip is OffHandWrapper)
+                case TwoHandWrapper:
+                    check = InventoryEquipTwoHand(inventoryIndex);
+                    break;
+
                 case OffHandWrapper:
-                return InventoryEquipOneHand(inventoryIndex, false);
+                    check = InventoryEquipOneHand(inventoryIndex, false);
+                    break;
+            }
+
+            if (check)
+            {
+                GameState.SceneMan.InstantiateHandEquip(equip, Render);
+                return true;
             }
         }
 
-        Debug.Log("How did you get here? >.>");
         return false;
     }
     public bool InventoryEquipWear(EquipSlot equipSlot, int inventoryIndex)
@@ -307,8 +308,7 @@ public class Character : Pawn, Interaction
             return true;
         }
 
-        EquipmentSlots[(int)equipSlot] =
-            (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)equipSlot], inventoryIndex);
+        EquipmentSlots[(int)equipSlot] = SwapEquipWithInventory(EquipmentSlots[(int)equipSlot], inventoryIndex);
         return true;
     }
     public bool InventoryEquipOneHand(int inventoryIndex, bool main = true)
@@ -325,7 +325,8 @@ public class Character : Pawn, Interaction
         {
             if (EquipmentSlots[IND] is TwoHandWrapper)
                 EquipmentSlots[ind] = null;
-            EquipmentSlots[IND] = (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[IND], inventoryIndex);
+
+            EquipmentSlots[IND] = SwapEquipWithInventory(EquipmentSlots[IND], inventoryIndex);
             return true;
         }
         
@@ -345,7 +346,7 @@ public class Character : Pawn, Interaction
             if (Inventory.Items.Count == Inventory.MaxCount)
                 return false;
             EquipmentSlots[(int)EquipSlot.MAIN] =
-                (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)EquipSlot.MAIN], inventoryIndex);
+                SwapEquipWithInventory(EquipmentSlots[(int)EquipSlot.MAIN], inventoryIndex);
             Inventory.PushItemIntoInventory(EquipmentSlots[(int)EquipSlot.OFF]);
 
             EquipmentSlots[(int)EquipSlot.OFF] = EquipmentSlots[(int)EquipSlot.MAIN];
@@ -354,7 +355,7 @@ public class Character : Pawn, Interaction
         if (EquipmentSlots[(int)EquipSlot.MAIN] != null && EquipmentSlots[(int)EquipSlot.OFF] == null) // main occupied
         {
             EquipmentSlots[(int)EquipSlot.MAIN] =
-                (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)EquipSlot.MAIN], inventoryIndex);
+                SwapEquipWithInventory(EquipmentSlots[(int)EquipSlot.MAIN], inventoryIndex);
 
             EquipmentSlots[(int)EquipSlot.OFF] = EquipmentSlots[(int)EquipSlot.MAIN];
             return true;
@@ -362,7 +363,7 @@ public class Character : Pawn, Interaction
         if (EquipmentSlots[(int)EquipSlot.MAIN] == null && EquipmentSlots[(int)EquipSlot.OFF] != null) // off occupied
         {
             EquipmentSlots[7] =
-                (EquipWrapper)Inventory.SwapItemSlots(EquipmentSlots[(int)EquipSlot.OFF], inventoryIndex);
+                SwapEquipWithInventory(EquipmentSlots[(int)EquipSlot.OFF], inventoryIndex);
 
             EquipmentSlots[(int)EquipSlot.MAIN] = EquipmentSlots[(int)EquipSlot.OFF];
             return true;
@@ -407,9 +408,21 @@ public class Character : Pawn, Interaction
             }
             else
                 EquipmentSlots[equipIndex] = null;
+
+            if (equip.Instantiation != null)
+                Destroy(equip.Instantiation);
+
             return true;
         }
         return false;
+    }
+
+    public EquipWrapper SwapEquipWithInventory(EquipWrapper input, int inventoryIndex)
+    {
+        // Only worry about hand slots
+        if (input.Instantiation != null)
+            Destroy(input.Instantiation);
+        return (EquipWrapper)Inventory.SwapItemSlots(input, inventoryIndex);
     }
     #endregion
 
@@ -685,17 +698,17 @@ public class Character : Pawn, Interaction
     }
     void UpdateAnimation()
     {
-        if (Animator == null)
+        if (Render == null)
             return;
         if (!bIntent)
         {
-            Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
-            Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
+            Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
+            Render.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
             return;
         }         
         
-        Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
-        Animator.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
+        Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
+        Render.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
     }
     void UpdateCanvas()

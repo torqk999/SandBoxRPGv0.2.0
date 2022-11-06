@@ -742,6 +742,26 @@ MonoBehaviour:
   LootBagPrefab: {fileID: 70142000}
   LootTriggerVolumePrefab: {fileID: 1883595918}
   LootBagFolder: {fileID: 401079334}
+  OneHandPrefabs:
+  - {fileID: 919132149155446097, guid: f604ae897c33d1f4f9d42384b81bd00f, type: 3}
+  - {fileID: 919132149155446097, guid: e16334954571e044e81d3a001ee4ca39, type: 3}
+  - {fileID: 919132149155446097, guid: 474e21adac917e64f96104cbd2fb1384, type: 3}
+  - {fileID: 919132149155446097, guid: f577c2f45d2125b43b26c41c64d0dd27, type: 3}
+  - {fileID: 919132149155446097, guid: 598802a1d8aa44d439d5bbfb9be65f08, type: 3}
+  - {fileID: 919132149155446097, guid: 598802a1d8aa44d439d5bbfb9be65f08, type: 3}
+  TwoHandPrefabs:
+  - {fileID: 919132149155446097, guid: 503c7cf6a30ac1542a0fd4857e377f4a, type: 3}
+  - {fileID: 919132149155446097, guid: beaf005dd3debfa4f8187299b1e80d7b, type: 3}
+  - {fileID: 919132149155446097, guid: ad6bea24e6d904046b1830b96a7c4f5a, type: 3}
+  - {fileID: 919132149155446097, guid: 503c7cf6a30ac1542a0fd4857e377f4a, type: 3}
+  - {fileID: 919132149155446097, guid: b6675b5f89c60da4da87baaf32f47ee9, type: 3}
+  - {fileID: 919132149155446097, guid: 29e7a5024739f8445aa3960e72319195, type: 3}
+  - {fileID: 919132149155446097, guid: 9c534b6c4ba0e6443ba1c6ea2472f34c, type: 3}
+  - {fileID: 919132149155446097, guid: 09cb0b9450bd65941908be15fd17b644, type: 3}
+  OffHandPrefabs:
+  - {fileID: 919132149155446097, guid: f604ae897c33d1f4f9d42384b81bd00f, type: 3}
+  - {fileID: 919132149155446097, guid: ddd792f0cbf016e4bbf09ee84f327c09, type: 3}
+  - {fileID: 919132149155446097, guid: ddd792f0cbf016e4bbf09ee84f327c09, type: 3}
   CurrentLootBagIndex: 0
 --- !u!1 &109683109
 GameObject:
@@ -813,9 +833,7 @@ MonoBehaviour:
   bIsGrounded: 0
   bControllable: 1
   ID: 0
-  Assets: {fileID: 0}
-  myAnim: {fileID: 0}
-  Animator: {fileID: 1941637739}
+  Render: {fileID: 1941637739}
   AnimType: 0
   IntentForward: 0
   IntentRight: 0
@@ -870,6 +888,7 @@ MonoBehaviour:
   EquipmentSlots: []
   RingSlots: []
   InteractionCount: 0
+  Assets: {fileID: 0}
   DebugState: 0
   bDebugMode: 0
   bAssetUpdate: 0
@@ -1147,9 +1166,7 @@ MonoBehaviour:
   bIsGrounded: 0
   bControllable: 0
   ID: 0
-  Assets: {fileID: 11400000, guid: 053308082f7a43649a64b9f60324b942, type: 2}
-  myAnim: {fileID: 0}
-  Animator: {fileID: 0}
+  Render: {fileID: 0}
   AnimType: 0
   IntentForward: 0
   IntentRight: 0
@@ -1199,6 +1216,7 @@ MonoBehaviour:
   EquipmentSlots: []
   RingSlots: []
   InteractionCount: 0
+  Assets: {fileID: 11400000, guid: 053308082f7a43649a64b9f60324b942, type: 2}
   DebugState: 0
   bDebugMode: 0
   bAssetUpdate: 0
@@ -1655,8 +1673,10 @@ MonoBehaviour:
   MyAnimator: {fileID: 357001565}
   Hands: []
   Gear: []
-  MyPrefab: {fileID: 0}
   MyAnimationState: 0
+  Base: {fileID: 0}
+  MainHandSlot: {fileID: 0}
+  OffHandSlot: {fileID: 0}
   bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0
@@ -3564,6 +3584,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
+    - target: {fileID: -7392296959423616122, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Med.RGlove
+      objectReference: {fileID: 0}
     - target: {fileID: -6586704053650886544, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -3637,12 +3661,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 74476e6b5fadaf14e8ffe1e4c3246c3f, type: 2}
     - target: {fileID: -108440261753383226, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Naked
+      objectReference: {fileID: 0}
+    - target: {fileID: -108440261753383226, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_Name
-      value: PlayerPreFab2
+      value: Player_Base
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_IsActive
@@ -3668,10 +3696,22 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4727721003895119246, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: HandIK.R
+      objectReference: {fileID: 0}
     - target: {fileID: 4917893669876430057, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f05ab1037c26a9b43ac231de819c7207, type: 2}
+    - target: {fileID: 5024560537132068898, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Player_Bones
+      objectReference: {fileID: 0}
+    - target: {fileID: 5319036443835424685, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_Controller
       value: 
@@ -5215,9 +5255,7 @@ MonoBehaviour:
   bIsGrounded: 0
   bControllable: 1
   ID: 0
-  Assets: {fileID: 0}
-  myAnim: {fileID: 0}
-  Animator: {fileID: 357001564}
+  Render: {fileID: 0}
   AnimType: 0
   IntentForward: 0
   IntentRight: 0
@@ -5282,6 +5320,7 @@ MonoBehaviour:
   EquipmentSlots: []
   RingSlots: []
   InteractionCount: 0
+  Assets: {fileID: 0}
   DebugState: 0
   bDebugMode: 0
   bAssetUpdate: 0
@@ -5596,12 +5635,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharManager: {fileID: 77159617}
-  MyCharacter: {fileID: 0}
+  MyCharacter: {fileID: 109683111}
   MyAnimator: {fileID: 1031166397}
   Hands: []
   Gear: []
-  MyPrefab: {fileID: 0}
   MyAnimationState: 0
+  Base: {fileID: 1031166396}
+  MainHandSlot: {fileID: 755799079}
+  OffHandSlot: {fileID: 1779050871}
   bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0
@@ -5710,8 +5751,10 @@ MonoBehaviour:
   MyAnimator: {fileID: 0}
   Hands: []
   Gear: []
-  MyPrefab: {fileID: 0}
   MyAnimationState: 0
+  Base: {fileID: 0}
+  MainHandSlot: {fileID: 0}
+  OffHandSlot: {fileID: 0}
   bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0

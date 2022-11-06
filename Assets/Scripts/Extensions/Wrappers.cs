@@ -9,6 +9,7 @@ public class ItemWrapper
     public int ItemID;
     public string Name;
     public Sprite Sprite; // <-- make sure this gets assigned at generation
+    public GameObject Instantiation;
 }
 [System.Serializable]
 public class StackableWrapper : ItemWrapper

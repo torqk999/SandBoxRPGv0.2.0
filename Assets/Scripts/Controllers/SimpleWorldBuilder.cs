@@ -33,7 +33,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             if (item == null)
                 continue;
             inventory.Items.Add(new StackableWrapper(item));
-            LootBox.Inventory.Items.Add(new StackableWrapper(item));
+            //LootBox.Inventory.Items.Add(new StackableWrapper(item));
         }
 
         foreach (Wearable wear in SampleGear)
@@ -45,7 +45,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
-            LootBox.Inventory.Items.Add(newWrapper);
+            //LootBox.Inventory.Items.Add(newWrapper);
         }
         foreach (Ring ring in SampleRings)
         {
@@ -56,7 +56,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
-            LootBox.Inventory.Items.Add(newWrapper);
+            //LootBox.Inventory.Items.Add(newWrapper);
         }
 
         foreach (OneHand oneHand in SampleOneHands)
@@ -68,7 +68,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
-            LootBox.Inventory.Items.Add(newWrapper);
+            //LootBox.Inventory.Items.Add(newWrapper);
         }
 
         foreach (OffHand offHand in SampleOffHands)
@@ -80,7 +80,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
-            LootBox.Inventory.Items.Add(newWrapper);
+            //LootBox.Inventory.Items.Add(newWrapper);
         }
 
         foreach (TwoHand twoHand in SampleTwoHands)
@@ -91,7 +91,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);
-            LootBox.Inventory.Items.Add(newWrapper);
+            //LootBox.Inventory.Items.Add(newWrapper);
         }
     }
     public void SpawnMobs()
@@ -126,8 +126,7 @@ public class SimpleWorldBuilder : MonoBehaviour
         SpawnMobs();
         GameState.CharacterMan.UpdatePartyFoes();
         GameState.pController.InitialPawnControl();
-
-        //GameState.testBuilder.SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);//GameState.Controller.CurrentCharacter);
+        SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);
     }
 
     // Start is called before the first frame update
