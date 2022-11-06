@@ -3322,10 +3322,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1010888933}
-  - component: {fileID: 1010888932}
   - component: {fileID: 1010888934}
   - component: {fileID: 1010888935}
-  - component: {fileID: 1010888936}
   - component: {fileID: 1010888937}
   m_Layer: 0
   m_Name: Testing
@@ -3334,23 +3332,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1010888932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1010888931}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 125745dff7d7f1d4ebdc57db832d94bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TargetMaterial: {fileID: 2100000, guid: 5b5741e1a304b254da481450c500d8ab, type: 2}
-  TargetParameter: Offsets
-  TargetVector: {x: 0, y: 0, z: 0, w: 0}
-  myShader: {fileID: -6465566751694194690, guid: d5a975f46ab2b624ab77d1fd6e27490b, type: 3}
-  myRenderer: {fileID: 0}
 --- !u!4 &1010888933
 Transform:
   m_ObjectHideFlags: 0
@@ -3474,44 +3455,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ad6ba0ae39db91468cadd69a2dd54d8, type: 2}
   - {fileID: 11400000, guid: 13974fbaf8e49594886677d20ac90286, type: 2}
   - {fileID: 11400000, guid: 7d33f8f7214d50349a1ba4a1fbad1398, type: 2}
---- !u!114 &1010888936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1010888931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 930fd6d248d46fe44935ad9f4f528d64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GameState: {fileID: 559339747}
-  myAI: {fileID: 0}
-  InclineThreshold: 15
-  Beginning:
-    Index: 
-    bIsOpen: 0
-    TravelCost: 0
-    HeuristicCost: 0
-    FinalCost: 0
-  Current:
-    Index: 
-    bIsOpen: 0
-    TravelCost: 0
-    HeuristicCost: 0
-    FinalCost: 0
-  Ending:
-    Index: 
-    bIsOpen: 0
-    TravelCost: 0
-    HeuristicCost: 0
-    FinalCost: 0
-  Generated: []
-  Path: []
-  CurrentPathIndex: 0
-  EndCoord: 0000000000000000
-  StartCoord: 0000000000000000
 --- !u!114 &1010888937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3526,7 +3469,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SPAWN: 0
   STACK_COUNT: 0
-  GameState: {fileID: 0}
+  GameState: {fileID: 559339747}
   Character: {fileID: 0}
   Item: {fileID: 0}
 --- !u!1001 &1031166395
@@ -3586,7 +3529,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
     - target: {fileID: -7392296959423616122, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_Name
-      value: Med.RGlove
+      value: Med.Glove.R
       objectReference: {fileID: 0}
     - target: {fileID: -6586704053650886544, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_Enabled
@@ -3676,9 +3619,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1039827997017779720, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Med.Pad.L
+      objectReference: {fileID: 0}
     - target: {fileID: 2197537653325301141, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2633294297470878735, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Med.Pad.R
       objectReference: {fileID: 0}
     - target: {fileID: 2663375687412199445, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_Enabled
@@ -3708,6 +3659,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_Bones
       objectReference: {fileID: 0}
+    - target: {fileID: 5195626474422275800, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Med.Boot.R
+      objectReference: {fileID: 0}
     - target: {fileID: 5319036443835424685, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -3729,8 +3684,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: a39a836b7f2d0b047b4f33c512664acf, type: 2}
     - target: {fileID: 6806835926853781231, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Med.Glove.L
+      objectReference: {fileID: 0}
+    - target: {fileID: 6806835926853781231, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6997430321925644288, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
+      propertyPath: m_Name
+      value: Med.Boot.L
       objectReference: {fileID: 0}
     - target: {fileID: 8027697306986537271, guid: 01e1b5bfcec35c046b3218a121e12371, type: 3}
       propertyPath: m_IsActive

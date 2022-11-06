@@ -299,8 +299,6 @@ public class Character : Pawn, Interaction
     }
     public bool InventoryEquipWear(EquipSlot equipSlot, int inventoryIndex)
     {
-        //int equipIndex = (int)equipSlot;
-
         if (EquipmentSlots[(int)equipSlot] == null)
         {
             EquipmentSlots[(int)equipSlot] =
@@ -326,7 +324,8 @@ public class Character : Pawn, Interaction
             if (EquipmentSlots[IND] is TwoHandWrapper)
                 EquipmentSlots[ind] = null;
 
-            EquipmentSlots[IND] = SwapEquipWithInventory(EquipmentSlots[IND], inventoryIndex);
+            EquipmentSlots[IND] =
+                SwapEquipWithInventory(EquipmentSlots[IND], inventoryIndex);
             return true;
         }
         
@@ -416,7 +415,6 @@ public class Character : Pawn, Interaction
         }
         return false;
     }
-
     public EquipWrapper SwapEquipWithInventory(EquipWrapper input, int inventoryIndex)
     {
         // Only worry about hand slots

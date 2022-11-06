@@ -15,7 +15,7 @@ public enum TwoHandType
 }
 
 [CreateAssetMenu(fileName = "TwoHand", menuName = "ScriptableObjects/Equipment/TwoHand")]
-public class TwoHand : Equipment
+public class TwoHand : Hand
 {
     [Header("TwoHand Properties")]
     public TwoHandType Type;

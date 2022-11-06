@@ -13,7 +13,7 @@ public enum OneHandType
 }
 
 [CreateAssetMenu(fileName = "OneHand", menuName = "ScriptableObjects/Equipment/OneHand")]
-public class OneHand : Equipment
+public class OneHand : Hand
 {
     [Header("OneHand Properties")]
     public OneHandType Type;

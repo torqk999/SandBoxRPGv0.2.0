@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -44,13 +45,10 @@ public enum MaterialType
 {
     FLESH,
     HAIR,
-    WOOD_BRIGHT,
-    WOOD_DARK,
-    WOOD_ROTTEN,
-    METAL_BRIGHT,
-    METAL_RUST,
-    METAL_ROUGH,
-    TRIM_GOLD,
+    WOOD,
+    IRON,
+    STEEL,
+    GOLD,
     TRIM_AURA,
     LEATHER
 }
@@ -69,15 +67,7 @@ public class GearProfile : WardrobeProfile
     public MaterialType MatType;
     public SkinnedMeshRenderer thisMesh;
 }
-[Serializable]
-public class HandProfile : WardrobeProfile
-{
-    public HandSource Type;
-    public MaterialType Base;
-    public MaterialType Handle;
-    public List<MaterialType> Details;
-    public GameObject thisSource;
-}
+
 
 public enum CharAnimationState
 {
@@ -107,7 +97,7 @@ public class CharacterRender : MonoBehaviour
     public CharacterManager CharManager;
     public Character MyCharacter;
     public Animator MyAnimator;
-    public List<HandProfile> Hands;
+    //public List<HandProfile> Hands;
     public List<GearProfile> Gear;
     public CharAnimationState MyAnimationState;
 
@@ -118,6 +108,8 @@ public class CharacterRender : MonoBehaviour
     public bool bRunning;
     public int AnimationLayer;
     public float AniCombatTimer;
+
+    StringBuilder MeshTarget = new StringBuilder();
 
     public void CombatTimer()
     {
@@ -173,7 +165,11 @@ public class CharacterRender : MonoBehaviour
             return;
         }
     }
-
+    public void UpdateGearSlot(Wearable wear, bool equip = true)
+    {
+        MeshTarget.Clear();
+        //MeshTarget.Append($"{wear.EquipSkill}.{wear.Type}");
+    }
 
 
     // Start is called before the first frame update

@@ -10,7 +10,7 @@ public enum OffHandType
 }
 
 [CreateAssetMenu(fileName = "OffHand", menuName = "ScriptableObjects/Equipment/OffHand")]
-public class OffHand : Equipment
+public class OffHand : Hand
 {
     [Header("OffHand Properties")]
     public OffHandType Type;
