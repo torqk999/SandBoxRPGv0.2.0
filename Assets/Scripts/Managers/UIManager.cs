@@ -73,6 +73,7 @@ public class UIManager : MonoBehaviour
     public GameObject SkillSlotButtonPrefab;
     public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
+    
 
     [Header("Folders")]
     public Transform InventoryButtonContent;

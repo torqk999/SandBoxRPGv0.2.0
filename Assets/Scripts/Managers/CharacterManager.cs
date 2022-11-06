@@ -15,6 +15,8 @@ public class CharacterManager : MonoBehaviour
     [Header("References")]
     public GameState GameState;
     public Transform CharacterPartyFolder;
+    
+    public GameObject CharacterPrefab;
     public GameObject CharCanvasPrefab;
 
     [Header("CharacterWardrobe")]
@@ -286,6 +288,7 @@ public class CharacterManager : MonoBehaviour
         SetupAI(newCharacter);
         SetupCharacterCanvas(newCharacter);
         SetupCharacter(newCharacter, party);
+        SetupRender(newCharacter);
 
         if (wardrobe != null)
             GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
@@ -294,6 +297,21 @@ public class CharacterManager : MonoBehaviour
 
         return newCharacter;
     }
+
+    private void SetupRender(Character newCharacter)
+    {
+        GameObject newRenderObject = Instantiate(CharacterPrefab, newCharacter.transform);
+        newRenderObject.SetActive(true);
+        CharacterRender newRender = newRenderObject.GetComponent<CharacterRender>();
+        //Animator newAnimator = newRenderObject.GetComponent<Animator>();
+        newRender.MyCharacter = newCharacter;
+        //newRender.MyAnimator = newAnimator;
+        //newRender.Base = newRender.transform; // for now?
+        // Need hand slot logic
+
+
+    }
+
     void EquipWardobe(Character character, Wardrobe wardrobe)
     {
 
