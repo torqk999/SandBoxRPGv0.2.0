@@ -5,6 +5,7 @@ public class Effect : ScriptableObject
 {
     public string Name;
     public Sprite Sprite;
+    public ParticleSystem PSystem;
 
     public EffectDuration Duration;
     public ValueType Value;
@@ -15,7 +16,7 @@ public class Effect : ScriptableObject
 
     public ElementPackage ElementPack;
     public StatPackage StatAdjustPack;
-    //public ElementPackage PenPackage;
+
     public int EquipID; // for resolving passives/sustained lost on equip removal
     public float DurationLength;
     public float Timer;

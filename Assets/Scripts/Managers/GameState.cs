@@ -29,8 +29,8 @@ public class GameState : MonoBehaviour
 
     [Header("Test References")]
     public SimpleWorldBuilder testBuilder;
-    public GravityController Gravity;
-    public ObjectBuilder Builder;
+    //public GravityController Gravity;
+    //public ObjectBuilder Builder;
 
     [Header("Game Logic")]
     public bool bDebugEffects;
@@ -92,8 +92,8 @@ public class GameState : MonoBehaviour
         try
         {
             UIman = (UIManager)GameObject.FindGameObjectWithTag("UI_MAN").GetComponent("UIManager");
+            UIman.GameStateLinked = true;
             KeyMap.GenerateKeyMap();// Key-Sensitive action. Migrate later maybe?
-            UIman.UpdateActionBar();
         }
         catch
         {
@@ -109,7 +109,7 @@ public class GameState : MonoBehaviour
 
         UpdateHUDstate();
 
-        if (bGravity)
-            Gravity.UpdateGravity();
+        //if (bGravity)
+            //Gravity.UpdateGravity();
     }
 }

@@ -318,8 +318,8 @@ public class PlayerController : CharacterController
         if (Input.GetButtonDown("TacticalMode"))
             TacticalModeChange();
 
-        if (Input.GetButtonDown("BuildMode"))
-            GameState.Builder.BuildModeChange();
+        //if (Input.GetButtonDown("BuildMode"))
+        //    GameState.Builder.BuildModeChange();
 
         // Mode
         switch (CurrentTacticalMode)
@@ -331,9 +331,9 @@ public class PlayerController : CharacterController
                     Ray ray;
                     if (ReturnCameraRay(out ray))
                     {
-                        RaycastHit hit;
-                        if (Physics.Raycast(ray, out hit))
-                            FocusSelect(hit);
+                        //RaycastHit hit;
+                        //if (Physics.Raycast(ray, out hit))
+                            //FocusSelect(hit);
                     }
                 }
 
@@ -346,9 +346,9 @@ public class PlayerController : CharacterController
                     Ray ray;
                     if (ReturnCameraRay(out ray))
                     {
-                        RaycastHit hit;
-                        if (Physics.Raycast(ray, out hit))
-                            DeleteSelect(hit);
+                        //RaycastHit hit;
+                        //if (Physics.Raycast(ray, out hit))
+                            //DeleteSelect(hit);
                     }
                 }
 
@@ -357,13 +357,13 @@ public class PlayerController : CharacterController
             case TacticalMode.BUILD:
 
                 float scroll = Input.GetAxis("MouseScrollWheel");
-
+                /*
                 if (scroll != 0)
                     GameState.Builder.BuilderScrollWheel(scroll);
 
                 if (Input.GetMouseButtonDown(0))
                     GameState.Builder.BuildModeClick();
-
+                */
                 break;
         }
     }
@@ -506,9 +506,10 @@ public class PlayerController : CharacterController
         else
             CurrentTacticalMode++;
 
-        GameState.Builder.ToggleCast(CurrentTacticalMode == TacticalMode.BUILD);
+        //GameState.Builder.ToggleCast(CurrentTacticalMode == TacticalMode.BUILD);
         bIsZooming = !(CurrentTacticalMode == TacticalMode.BUILD);
     }
+    /*
     void FocusSelect(RaycastHit hit)
     {
         if (GameState.Gravity == null)
@@ -525,11 +526,12 @@ public class PlayerController : CharacterController
         CurrentPawn.Root.rotation = selection.CameraSnapPoint.rotation;
         CurrentPawn.Root.position = selection.CameraSnapPoint.position;
     }
+    
     void DeleteSelect(RaycastHit hit)
     {
         if (hit.transform.tag == GameState.Builder.BuilderTag)
             Destroy(hit.transform.gameObject);
-    }
+    }*/
     #endregion
 
     #region CHARACTER ACTIONS

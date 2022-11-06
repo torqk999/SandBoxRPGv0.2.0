@@ -67,7 +67,7 @@ public class GearProfile : WardrobeProfile
     public GearSlot Slot;
     public GearType GearType;
     public MaterialType MatType;
-    //public Mesh thisMesh;
+    public SkinnedMeshRenderer thisMesh;
 }
 [Serializable]
 public class HandProfile : WardrobeProfile
@@ -91,10 +91,10 @@ public enum CharAnimationState
 }
 public enum CharAnimation
 {
-  Chop,
-  Slice,
-  Poke,
-  Self
+    Chop,
+    Slice,
+    Poke,
+    Self
 }
 public enum AnimationTarget
 {
@@ -120,7 +120,6 @@ public class CharacterRender : MonoBehaviour
     {
         AniCombatTimer -= GlobalConstants.TIME_SCALE;
     }
-
     public void walkingAnimation()
     {
         int WalkingLayer = MyAnimator.GetLayerIndex("MovementLayer");

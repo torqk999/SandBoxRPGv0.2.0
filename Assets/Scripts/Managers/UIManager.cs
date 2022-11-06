@@ -58,6 +58,8 @@ public class UIManager : MonoBehaviour
 
     [Header("===LOGIC===")]
     public GameState GameState;
+    public bool GameStateLinked = false;
+    public bool UIinitialized = false;
 
     [Header("Indexing")]
     //public Interaction CurrentInteraction;
@@ -954,6 +956,7 @@ public class UIManager : MonoBehaviour
     {
         PopulateEquipAndRingSlotButtons();
         PopulateSkillSlotButtons();
+        UpdateActionBar();
 
         CurrentMenu = GameMenu.NONE;
 
@@ -983,17 +986,22 @@ public class UIManager : MonoBehaviour
             UIinitializer();
             PauseMenuRefresh();
             UIselectionRefresh();
+            UIinitialized = true;
         }
 
         catch
         {
-            Debug.Log("Failed to link to GameState!");
+            Debug.Log("Failed to initialize UI");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!UIinitialized &&
+            GameStateLinked)
+            Start();
+
         RepopulateMemberPanels();
         UpdatePartyPanel();
         UpdateInteractionHUD();
