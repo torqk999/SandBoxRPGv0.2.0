@@ -761,9 +761,14 @@ MonoBehaviour:
   - {fileID: 919132149155446097, guid: 09cb0b9450bd65941908be15fd17b644, type: 3}
   OffHandPrefabs:
   - {fileID: 919132149155446097, guid: 108af02ec8909b042ab4b15e2dcbbada, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  ShieldPrefabs:
   - {fileID: 919132149155446097, guid: ddd792f0cbf016e4bbf09ee84f327c09, type: 3}
-  - {fileID: 919132149155446097, guid: ddd792f0cbf016e4bbf09ee84f327c09, type: 3}
-  ShieldPrefabs: []
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   CurrentLootBagIndex: 0
 --- !u!1 &109683109
 GameObject:
@@ -3946,7 +3951,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 13974fbaf8e49594886677d20ac90286, type: 2}
   - {fileID: 11400000, guid: 7d33f8f7214d50349a1ba4a1fbad1398, type: 2}
   SampleShields:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: f4dd24213c8f9ac418aab203a29d4b01, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
