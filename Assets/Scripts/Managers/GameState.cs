@@ -89,9 +89,16 @@ public class GameState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Key-Sensitive action. Migrate later maybe?
-        KeyMap.GenerateKeyMap();
-        UIman.UpdateActionBar();
+        try
+        {
+            UIman = (UIManager)GameObject.FindGameObjectWithTag("UI_MAN").GetComponent("UIManager");
+            KeyMap.GenerateKeyMap();// Key-Sensitive action. Migrate later maybe?
+            UIman.UpdateActionBar();
+        }
+        catch
+        {
+            Debug.Log("Failed to initialize UI!");
+        }
     }
 
     // Update is called once per frame

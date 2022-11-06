@@ -977,9 +977,18 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        UIinitializer();
-        PauseMenuRefresh();
-        UIselectionRefresh();
+        try
+        {
+            GameState = (GameState)GameObject.FindGameObjectWithTag("GAME").GetComponent("GameState");
+            UIinitializer();
+            PauseMenuRefresh();
+            UIselectionRefresh();
+        }
+
+        catch
+        {
+            Debug.Log("Failed to link to GameState!");
+        }
     }
 
     // Update is called once per frame

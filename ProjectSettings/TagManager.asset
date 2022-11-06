@@ -12,6 +12,9 @@ TagManager:
   - MOB
   - CHARACTER
   - LOOT
+  - DROPFLOOR
+  - GAME
+  - UI_MAN
   layers:
   - Default
   - TransparentFX
