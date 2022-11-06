@@ -744,7 +744,7 @@ MonoBehaviour:
   LootTriggerVolumePrefab: {fileID: 1883595918}
   LootBagFolder: {fileID: 401079334}
   OneHandPrefabs:
-  - {fileID: 919132149155446097, guid: f604ae897c33d1f4f9d42384b81bd00f, type: 3}
+  - {fileID: 919132149155446097, guid: 108af02ec8909b042ab4b15e2dcbbada, type: 3}
   - {fileID: 919132149155446097, guid: e16334954571e044e81d3a001ee4ca39, type: 3}
   - {fileID: 919132149155446097, guid: 474e21adac917e64f96104cbd2fb1384, type: 3}
   - {fileID: 919132149155446097, guid: f577c2f45d2125b43b26c41c64d0dd27, type: 3}
@@ -756,13 +756,14 @@ MonoBehaviour:
   - {fileID: 919132149155446097, guid: ad6bea24e6d904046b1830b96a7c4f5a, type: 3}
   - {fileID: 919132149155446097, guid: 503c7cf6a30ac1542a0fd4857e377f4a, type: 3}
   - {fileID: 919132149155446097, guid: b6675b5f89c60da4da87baaf32f47ee9, type: 3}
-  - {fileID: 919132149155446097, guid: 29e7a5024739f8445aa3960e72319195, type: 3}
+  - {fileID: 919132149155446097, guid: 60463de1b0bcf874d8d5404114b21eec, type: 3}
   - {fileID: 919132149155446097, guid: 9c534b6c4ba0e6443ba1c6ea2472f34c, type: 3}
   - {fileID: 919132149155446097, guid: 09cb0b9450bd65941908be15fd17b644, type: 3}
   OffHandPrefabs:
-  - {fileID: 919132149155446097, guid: f604ae897c33d1f4f9d42384b81bd00f, type: 3}
+  - {fileID: 919132149155446097, guid: 108af02ec8909b042ab4b15e2dcbbada, type: 3}
   - {fileID: 919132149155446097, guid: ddd792f0cbf016e4bbf09ee84f327c09, type: 3}
   - {fileID: 919132149155446097, guid: ddd792f0cbf016e4bbf09ee84f327c09, type: 3}
+  ShieldPrefabs: []
   CurrentLootBagIndex: 0
 --- !u!1 &109683109
 GameObject:
@@ -815,7 +816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ControlMode: 2
-  ZoomMax: 100
+  ZoomMax: 60
   ZoomMin: 10
   ZoomScale: 1
   ZoomCurrent: 0
@@ -2838,6 +2839,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704980465}
   m_CullTransparentMesh: 1
+--- !u!4 &715061389 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6971332203772292417, guid: 26d29a40705240a408ae03811a70955e, type: 3}
+  m_PrefabInstance: {fileID: 1726285154}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &740374926
 GameObject:
   m_ObjectHideFlags: 0
@@ -3930,13 +3936,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e6dc9e15c5c76b44dac54391173776d7, type: 2}
   - {fileID: 11400000, guid: 02232b0215f0c5f4a9cf196907bd4ae9, type: 2}
   SampleOffHands:
-  - {fileID: 11400000, guid: 8b165eed1f90f654e9bf91f3e19d0212, type: 2}
-  - {fileID: 11400000, guid: bcdff97d2556faa42a6aa7411a46d7c6, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   SampleTwoHands:
   - {fileID: 11400000, guid: 43b22f22eacdc9e43b3d016bc9a900c1, type: 2}
   - {fileID: 11400000, guid: 4ad6ba0ae39db91468cadd69a2dd54d8, type: 2}
   - {fileID: 11400000, guid: 13974fbaf8e49594886677d20ac90286, type: 2}
   - {fileID: 11400000, guid: 7d33f8f7214d50349a1ba4a1fbad1398, type: 2}
+  SampleShields:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &1010888937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5015,6 +5028,10 @@ PrefabInstance:
       propertyPath: bRunning
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6971332204963202301, guid: 26d29a40705240a408ae03811a70955e, type: 3}
+      propertyPath: ShieldSlot
+      value: 
+      objectReference: {fileID: 715061389}
     - target: {fileID: 6971332204963202301, guid: 26d29a40705240a408ae03811a70955e, type: 3}
       propertyPath: CharManager
       value: 
@@ -6154,6 +6171,7 @@ MonoBehaviour:
   Base: {fileID: 0}
   MainHandSlot: {fileID: 0}
   OffHandSlot: {fileID: 0}
+  ShieldSlot: {fileID: 0}
   bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0

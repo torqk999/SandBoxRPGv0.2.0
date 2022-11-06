@@ -5,8 +5,9 @@ using UnityEngine;
 public enum OffHandType
 {
     PARRY,
-    SHIELD,
-    BUCKLER
+    TOTEM,
+    RELIC,
+    TORCH
 }
 
 [CreateAssetMenu(fileName = "OffHand", menuName = "ScriptableObjects/Equipment/OffHand")]

@@ -286,6 +286,10 @@ public class Character : Pawn, Interaction
                 case OffHandWrapper:
                     check = InventoryEquipOneHand(inventoryIndex, false);
                     break;
+
+                case ShieldWrapper:
+                    check = InventoryEquipOneHand(inventoryIndex, false);
+                    break;
             }
 
             if (check)

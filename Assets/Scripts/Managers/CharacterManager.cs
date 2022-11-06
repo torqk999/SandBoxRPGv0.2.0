@@ -303,13 +303,10 @@ public class CharacterManager : MonoBehaviour
         GameObject newRenderObject = Instantiate(CharacterPrefab, newCharacter.transform);
         newRenderObject.SetActive(true);
         CharacterRender newRender = newRenderObject.GetComponent<CharacterRender>();
-        //Animator newAnimator = newRenderObject.GetComponent<Animator>();
+        newCharacter.Render = newRender;
         newRender.MyCharacter = newCharacter;
-        //newRender.MyAnimator = newAnimator;
-        //newRender.Base = newRender.transform; // for now?
+
         // Need hand slot logic
-
-
     }
 
     void EquipWardobe(Character character, Wardrobe wardrobe)

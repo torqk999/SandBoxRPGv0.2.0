@@ -81,6 +81,12 @@ public class Wardrobe : ScriptableObject
                 character.EquipmentSlots[(int)EquipSlot.OFF] = newTwo;
                 equipId++;
                 return true;
+
+            case Shield:
+                ShieldWrapper newShield = new ShieldWrapper((Shield)hand, equipId, true);
+                character.EquipmentSlots[(int)EquipSlot.OFF] = newShield;
+                equipId++;
+                return true;
         }
         return false;
     }

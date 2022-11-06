@@ -19,6 +19,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<OneHand> SampleOneHands;
     public List<OffHand> SampleOffHands;
     public List<TwoHand> SampleTwoHands;
+    public List<Shield> SampleShields;
 
     public void SpawnSampleItems(Inventory inventory)
     {
@@ -88,6 +89,17 @@ public class SimpleWorldBuilder : MonoBehaviour
             if (twoHand == null)
                 continue;
             TwoHandWrapper newWrapper = new TwoHandWrapper(twoHand, GameState.EQUIPMENT_INDEX, true);
+            GameState.EQUIPMENT_INDEX++;
+
+            inventory.Items.Add(newWrapper);
+            //LootBox.Inventory.Items.Add(newWrapper);
+        }
+
+        foreach (Shield shield in SampleShields)
+        {
+            if (shield == null)
+                continue;
+            ShieldWrapper newWrapper = new ShieldWrapper(shield, GameState.EQUIPMENT_INDEX, true);
             GameState.EQUIPMENT_INDEX++;
 
             inventory.Items.Add(newWrapper);

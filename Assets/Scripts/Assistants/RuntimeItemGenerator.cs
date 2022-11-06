@@ -44,6 +44,11 @@ public class RuntimeItemGenerator : MonoBehaviour
                 Character.Inventory.PushItemIntoInventory(new TwoHandWrapper((TwoHand)Item, GameState.EQUIPMENT_INDEX, true));
                 break;
 
+            case Shield:
+                Debug.Log("Shield");
+                Character.Inventory.PushItemIntoInventory(new ShieldWrapper((Shield)Item, GameState.EQUIPMENT_INDEX, true));
+                break;
+
             case Ring:
                 Debug.Log("Ring");
                 Character.Inventory.PushItemIntoInventory(new RingWrapper((Ring)Item, GameState.EQUIPMENT_INDEX, true));

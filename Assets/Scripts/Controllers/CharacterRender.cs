@@ -101,6 +101,7 @@ public class CharacterRender : MonoBehaviour
     public Transform Base;
     public Transform MainHandSlot;
     public Transform OffHandSlot;
+    public Transform ShieldSlot;
 
     public bool bRunning;
     public int AnimationLayer;

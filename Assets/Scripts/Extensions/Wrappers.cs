@@ -38,7 +38,6 @@ public class EquipWrapper : ItemWrapper
 [System.Serializable]
 public class RingWrapper : EquipWrapper
 {
-    //public Ring Ring;
     public int CurrentSlotIndex;
 
     public RingWrapper(Ring ring, int equipId = -1, bool inject = false)
@@ -46,7 +45,6 @@ public class RingWrapper : EquipWrapper
         Name = ring.Name;
         Sprite = ring.Sprite;
         Equip = ring.CloneRing(equipId, inject);
-        //Equip = ring;
         CurrentSlotIndex = -1;
     }
 
@@ -58,14 +56,11 @@ public class RingWrapper : EquipWrapper
 [System.Serializable]
 public class WearableWrapper : EquipWrapper
 {
-    //public Wearable Wear;
-
     public WearableWrapper(Wearable wear, int equipId = -1, bool inject = false)
     {
         Name = wear.Name;
         Sprite = wear.Sprite;
         Equip = wear.CloneWear(equipId, inject);
-        //Equip = Wear;
     }
 
     public WearableWrapper CloneWearWrapper()
@@ -76,14 +71,11 @@ public class WearableWrapper : EquipWrapper
 [System.Serializable]
 public class OneHandWrapper : EquipWrapper
 {
-    //public OneHand Hand;
-
     public OneHandWrapper(OneHand oneHand, int equipId = -1, bool inject = false)
     {
         Name = oneHand.Name;
         Sprite = oneHand.Sprite;
         Equip = oneHand.CloneOneHand(equipId, inject);
-        //Equip = Hand;
     }
 
     public OneHandWrapper CloneOneHandWrapper()
@@ -94,14 +86,11 @@ public class OneHandWrapper : EquipWrapper
 [System.Serializable]
 public class OffHandWrapper : EquipWrapper
 {
-    //public OffHand Hand;
-
     public OffHandWrapper(OffHand offHand, int equipId = -1, bool inject = false)
     {
         Name = offHand.Name;
         Sprite = offHand.Sprite;
         Equip = offHand.CloneOffHand(equipId, inject);
-        //Equip = Hand;
     }
 
     public OffHandWrapper CloneOffHandWrapper()
@@ -112,18 +101,29 @@ public class OffHandWrapper : EquipWrapper
 [System.Serializable]
 public class TwoHandWrapper : EquipWrapper
 {
-    //public TwoHand Hand;
-
     public TwoHandWrapper(TwoHand twoHand, int equipId = -1, bool inject = false)
     {
         Name = twoHand.Name;
         Sprite = twoHand.Sprite;
         Equip = twoHand.CloneTwoHand(equipId, inject);
-        //Equip = Hand;
     }
 
     public TwoHandWrapper CloneTwoHandWrapper()
     {
         return new TwoHandWrapper((TwoHand)Equip);
+    }
+}
+public class ShieldWrapper : EquipWrapper
+{
+    public ShieldWrapper(Shield shield, int equipId = -1, bool inject = false)
+    {
+        Name = shield.Name;
+        Sprite = shield.Sprite;
+        Equip = shield.CloneShield(equipId, inject);
+    }
+
+    public ShieldWrapper CloneShieldWrapper()
+    {
+        return new ShieldWrapper((Shield)Equip);
     }
 }

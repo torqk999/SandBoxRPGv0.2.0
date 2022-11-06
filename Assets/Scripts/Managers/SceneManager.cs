@@ -12,6 +12,7 @@ public class SceneManager : MonoBehaviour
     public List<GameObject> OneHandPrefabs;
     public List<GameObject> TwoHandPrefabs;
     public List<GameObject> OffHandPrefabs;
+    public List<GameObject> ShieldPrefabs;
 
     public int CurrentLootBagIndex;
 
@@ -98,6 +99,10 @@ public class SceneManager : MonoBehaviour
                     newEquipObject = Instantiate(OffHandPrefabs[(int)((OffHand)equip.Equip).Type], render.OffHandSlot);
                     break;
 
+                case ShieldWrapper:
+                    newEquipObject = Instantiate(ShieldPrefabs[(int)((Shield)equip.Equip).Type], render.ShieldSlot);
+                    break;
+
                 default:
                     Debug.Log("Wasn't a hand equip...");
                     return false;
@@ -113,7 +118,7 @@ public class SceneManager : MonoBehaviour
         {
             equip.Instantiation = newEquipObject;
             newEquipObject.transform.localPosition = new Vector3(0, 0, 0);
-            newEquipObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
+            newEquipObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
             newEquipObject.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
         }
         

@@ -9,17 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d865df2199c8b647816ccda7e7e229c, type: 3}
-  m_Name: Buckler
+  m_Script: {fileID: 11500000, guid: e664fccfc4e0369429611655d5fcbdd7, type: 3}
+  m_Name: Shield
   m_EditorClassIdentifier: 
   itemID: 0
-  Name: Buckler
-  Sprite: {fileID: 21300000, guid: 7050e693a3b8d264cbd7e68bf1dd3f3d, type: 3}
+  Name: 
+  Sprite: {fileID: 0}
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipSkill: 5
+  EquipSkill: 0
+  ClassType: 0
   EquipLevel: 0
-  AbilityID: 0
-  EquipAbilites: []
-  Type: 2
+  EquipID: 0
+  EquipAbilities: []
+  Base: 0
+  Handle: 0
+  Details: 
+  Type: 0
