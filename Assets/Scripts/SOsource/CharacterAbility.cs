@@ -9,7 +9,7 @@ public enum RangeType
     SELF,
     TARGET,
     TARGET_AOE,
-    AOE,
+    SELF_AOE,
     SHAPED_VOLUME,
     SUMMON
 }
