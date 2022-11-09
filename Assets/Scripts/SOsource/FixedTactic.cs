@@ -6,7 +6,7 @@ public class FixedTactic : Tactic
     public TacFixedType Type;
     public Character Target;
 
-    public FixedTactic(Relation relation, CharacterAbility ability, TacFixedType type, Character target = null,
+    public FixedTactic(Relation relation, GenericAbility ability, TacFixedType type, Character target = null,
         bool enabled = true) : base(relation, ability, enabled)
     {
         Type = type;

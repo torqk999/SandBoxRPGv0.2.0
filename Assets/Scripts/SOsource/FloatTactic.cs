@@ -10,7 +10,7 @@ public class FloatTactic : Tactic
     public bool Relative;
     public float Value;
 
-    public FloatTactic(Relation relation, CharacterAbility ability,
+    public FloatTactic(Relation relation, GenericAbility ability,
         TacFloatType type, float value, RawStat stat = RawStat.HEALTH, Element element = Element.PHYSICAL,
         bool gte = true, bool relative = false, bool enabled = true) : base(relation, ability, enabled)
     {

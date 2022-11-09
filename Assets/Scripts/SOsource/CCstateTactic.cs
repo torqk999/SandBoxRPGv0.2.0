@@ -8,7 +8,7 @@ public class CCstateTactic : Tactic
     public bool AND_OR;
     public bool[] CCstates;
 
-    public CCstateTactic(Relation relation, CharacterAbility ability,
+    public CCstateTactic(Relation relation, GenericAbility ability,
         bool and_or = true, bool enabled = true) : base(relation, ability, enabled)
     {
         CCstates = new bool[CharacterMath.STATS_CC_COUNT];

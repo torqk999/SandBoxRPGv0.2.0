@@ -161,7 +161,7 @@ public class TargettedCondition : ThreatCondition, IthreatSingleCondition
 public struct ThreatAction
 {
     public int Threshold;
-    public CharacterAbility Ability;
+    public GenericAbility Ability;
 }
 public class ThreatProfile
 {

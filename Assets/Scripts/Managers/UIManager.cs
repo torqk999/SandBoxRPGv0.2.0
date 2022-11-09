@@ -638,7 +638,7 @@ public class UIManager : MonoBehaviour
 
         // Populate new buttons
         int index = 0;
-        foreach (CharacterAbility ability in GameState.pController.CurrentCharacter.Abilities)
+        foreach (GenericAbility ability in GameState.pController.CurrentCharacter.Abilities)
         {
             if (ability == null)
                 continue;

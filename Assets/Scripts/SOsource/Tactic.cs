@@ -8,9 +8,9 @@ public class Tactic : ScriptableObject
 {
     public bool bTacticEnabled;
     public Relation Relation;
-    public CharacterAbility Ability;
+    public GenericAbility Ability;
 
-    public Tactic(Relation relation, CharacterAbility ability, bool enabled = true)
+    public Tactic(Relation relation, GenericAbility ability, bool enabled = true)
     {
         Relation = relation;
         Ability = ability;

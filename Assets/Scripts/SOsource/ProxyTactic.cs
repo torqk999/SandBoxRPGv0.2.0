@@ -8,7 +8,7 @@ public class ProxyTactic : Tactic
     public int Count;
     public float Range;
 
-    public ProxyTactic(Relation relation, CharacterAbility ability, int count, float range,
+    public ProxyTactic(Relation relation, GenericAbility ability, int count, float range,
         bool allies = true, bool targetted = false, bool enabled = true) : base(relation, ability, enabled)
     {
         Allies = allies;

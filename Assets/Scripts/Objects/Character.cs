@@ -11,7 +11,6 @@ public enum AnimatorType
     BIRD,
     FISH
 }
-
 public enum EquipSlot
 {
     HEAD,
@@ -47,7 +46,7 @@ public class Character : Pawn, Interaction
     public ElementPackage Resistances;
 
     public CharacterSheet Sheet;
-    public List<CharacterAbility> Abilities;
+    public List<GenericAbility> Abilities;
     public List<Effect> Effects;
 
     [Header("Character Logic")]
@@ -61,12 +60,12 @@ public class Character : Pawn, Interaction
     public Party CurrentParty;
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
-    public CharacterAbility CurrentAction;
+    public GenericAbility CurrentAction;
     public Inventory Inventory;
     public GameObject CharacterCanvas;
 
     [Header("Character Slots")]
-    public CharacterAbility[] AbilitySlots;
+    public GenericAbility[] AbilitySlots;
     public EquipWrapper[] EquipmentSlots;
     public RingWrapper[] RingSlots;
 
@@ -230,7 +229,7 @@ public class Character : Pawn, Interaction
 
             for(int j = 0; j < EquipmentSlots[i].Equip.EquipAbilities.Length; j++)
             {
-                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip));
+                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipGeneric(this, EquipmentSlots[i].Equip));
             }
         }
 
@@ -241,7 +240,7 @@ public class Character : Pawn, Interaction
 
             for (int j = 0; j < RingSlots[i].Equip.EquipAbilities.Length; j++)
             {
-                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipAbility(this, RingSlots[i].Equip));
+                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipGeneric(this, RingSlots[i].Equip));
             }
         }
     }

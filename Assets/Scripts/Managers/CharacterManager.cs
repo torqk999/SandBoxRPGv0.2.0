@@ -78,7 +78,7 @@ public class CharacterManager : MonoBehaviour
     #region COMBAT
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
-        CharacterAbility call = caller.AbilitySlots[abilityIndex];
+        GenericAbility call = caller.AbilitySlots[abilityIndex];
         if (call == null) // Am I a joke to you?
             return false;
 
@@ -89,7 +89,7 @@ public class CharacterManager : MonoBehaviour
 
         return TargetAbility(call, caller, modifier);
     }
-    public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
+    public bool CheckAbility(GenericAbility call, Character caller, float modifier)
     {
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
@@ -115,7 +115,7 @@ public class CharacterManager : MonoBehaviour
 
         return true; // Good to do things Sam!
     }
-    bool TargetAbility(CharacterAbility call, Character caller, float modifier)
+    bool TargetAbility(GenericAbility call, Character caller, float modifier)
     {
         switch (call.RangeType)
         {
@@ -141,12 +141,12 @@ public class CharacterManager : MonoBehaviour
         UseAbility(call, caller, modifier);
         return true;
     }
-    void UseAbility(CharacterAbility call, Character caller, float modifier)
+    void UseAbility(GenericAbility call, Character caller, float modifier)
     {
         caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
         call.SetCooldown();
     }
-    List<Character> AOEtargetting(CharacterAbility call, Character caller)
+    List<Character> AOEtargetting(GenericAbility call, Character caller)
     {
         List<Character> AOEcandidates = new List<Character>();
 
@@ -165,7 +165,7 @@ public class CharacterManager : MonoBehaviour
             
         return AOEcandidates;
     }
-    void ApplyAbilitySingle(Character target, CharacterAbility call)
+    void ApplyAbilitySingle(Character target, GenericAbility call)
     {
         for (int i = 0; i < call.Effects.Length; i++)
         {
@@ -336,7 +336,7 @@ public class CharacterManager : MonoBehaviour
         character.CurrentProximityInteractions = new List<Interaction>();
 
         // Slots
-        character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
+        character.AbilitySlots = new GenericAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
 

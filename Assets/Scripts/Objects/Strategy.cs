@@ -59,9 +59,9 @@ public class Strategy : MonoBehaviour
         }
         Character.CurrentAction = null;
     }
-    CharacterAbility ReturnComparableAbility(CharacterAbility source)
+    GenericAbility ReturnComparableAbility(GenericAbility source)
     {
-        foreach (CharacterAbility ability in Character.Abilities) // Check all abilities
+        foreach (GenericAbility ability in Character.Abilities) // Check all abilities
         {
             if (ability.AbilityType != source.AbilityType)
                 continue;
@@ -74,7 +74,7 @@ public class Strategy : MonoBehaviour
         }
         return null;
     }
-    bool CheckForComparableEffect(CharacterAbility target, Effect source)
+    bool CheckForComparableEffect(GenericAbility target, Effect source)
     {
         Effect effect = Array.Find(target.Effects, x => x.Action == source.Action);
         if (effect == null)

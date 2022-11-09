@@ -149,7 +149,7 @@ public class PawnManager : MonoBehaviour
     void AutoEquipAbilities(Character character)
     {
         int index = 0;
-        foreach (CharacterAbility ability in character.Abilities)
+        foreach (GenericAbility ability in character.Abilities)
         {
             character.AbilitySlots[index] = ability;
             index++;
