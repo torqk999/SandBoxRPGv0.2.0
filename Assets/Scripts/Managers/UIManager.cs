@@ -73,7 +73,7 @@ public class UIManager : MonoBehaviour
     public GameObject SkillSlotButtonPrefab;
     public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
-    
+
 
     [Header("Folders")]
     public Transform InventoryButtonContent;
@@ -110,7 +110,7 @@ public class UIManager : MonoBehaviour
     public Canvas PauseMenuCanvas;
     public Canvas GameMenuCanvas;
     public Canvas HUDcanvas;
-    
+
     [Header("KeyMap")]
     public Transform KeyMapContent;
     public GameObject KeyMapSample;
@@ -279,20 +279,20 @@ public class UIManager : MonoBehaviour
         //if (!Event.current.isMouse &&
         //    Event.current.type == EventType.MouseDown)
         //{
-            /*for (int i = 0; i < GlobalConstants.TOTAL_MOUSE_BUTTONS; ++i)
-            {
-                KeyCode target = (KeyCode)((int)KeyCode.Mouse0 + i);
+        /*for (int i = 0; i < GlobalConstants.TOTAL_MOUSE_BUTTONS; ++i)
+        {
+            KeyCode target = (KeyCode)((int)KeyCode.Mouse0 + i);
 
-                if (Input.GetKeyDown(target))
-                {
-                    ResolveMap(target);
-                return;
-                }
-            }*/
+            if (Input.GetKeyDown(target))
+            {
+                ResolveMap(target);
+            return;
+            }
+        }*/
 
 
         //}
-        
+
         if (Event.current.type != EventType.MouseDown &&
             Event.current.keyCode != KeyCode.None)
         {
@@ -324,7 +324,7 @@ public class UIManager : MonoBehaviour
         if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(SelectedEquipSlot, SelectedRingSlot, InventoryListSelection))
             return;
 
-        
+
         GameState.pController.CurrentCharacter.UpdateAbilites();
         RefreshGameMenuCanvas();
         UpdateActionBar(); // may have lost equipped abillities
@@ -672,41 +672,36 @@ public class UIManager : MonoBehaviour
         if (GameState.pController.CurrentCharacter.Abilities[SkillListSelection] == null)
             return;
 
-        CharacterAbility selectiion = GameState.pController.CurrentCharacter.Abilities[SkillListSelection];
+        CharacterAbility selection = GameState.pController.CurrentCharacter.Abilities[SkillListSelection];
 
-        switch (selectiion)
+        switch(selection)
         {
-            case ProcAbility:
-                foreach (Effect effect in ((ProcAbility)selectiion).Effects)
+            case TargettedAbility:
+                foreach (BaseEffect effect in ((TargettedAbility)selection).Effects)
                 {
                     GameObject newEffectPanel = Instantiate(EffectPanelPrefab);
                     StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);
                     outputBuild.Append($"Effect: {effect.Name}\n");
-                    outputBuild.Append($"Action: {effect.Action}\n");
-                    outputBuild.Append($"Duration: {(effect.Duration == EffectDuration.TIMED ? effect.DurationLength.ToString() : effect.Duration.ToString())}\n");
+                    outputBuild.Append($"Duration: {effect.DurationLength}");
 
-                    switch (effect.Action)
+                    switch (effect)
                     {
-                        case EffectAction.DMG_HEAL:
-                            outputBuild.Append($"Target: {effect.TargetStat}\n");
-                            outputBuild.Append($"Amount: {effect.Value}\n");
+                        case CurrentStatEffect:
 
-                            //Debug.Log($"{effect.Name} : {effect.ElementPack.Elements.Length}");
+                            outputBuild.Append($"Target: {((CurrentStatEffect)effect).TargetStat}\n");
+                            outputBuild.Append($"Amount: {((CurrentStatEffect)effect).Value}\n");
 
                             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
                             {
                                 //if (effect.ElementPack.Elements[i] == 0)
                                 //    continue;
 
-                                outputBuild.Append($"\n{(Element)i} : {effect.ElementPack.Elements[i]}");
+                                outputBuild.Append($"\n{(Element)i} : {((CurrentStatEffect)effect).ElementPack.Elements[i]}");
                             }
                             break;
 
-                        //case EffectAction.SPAWN:
-                        //    break;
-
-                        case EffectAction.CROWD_CONTROL:
-                            outputBuild.Append($"Type: {effect.TargetCCstatus}");
+                        case CrowdControlEffect:
+                            outputBuild.Append($"Type: {((CrowdControlEffect)effect).TargetCCstatus}");
                             break;
                     }
 
@@ -717,12 +712,9 @@ public class UIManager : MonoBehaviour
 
                     newEffectPanel.transform.SetParent(EffectStatsContent);
                     newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
-                    //newEffectPanel.transform.parent = EffectStatsContent;
                 }
-
                 break;
         }
-
     }
     void PopulateEquipAndRingSlotButtons()
     {
@@ -734,7 +726,7 @@ public class UIManager : MonoBehaviour
                 CreateCallBackIdentity(EquipButtons[i], i, ButtonType.SLOT_EQUIP);
             }
         }
-            
+
         for (int i = 0; i < CharacterMath.RING_SLOT_COUNT && i < RingButtons.Length; i++)
         {
             if (RingButtons[i] != null)
@@ -939,7 +931,7 @@ public class UIManager : MonoBehaviour
             {
                 InteractionHUDslider.gameObject.SetActive(false);
             }
-            }
+        }
         if (data is LootData)
         {
             LootData lootData = (LootData)data;

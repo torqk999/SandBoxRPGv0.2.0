@@ -86,11 +86,11 @@ public enum CharAnimation
     Poke,
     Self
 }
-public enum AnimationTarget
+/*public enum AnimationTarget
 {
     ElementalBall,
     ElementalArrow
-}
+}*/
 
 public class CharacterRender : MonoBehaviour
 {

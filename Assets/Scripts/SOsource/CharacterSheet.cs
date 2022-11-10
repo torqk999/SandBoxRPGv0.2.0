@@ -18,7 +18,11 @@ public enum Race
     LIKIN,
     REPTILIAN,
     AVIAN,
-    CEPHILOPOD
+    CEPHILOPOD,
+    ///
+    ELEMENTAL,
+    GOLEM,
+    SPRITE
 }
 public enum Faction
 {
@@ -29,34 +33,44 @@ public enum Faction
 [CreateAssetMenu(fileName = "CharacterSheet", menuName = "ScriptableObjects/CharacterSheet")]
 public class CharacterSheet : ScriptableObject
 {
+    public Sprite Portrait;
     public string Name;
     public int Level;
-    public Sprite Portrait;
+    public float CurrentEXP;
+    public float NextLevelEXP;
+
     public Race Race;
     public Faction Faction;
 
-    public EXPpackage CurrentEXP;
-    public EXPpackage NextLevelEXP;
-    public LVLpackage Skills;
-    
+    public EXPpackage CurrentSkillEXP;
+    public EXPpackage NextLevelSkillEXP;
+    public LVLpackage SkillsLevels;
+
+    public CharacterAbility[] InnateAbilities;
+    public BaseEffect[] InnatePassives;
+
     public void Clone(CharacterSheet target)
     {
         Name = target.Name;
         Level = target.Level;
-        Portrait = target.Portrait;
-        Race = target.Race;
-        //Faction = target.Faction;
         CurrentEXP = target.CurrentEXP;
         NextLevelEXP = target.NextLevelEXP;
-        Skills = target.Skills;
+
+        Portrait = target.Portrait;
+        Race = target.Race;
+        Faction = target.Faction;
+
+        CurrentSkillEXP = target.CurrentSkillEXP;
+        NextLevelSkillEXP = target.NextLevelSkillEXP;
+        SkillsLevels = target.SkillsLevels;
     }
 
     public void Fresh()
     {
         Level = 0;
-        CurrentEXP = new EXPpackage(CharacterMath.STATS_LEVELS_COUNT);
-        NextLevelEXP = new EXPpackage(CharacterMath.STATS_LEVELS_COUNT);
-        Skills = new LVLpackage(CharacterMath.STATS_LEVELS_COUNT);
+        CurrentSkillEXP = new EXPpackage(CharacterMath.STATS_SKILLS_COUNT);
+        NextLevelSkillEXP = new EXPpackage(CharacterMath.STATS_SKILLS_COUNT);
+        SkillsLevels = new LVLpackage(CharacterMath.STATS_SKILLS_COUNT);
     }
 
     /*== GOOD ==

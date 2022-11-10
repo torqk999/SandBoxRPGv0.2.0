@@ -37,7 +37,7 @@ public static class CharacterMath
     public static readonly int STATS_CC_COUNT = Enum.GetNames(typeof(CCstatus)).Length;
     public static readonly int STATS_RAW_COUNT = Enum.GetNames(typeof(RawStat)).Length;
     public static readonly int STATS_ELEMENT_COUNT = Enum.GetNames(typeof(Element)).Length;
-    public static readonly int STATS_LEVELS_COUNT = Enum.GetNames(typeof(SkillType)).Length;
+    public static readonly int STATS_SKILLS_COUNT = Enum.GetNames(typeof(SkillType)).Length;
     public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(EquipSlot)).Length;
 
     public const int RES_PRIME_DENOM = 100;

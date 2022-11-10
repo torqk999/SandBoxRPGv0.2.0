@@ -1,7 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+/*
+enum ParticleCast
+{
 
+}
+
+enum Projectiles
+{
+
+}
+*/
 public class SceneManager : MonoBehaviour
 {
     public GameState GameState;
@@ -13,7 +23,13 @@ public class SceneManager : MonoBehaviour
     public List<GameObject> TwoHandPrefabs;
     public List<GameObject> OffHandPrefabs;
     public List<GameObject> ShieldPrefabs;
-
+    /*
+    public List<ParticleSystem> Casts;
+    public List<ParticleSystem> Projectiles;
+    public List<ParticleSystem> Impacts;
+    public List<ParticleSystem> Conditions;
+    public List<ParticleSystem> Auras;
+    */
     public int CurrentLootBagIndex;
 
     public bool TakeFromContainer(Character character, GenericContainer lootBag, int index)

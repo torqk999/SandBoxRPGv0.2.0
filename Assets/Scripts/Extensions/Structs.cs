@@ -9,7 +9,7 @@ public enum ClassType
     MAGE,
     ROGUE
 }
-public enum EffectDuration
+/*public enum EffectDuration
 {
     ONCE,
     TIMED,
@@ -19,12 +19,12 @@ public enum EffectDuration
 public enum EffectAction
 {
     DMG_HEAL,
-    //SPAWN,
-    CLEANSE,
+    //CC_CLEANSE,
+    //BUFF_CLEANSE,
     CROWD_CONTROL,
     RES_ADJ,
     STAT_ADJ,
-}
+}*/
 public enum ValueType
 {
     NONE,

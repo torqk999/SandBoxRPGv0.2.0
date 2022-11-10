@@ -151,10 +151,17 @@ public class SimpleAIcontroller : CharacterController
     }
     bool CheckAbilityRange()
     {
-        return (State == AIstate.AGGRO
-    && CurrentCharacter.CurrentAction != null
-    && CurrentCharacter.CurrentTargetCharacter != null
-    && Vector3.Distance(CurrentCharacter.Root.position, CurrentCharacter.CurrentTargetCharacter.Root.position) <= (CurrentCharacter.CurrentAction.RangeValue)); //* AbilityRangeScalar));
+        if (CurrentCharacter.CurrentAction == null)
+            return false;
+
+        if (!(CurrentCharacter.CurrentAction is TargettedAbility))
+            return true;
+
+        TargettedAbility currentTargettedAction = (TargettedAbility)CurrentCharacter.CurrentAction;
+
+        return (/*State == AIstate.AGGRO
+    && */CurrentCharacter.CurrentTargetCharacter != null
+    && Vector3.Distance(CurrentCharacter.Root.position, CurrentCharacter.CurrentTargetCharacter.Root.position) <= (currentTargettedAction.AOE_Range)); //* AbilityRangeScalar));
     }
     /*void MoveAggro()
     {

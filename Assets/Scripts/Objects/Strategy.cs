@@ -59,28 +59,39 @@ public class Strategy : MonoBehaviour
         }
         Character.CurrentAction = null;
     }
-    ProcAbility ReturnComparableAbility(ProcAbility source)
+    CharacterAbility ReturnComparableAbility(CharacterAbility source)
     {
-        foreach (ProcAbility ability in Character.Abilities) // Check all abilities
+        foreach (CharacterAbility ability in Character.Abilities) // Check all abilities
         {
             if (ability.School != source.School)
                 continue;
 
-            foreach (Effect effect in source.Effects) // Check for atleast one matching effect
+            switch(source)
             {
-                if (CheckForComparableEffect(ability, effect))
-                    return ability;
+                case TargettedAbility:
+                    if (!(ability is TargettedAbility))
+                        continue;
+
+                    TargettedAbility effectSource = (TargettedAbility)source;
+                    TargettedAbility effectAbility = (TargettedAbility)ability;
+
+                    foreach (BaseEffect effect in effectSource.Effects) // Check for atleast one matching effect
+                    {
+                        if (CheckForComparableEffect(effectAbility, effect))
+                            return ability;
+                    }
+                    break;
             }
         }
         return null;
     }
-    bool CheckForComparableEffect(ProcAbility target, Effect source)
+    bool CheckForComparableEffect(TargettedAbility target, BaseEffect source)
     {
-        Effect effect = Array.Find(target.Effects, x => x.Action == source.Action);
-        if (effect == null)
-            return false;
+        //BaseEffect effect = Array.Find(target.Effects, x => x.Action == source.Action);
+        //if (effect == null)
+        //    return false;
 
-        switch(effect.Action)
+        /*switch(effect.Action)
         {
             case EffectAction.DMG_HEAL:
                 if (effect.Duration != source.Duration
@@ -89,10 +100,10 @@ public class Strategy : MonoBehaviour
                     return false;
                 return true;
 
-            /*case EffectAction.SPAWN:
-                return true;*/
+            case EffectAction.SPAWN:
+                return true;
 
-            case EffectAction.CLEANSE:
+            case EffectAction.CC_CLEANSE:
                 if (effect.TargetCCstatus != source.TargetCCstatus)
                     return false;
                 return true;
@@ -115,12 +126,12 @@ public class Strategy : MonoBehaviour
                  || effect.Value != source.Value)
                     return false;
                 return true;
-        }
+        }*/
         return false;
     }
     bool CheckTacticConditions(Tactic tactic)
     {
-        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateStatModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
+        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateStatValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
             return false;
 
         ReturnEligableCharacters(tactic, ref CandidateBuffer);
@@ -275,9 +286,9 @@ public class Strategy : MonoBehaviour
         foreach (Character source in eligable)
         {
             Array.Fill(CCstateBuffer, false);
-            foreach (Effect effect in source.Effects)
-                if (effect.Action == EffectAction.CROWD_CONTROL)
-                    CCstateBuffer[(int)effect.TargetCCstatus] = true;
+            foreach (CrowdControlEffect effect in source.Risiduals)
+                //if (effect.Action == EffectAction.CROWD_CONTROL)
+                CCstateBuffer[(int)effect.TargetCCstatus] = true;
 
             bool check = tactic.AND_OR;
             for (int i = 0; i < CharacterMath.STATS_CC_COUNT; i++)

@@ -2,7 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+public enum TargetType
+{
+    ALL,
+    SELF,
+    ALLY,
+    ENEMY
+}
+public enum AbilitySchool
+{
+    ATTACK,
+    SPELL,
+    POWER
+}
 //[CreateAssetMenu(fileName = "CharacterAbility", menuName = "ScriptableObjects/CharacterAbility")]
 public class CharacterAbility : ScriptableObject
 {
@@ -13,34 +25,32 @@ public class CharacterAbility : ScriptableObject
 
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
-    public AnimationTarget AnimationTarget;
 
+    public float CostValue;
     public RawStat CostTarget;
     public ValueType CostType;
-    public AbilitySchool School;
 
-    public float RangeValue;
-    public float CostValue;
+    public AbilitySchool School;
+    public float CastRange;
     public float CD_Duration;
     public float CD_Timer;
 
-    public void CloneAbility(CharacterAbility ability, int equipId = -1, float potency = 1, bool inject = false)
+    public virtual void CloneAbility(CharacterAbility source, int equipId, float potency = 1, bool inject = false)
     {
         EquipID = equipId;
-        Name = ability.Name;
-        Sprite = ability.Sprite;
+        Name = source.Name;
+        Sprite = source.Sprite;
 
-        AnimationState = ability.AnimationState;
-        CharAnimation = ability.CharAnimation;
-        AnimationTarget = ability.AnimationTarget;
+        AnimationState = source.AnimationState;
+        CharAnimation = source.CharAnimation;
 
-        CostTarget = ability.CostTarget;
-        CostType = ability.CostType;
-        School = ability.School;
+        CostValue = source.CostValue;
+        CostTarget = source.CostTarget;
+        CostType = source.CostType;
 
-        RangeValue = ability.RangeValue;
-        CostValue = ability.CostValue;
-        CD_Duration = ability.CD_Duration;
+        School = source.School;
+        CastRange = source.CastRange;
+        CD_Duration = source.CD_Duration;
         CD_Timer = 0;
     }
     public void SetCooldown()
@@ -56,11 +66,11 @@ public class CharacterAbility : ScriptableObject
     {
         /*float potency =*/ return 1 +
 
-    (((currentCharacter.Sheet.Skills.Levels[(int)equip.EquipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +                      // Level
+    (((currentCharacter.Sheet.SkillsLevels.Levels[(int)equip.EquipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +                      // Level
 
     (equip.EquipLevel * CharacterMath.WEP_LEVEL_FACTOR) +                                                                    // Weapon
 
-    (currentCharacter.Sheet.Skills.Levels[(int)equip.EquipSkill] * CharacterMath.SKILL_MUL_LEVEL[(int)equip.EquipSkill])) *  // Skill
+    (currentCharacter.Sheet.SkillsLevels.Levels[(int)equip.EquipSkill] * CharacterMath.SKILL_MUL_LEVEL[(int)equip.EquipSkill])) *  // Skill
 
     CharacterMath.SKILL_MUL_RACE[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                                  // Race
     }

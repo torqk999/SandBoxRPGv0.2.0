@@ -82,21 +82,21 @@ public class CharacterManager : MonoBehaviour
         if (call == null) // Am I a joke to you?
             return false;
 
-        float modifier = caller.GenerateStatModifier(call.CostType, call.CostTarget);
+        float costModifier = caller.GenerateStatValueModifier(call.CostType, call.CostTarget);
 
-        if (!CheckAbility(call, caller, modifier))
+        if (!CheckAbility(call, caller, costModifier))
             return false;
 
         switch(call)
         {
             case ProcAbility:
-                return TargetProcAbility((ProcAbility)call, caller, modifier);
+                return TargettedAbility((ProcAbility)call, caller, costModifier);
         }
 
         Debug.Log("Unrecognized Ability sub-class");
         return false;
     }
-    public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
+    public bool CheckAbility(CharacterAbility call, Character caller, float costModifier)
     {
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
@@ -117,14 +117,34 @@ public class CharacterManager : MonoBehaviour
                 break;
         }
 
-        if (call.CostValue * modifier > caller.CurrentStats.Stats[(int)call.CostTarget])
+        if (call.CostValue * costModifier > caller.CurrentStats.Stats[(int)call.CostTarget])
+            return false;
+
+        if (call.CastRange > Vector3.Distance(caller.Root.position, caller.CurrentTargetCharacter.Root.position))
             return false;
 
         return true; // Good to do things Sam!
     }
-    bool TargetProcAbility(ProcAbility call, Character caller, float modifier)
+    bool TargettedAbility(TargettedAbility call, Character caller, float modifier)
     {
-        switch (call.RangeType)
+        if (call.AOE_Range == 0)
+        {
+            ApplyAbilitySingle(caller, call);
+        }
+        if (call.AOE_Range > 0)
+        {
+            List<Character> targets = AOEtargetting(call, caller);
+            if (targets.Count < 1)
+                return false;
+            foreach (Character target in targets)
+                ApplyAbilitySingle(target, call);
+        }
+        if(call.AOE_Range < 0)
+        {
+            Debug.Log("Negative AOE range!   >:| ");
+            return false;
+        }
+        /*switch (call.CastRange)
         {
             case RangeType.SELF:
                 ApplyAbilitySingle(caller, call);
@@ -133,65 +153,62 @@ public class CharacterManager : MonoBehaviour
             case RangeType.TARGET:
                 if (caller.CurrentTargetCharacter == null)
                     return false;
-                if (Vector3.Distance(caller.CurrentTargetCharacter.Root.position, caller.Root.position) <= call.RangeValue)
+                if (Vector3.Distance(caller.CurrentTargetCharacter.Root.position, caller.Root.position) <= call.AOE_Range)
                     ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
                 break;
 
             case RangeType.SELF_AOE:
-                List<Character> targets = AOEtargetting(call, caller);
-                if (targets.Count < 1)
-                    return false;
-                foreach (Character target in targets)
-                    ApplyAbilitySingle(target, call);
+                
                 break;
-        }
+        }*/
         UseAbility(call, caller, modifier);
         return true;
     }
-    void UseAbility(ProcAbility call, Character caller, float modifier)
+    void UseAbility(CharacterAbility call, Character caller, float modifier)
     {
-        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
+        switch(call)
+        {
+            case ProcAbility:
+                caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
+                break;
+
+            case PassiveAbility:
+                caller.SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * modifier;
+                caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier; // I think?
+                break;
+        }
+        
         call.SetCooldown();
     }
-    List<Character> AOEtargetting(ProcAbility call, Character caller)
+    List<Character> AOEtargetting(TargettedAbility call, Character caller)
     {
         List<Character> AOEcandidates = new List<Character>();
 
-
         foreach (Character target in CharacterPool)
         {
-            if (call.Target == TargetType.ALLY && target.Sheet.Faction != caller.Sheet.Faction)
+            if (call.AbilityTarget == TargetType.ALLY && target.Sheet.Faction != caller.Sheet.Faction)
                 continue;
 
-            if (call.Target == TargetType.ENEMY && target.Sheet.Faction == caller.Sheet.Faction)
+            if (call.AbilityTarget == TargetType.ENEMY && target.Sheet.Faction == caller.Sheet.Faction)
                 continue;
 
-            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)
+            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.AOE_Range)
                 AOEcandidates.Add(target);
         }
             
         return AOEcandidates;
     }
-    void ApplyAbilitySingle(Character target, ProcAbility call)
+    void ApplyAbilitySingle(Character target, TargettedAbility call)
     {
         for (int i = 0; i < call.Effects.Length; i++)
         {
-            Effect mod = call.Effects[i];
+            BaseEffect effect = call.Effects[i];
 
-            switch (mod.Duration)
-            {
-                case EffectDuration.ONCE:
-                    target.ApplySingleEffect(call.Effects[i]);
-                    break;
+            if (effect.EquipID < 0 && (effect.DurationLength > 0) // Timed
+                || effect.EquipID > -1)                                       // Sustain or passive
+                target.AddRisidiualEffect(call.Effects[i], call.EquipID);
 
-                case EffectDuration.TIMED:
-                    target.ApplyRisidualEffect(call.Effects[i]);
-                    break;
-
-                case EffectDuration.SUSTAINED:
-                    target.ApplyRisidualEffect(call.Effects[i]);
-                    break;
-            }
+            target.ApplySingleEffect(call.Effects[i]);                            // First or only proc
         }
     }
     #endregion

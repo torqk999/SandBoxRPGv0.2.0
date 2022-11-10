@@ -42,12 +42,13 @@ public class Character : Pawn, Interaction
 
     [Header("Character Stats")]
     public StatPackage CurrentStats;
+    public StatPackage SustainedStatValues;
     public StatPackage MaximumStatValues;
     public ElementPackage Resistances;
 
     public CharacterSheet Sheet;
     public List<CharacterAbility> Abilities;
-    public List<Effect> Effects;
+    public List<BaseEffect> Risiduals;
 
     [Header("Character Logic")]
     public bool bIsPaused;
@@ -183,7 +184,7 @@ public class Character : Pawn, Interaction
     }
     void InitializePassiveRegen()
     {
-        Effects = new List<Effect>();
+        Risiduals = new List<BaseEffect>();
 
         for (int i = 0; i < 3; i++)
         {
@@ -191,24 +192,10 @@ public class Character : Pawn, Interaction
                 (CharacterMath.RAW_GROWTH[i] * Sheet.Level));
 
             //Debug.Log($"{Sheet.Name} : REGEN {(RawStat)i} : {magnitude}");
-            Effects.Add(CreateRegen((RawStat)i, magnitude));
+            //Risiduals.Add(CreateRegen((RawStat)i, magnitude));
+            Risiduals.Add(new CurrentStatEffect((RawStat)i, magnitude));
         }
     }
-    Effect CreateRegen(RawStat targetStat, float magnitude)
-    {
-        Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
-        regen.Name = $"{targetStat} REGEN";
-        regen.TargetStat = targetStat;
-        regen.Value = ValueType.FLAT;
-        regen.Action = EffectAction.DMG_HEAL;
-        regen.Duration = EffectDuration.SUSTAINED;
-        regen.ElementPack = new ElementPackage();
-        regen.ElementPack.Init();
-        regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
-
-        return regen;
-    }
-
     #endregion
 
     #region ABILITIES
@@ -428,7 +415,7 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region COMBAT
-    public float GenerateStatModifier(ValueType type, RawStat stat)
+    public float GenerateStatValueModifier(ValueType type, RawStat stat)
     {
         float changeType = 0;
         switch (type)
@@ -455,57 +442,88 @@ public class Character : Pawn, Interaction
         }
         return changeType;
     }
-    public void ApplySingleEffect(Effect effect)
+    public void ApplySingleEffect(BaseEffect effect)
     {
-        //Debug.Log($"{Root.name} : {effect.Name}");
-        if (effect.bIsImmune)
-            return;
-        //Debug.Log("yo0");
-        switch(effect.Action)
+        switch(effect)
         {
-            case EffectAction.DMG_HEAL:
-                //Debug.Log("yo1");
-                ApplyDamage(effect);
+            case CurrentStatEffect:
+                ApplyDamage((CurrentStatEffect)effect);
                 break;
 
-            //case EffectAction.SPAWN:
-            //    break;
-
-            case EffectAction.CROWD_CONTROL:
+            case ImmuneEffect:
+                ApplyCleanse((ImmuneEffect)effect);
                 break;
         }
     }
-    public void ApplyRisidualEffect(Effect mod)
+    public void ApplyCleanse(ImmuneEffect effect)
     {
-        Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
-        modInstance.CloneEffect(mod);
+        /*
+        int index = Risiduals.FindIndex(x => x.Action == effect.Action && !x.bIsImmune);
 
-        switch (modInstance.Action)
+        if (index < 0)
+            return;
+        */
+        foreach(CrowdControlEffect ccEffect in Risiduals)
         {
-            //case EffectAction.CROWD_CONTROL:
-            //    break;
+            if (ccEffect.TargetCCstatus == effect.TargetCCstatus)
+                Risiduals.Remove(ccEffect);
+        }
+
+        /*switch (effect.TargetCC)
+        {
+            case EffectAction.DMG_HEAL:
+                if (Risiduals[index].TargetElement == effect.TargetElement)
+                    Risiduals[index] = null;
+                break;
 
             case EffectAction.RES_ADJ:
+                if (Risiduals[index].TargetElement == effect.TargetElement)
+                    Risiduals[index] = null;
                 break;
 
             case EffectAction.STAT_ADJ:
+                if (Risiduals[index].TargetStat == effect.TargetStat)
+                    Risiduals[index] = null;
+                break;
+        }*/
+
+    }
+    public void AddRisidiualEffect(BaseEffect mod, int equipId)
+    {
+        BaseEffect modInstance = null;//(BaseEffect)ScriptableObject.CreateInstance("Effect");
+        //modInstance.CloneEffect(mod);
+
+        switch (mod)
+        {
+            case CurrentStatEffect:
+                modInstance = (CurrentStatEffect)ScriptableObject.CreateInstance("CurrentStatEffect");
+                ((CurrentStatEffect)modInstance).CloneEffect(mod, equipId);
+                break;
+
+            case MaxStatEffect:
+                break;
+
+            case ResistanceEffect:
+                break;
+
+            case CrowdControlEffect:
                 break;
         }
 
-        Effects.Add(modInstance);
+        Risiduals.Add(modInstance);
     }
-    void ApplyDamage(Effect damage)
+    void ApplyDamage(CurrentStatEffect damage)
     {
         if (CheckDamageImmune(damage.TargetStat))
             return;
 
         float totalValue = 0;
-        float changeType = GenerateStatModifier(damage.Value, damage.TargetStat);
+        float changeType = GenerateStatValueModifier(damage.Value, damage.TargetStat);
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
-            if (CheckElementalImmune((Element)i))
-                continue;
+            //if (CheckElementalImmune((Element)i))
+                //continue;
 
             float change = (changeType * damage.ElementPack.Elements[i]) * (1 - (Resistances.Elements[i] / (Resistances.Elements[i] + CharacterMath.RES_PRIME_DENOM)));
             totalValue += (Element)i == Element.HEALING ? -change : change; // Everything but healing
@@ -547,16 +565,16 @@ public class Character : Pawn, Interaction
                 break;
         }
     }
-    public void UpdateResAdjust(Effect adjust, bool apply = true)
+    public void UpdateResAdjust(ResistanceEffect adjust, bool apply = true)
     {
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
-            float change = adjust.ElementPack.Elements[i];
+            float change = adjust.ResAdjustments.Elements[i];
             change = apply ? change : -change;
             Resistances.Elements[i] += change;
         }
     }
-    public void UpdateStatAdjust(Effect adjust, bool apply = true)
+    public void UpdateStatAdjust(MaxStatEffect adjust, bool apply = true)
     {
         for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
         {
@@ -567,26 +585,24 @@ public class Character : Pawn, Interaction
     }
     public bool CheckCCstatus(CCstatus status)
     {
-        return Effects.Find(x => x.Action == EffectAction.CROWD_CONTROL &&
-                                 x.TargetCCstatus == status) != null;
+        return Risiduals.Find(x => x is CrowdControlEffect &&
+                                 ((CrowdControlEffect)x).TargetCCstatus == status) != null;
     }
     public bool CheckCCimmune(CCstatus status)
     {
-        return Effects.Find(x => x.Action == EffectAction.CROWD_CONTROL &&
-                                 x.bIsImmune &&
-                                 x.TargetCCstatus == status) != null;
+        return Risiduals.Find(x => x is ImmuneEffect &&
+                                 ((ImmuneEffect)x).TargetCCstatus == status) != null;
     }
-    public bool CheckElementalImmune(Element element)
+    /*public bool CheckElementalImmune(Element element)
     {
-        return Effects.Find(x => x.Action == EffectAction.RES_ADJ &&
+        return Risiduals.Find(x => x.Action == EffectAction.RES_ADJ &&
                                  x.bIsImmune &&
                                  x.TargetElement == element) != null;
-    }
+    }*/
     public bool CheckDamageImmune(RawStat stat)
     {
-        return Effects.Find(x => x.Action == EffectAction.DMG_HEAL &&
-                                 x.bIsImmune &&
-                                 x.TargetStat == stat) != null;
+        return Risiduals.Find(x => x is InvulnerableEffect &&
+                                 ((InvulnerableEffect)x).TargetStat == stat) != null;
     }
     #endregion
 
@@ -601,7 +617,7 @@ public class Character : Pawn, Interaction
 
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
-            Effects.Add(new Effect("Death", CCstatus.DEAD));
+            Risiduals.Add(new CrowdControlEffect("Death", CCstatus.DEAD));
             bAssetUpdate = true;
             DebugState = DebugState.DEAD;
             //Source.GetComponent<Collider>().enabled = false;
@@ -621,21 +637,24 @@ public class Character : Pawn, Interaction
     }
     void UpdateRisidualEffects()
     {
-        for (int i = Effects.Count - 1; i > -1; i--)
+        for (int i = Risiduals.Count - 1; i > -1; i--)
         {
+            //if (!(Effects[i] is ProcEffect))
+                //continue;
             //Debug.Log($"{Root.name} : {Effects[i].Name}");
-            //Effect risidual = character.Effects[i];
-            if (Effects[i].Duration == EffectDuration.TIMED)
+            //BaseEffect risidual = character.Effects[i];
+            //ProcEffect proc = (ProcEffect)Effects[i];
+
+            ApplySingleEffect(Risiduals[i]);
+            if (Risiduals[i].EquipID < 0)
             {
-                Effects[i].Timer -= GlobalConstants.TIME_SCALE;
-                if (Effects[i].Timer <= 0)
+                Risiduals[i].Timer -= GlobalConstants.TIME_SCALE;
+                if (Risiduals[i].Timer <= 0)
                 {
-                    Effects.RemoveAt(i);
+                    Risiduals.RemoveAt(i);
                     continue;
                 }
             }
-            //character.Effects[i] = risidual;
-            ApplySingleEffect(Effects[i]);
         }
     }
     void UpdateAssetTimer()
