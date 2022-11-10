@@ -844,21 +844,45 @@ MonoBehaviour:
   IntentForward: 0
   IntentRight: 0
   bIntent: 1
+  BaseStats:
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+    Stats: []
   CurrentStats:
-    Stats: []
     Reflection:
       HEALTH: 0
       STAMINA: 0
       MANA: 0
       SPEED: 0
+    Stats: []
+  SustainedStatValues:
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+    Stats: []
   MaximumStatValues:
-    Stats: []
     Reflection:
       HEALTH: 0
       STAMINA: 0
       MANA: 0
       SPEED: 0
-  Resistances:
+    Stats: []
+  BaseResistances:
+    Reflection:
+      PHYSICAL: 0
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Elements: []
+  CurrentResistances:
     Reflection:
       PHYSICAL: 0
       FIRE: 0
@@ -870,12 +894,8 @@ MonoBehaviour:
     Elements: []
   Sheet: {fileID: 11400000, guid: c54092d548bb7e944b5f64f3f77f4848, type: 2}
   Abilities:
-  - {fileID: 11400000, guid: 76d1a3c863e5cbe46864486982432ef2, type: 2}
-  - {fileID: 11400000, guid: 358636cff03cd164491d5979df1c8062, type: 2}
-  - {fileID: 11400000, guid: 1bcd03eb51258de4397df5b6432e2153, type: 2}
-  - {fileID: 11400000, guid: c776a16cc05723e4cb87a57b1daa6855, type: 2}
-  - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
-  Effects: []
+  - {fileID: 11400000, guid: 85b3d7ef40f064a47b0a4b91c1a73c40, type: 2}
+  Risiduals: []
   bIsPaused: 0
   bIsSpawn: 0
   bTimedSpawn: 0
@@ -1209,21 +1229,45 @@ MonoBehaviour:
   IntentForward: 0
   IntentRight: 0
   bIntent: 0
+  BaseStats:
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+    Stats: []
   CurrentStats:
-    Stats: []
     Reflection:
       HEALTH: 0
       STAMINA: 0
       MANA: 0
       SPEED: 0
+    Stats: []
+  SustainedStatValues:
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+    Stats: []
   MaximumStatValues:
-    Stats: []
     Reflection:
       HEALTH: 0
       STAMINA: 0
       MANA: 0
       SPEED: 0
-  Resistances:
+    Stats: []
+  BaseResistances:
+    Reflection:
+      PHYSICAL: 0
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Elements: []
+  CurrentResistances:
     Reflection:
       PHYSICAL: 0
       FIRE: 0
@@ -1235,7 +1279,7 @@ MonoBehaviour:
     Elements: []
   Sheet: {fileID: 11400000, guid: 9bc71a162292fc149b29dbc1ec528e91, type: 2}
   Abilities: []
-  Effects: []
+  Risiduals: []
   bIsPaused: 0
   bIsSpawn: 0
   bTimedSpawn: 0
@@ -5713,21 +5757,45 @@ MonoBehaviour:
   IntentForward: 0
   IntentRight: 0
   bIntent: 0
+  BaseStats:
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+    Stats: []
   CurrentStats:
-    Stats: []
     Reflection:
       HEALTH: 0
       STAMINA: 0
       MANA: 0
       SPEED: 0
+    Stats: []
+  SustainedStatValues:
+    Reflection:
+      HEALTH: 0
+      STAMINA: 0
+      MANA: 0
+      SPEED: 0
+    Stats: []
   MaximumStatValues:
-    Stats: []
     Reflection:
       HEALTH: 0
       STAMINA: 0
       MANA: 0
       SPEED: 0
-  Resistances:
+    Stats: []
+  BaseResistances:
+    Reflection:
+      PHYSICAL: 0
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Elements: []
+  CurrentResistances:
     Reflection:
       PHYSICAL: 0
       FIRE: 0
@@ -5744,7 +5812,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1bcd03eb51258de4397df5b6432e2153, type: 2}
   - {fileID: 11400000, guid: c776a16cc05723e4cb87a57b1daa6855, type: 2}
   - {fileID: 11400000, guid: 1b99b45865987074d84064aa96c47ba6, type: 2}
-  Effects: []
+  Risiduals: []
   bIsPaused: 0
   bIsSpawn: 0
   bTimedSpawn: 0
@@ -6180,6 +6248,7 @@ MonoBehaviour:
   bRunning: 0
   AnimationLayer: 0
   AniCombatTimer: 0
+  CurrentWepPose: 0
 --- !u!1 &2045316612
 GameObject:
   m_ObjectHideFlags: 0

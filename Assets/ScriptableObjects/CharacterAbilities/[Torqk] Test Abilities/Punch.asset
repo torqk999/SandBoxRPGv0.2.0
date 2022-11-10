@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e680f039ae4e2ea4b92dc82aee081665, type: 3}
   m_Name: Punch
   m_EditorClassIdentifier: 
-  EquipID: 0
   Name: Punch
   Sprite: {fileID: 21300000, guid: 98f008d1f643f174584c747fc67bd8cd, type: 3}
+  Cast: {fileID: 0}
+  CastLocation: 0
   AnimationState: 0
   CharAnimation: 2
   CostValue: 5
@@ -24,9 +25,9 @@ MonoBehaviour:
   CastRange: 0
   CD_Duration: 2
   CD_Timer: 0
+  EquipID: 0
   Effects:
   - {fileID: 11400000, guid: cde0f30d5c6a99846bbff0733f0397e7, type: 2}
-  AbilityTarget: 0
+  AbilityTarget: 3
   AOE_Range: 0
-  Cast: {fileID: 0}
   Projectile: {fileID: 0}

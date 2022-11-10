@@ -169,6 +169,8 @@ public class Character : Pawn, Interaction
         if (Sheet == null)
             return;
 
+        Debug.Log("Initializing Char Sheet");
+
         BaseStats = new StatPackage(Sheet);
         MaximumStatValues = new StatPackage(BaseStats);
         CurrentStats = new StatPackage(BaseStats);
@@ -176,6 +178,11 @@ public class Character : Pawn, Interaction
         BaseResistances = new ElementPackage(Sheet);
         CurrentResistances = new ElementPackage(BaseResistances);
 
+        Debug.Log("Char Packages Initialized");
+
+        Risiduals = new List<BaseEffect>();
+
+        if ()
         foreach(BaseEffect innate in Sheet.InnatePassives)
         {
             Risiduals.Add(innate.GenerateEffect(0,GeneratePotency()));

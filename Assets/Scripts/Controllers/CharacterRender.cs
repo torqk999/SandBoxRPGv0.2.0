@@ -171,6 +171,14 @@ public class CharacterRender : MonoBehaviour
         //MeshTarget.Append($"{wear.EquipSkill}.{wear.Type}");
     }
 
+    public void UpdateHandSlot(Hand hand = null)
+    {
+        //if (hand == null)
+        //{
+        //    MyAnimator.SetInteger("")
+        //}
+        //MyAnimator
+    }
 
     // Start is called before the first frame update
     void Start()

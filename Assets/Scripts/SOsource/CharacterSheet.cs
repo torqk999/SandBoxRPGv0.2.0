@@ -63,6 +63,9 @@ public class CharacterSheet : ScriptableObject
         CurrentSkillEXP = target.CurrentSkillEXP;
         NextLevelSkillEXP = target.NextLevelSkillEXP;
         SkillsLevels = target.SkillsLevels;
+
+        InnateAbilities = new CharacterAbility[target.InnateAbilities.Length];
+        InnatePassives = new BaseEffect[target.InnatePassives.Length];
     }
 
     public void Fresh()
