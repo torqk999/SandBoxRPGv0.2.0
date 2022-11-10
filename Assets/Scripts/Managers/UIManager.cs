@@ -638,7 +638,7 @@ public class UIManager : MonoBehaviour
 
         // Populate new buttons
         int index = 0;
-        foreach (GenericAbility ability in GameState.pController.CurrentCharacter.Abilities)
+        foreach (ProcAbility ability in GameState.pController.CurrentCharacter.Abilities)
         {
             if (ability == null)
                 continue;
@@ -672,48 +672,57 @@ public class UIManager : MonoBehaviour
         if (GameState.pController.CurrentCharacter.Abilities[SkillListSelection] == null)
             return;
 
-        foreach (Effect effect in GameState.pController.CurrentCharacter.Abilities[SkillListSelection].Effects)
+        CharacterAbility selectiion = GameState.pController.CurrentCharacter.Abilities[SkillListSelection];
+
+        switch (selectiion)
         {
-            GameObject newEffectPanel = Instantiate(EffectPanelPrefab);
-            StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);
-            outputBuild.Append($"Effect: {effect.Name}\n");
-            outputBuild.Append($"Action: {effect.Action}\n");
-            outputBuild.Append($"Duration: {(effect.Duration == EffectDuration.TIMED ? effect.DurationLength.ToString() : effect.Duration.ToString())}\n");
+            case ProcAbility:
+                foreach (Effect effect in ((ProcAbility)selectiion).Effects)
+                {
+                    GameObject newEffectPanel = Instantiate(EffectPanelPrefab);
+                    StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);
+                    outputBuild.Append($"Effect: {effect.Name}\n");
+                    outputBuild.Append($"Action: {effect.Action}\n");
+                    outputBuild.Append($"Duration: {(effect.Duration == EffectDuration.TIMED ? effect.DurationLength.ToString() : effect.Duration.ToString())}\n");
 
-            switch(effect.Action)
-            {
-                case EffectAction.DMG_HEAL:
-                    outputBuild.Append($"Target: {effect.TargetStat}\n");
-                    outputBuild.Append($"Amount: {effect.Value}\n");
-
-                    //Debug.Log($"{effect.Name} : {effect.ElementPack.Elements.Length}");
-
-                    for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+                    switch (effect.Action)
                     {
-                        //if (effect.ElementPack.Elements[i] == 0)
-                        //    continue;
+                        case EffectAction.DMG_HEAL:
+                            outputBuild.Append($"Target: {effect.TargetStat}\n");
+                            outputBuild.Append($"Amount: {effect.Value}\n");
 
-                        outputBuild.Append($"\n{(Element)i} : {effect.ElementPack.Elements[i]}");
+                            //Debug.Log($"{effect.Name} : {effect.ElementPack.Elements.Length}");
+
+                            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+                            {
+                                //if (effect.ElementPack.Elements[i] == 0)
+                                //    continue;
+
+                                outputBuild.Append($"\n{(Element)i} : {effect.ElementPack.Elements[i]}");
+                            }
+                            break;
+
+                        //case EffectAction.SPAWN:
+                        //    break;
+
+                        case EffectAction.CROWD_CONTROL:
+                            outputBuild.Append($"Type: {effect.TargetCCstatus}");
+                            break;
                     }
-                    break;
 
-                case EffectAction.SPAWN:
-                    break;
+                    if (effect.Sprite != null)
+                        newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.Sprite;
 
-                case EffectAction.CROWD_CONTROL:
-                    outputBuild.Append($"Type: {effect.TargetCCstatus}");
-                    break;
-            }
+                    newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = outputBuild.ToString();
 
-            if (effect.Sprite != null)
-                newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.Sprite;
+                    newEffectPanel.transform.SetParent(EffectStatsContent);
+                    newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
+                    //newEffectPanel.transform.parent = EffectStatsContent;
+                }
 
-            newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = outputBuild.ToString();
-
-            newEffectPanel.transform.SetParent(EffectStatsContent);
-            newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
-            //newEffectPanel.transform.parent = EffectStatsContent;
+                break;
         }
+
     }
     void PopulateEquipAndRingSlotButtons()
     {

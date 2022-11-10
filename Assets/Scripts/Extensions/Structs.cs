@@ -19,7 +19,7 @@ public enum EffectDuration
 public enum EffectAction
 {
     DMG_HEAL,
-    SPAWN,
+    //SPAWN,
     CLEANSE,
     CROWD_CONTROL,
     RES_ADJ,

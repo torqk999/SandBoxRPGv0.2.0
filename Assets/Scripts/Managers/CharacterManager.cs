@@ -78,7 +78,7 @@ public class CharacterManager : MonoBehaviour
     #region COMBAT
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
-        GenericAbility call = caller.AbilitySlots[abilityIndex];
+        CharacterAbility call = caller.AbilitySlots[abilityIndex];
         if (call == null) // Am I a joke to you?
             return false;
 
@@ -87,26 +87,33 @@ public class CharacterManager : MonoBehaviour
         if (!CheckAbility(call, caller, modifier))
             return false;
 
-        return TargetAbility(call, caller, modifier);
+        switch(call)
+        {
+            case ProcAbility:
+                return TargetProcAbility((ProcAbility)call, caller, modifier);
+        }
+
+        Debug.Log("Unrecognized Ability sub-class");
+        return false;
     }
-    public bool CheckAbility(GenericAbility call, Character caller, float modifier)
+    public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
     {
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
 
-        switch(call.AbilityType) // Check CC
+        switch(call.School) // Check CC
         {
-            case AbilityType.ATTACK:
+            case AbilitySchool.ATTACK:
                 if (caller.CheckCCstatus(CCstatus.UN_ARMED))
                     return false;
                 break;
 
-            case AbilityType.SPELL:
+            case AbilitySchool.SPELL:
                 if (caller.CheckCCstatus(CCstatus.SILENCED))
                     return false;
                 break;
 
-            case AbilityType.POWER:
+            case AbilitySchool.POWER:
                 break;
         }
 
@@ -115,7 +122,7 @@ public class CharacterManager : MonoBehaviour
 
         return true; // Good to do things Sam!
     }
-    bool TargetAbility(GenericAbility call, Character caller, float modifier)
+    bool TargetProcAbility(ProcAbility call, Character caller, float modifier)
     {
         switch (call.RangeType)
         {
@@ -130,7 +137,7 @@ public class CharacterManager : MonoBehaviour
                     ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
                 break;
 
-            case RangeType.AOE:
+            case RangeType.SELF_AOE:
                 List<Character> targets = AOEtargetting(call, caller);
                 if (targets.Count < 1)
                     return false;
@@ -141,12 +148,12 @@ public class CharacterManager : MonoBehaviour
         UseAbility(call, caller, modifier);
         return true;
     }
-    void UseAbility(GenericAbility call, Character caller, float modifier)
+    void UseAbility(ProcAbility call, Character caller, float modifier)
     {
         caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
         call.SetCooldown();
     }
-    List<Character> AOEtargetting(GenericAbility call, Character caller)
+    List<Character> AOEtargetting(ProcAbility call, Character caller)
     {
         List<Character> AOEcandidates = new List<Character>();
 
@@ -165,7 +172,7 @@ public class CharacterManager : MonoBehaviour
             
         return AOEcandidates;
     }
-    void ApplyAbilitySingle(Character target, GenericAbility call)
+    void ApplyAbilitySingle(Character target, ProcAbility call)
     {
         for (int i = 0; i < call.Effects.Length; i++)
         {
@@ -336,7 +343,7 @@ public class CharacterManager : MonoBehaviour
         character.CurrentProximityInteractions = new List<Interaction>();
 
         // Slots
-        character.AbilitySlots = new GenericAbility[CharacterMath.ABILITY_SLOTS];
+        character.AbilitySlots = new ProcAbility[CharacterMath.ABILITY_SLOTS];
         character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
         character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
 

@@ -129,7 +129,7 @@ public class CharacterRender : MonoBehaviour
             MyAnimator.SetLayerWeight(WalkingLayer, 0);
         }*/
     }
-    public void AnimationAttempt(GenericAbility AttemptedAbility = null)
+    public void AnimationAttempt(ProcAbility AttemptedAbility = null)
 
     {
         if (AttemptedAbility == null)

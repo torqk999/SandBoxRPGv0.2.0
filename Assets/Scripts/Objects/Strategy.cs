@@ -59,11 +59,11 @@ public class Strategy : MonoBehaviour
         }
         Character.CurrentAction = null;
     }
-    GenericAbility ReturnComparableAbility(GenericAbility source)
+    ProcAbility ReturnComparableAbility(ProcAbility source)
     {
-        foreach (GenericAbility ability in Character.Abilities) // Check all abilities
+        foreach (ProcAbility ability in Character.Abilities) // Check all abilities
         {
-            if (ability.AbilityType != source.AbilityType)
+            if (ability.School != source.School)
                 continue;
 
             foreach (Effect effect in source.Effects) // Check for atleast one matching effect
@@ -74,7 +74,7 @@ public class Strategy : MonoBehaviour
         }
         return null;
     }
-    bool CheckForComparableEffect(GenericAbility target, Effect source)
+    bool CheckForComparableEffect(ProcAbility target, Effect source)
     {
         Effect effect = Array.Find(target.Effects, x => x.Action == source.Action);
         if (effect == null)
@@ -89,8 +89,8 @@ public class Strategy : MonoBehaviour
                     return false;
                 return true;
 
-            case EffectAction.SPAWN:
-                return true;
+            /*case EffectAction.SPAWN:
+                return true;*/
 
             case EffectAction.CLEANSE:
                 if (effect.TargetCCstatus != source.TargetCCstatus)

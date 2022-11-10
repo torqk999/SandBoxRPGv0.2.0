@@ -46,7 +46,7 @@ public class Character : Pawn, Interaction
     public ElementPackage Resistances;
 
     public CharacterSheet Sheet;
-    public List<GenericAbility> Abilities;
+    public List<CharacterAbility> Abilities;
     public List<Effect> Effects;
 
     [Header("Character Logic")]
@@ -60,12 +60,12 @@ public class Character : Pawn, Interaction
     public Party CurrentParty;
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
-    public GenericAbility CurrentAction;
+    public CharacterAbility CurrentAction;
     public Inventory Inventory;
     public GameObject CharacterCanvas;
 
     [Header("Character Slots")]
-    public GenericAbility[] AbilitySlots;
+    public CharacterAbility[] AbilitySlots;
     public EquipWrapper[] EquipmentSlots;
     public RingWrapper[] RingSlots;
 
@@ -229,7 +229,7 @@ public class Character : Pawn, Interaction
 
             for(int j = 0; j < EquipmentSlots[i].Equip.EquipAbilities.Length; j++)
             {
-                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipGeneric(this, EquipmentSlots[i].Equip));
+                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip, false));
             }
         }
 
@@ -240,7 +240,7 @@ public class Character : Pawn, Interaction
 
             for (int j = 0; j < RingSlots[i].Equip.EquipAbilities.Length; j++)
             {
-                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipGeneric(this, RingSlots[i].Equip));
+                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipAbility(this, RingSlots[i].Equip, false));
             }
         }
     }
@@ -468,8 +468,8 @@ public class Character : Pawn, Interaction
                 ApplyDamage(effect);
                 break;
 
-            case EffectAction.SPAWN:
-                break;
+            //case EffectAction.SPAWN:
+            //    break;
 
             case EffectAction.CROWD_CONTROL:
                 break;

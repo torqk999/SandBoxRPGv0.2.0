@@ -9,7 +9,7 @@ public class Equipment : ItemObject
     public ClassType ClassType;
     public int EquipLevel;
     public int EquipID;
-    public GenericAbility[] EquipAbilities;
+    public ProcAbility[] EquipAbilities;
 
     public Equipment CloneEquip(string instanceType = "Equipment", int equipId = -1, bool inject = false)
     {
@@ -24,13 +24,13 @@ public class Equipment : ItemObject
 
         return newEquip;
     }
-    public void CloneAbilities(GenericAbility[] source, float amp = 1, bool inject = false)
+    public void CloneAbilities(ProcAbility[] source, float amp = 1, bool inject = false)
     {
-        EquipAbilities = new GenericAbility[source.Length];
+        EquipAbilities = new ProcAbility[source.Length];
         for (int i = 0; i < EquipAbilities.Length; i++)
         {
-            EquipAbilities[i] = (GenericAbility)ScriptableObject.CreateInstance("CharacterAbility");
-            EquipAbilities[i].CloneGeneric(source[i], EquipID, amp, inject);
+            EquipAbilities[i] = (ProcAbility)ScriptableObject.CreateInstance("CharacterAbility");
+            EquipAbilities[i].CloneProc(source[i], EquipID, amp, inject);
         }
     }
 }
