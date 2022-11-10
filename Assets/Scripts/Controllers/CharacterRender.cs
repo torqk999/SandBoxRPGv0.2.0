@@ -67,8 +67,6 @@ public class GearProfile : WardrobeProfile
     public MaterialType MatType;
     public SkinnedMeshRenderer thisMesh;
 }
-
-
 public enum CharAnimationState
 {
     Idle,
@@ -107,6 +105,8 @@ public class CharacterRender : MonoBehaviour
     public int AnimationLayer;
     public float AniCombatTimer;
 
+    public SkillType CurrentWepPose;
+
     StringBuilder MeshTarget = new StringBuilder();
 
     public void CombatTimer()
@@ -129,7 +129,7 @@ public class CharacterRender : MonoBehaviour
             MyAnimator.SetLayerWeight(WalkingLayer, 0);
         }*/
     }
-    public void AnimationAttempt(ProcAbility AttemptedAbility = null)
+    public void AnimationAttempt(CharacterAbility AttemptedAbility = null)
 
     {
         if (AttemptedAbility == null)

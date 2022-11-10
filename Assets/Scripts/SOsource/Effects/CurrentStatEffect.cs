@@ -9,9 +9,9 @@ public class CurrentStatEffect : StatEffect
     public RawStat TargetStat;
     public ElementPackage ElementPack;
 
-    public override void CloneEffect(BaseEffect source, int equipId = -1, float amp = 1, bool inject = true)
+    public override void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
     {
-        base.CloneEffect(source, equipId, amp, inject);
+        base.CloneEffect(source, equipId, potency, inject);
 
         if (!(source is CurrentStatEffect))
             return;
@@ -19,8 +19,15 @@ public class CurrentStatEffect : StatEffect
         CurrentStatEffect currentStatEffect = (CurrentStatEffect)source;
 
         ElementPack = new ElementPackage(currentStatEffect.ElementPack);
-        ElementPack.Reflection.Reflect(ref ElementPack.Elements, inject);
-        ElementPack.Amplify(amp);
+        ElementPack.Reflect(inject);
+        ElementPack.Amplify(potency);
+    }
+
+    public override BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    {
+        CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
+        newEffect.CloneEffect(this, equipId, potency, inject);
+        return newEffect;
     }
 
     public CurrentStatEffect(RawStat targetStat, float magnitude) // Default regen
@@ -28,9 +35,6 @@ public class CurrentStatEffect : StatEffect
         Name = $"{targetStat} REGEN";
         TargetStat = targetStat;
         Value = ValueType.FLAT;
-        //Action = EffectAction.DMG_HEAL;
-        ElementPack = new ElementPackage();
-        ElementPack.Init();
-        ElementPack.Elements[(int)Element.HEALING] = magnitude;
+        ElementPack = new ElementPackage(magnitude);
     }
 }

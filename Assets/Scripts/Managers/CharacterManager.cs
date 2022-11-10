@@ -144,41 +144,18 @@ public class CharacterManager : MonoBehaviour
             Debug.Log("Negative AOE range!   >:| ");
             return false;
         }
-        /*switch (call.CastRange)
-        {
-            case RangeType.SELF:
-                ApplyAbilitySingle(caller, call);
-                break;
-
-            case RangeType.TARGET:
-                if (caller.CurrentTargetCharacter == null)
-                    return false;
-                if (Vector3.Distance(caller.CurrentTargetCharacter.Root.position, caller.Root.position) <= call.AOE_Range)
-                    ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
-                break;
-
-            case RangeType.SELF_AOE:
-                
-                break;
-        }*/
         UseAbility(call, caller, modifier);
         return true;
     }
     void UseAbility(CharacterAbility call, Character caller, float modifier)
     {
-        switch(call)
-        {
-            case ProcAbility:
-                caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
-                break;
+        caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
 
-            case PassiveAbility:
-                caller.SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * modifier;
-                caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier; // I think?
-                break;
-        }
-        
-        call.SetCooldown();
+        if (call is PassiveAbility)
+            caller.SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * modifier;
+
+        else
+            call.SetCooldown();
     }
     List<Character> AOEtargetting(TargettedAbility call, Character caller)
     {

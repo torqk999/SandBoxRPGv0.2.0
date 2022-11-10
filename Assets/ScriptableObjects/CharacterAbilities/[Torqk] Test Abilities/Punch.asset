@@ -10,21 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e680f039ae4e2ea4b92dc82aee081665, type: 3}
-  m_Name: ProcAbility
+  m_Name: Punch
   m_EditorClassIdentifier: 
   EquipID: 0
-  Name: 
-  Sprite: {fileID: 0}
+  Name: Punch
+  Sprite: {fileID: 21300000, guid: 98f008d1f643f174584c747fc67bd8cd, type: 3}
   AnimationState: 0
-  CharAnimation: 0
-  CostValue: 0
-  CostTarget: 0
-  CostType: 0
+  CharAnimation: 2
+  CostValue: 5
+  CostTarget: 1
+  CostType: 4
   School: 0
   CastRange: 0
-  CD_Duration: 0
+  CD_Duration: 2
   CD_Timer: 0
-  Effects: []
+  Effects:
+  - {fileID: 11400000, guid: cde0f30d5c6a99846bbff0733f0397e7, type: 2}
   AbilityTarget: 0
   AOE_Range: 0
   Cast: {fileID: 0}

@@ -41,10 +41,12 @@ public class Character : Pawn, Interaction
     public bool bIntent;
 
     [Header("Character Stats")]
+    public StatPackage BaseStats;
     public StatPackage CurrentStats;
     public StatPackage SustainedStatValues;
     public StatPackage MaximumStatValues;
-    public ElementPackage Resistances;
+    public ElementPackage BaseResistances;
+    public ElementPackage CurrentResistances;
 
     public CharacterSheet Sheet;
     public List<CharacterAbility> Abilities;
@@ -84,7 +86,21 @@ public class Character : Pawn, Interaction
     public float AssetTimer;
 
     #endregion
+    public float GeneratePotency(Equipment equip = null)
+    {
+        int equipSkill = equip == null ? (int)SkillType.NONE : (int)equip.EquipSkill;
+        float weaponLevelFactor = equip == null ? 0 : equip.EquipLevel;
 
+        return 1 +                                                                              // Base
+
+        (((Sheet.SkillsLevels.Levels[equipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +           // Level
+
+        (weaponLevelFactor * CharacterMath.WEP_LEVEL_FACTOR) +                                  // Weapon
+
+        (Sheet.SkillsLevels.Levels[equipSkill] * CharacterMath.SKILL_MUL_LEVEL[equipSkill])) *  // Skill
+
+        CharacterMath.SKILL_MUL_RACE[(int)Sheet.Race, equipSkill]);                             // Race
+    }
     public void UpdateAbilites()
     {
         UpdateAbilityList();
@@ -153,32 +169,17 @@ public class Character : Pawn, Interaction
         if (Sheet == null)
             return;
 
-        CurrentStats = new StatPackage();
-        CurrentStats.Init();
-        MaximumStatValues = new StatPackage();
-        MaximumStatValues.Init();
+        BaseStats = new StatPackage(Sheet);
+        MaximumStatValues = new StatPackage(BaseStats);
+        CurrentStats = new StatPackage(BaseStats);
 
-        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+        BaseResistances = new ElementPackage(Sheet);
+        CurrentResistances = new ElementPackage(BaseResistances);
+
+        foreach(BaseEffect innate in Sheet.InnatePassives)
         {
-            float stat = CharacterMath.RAW_BASE[i] +
-                (CharacterMath.RAW_GROWTH[i] *
-                CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] *
-                Sheet.Level);
-
-            CurrentStats.Stats[i] = stat;
-            MaximumStatValues.Stats[i] = stat;
+            Risiduals.Add(innate.GenerateEffect(0,GeneratePotency()));
         }
-
-        Resistances = new ElementPackage();// CharacterMath.STATS_ELEMENT_COUNT);
-        Resistances.Init();
-
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-        {
-            Resistances.Elements[i] = CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.RES_BASE[i] +
-                (CharacterMath.RES_GROWTH[i] * Sheet.Level));
-        }
-
-        //Debug.Log($"{Sheet.Name}/{name} : {CurrentStats.Stats.Length} : {MaximumStatValues.Stats.Length}");
 
         UpdateAbilites();
     }
@@ -209,6 +210,11 @@ public class Character : Pawn, Interaction
     {
         Abilities.Clear();
 
+        foreach (CharacterAbility innate in Sheet.InnateAbilities)
+        {
+            Abilities.Add(innate.GenerateAbility(this));
+        }
+
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
         {
             if (EquipmentSlots[i] == null)
@@ -216,7 +222,7 @@ public class Character : Pawn, Interaction
 
             for(int j = 0; j < EquipmentSlots[i].Equip.EquipAbilities.Length; j++)
             {
-                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip, false));
+                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip));
             }
         }
 
@@ -227,7 +233,7 @@ public class Character : Pawn, Interaction
 
             for (int j = 0; j < RingSlots[i].Equip.EquipAbilities.Length; j++)
             {
-                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipAbility(this, RingSlots[i].Equip, false));
+                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipAbility(this, RingSlots[i].Equip));
             }
         }
     }
@@ -262,7 +268,8 @@ public class Character : Pawn, Interaction
                     break;
 
                 case OneHandWrapper:
-                    check = InventoryEquipOneHand(inventoryIndex);
+                    check = true;
+                        InventoryEquipOneHand(inventoryIndex);
                     break;
 
                 case TwoHandWrapper:
@@ -270,11 +277,13 @@ public class Character : Pawn, Interaction
                     break;
 
                 case OffHandWrapper:
-                    check = InventoryEquipOneHand(inventoryIndex, false);
+                    check = true;
+                        InventoryEquipOneHand(inventoryIndex, false);
                     break;
 
                 case ShieldWrapper:
-                    check = InventoryEquipOneHand(inventoryIndex, false);
+                    check = true;
+                        InventoryEquipOneHand(inventoryIndex, false);
                     break;
             }
 
@@ -299,7 +308,7 @@ public class Character : Pawn, Interaction
         EquipmentSlots[(int)equipSlot] = SwapEquipWithInventory(EquipmentSlots[(int)equipSlot], inventoryIndex);
         return true;
     }
-    public bool InventoryEquipOneHand(int inventoryIndex, bool main = true)
+    public void InventoryEquipOneHand(int inventoryIndex, bool main = true)
     {
         int IND = main ? (int)EquipSlot.MAIN : (int)EquipSlot.OFF;
         int ind = main ? (int)EquipSlot.OFF : (int)EquipSlot.MAIN;
@@ -307,7 +316,7 @@ public class Character : Pawn, Interaction
         if (EquipmentSlots[IND] == null)
         {
             EquipmentSlots[IND] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return true;
+            //return true;
         }
         if (EquipmentSlots[IND] != null)
         {
@@ -316,10 +325,10 @@ public class Character : Pawn, Interaction
 
             EquipmentSlots[IND] =
                 SwapEquipWithInventory(EquipmentSlots[IND], inventoryIndex);
-            return true;
+            //return true;
         }
-        
-        return false;
+        Render.CurrentWepPose = EquipmentSlots[IND].Equip.EquipSkill;
+        //return false;
     }
     public bool InventoryEquipTwoHand(int inventoryIndex)
     {
@@ -457,60 +466,16 @@ public class Character : Pawn, Interaction
     }
     public void ApplyCleanse(ImmuneEffect effect)
     {
-        /*
-        int index = Risiduals.FindIndex(x => x.Action == effect.Action && !x.bIsImmune);
-
-        if (index < 0)
-            return;
-        */
         foreach(CrowdControlEffect ccEffect in Risiduals)
         {
             if (ccEffect.TargetCCstatus == effect.TargetCCstatus)
                 Risiduals.Remove(ccEffect);
         }
-
-        /*switch (effect.TargetCC)
-        {
-            case EffectAction.DMG_HEAL:
-                if (Risiduals[index].TargetElement == effect.TargetElement)
-                    Risiduals[index] = null;
-                break;
-
-            case EffectAction.RES_ADJ:
-                if (Risiduals[index].TargetElement == effect.TargetElement)
-                    Risiduals[index] = null;
-                break;
-
-            case EffectAction.STAT_ADJ:
-                if (Risiduals[index].TargetStat == effect.TargetStat)
-                    Risiduals[index] = null;
-                break;
-        }*/
-
     }
     public void AddRisidiualEffect(BaseEffect mod, int equipId)
     {
-        BaseEffect modInstance = null;//(BaseEffect)ScriptableObject.CreateInstance("Effect");
-        //modInstance.CloneEffect(mod);
-
-        switch (mod)
-        {
-            case CurrentStatEffect:
-                modInstance = (CurrentStatEffect)ScriptableObject.CreateInstance("CurrentStatEffect");
-                ((CurrentStatEffect)modInstance).CloneEffect(mod, equipId);
-                break;
-
-            case MaxStatEffect:
-                break;
-
-            case ResistanceEffect:
-                break;
-
-            case CrowdControlEffect:
-                break;
-        }
-
-        Risiduals.Add(modInstance);
+        //BaseEffect 
+        Risiduals.Add(mod.GenerateEffect(equipId));
     }
     void ApplyDamage(CurrentStatEffect damage)
     {
@@ -525,7 +490,7 @@ public class Character : Pawn, Interaction
             //if (CheckElementalImmune((Element)i))
                 //continue;
 
-            float change = (changeType * damage.ElementPack.Elements[i]) * (1 - (Resistances.Elements[i] / (Resistances.Elements[i] + CharacterMath.RES_PRIME_DENOM)));
+            float change = (changeType * damage.ElementPack.Elements[i]) * (1 - (CurrentResistances.Elements[i] / (CurrentResistances.Elements[i] + CharacterMath.RES_PRIME_DENOM)));
             totalValue += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
 
@@ -571,7 +536,7 @@ public class Character : Pawn, Interaction
         {
             float change = adjust.ResAdjustments.Elements[i];
             change = apply ? change : -change;
-            Resistances.Elements[i] += change;
+            CurrentResistances.Elements[i] += change;
         }
     }
     public void UpdateStatAdjust(MaxStatEffect adjust, bool apply = true)

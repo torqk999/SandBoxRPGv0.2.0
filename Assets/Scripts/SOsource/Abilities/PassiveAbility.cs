@@ -7,7 +7,6 @@ using UnityEngine;
 public class PassiveAbility : TargettedAbility
 {
     [Header("Passive Properties")]
-    //public new PassiveEffect[] Effects;
     public ParticleSystem Aura;
     public bool Innate;
 
@@ -20,26 +19,23 @@ public class PassiveAbility : TargettedAbility
 
         PassiveAbility passiveSource = (PassiveAbility)source;
 
+        equipId = equipId == -1 ? 0 : equipId; // use zero as universal passive place-holder
         Innate = passiveSource.Innate;
 
         Effects = new BaseEffect[passiveSource.Effects.Length];
 
         for (int i = 0; i < Effects.Length; i++)
         {
-            Effects[i] = CreateEffectInstance(passiveSource.Effects[i]);//(PassiveEffect)CreateInstance("PassiveEffect");
+            Effects[i] = passiveSource.Effects[i].GenerateEffect();//(PassiveEffect)CreateInstance("PassiveEffect");
             Effects[i].CloneEffect(passiveSource.Effects[i], equipId, potency, inject);
         }
     }
-    public override CharacterAbility EquipAbility(Character currentCharacter, Equipment equip, bool inject)
-    {
-        PassiveAbility newPassive = (PassiveAbility)CreateInstance("PassiveAbility");
-        newPassive.CloneAbility(this, equip.EquipID, GeneratePotency(currentCharacter, equip), inject);
-        if (newPassive.Innate)
-        {
-            foreach (BaseEffect passiveEffect in newPassive.Effects)
-                currentCharacter.AddRisidiualEffect(passiveEffect, newPassive.EquipID);
-        }
 
-        return newPassive;
+    public override CharacterAbility GenerateAbility(Character currentCharacter, bool inject, Equipment equip = null)
+    {
+        PassiveAbility newAbility = (PassiveAbility)CreateInstance("PassiveAbility");
+        int id = equip == null ? -1 : equip.EquipID;
+        newAbility.CloneAbility(this, id, currentCharacter.GeneratePotency(equip), inject);
+        return newAbility;
     }
 }

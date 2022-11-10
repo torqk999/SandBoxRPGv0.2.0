@@ -13,13 +13,8 @@ public class BaseEffect : ScriptableObject
     public int EquipID;           // n < 0 == passive/sustained
     public float DurationLength;
     public float Timer;
-
-    public BaseEffect() // default constructor
-    {
-
-    }
     
-    public virtual void CloneEffect(BaseEffect source, int equipId = -1, float amp = 1, bool inject = true)
+    public virtual void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
     {
         Name = source.Name;
         Sprite = source.Sprite;
@@ -29,5 +24,12 @@ public class BaseEffect : ScriptableObject
         EquipID = equipId;
         DurationLength = source.DurationLength;
         Timer = DurationLength;
+    }
+
+    public virtual BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    {
+        BaseEffect newEffect = (BaseEffect)CreateInstance("BaseEffect");
+        newEffect.CloneEffect(this, equipId);
+        return newEffect;
     }
 }

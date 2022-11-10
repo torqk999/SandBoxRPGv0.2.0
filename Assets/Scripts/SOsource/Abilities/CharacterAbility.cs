@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CastLocation
+{
+    WEP_TIP,
+    WEP_MID,
+    HAND,
+    SELF
+}
 public enum TargetType
 {
     ALL,
@@ -19,9 +26,10 @@ public enum AbilitySchool
 public class CharacterAbility : ScriptableObject
 {
     [Header("Ability Properties")]
-    public int EquipID;
     public string Name;
     public Sprite Sprite;
+    public ParticleSystem Cast;
+    public CastLocation CastLocation;
 
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
@@ -32,12 +40,13 @@ public class CharacterAbility : ScriptableObject
 
     public AbilitySchool School;
     public float CastRange;
+
     public float CD_Duration;
     public float CD_Timer;
+    public int EquipID;
 
-    public virtual void CloneAbility(CharacterAbility source, int equipId, float potency = 1, bool inject = false)
+    public virtual void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)
     {
-        EquipID = equipId;
         Name = source.Name;
         Sprite = source.Sprite;
 
@@ -50,8 +59,10 @@ public class CharacterAbility : ScriptableObject
 
         School = source.School;
         CastRange = source.CastRange;
+
         CD_Duration = source.CD_Duration;
         CD_Timer = 0;
+        EquipID = equipId;
     }
     public void SetCooldown()
     {
@@ -62,23 +73,15 @@ public class CharacterAbility : ScriptableObject
         CD_Timer -= GlobalConstants.TIME_SCALE;
         CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
     }
-    public float GeneratePotency(Character currentCharacter, Equipment equip)
-    {
-        /*float potency =*/ return 1 +
-
-    (((currentCharacter.Sheet.SkillsLevels.Levels[(int)equip.EquipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +                      // Level
-
-    (equip.EquipLevel * CharacterMath.WEP_LEVEL_FACTOR) +                                                                    // Weapon
-
-    (currentCharacter.Sheet.SkillsLevels.Levels[(int)equip.EquipSkill] * CharacterMath.SKILL_MUL_LEVEL[(int)equip.EquipSkill])) *  // Skill
-
-    CharacterMath.SKILL_MUL_RACE[(int)currentCharacter.Sheet.Race, (int)equip.EquipSkill]);                                  // Race
-    }
-
-    virtual public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip, bool inject)
+    virtual public CharacterAbility GenerateAbility(Character currentCharacter, bool inject = true, Equipment equip = null)
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
-        newAbility.CloneAbility(this, equip.EquipID);
+        int id = equip == null ? -1 : equip.EquipID;
+        newAbility.CloneAbility(this, id);
         return newAbility;
+    }
+    public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
+    {
+        return GenerateAbility(currentCharacter, false, equip);
     }
 }

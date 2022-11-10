@@ -9,22 +9,6 @@ public enum ClassType
     MAGE,
     ROGUE
 }
-/*public enum EffectDuration
-{
-    ONCE,
-    TIMED,
-    PASSIVE,
-    SUSTAINED
-}
-public enum EffectAction
-{
-    DMG_HEAL,
-    //CC_CLEANSE,
-    //BUFF_CLEANSE,
-    CROWD_CONTROL,
-    RES_ADJ,
-    STAT_ADJ,
-}*/
 public enum ValueType
 {
     NONE,
@@ -92,6 +76,7 @@ public struct CCstateReflection
 }
 public enum SkillType
 {
+    NONE,
     LIGHT,
     MEDIUM,
     HEAVY,
@@ -146,8 +131,24 @@ public struct StatReflection
 [Serializable]
 public struct StatPackage
 {
-    public float[] Stats;
     public StatReflection Reflection;
+    public float[] Stats;
+
+    public StatPackage(CharacterSheet sheet)
+    {
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+        {
+            float stat = CharacterMath.RAW_BASE[i] +
+                (CharacterMath.RAW_GROWTH[i] *
+                CharacterMath.RAW_MUL_RACE[(int)sheet.Race, i] *
+                sheet.Level);
+
+            Stats[i] = stat;
+        }
+        Reflection = new StatReflection();
+        Reflection.Reflect(ref Stats, false);
+    }
     public StatPackage(StatPackage source)
     {
         Reflection = source.Reflection;
@@ -156,14 +157,15 @@ public struct StatPackage
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
                 Stats[i] = source.Stats[i];
     }
-    public void Init()
-    {
-        Stats = new float[CharacterMath.STATS_RAW_COUNT];
-    }
+
     public void Amplify(float amp)
     {
         for (int i = 0; i < Stats.Length; i++)
             Stats[i] *= amp;
+    }
+    public void Reflect(bool inject = true)
+    {
+        Reflection.Reflect(ref Stats, inject);
     }
 }
 public enum Element
@@ -225,6 +227,24 @@ public struct ElementPackage
     public ElementReflection Reflection;
     public float[] Elements;
 
+    public ElementPackage(float healMagnitude)
+    {
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        Elements[(int)Element.HEALING] = healMagnitude;
+        Reflection = new ElementReflection();
+        Reflection.Reflect(ref Elements, false);
+    }
+    public ElementPackage(CharacterSheet sheet)
+    {
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+        {
+            Elements[i] = CharacterMath.RES_MUL_RACE[(int)sheet.Race, i] * (CharacterMath.RES_BASE[i] +
+                (CharacterMath.RES_GROWTH[i] * sheet.Level));
+        }
+        Reflection = new ElementReflection();
+        Reflection.Reflect(ref Elements, false);
+    }
     public ElementPackage(ElementPackage source)
     {
         Reflection = source.Reflection;
@@ -234,15 +254,14 @@ public struct ElementPackage
                 Elements[i] = source.Elements[i];
     }
 
-    public void Init()
-    {
-        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
-    }
-
     public void Amplify(float amp)
     {
         for (int i = 0; i < Elements.Length; i++)
             Elements[i] *= amp;
+    }
+    public void Reflect(bool inject = true)
+    {
+        Reflection.Reflect(ref Elements, inject);
     }
 }
 [Serializable]

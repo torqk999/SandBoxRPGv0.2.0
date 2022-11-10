@@ -245,10 +245,10 @@ public class Strategy : MonoBehaviour
 
                 case TacFloatType.RESISTANCE:
                     if ((tactic.Relative &&
-                       (tactic.GTE_LT == (next.Resistances.Elements[(int)tactic.TargetElement] >= Character.Resistances.Elements[(int)tactic.TargetElement])))
+                       (tactic.GTE_LT == (next.CurrentResistances.Elements[(int)tactic.TargetElement] >= Character.CurrentResistances.Elements[(int)tactic.TargetElement])))
                     ||
                         (!tactic.Relative &&
-                       (tactic.GTE_LT == (next.Resistances.Elements[(int)tactic.TargetElement] >= tactic.Value))))
+                       (tactic.GTE_LT == (next.CurrentResistances.Elements[(int)tactic.TargetElement] >= tactic.Value))))
                     {
                         break;
                     }

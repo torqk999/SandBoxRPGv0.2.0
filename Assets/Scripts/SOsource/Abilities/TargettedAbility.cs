@@ -11,15 +11,6 @@ public class TargettedAbility : CharacterAbility
     public TargetType AbilityTarget;
     public float AOE_Range;
 
-    public BaseEffect CreateEffectInstance(BaseEffect source)
-    {
-        switch (source)
-        {
-            default:
-                return (BaseEffect)CreateInstance("BaseEffect");
-        }
-    }
-
     public override void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)
     {
         base.CloneAbility(source, equipId);

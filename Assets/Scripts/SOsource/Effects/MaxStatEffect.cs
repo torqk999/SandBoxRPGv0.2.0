@@ -8,7 +8,7 @@ public class MaxStatEffect : StatEffect
     [Header ("Adjust Values")]
     public StatPackage StatAdjustPack;
 
-    public override void CloneEffect(BaseEffect source, int equipId = -1, float amp = 1, bool inject = true)
+    public override void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
     {
         base.CloneEffect(source);
 
@@ -18,7 +18,14 @@ public class MaxStatEffect : StatEffect
         MaxStatEffect maxSource = (MaxStatEffect)source;
 
         StatAdjustPack = new StatPackage(maxSource.StatAdjustPack);
-        StatAdjustPack.Reflection.Reflect(ref StatAdjustPack.Stats, inject);
-        StatAdjustPack.Amplify(amp);
+        StatAdjustPack.Reflect(inject);
+        StatAdjustPack.Amplify(potency);
+    }
+
+    public override BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    {
+        MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
+        newEffect.CloneEffect(this, equipId, potency, inject);
+        return newEffect;
     }
 }

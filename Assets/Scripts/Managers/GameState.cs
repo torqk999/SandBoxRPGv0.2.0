@@ -89,6 +89,7 @@ public class GameState : MonoBehaviour
     {
         try
         {
+            EQUIPMENT_INDEX = 1; // reserve zero for universal passive index
             UIman = (UIManager)GameObject.FindGameObjectWithTag("UI_MAN").GetComponent("UIManager");
             UIman.GameStateLinked = true;
             KeyMap.GenerateKeyMap();// Key-Sensitive action. Migrate later maybe?
