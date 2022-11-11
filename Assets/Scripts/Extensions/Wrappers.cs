@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 [System.Serializable]
 public class ItemWrapper
 {
@@ -127,3 +128,4 @@ public class ShieldWrapper : EquipWrapper
         return new ShieldWrapper((Shield)Equip);
     }
 }
+*/

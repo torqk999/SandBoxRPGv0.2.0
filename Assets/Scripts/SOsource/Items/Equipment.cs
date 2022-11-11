@@ -12,6 +12,10 @@ public class Equipment : ItemObject
     public CharacterAbility[] Abilities;
     public BaseEffect[] Effects;
 
+    public virtual void EquipGear(Character character, int ringSlot = 0)
+    {
+
+    }
     public virtual Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "Equipment")
     {
         //Debug.Log($"InstanceType: {instanceType}");
