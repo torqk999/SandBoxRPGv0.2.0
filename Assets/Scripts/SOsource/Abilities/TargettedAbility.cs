@@ -10,11 +10,21 @@ public class TargettedAbility : CharacterAbility
     public BaseEffect[] Effects;
     public TargetType AbilityTarget;
     public float AOE_Range;
+    public override void UseAbility(Character target)
+    {
+        for (int i = 0; i < Effects.Length; i++)
+            Effects[i].ApplySingleEffect(target, true, EquipID); // First or only proc
+    }
+
+    public virtual void CloneEffects(TargettedAbility source, int equipId = -1, float potency = 1, bool inject = false)
+    {
+        Effects = new BaseEffect[source.Effects.Length];
+        for (int i = 0; i < Effects.Length; i++)
+            Effects[i] = source.Effects[i].GenerateEffect(equipId, potency, inject);
+    }
 
     public override void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)
     {
-        base.CloneAbility(source, equipId);
-
         if (!(source is TargettedAbility))
             return;
 
@@ -23,8 +33,7 @@ public class TargettedAbility : CharacterAbility
         AbilityTarget = targetSource.AbilityTarget;
         AOE_Range = targetSource.AOE_Range;
 
-        Effects = new BaseEffect[targetSource.Effects.Length];
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = targetSource.Effects[i].GenerateEffect(equipId, potency, inject);
+        CloneEffects(targetSource, equipId, potency, inject);
+        base.CloneAbility(source, equipId);
     }
 }

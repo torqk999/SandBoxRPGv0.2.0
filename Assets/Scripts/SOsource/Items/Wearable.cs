@@ -11,7 +11,7 @@ public class Wearable : Equipment
     public MaterialType Trim;
     //public EquipSkill EquipSkill;
 
-    public override Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "wearable")
+    public override Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "Wearable")
     {
         Wearable newWear = (Wearable)base.GenerateCloneEquip(equipId, inject, instanceType);
         newWear.Type = Type;

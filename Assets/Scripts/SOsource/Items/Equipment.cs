@@ -9,10 +9,12 @@ public class Equipment : ItemObject
     public ClassType ClassType;
     public int EquipLevel;
     public int EquipID;
-    public CharacterAbility[] EquipAbilities;
+    public CharacterAbility[] Abilities;
+    public BaseEffect[] Effects;
 
     public virtual Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "Equipment")
     {
+        //Debug.Log($"InstanceType: {instanceType}");
         Equipment newEquip = (Equipment)CloneItem(instanceType);
 
         newEquip.EquipSkill = EquipSkill;
@@ -20,16 +22,22 @@ public class Equipment : ItemObject
         newEquip.EquipLevel = EquipLevel;
         newEquip.EquipID = equipId;
 
-        newEquip.CloneAbilities(EquipAbilities, 1, inject);
+        newEquip.CloneAbilitiesAndEffects(this, 1, inject);
 
         return newEquip;
     }
-    public void CloneAbilities(CharacterAbility[] source, float amp = 1, bool inject = false)
+    public void CloneAbilitiesAndEffects(Equipment source, float amp = 1, bool inject = false)
     {
-        EquipAbilities = new CharacterAbility[source.Length];
-        for (int i = 0; i < EquipAbilities.Length; i++)
+        Abilities = new CharacterAbility[source.Abilities.Length];
+        for (int i = 0; i < Abilities.Length; i++)
         {
-            EquipAbilities[i] = source[i].GenerateAbility();
+            Abilities[i] = source.Abilities[i].GenerateAbility();
+        }
+
+        Effects = new BaseEffect[source.Effects.Length];
+        for (int i = 0; i < Effects.Length; i++)
+        {
+            Effects[i] = source.Effects[i].GenerateEffect();
         }
     }
 }

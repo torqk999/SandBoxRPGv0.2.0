@@ -199,9 +199,9 @@ public class Character : Pawn, Interaction
             float magnitude = CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.BASE_REGEN[i] + 
                 (CharacterMath.RAW_GROWTH[i] * Sheet.Level));
 
-            //Debug.Log($"{Sheet.Name} : REGEN {(RawStat)i} : {magnitude}");
-            //Risiduals.Add(CreateRegen((RawStat)i, magnitude));
-            Risiduals.Add(new CurrentStatEffect((RawStat)i, magnitude));
+            CurrentStatEffect newRegen = (CurrentStatEffect)ScriptableObject.CreateInstance("CurrentStatEffect");
+            newRegen.FormRegen((RawStat)i, magnitude);
+            Risiduals.Add(newRegen);
         }
     }
     #endregion
@@ -219,7 +219,7 @@ public class Character : Pawn, Interaction
 
         foreach (CharacterAbility innate in Sheet.InnateAbilities)
         {
-            Abilities.Add(innate.GenerateAbility(this));
+            Abilities.Add(innate.GenerateAbility(GeneratePotency()));
         }
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
@@ -227,9 +227,9 @@ public class Character : Pawn, Interaction
             if (EquipmentSlots[i] == null)
                 continue;
 
-            for(int j = 0; j < EquipmentSlots[i].Equip.EquipAbilities.Length; j++)
+            for(int j = 0; j < EquipmentSlots[i].Equip.Abilities.Length; j++)
             {
-                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip));
+                Abilities.Add(EquipmentSlots[i].Equip.Abilities[j].EquipAbility(this, EquipmentSlots[i].Equip));
             }
         }
 
@@ -238,9 +238,9 @@ public class Character : Pawn, Interaction
             if (RingSlots[i] == null)
                 continue;
 
-            for (int j = 0; j < RingSlots[i].Equip.EquipAbilities.Length; j++)
+            for (int j = 0; j < RingSlots[i].Equip.Abilities.Length; j++)
             {
-                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipAbility(this, RingSlots[i].Equip));
+                Abilities.Add(RingSlots[i].Equip.Abilities[j].EquipAbility(this, RingSlots[i].Equip));
             }
         }
     }
@@ -458,19 +458,9 @@ public class Character : Pawn, Interaction
         }
         return changeType;
     }
-    public void ApplySingleEffect(BaseEffect effect)
-    {
-        switch(effect)
-        {
-            case CurrentStatEffect:
-                ApplyDamage((CurrentStatEffect)effect);
-                break;
 
-            case ImmuneEffect:
-                ApplyCleanse((ImmuneEffect)effect);
-                break;
-        }
-    }
+    ///////////////////
+
     public void ApplyCleanse(ImmuneEffect effect)
     {
         foreach(CrowdControlEffect ccEffect in Risiduals)
@@ -489,22 +479,22 @@ public class Character : Pawn, Interaction
         if (CheckDamageImmune(damage.TargetStat))
             return;
 
-        float totalValue = 0;
-        float changeType = GenerateStatValueModifier(damage.Value, damage.TargetStat);
+        float totalDamage = 0;
+        float damageAmount = GenerateStatValueModifier(damage.Value, damage.TargetStat);
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
             //if (CheckElementalImmune((Element)i))
                 //continue;
 
-            float change = (changeType * damage.ElementPack.Elements[i]) * (1 - (CurrentResistances.Elements[i] / (CurrentResistances.Elements[i] + CharacterMath.RES_PRIME_DENOM)));
-            totalValue += (Element)i == Element.HEALING ? -change : change; // Everything but healing
+            float change = (damageAmount * damage.ElementPack.Elements[i]) * (1 - (CurrentResistances.Elements[i] / (CurrentResistances.Elements[i] + CharacterMath.RES_PRIME_DENOM)));
+            totalDamage += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
 
-        if (totalValue == 0)
+        if (totalDamage == 0)
             return;
 
-        CurrentStats.Stats[(int)damage.TargetStat] -= totalValue;
+        CurrentStats.Stats[(int)damage.TargetStat] -= totalDamage;
         CurrentStats.Stats[(int)damage.TargetStat] =
             CurrentStats.Stats[(int)damage.TargetStat] <= MaximumStatValues.Stats[(int)damage.TargetStat] ?
             CurrentStats.Stats[(int)damage.TargetStat] : MaximumStatValues.Stats[(int)damage.TargetStat];
@@ -518,12 +508,12 @@ public class Character : Pawn, Interaction
         switch (damage.TargetStat)
         {
             case RawStat.HEALTH:
-                if (totalValue > 0)
+                if (totalDamage > 0)
                     DebugState = DebugState.LOSS_H;
                 break;
 
             case RawStat.MANA:
-                if (totalValue > 0)
+                if (totalDamage > 0)
                     DebugState = DebugState.LOSS_M;
                 break;
 
@@ -532,11 +522,15 @@ public class Character : Pawn, Interaction
                 break;
 
             case RawStat.STAMINA:
-                if (totalValue > 0)
+                if (totalDamage > 0)
                     DebugState = DebugState.LOSS_S;
                 break;
         }
     }
+
+    ///////////////////
+
+
     public bool CheckCCstatus(CCstatus status)
     {
         return Risiduals.Find(x => x is CrowdControlEffect &&
@@ -583,7 +577,13 @@ public class Character : Pawn, Interaction
         switch (call)
         {
             case ProcAbility:
-                return TargettedAbility((ProcAbility)call, costModifier);
+                return UseTargettedAbility((ProcAbility)call, costModifier);
+
+            case PassiveAbility:
+                return UseTargettedAbility((PassiveAbility)call, costModifier);
+
+            case SummonAbility:
+                return UseSummonAbility((SummonAbility)call, costModifier);
         }
 
         Debug.Log("Unrecognized Ability sub-class");
@@ -591,6 +591,8 @@ public class Character : Pawn, Interaction
     }
     public bool CheckCanCastAbility(CharacterAbility call, float costModifier)
     {
+        // Add Global Cooldown
+
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
 
@@ -611,21 +613,22 @@ public class Character : Pawn, Interaction
         }
 
         if (call.CostValue * costModifier > CurrentStats.Stats[(int)call.CostTarget])
-            return false;
+            return false; // Check Cost
 
         if (call.CastRange > Vector3.Distance(Root.position, CurrentTargetCharacter.Root.position))
-            return false;
+            return false; // Check Cast Range
 
         return true; // Good to do things Sam!
     }
-    bool TargettedAbility(TargettedAbility call, float modifier)
+    bool UseTargettedAbility(TargettedAbility call, float costModifier)
     {
         if (call.AOE_Range == 0)
         {
             switch(call.AbilityTarget)
             {
                 case TargetType.SELF:
-                    ApplyAbilitySingle(this, call);
+                    SpendResource(call, costModifier);
+                    call.UseAbility(this);
                     return true;
 
                 case TargetType.ALLY:
@@ -638,7 +641,8 @@ public class Character : Pawn, Interaction
                         return false;
                     break;
             }
-            ApplyAbilitySingle(CurrentTargetCharacter, call);
+            SpendResource(call, costModifier);
+            call.UseAbility(CurrentTargetCharacter);
         }
         if (call.AOE_Range != 0)
         {
@@ -646,22 +650,26 @@ public class Character : Pawn, Interaction
             if (targets.Count < 1)
                 return false;
             foreach (Character target in targets)
-                ApplyAbilitySingle(target, call);
+                call.UseAbility(target);
         }
         /*if (call.AOE_Range < 0)
         {
             Debug.Log("Negative AOE range!   >:| ");
             return false;
         }*/
-        UseAbility(call, modifier);
+        
         return true;
     }
-    void UseAbility(CharacterAbility call, float modifier)
+    bool UseSummonAbility(SummonAbility call, float modifier)
     {
-        CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
+        return false;
+    }
+    void SpendResource(CharacterAbility call, float costModifier)
+    {
+        CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * costModifier;
 
         if (call is PassiveAbility)
-            SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * modifier;
+            SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * costModifier;
 
         else
             call.SetCooldown();
@@ -687,7 +695,7 @@ public class Character : Pawn, Interaction
 
         return AOEcandidates;
     }
-    void ApplyAbilitySingle(Character target, TargettedAbility call)
+    /*void ApplyAbilitySingle(Character target, TargettedAbility call)
     {
         for (int i = 0; i < call.Effects.Length; i++)
         {
@@ -699,7 +707,7 @@ public class Character : Pawn, Interaction
 
             target.ApplySingleEffect(call.Effects[i]);                            // First or only proc
         }
-    }
+    }*/
     #endregion
 
     #region UPDATES
@@ -753,8 +761,8 @@ public class Character : Pawn, Interaction
     {
         for (int i = Risiduals.Count - 1; i > -1; i--)
         {
-            ApplySingleEffect(Risiduals[i]);
-            if (Risiduals[i].EquipID < 0)
+            Risiduals[i].ApplySingleEffect(this);
+            if (Risiduals[i].EquipID < 0) // Proc abiility, will run out
             {
                 Risiduals[i].Timer -= GlobalConstants.TIME_SCALE;
                 if (Risiduals[i].Timer <= 0)

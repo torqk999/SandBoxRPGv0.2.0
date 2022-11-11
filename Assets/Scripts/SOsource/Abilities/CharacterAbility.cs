@@ -45,6 +45,10 @@ public class CharacterAbility : ScriptableObject
     public float CD_Timer;
     public int EquipID;
 
+    public virtual void UseAbility(Character target)
+    {
+
+    }
     public virtual void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)
     {
         Name = source.Name;
@@ -73,15 +77,14 @@ public class CharacterAbility : ScriptableObject
         CD_Timer -= GlobalConstants.TIME_SCALE;
         CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
     }
-    public virtual CharacterAbility GenerateAbility(Character currentCharacter = null, bool inject = true, Equipment equip = null)
+    public virtual CharacterAbility GenerateAbility(float potency = 1, bool inject = true, int equipId = 0)
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
-        int id = equip == null ? -1 : equip.EquipID;
-        newAbility.CloneAbility(this, id);
+        newAbility.CloneAbility(this, equipId);
         return newAbility;
     }
     public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
     {
-        return GenerateAbility(currentCharacter, false, equip);
+        return GenerateAbility(currentCharacter.GeneratePotency(equip), false, equip.EquipID);
     }
 }

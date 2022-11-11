@@ -9,11 +9,15 @@ public class PassiveAbility : TargettedAbility
     [Header("Passive Properties")]
     public ParticleSystem Aura;
     public bool Innate;
+    public bool Active;
+
+    public override void CloneEffects(TargettedAbility source, int equipId = -1, float potency = 1, bool inject = false)
+    {
+        base.CloneEffects(source, equipId, potency, inject);
+    }
 
     public override void CloneAbility(CharacterAbility source, int equipId, float potency = 1, bool inject = false)
     {
-        base.CloneAbility(source);
-
         if (!(source is PassiveAbility))
             return;
 
@@ -21,13 +25,15 @@ public class PassiveAbility : TargettedAbility
 
         equipId = equipId == -1 ? 0 : equipId; // use zero as universal passive place-holder
         Innate = passiveSource.Innate;
+        Active = false;
+
+        base.CloneAbility(source, equipId, potency, inject);
     }
 
-    public override CharacterAbility GenerateAbility(Character currentCharacter = null, bool inject = false, Equipment equip = null)
+    public override CharacterAbility GenerateAbility(float potency = 1, bool inject = false, int equipID = 0)
     {
         PassiveAbility newAbility = (PassiveAbility)CreateInstance("PassiveAbility");
-        int id = equip == null ? -1 : equip.EquipID;
-        newAbility.CloneAbility(this, id, currentCharacter.GeneratePotency(equip), inject);
+        newAbility.CloneAbility(this, equipID, potency, inject);
         return newAbility;
     }
 }
