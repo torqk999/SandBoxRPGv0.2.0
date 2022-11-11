@@ -17,11 +17,8 @@ public class ProcAbility : TargettedAbility
             return;
 
         ProcAbility procSource = (ProcAbility)source;
-        
-        Effects = new BaseEffect[procSource.Effects.Length];
 
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = procSource.Effects[i].GenerateEffect(equipId, potency, inject);
+        Projectile = procSource.Projectile;
     }
 
     public override CharacterAbility GenerateAbility(Character currentCharacter, bool inject, Equipment equip = null)

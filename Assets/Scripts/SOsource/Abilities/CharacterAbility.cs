@@ -73,7 +73,7 @@ public class CharacterAbility : ScriptableObject
         CD_Timer -= GlobalConstants.TIME_SCALE;
         CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
     }
-    virtual public CharacterAbility GenerateAbility(Character currentCharacter, bool inject = true, Equipment equip = null)
+    public virtual CharacterAbility GenerateAbility(Character currentCharacter = null, bool inject = true, Equipment equip = null)
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
         int id = equip == null ? -1 : equip.EquipID;

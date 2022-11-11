@@ -19,16 +19,18 @@ public class SummonAbility : CharacterAbility
 
         SummonAbility summonSource = (SummonAbility)source;
 
+        
         SummonPrefab = summonSource.SummonPrefab;
         Quantity = summonSource.Quantity;
         LifeSpan = summonSource.LifeSpan;
     }
 
-    public override CharacterAbility GenerateAbility(Character currentCharacter, bool inject, Equipment equip = null)
+    public override CharacterAbility GenerateAbility(Character currentCharacter = null, bool inject = false, Equipment equip = null)
     {
         SummonAbility newAbility = (SummonAbility)CreateInstance("SummonAbility");
         int id = equip == null ? -1 : equip.EquipID;
-        newAbility.CloneAbility(this, id, currentCharacter.GeneratePotency(equip), inject);
+        float potency = currentCharacter == null ? 1 : currentCharacter.GeneratePotency(equip);
+        newAbility.CloneAbility(this, id, potency, inject);
         return newAbility;
     }
 }

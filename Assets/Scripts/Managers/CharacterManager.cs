@@ -74,7 +74,7 @@ public class CharacterManager : MonoBehaviour
         return Parties[CurrentPartyIndex].Members[Parties[CurrentPartyIndex].CurrentMemberIndex];
     }
     #endregion
-
+    /*
     #region COMBAT
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
@@ -189,7 +189,7 @@ public class CharacterManager : MonoBehaviour
         }
     }
     #endregion
-
+    */
     #region CHECK-UPS
     public void ToggleCharactersPauseState(bool bPause = false)
     {
@@ -295,6 +295,7 @@ public class CharacterManager : MonoBehaviour
             GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
 
         CharacterPool.Add(newCharacter);
+        newCharacter.CharacterPool = CharacterPool;
 
         return newCharacter;
     }

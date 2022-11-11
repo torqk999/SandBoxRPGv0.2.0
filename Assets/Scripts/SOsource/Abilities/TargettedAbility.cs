@@ -22,5 +22,9 @@ public class TargettedAbility : CharacterAbility
 
         AbilityTarget = targetSource.AbilityTarget;
         AOE_Range = targetSource.AOE_Range;
+
+        Effects = new BaseEffect[targetSource.Effects.Length];
+        for (int i = 0; i < Effects.Length; i++)
+            Effects[i] = targetSource.Effects[i].GenerateEffect(equipId, potency, inject);
     }
 }

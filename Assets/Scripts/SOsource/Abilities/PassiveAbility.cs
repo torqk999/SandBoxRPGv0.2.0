@@ -21,17 +21,9 @@ public class PassiveAbility : TargettedAbility
 
         equipId = equipId == -1 ? 0 : equipId; // use zero as universal passive place-holder
         Innate = passiveSource.Innate;
-
-        Effects = new BaseEffect[passiveSource.Effects.Length];
-
-        for (int i = 0; i < Effects.Length; i++)
-        {
-            Effects[i] = passiveSource.Effects[i].GenerateEffect();//(PassiveEffect)CreateInstance("PassiveEffect");
-            Effects[i].CloneEffect(passiveSource.Effects[i], equipId, potency, inject);
-        }
     }
 
-    public override CharacterAbility GenerateAbility(Character currentCharacter, bool inject, Equipment equip = null)
+    public override CharacterAbility GenerateAbility(Character currentCharacter = null, bool inject = false, Equipment equip = null)
     {
         PassiveAbility newAbility = (PassiveAbility)CreateInstance("PassiveAbility");
         int id = equip == null ? -1 : equip.EquipID;

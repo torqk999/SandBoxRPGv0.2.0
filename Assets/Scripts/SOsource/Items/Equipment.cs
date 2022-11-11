@@ -29,6 +29,9 @@ public class Equipment : ItemObject
         EquipAbilities = new CharacterAbility[source.Length];
         for (int i = 0; i < EquipAbilities.Length; i++)
         {
+            EquipAbilities[i] = source[i].GenerateAbility();
+
+            /*
             switch(source[i])
             {
                 case ProcAbility:
@@ -45,6 +48,7 @@ public class Equipment : ItemObject
             }
             
             EquipAbilities[i].CloneAbility(source[i], EquipID, amp, inject);
+            */
         }
     }
 }

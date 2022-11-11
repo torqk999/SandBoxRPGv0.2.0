@@ -19,11 +19,11 @@ MonoBehaviour:
   EquipID: 0
   DurationLength: 0
   Timer: 0
-  Value: 0
+  Value: 4
   ResAdjustments:
     Reflection:
       PHYSICAL: 0
-      FIRE: 0
+      FIRE: 5
       WATER: 0
       EARTH: 0
       AIR: 0

@@ -33,8 +33,11 @@ public enum Faction
 [CreateAssetMenu(fileName = "CharacterSheet", menuName = "ScriptableObjects/CharacterSheet")]
 public class CharacterSheet : ScriptableObject
 {
+    // Random Gen
     public Sprite Portrait;
     public string Name;
+
+    // Persistent
     public int Level;
     public float CurrentEXP;
     public float NextLevelEXP;

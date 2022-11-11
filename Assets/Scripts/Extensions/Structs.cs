@@ -153,11 +153,15 @@ public struct StatPackage
     {
         Reflection = source.Reflection;
         Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        Clone(source);
+    }
+
+    public void Clone(StatPackage source)
+    {
         if (source.Stats != null && source.Stats.Length == CharacterMath.STATS_RAW_COUNT)
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
                 Stats[i] = source.Stats[i];
     }
-
     public void Amplify(float amp)
     {
         for (int i = 0; i < Stats.Length; i++)
@@ -249,11 +253,15 @@ public struct ElementPackage
     {
         Reflection = source.Reflection;
         Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        Clone(source);
+    }
+
+    public void Clone(ElementPackage source)
+    {
         if (source.Elements != null && source.Elements.Length == CharacterMath.STATS_ELEMENT_COUNT)
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
                 Elements[i] = source.Elements[i];
     }
-
     public void Amplify(float amp)
     {
         for (int i = 0; i < Elements.Length; i++)

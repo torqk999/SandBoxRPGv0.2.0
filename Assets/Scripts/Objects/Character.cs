@@ -32,6 +32,7 @@ public class Character : Pawn, Interaction
     [Header("Character Defs")]
     [Header("==== CHARACTER CLASS ====")]
     public int ID;
+    public List<Character> CharacterPool;
 
     [Header("Rendering")]
     public CharacterRender Render;
@@ -182,7 +183,7 @@ public class Character : Pawn, Interaction
 
         Risiduals = new List<BaseEffect>();
 
-        if ()
+        //if ()
         foreach(BaseEffect innate in Sheet.InnatePassives)
         {
             Risiduals.Add(innate.GenerateEffect(0,GeneratePotency()));
@@ -431,7 +432,7 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region COMBAT
-    public float GenerateStatValueModifier(ValueType type, RawStat stat)
+    public float GenerateStatValueModifier(ValueType type, RawStat stat, bool root = false)
     {
         float changeType = 0;
         switch (type)
@@ -537,24 +538,7 @@ public class Character : Pawn, Interaction
                 break;
         }
     }
-    public void UpdateResAdjust(ResistanceEffect adjust, bool apply = true)
-    {
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-        {
-            float change = adjust.ResAdjustments.Elements[i];
-            change = apply ? change : -change;
-            CurrentResistances.Elements[i] += change;
-        }
-    }
-    public void UpdateStatAdjust(MaxStatEffect adjust, bool apply = true)
-    {
-        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
-        {
-            float change = adjust.StatAdjustPack.Stats[i];
-            change = apply ? change : -change;
-            MaximumStatValues.Stats[i] += change;
-        }
-    }
+    
     public bool CheckCCstatus(CCstatus status)
     {
         return Risiduals.Find(x => x is CrowdControlEffect &&
@@ -576,6 +560,152 @@ public class Character : Pawn, Interaction
         return Risiduals.Find(x => x is InvulnerableEffect &&
                                  ((InvulnerableEffect)x).TargetStat == stat) != null;
     }
+    public bool CheckAllegiance(Character target)
+    {
+        if (Sheet == null)
+            return false;
+
+        if (target == null ||
+            target.Sheet == null)
+            return false;
+
+        return Sheet.Faction == target.Sheet.Faction;
+    }
+
+    /// MIGRATION ///
+
+    public bool AttemptAbility(int abilityIndex)
+    {
+        CharacterAbility call = AbilitySlots[abilityIndex];
+        if (call == null) // Am I a joke to you?
+            return false;
+
+        float costModifier = GenerateStatValueModifier(call.CostType, call.CostTarget);
+
+        if (!CheckAbility(call, costModifier))
+            return false;
+
+        switch (call)
+        {
+            case ProcAbility:
+                return TargettedAbility((ProcAbility)call, costModifier);
+        }
+
+        Debug.Log("Unrecognized Ability sub-class");
+        return false;
+    }
+    public bool CheckAbility(CharacterAbility call, float costModifier)
+    {
+        if (call.CD_Timer > 0) // Check Cooldown
+            return false;
+
+        switch (call.School) // Check CC
+        {
+            case AbilitySchool.ATTACK:
+                if (CheckCCstatus(CCstatus.UN_ARMED))
+                    return false;
+                break;
+
+            case AbilitySchool.SPELL:
+                if (CheckCCstatus(CCstatus.SILENCED))
+                    return false;
+                break;
+
+            case AbilitySchool.POWER:
+                break;
+        }
+
+        if (call.CostValue * costModifier > CurrentStats.Stats[(int)call.CostTarget])
+            return false;
+
+        if (call.CastRange > Vector3.Distance(Root.position, CurrentTargetCharacter.Root.position))
+            return false;
+
+        return true; // Good to do things Sam!
+    }
+    bool TargettedAbility(TargettedAbility call, float modifier)
+    {
+        if (call.AOE_Range == 0)
+        {
+            switch(call.AbilityTarget)
+            {
+                case TargetType.SELF:
+                    ApplyAbilitySingle(this, call);
+                    return true;
+
+                case TargetType.ALLY:
+                    if (!CheckAllegiance(CurrentTargetCharacter))
+                        return false;
+                    break;
+
+                case TargetType.ENEMY:
+                    if (CheckAllegiance(CurrentTargetCharacter))
+                        return false;
+                    break;
+            }
+            ApplyAbilitySingle(CurrentTargetCharacter, call);
+        }
+        if (call.AOE_Range > 0)
+        {
+            List<Character> targets = AOEtargetting(call, CharacterPool);
+            if (targets.Count < 1)
+                return false;
+            foreach (Character target in targets)
+                ApplyAbilitySingle(target, call);
+        }
+        if (call.AOE_Range < 0)
+        {
+            Debug.Log("Negative AOE range!   >:| ");
+            return false;
+        }
+        UseAbility(call, modifier);
+        return true;
+    }
+    void UseAbility(CharacterAbility call, float modifier)
+    {
+        CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
+
+        if (call is PassiveAbility)
+            SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * modifier;
+
+        else
+            call.SetCooldown();
+    }
+    List<Character> AOEtargetting(TargettedAbility call, List<Character> pool)
+    {
+        List<Character> AOEcandidates = new List<Character>();
+
+        if (pool == null)
+            return AOEcandidates;
+
+        foreach (Character target in pool)
+        {
+            if (call.AbilityTarget == TargetType.ALLY && !CheckAllegiance(target))
+                continue;
+
+            if (call.AbilityTarget == TargetType.ENEMY && CheckAllegiance(target))
+                continue;
+
+            if (Vector3.Distance(target.Root.position, Root.position) <= call.AOE_Range)
+                AOEcandidates.Add(target);
+        }
+
+        return AOEcandidates;
+    }
+    void ApplyAbilitySingle(Character target, TargettedAbility call)
+    {
+        for (int i = 0; i < call.Effects.Length; i++)
+        {
+            BaseEffect effect = call.Effects[i];
+
+            if (effect.EquipID < 0 && (effect.DurationLength > 0) // Timed
+                || effect.EquipID > -1)                                       // Sustain or passive
+                target.AddRisidiualEffect(call.Effects[i], call.EquipID);
+
+            target.ApplySingleEffect(call.Effects[i]);                            // First or only proc
+        }
+    }
+
     #endregion
 
     #region UPDATES
@@ -601,6 +731,24 @@ public class Character : Pawn, Interaction
             }
         }
     }
+    public void UpdateResAdjust(ResistanceEffect adjust, bool apply = true)
+    {
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+        {
+            float change = adjust.ResAdjustments.Elements[i];
+            change = apply ? change : -change;
+            CurrentResistances.Elements[i] += change;
+        }
+    }
+    public void UpdateStatAdjust(MaxStatEffect adjust, bool apply = true)
+    {
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+        {
+            float change = adjust.StatAdjustPack.Stats[i];
+            change = apply ? change : -change;
+            MaximumStatValues.Stats[i] += change;
+        }
+    }
     void UpdateCooldowns()
     {
         for (int i = 0; i < AbilitySlots.Length; i++)
@@ -611,12 +759,6 @@ public class Character : Pawn, Interaction
     {
         for (int i = Risiduals.Count - 1; i > -1; i--)
         {
-            //if (!(Effects[i] is ProcEffect))
-                //continue;
-            //Debug.Log($"{Root.name} : {Effects[i].Name}");
-            //BaseEffect risidual = character.Effects[i];
-            //ProcEffect proc = (ProcEffect)Effects[i];
-
             ApplySingleEffect(Risiduals[i]);
             if (Risiduals[i].EquipID < 0)
             {
@@ -626,6 +768,18 @@ public class Character : Pawn, Interaction
                     Risiduals.RemoveAt(i);
                     continue;
                 }
+            }
+        }
+    }
+    void UpdateAdjustments()
+    {
+        MaximumStatValues.Clone(BaseStats);
+
+        foreach(MaxStatEffect statAdjust in Risiduals)
+        {
+            for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+            {
+                //MaximumStatValues.Stats[i] += (GenerateStatValueModifier(statAdjust.Value,  ) * statAdjust.StatAdjustPack.Stats[i]);
             }
         }
     }

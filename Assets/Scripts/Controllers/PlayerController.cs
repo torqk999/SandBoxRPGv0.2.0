@@ -562,7 +562,7 @@ public class PlayerController : CharacterController
     void AttemptAction(int abilityIndex)
     {
         Debug.Log("Attempting");
-        GameState.CharacterMan.AttemptAbility(abilityIndex, CurrentCharacter);
+        CurrentCharacter.AttemptAbility(abilityIndex);
     }
     public void UpdateInteractionTarget(Interaction target = null)
     {

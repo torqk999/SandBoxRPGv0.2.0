@@ -131,7 +131,7 @@ public class Strategy : MonoBehaviour
     }
     bool CheckTacticConditions(Tactic tactic)
     {
-        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateStatValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
+        if (!Character.CheckAbility(tactic.Ability, Character.GenerateStatValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
             return false;
 
         ReturnEligableCharacters(tactic, ref CandidateBuffer);
