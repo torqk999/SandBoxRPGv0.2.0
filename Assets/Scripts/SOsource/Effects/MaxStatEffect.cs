@@ -17,7 +17,7 @@ public class MaxStatEffect : StatEffect
 
         MaxStatEffect maxSource = (MaxStatEffect)source;
 
-        StatAdjustPack = new StatPackage(maxSource.StatAdjustPack);
+        StatAdjustPack.Clone(maxSource.StatAdjustPack); //= new StatPackage(maxSource.StatAdjustPack);
         StatAdjustPack.Reflect(inject);
         StatAdjustPack.Amplify(potency);
     }

@@ -18,7 +18,7 @@ public class CurrentStatEffect : StatEffect
 
         CurrentStatEffect currentStatEffect = (CurrentStatEffect)source;
 
-        ElementPack = new ElementPackage(currentStatEffect.ElementPack);
+        ElementPack.Clone(currentStatEffect.ElementPack); //= new ElementPackage(currentStatEffect.ElementPack);
         ElementPack.Reflect(inject);
         ElementPack.Amplify(potency);
     }

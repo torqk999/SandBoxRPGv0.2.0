@@ -44,7 +44,7 @@ public class RingWrapper : EquipWrapper
     {
         Name = ring.Name;
         Sprite = ring.Sprite;
-        Equip = ring.CloneRing(equipId, inject);
+        Equip = ring.GenerateCloneEquip(equipId, inject);
         CurrentSlotIndex = -1;
     }
 
@@ -60,7 +60,7 @@ public class WearableWrapper : EquipWrapper
     {
         Name = wear.Name;
         Sprite = wear.Sprite;
-        Equip = wear.CloneWear(equipId, inject);
+        Equip = wear.GenerateCloneEquip(equipId, inject);
     }
 
     public WearableWrapper CloneWearWrapper()
@@ -75,7 +75,7 @@ public class OneHandWrapper : EquipWrapper
     {
         Name = oneHand.Name;
         Sprite = oneHand.Sprite;
-        Equip = oneHand.CloneOneHand(equipId, inject);
+        Equip = oneHand.GenerateCloneEquip(equipId, inject);
     }
 
     public OneHandWrapper CloneOneHandWrapper()
@@ -90,7 +90,7 @@ public class OffHandWrapper : EquipWrapper
     {
         Name = offHand.Name;
         Sprite = offHand.Sprite;
-        Equip = offHand.CloneOffHand(equipId, inject);
+        Equip = offHand.GenerateCloneEquip(equipId, inject);
     }
 
     public OffHandWrapper CloneOffHandWrapper()
@@ -105,7 +105,7 @@ public class TwoHandWrapper : EquipWrapper
     {
         Name = twoHand.Name;
         Sprite = twoHand.Sprite;
-        Equip = twoHand.CloneTwoHand(equipId, inject);
+        Equip = twoHand.GenerateCloneEquip(equipId, inject);
     }
 
     public TwoHandWrapper CloneTwoHandWrapper()
@@ -119,7 +119,7 @@ public class ShieldWrapper : EquipWrapper
     {
         Name = shield.Name;
         Sprite = shield.Sprite;
-        Equip = shield.CloneShield(equipId, inject);
+        Equip = shield.GenerateCloneEquip(equipId, inject);
     }
 
     public ShieldWrapper CloneShieldWrapper()

@@ -28,7 +28,6 @@ public enum EquipSlot
 public class Character : Pawn, Interaction
 {
     #region VARS
-
     [Header("Character Defs")]
     [Header("==== CHARACTER CLASS ====")]
     public int ID;
@@ -578,7 +577,7 @@ public class Character : Pawn, Interaction
 
         float costModifier = GenerateStatValueModifier(call.CostType, call.CostTarget);
 
-        if (!CheckAbility(call, costModifier))
+        if (!CheckCanCastAbility(call, costModifier))
             return false;
 
         switch (call)
@@ -590,7 +589,7 @@ public class Character : Pawn, Interaction
         Debug.Log("Unrecognized Ability sub-class");
         return false;
     }
-    public bool CheckAbility(CharacterAbility call, float costModifier)
+    public bool CheckCanCastAbility(CharacterAbility call, float costModifier)
     {
         if (call.CD_Timer > 0) // Check Cooldown
             return false;

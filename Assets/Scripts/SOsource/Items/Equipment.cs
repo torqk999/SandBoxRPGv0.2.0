@@ -11,7 +11,7 @@ public class Equipment : ItemObject
     public int EquipID;
     public CharacterAbility[] EquipAbilities;
 
-    public Equipment CloneEquip(string instanceType = "Equipment", int equipId = -1, bool inject = false)
+    public virtual Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "Equipment")
     {
         Equipment newEquip = (Equipment)CloneItem(instanceType);
 

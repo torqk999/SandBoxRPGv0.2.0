@@ -17,7 +17,7 @@ public class ResistanceEffect : StatEffect
 
         ResistanceEffect currentStatEffect = (ResistanceEffect)source;
 
-        ResAdjustments = new ElementPackage(currentStatEffect.ResAdjustments);
+        ResAdjustments.Clone(currentStatEffect.ResAdjustments);
         ResAdjustments.Reflection.Reflect(ref ResAdjustments.Elements, inject);
         ResAdjustments.Amplify(potency);
     }

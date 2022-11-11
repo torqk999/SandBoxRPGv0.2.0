@@ -16,12 +16,10 @@ public class OffHand : Hand
     [Header("OffHand Properties")]
     public OffHandType Type;
 
-    public OffHand CloneOffHand(int equipId = -1, bool inject = false)
+    public override Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "OffHand")
     {
-        OffHand newOffHand = (OffHand)CloneEquip("OffHand", equipId, inject);
-
+        OffHand newOffHand = (OffHand)base.GenerateCloneEquip(equipId, inject, instanceType);
         newOffHand.Type = Type;
-
         return newOffHand;
     }
 

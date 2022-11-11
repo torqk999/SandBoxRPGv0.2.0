@@ -20,12 +20,10 @@ public class TwoHand : Hand
     [Header("TwoHand Properties")]
     public TwoHandType Type;
 
-    public TwoHand CloneTwoHand(int equipId, bool inject = false)
+    public override Equipment GenerateCloneEquip(int equipId, bool inject = false, string instanceType = "TwoHand")
     {
-        TwoHand newTwoHand = (TwoHand)CloneEquip("TwoHand", equipId, inject);
-
+        TwoHand newTwoHand = (TwoHand)base.GenerateCloneEquip(equipId, inject, instanceType);
         newTwoHand.Type = Type;
-
         return newTwoHand;
     }
 }

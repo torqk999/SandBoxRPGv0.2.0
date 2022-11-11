@@ -18,9 +18,9 @@ public class OneHand : Hand
     [Header("OneHand Properties")]
     public OneHandType Type;
 
-    public OneHand CloneOneHand(int equipId, bool inject = false)
+    public override Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "OneHand")
     {
-        OneHand newOneHand = (OneHand)CloneEquip("OneHand", equipId, inject);
+        OneHand newOneHand = (OneHand)base.GenerateCloneEquip(equipId, inject, instanceType);
 
         newOneHand.Type = Type;
 

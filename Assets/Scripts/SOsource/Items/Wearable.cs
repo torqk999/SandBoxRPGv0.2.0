@@ -11,12 +11,10 @@ public class Wearable : Equipment
     public MaterialType Trim;
     //public EquipSkill EquipSkill;
 
-    public Wearable CloneWear(int equipId = -1, bool inject = false)
+    public override Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "wearable")
     {
-        Wearable newWear = (Wearable)CloneEquip("Wearable", equipId, inject);
-
+        Wearable newWear = (Wearable)base.GenerateCloneEquip(equipId, inject, instanceType);
         newWear.Type = Type;
-        
         return newWear;
     }
 }
