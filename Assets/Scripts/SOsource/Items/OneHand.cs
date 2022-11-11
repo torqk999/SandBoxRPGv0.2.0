@@ -31,9 +31,9 @@ public class OneHand : Hand
 
         OneHand oneSource = (OneHand)source;
 
-        Type = oneSource.Type;
-
         base.CloneItem(source, equipId, inject);
+        EquipSkill = SkillType.HAND_ONE;
+        Type = oneSource.Type;
     }
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
     {

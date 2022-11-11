@@ -34,9 +34,9 @@ public class TwoHand : Hand
 
         TwoHand twoSource = (TwoHand)source;
 
-        Type = twoSource.Type;
-
         base.CloneItem(source, equipId, inject);
+
+        Type = twoSource.Type;
     }
 
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)

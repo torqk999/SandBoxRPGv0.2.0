@@ -534,6 +534,7 @@ Transform:
   - {fileID: 1034490503}
   - {fileID: 1092699947}
   - {fileID: 814169861}
+  - {fileID: 724360088}
   m_Father: {fileID: 559339744}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -770,13 +771,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   Materials:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 3cb0c1b1aa4fe044a87932179e4d476f, type: 2}
+  - {fileID: 2100000, guid: ac518b1795f8c1849a37296065ec527e, type: 2}
+  - {fileID: 2100000, guid: 8b7535bda05ecd248a08d9f50f54bdba, type: 2}
   - {fileID: 2100000, guid: 4488daaa06cdff84b8ebe982bb6386f0, type: 2}
   - {fileID: 2100000, guid: 0afe8a513ae6b774da6376438a8c3d2f, type: 2}
   - {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 5b5741e1a304b254da481450c500d8ab, type: 2}
   - {fileID: 2100000, guid: 2c1e2a194df267e45bc1dd816cc76800, type: 2}
   CurrentLootBagIndex: 0
 --- !u!1 &109683109
@@ -2902,6 +2903,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6971332203772292417, guid: 26d29a40705240a408ae03811a70955e, type: 3}
   m_PrefabInstance: {fileID: 1726285154}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &724360087
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 724360088}
+  m_Layer: 0
+  m_Name: SpawnPreFabs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &724360088
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724360087}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1147254749}
+  m_Father: {fileID: 77159615}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &740374926
 GameObject:
   m_ObjectHideFlags: 0
@@ -3970,7 +4003,8 @@ MonoBehaviour:
   LootBox: {fileID: 0}
   CloneWardrobe: {fileID: 0}
   myAIpool: []
-  SampleItems: []
+  SampleItems:
+  - {fileID: 0}
 --- !u!114 &1010888937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4217,6 +4251,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 77159615}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1147254748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1147254749}
+  m_Layer: 0
+  m_Name: FireGolem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1147254749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147254748}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 724360088}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1194377651
 GameObject:

@@ -30,9 +30,9 @@ public class OffHand : Hand
 
         OffHand offSource = (OffHand)source;
 
-        Type = offSource.Type;
-
         base.CloneItem(source, equipId, inject);
+        EquipSkill = SkillType.HAND_OFF;
+        Type = offSource.Type;
     }
 
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)

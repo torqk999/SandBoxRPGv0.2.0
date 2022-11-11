@@ -44,7 +44,9 @@ public class BaseEffect : ScriptableObject
     }
     public virtual void RemoveRisidualEffect(Character character, int equipId)
     {
+        ParticleSystem.PlaybackState pbs = new ParticleSystem.PlaybackState();
 
+        Impact.SetPlaybackState()
     }
     public virtual void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
     {

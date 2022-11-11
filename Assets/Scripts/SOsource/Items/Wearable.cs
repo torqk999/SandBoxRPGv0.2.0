@@ -24,9 +24,9 @@ public class Wearable : Equipment
 
         Wearable wearSource = (Wearable)source;
 
-        Type = wearSource.Type;
-
         base.CloneItem(source, equipId, inject);
+        EquipSkill = SkillType.MEDIUM;
+        Type = wearSource.Type;
     }
 
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)

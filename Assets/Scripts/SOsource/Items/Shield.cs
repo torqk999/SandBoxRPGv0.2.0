@@ -30,9 +30,9 @@ public class Shield : Hand
 
         Shield shieldSource = (Shield)source;
 
-        Type = shieldSource.Type;
-
         base.CloneItem(source, equipId, inject);
+        EquipSkill = SkillType.HAND_OFF;
+        Type = shieldSource.Type;
     }
 
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
