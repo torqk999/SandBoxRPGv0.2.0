@@ -30,25 +30,6 @@ public class Equipment : ItemObject
         for (int i = 0; i < EquipAbilities.Length; i++)
         {
             EquipAbilities[i] = source[i].GenerateAbility();
-
-            /*
-            switch(source[i])
-            {
-                case ProcAbility:
-                    EquipAbilities[i] = (ProcAbility)ScriptableObject.CreateInstance("ProcAbility");
-                    break;
-
-                case PassiveAbility:
-                    EquipAbilities[i] = (PassiveAbility)ScriptableObject.CreateInstance("PassiveAbility");
-                    break;
-
-                case SummonAbility:
-                    EquipAbilities[i] = (SummonAbility)ScriptableObject.CreateInstance("SummonAbility");
-                    break;
-            }
-            
-            EquipAbilities[i].CloneAbility(source[i], EquipID, amp, inject);
-            */
         }
     }
 }

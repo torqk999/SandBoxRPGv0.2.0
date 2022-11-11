@@ -60,6 +60,7 @@ public static class CharacterMath
 
     public static readonly float[] SKILL_MUL_LEVEL = 
     {
+        .5f,  // UN ARMED
         .5f,  // LIGHT
         .5f,  // MEDIUM
         .5f,  // HEAVY
@@ -74,6 +75,7 @@ public static class CharacterMath
     {
         // HUMAN
         {
+        1,  // UN ARMED
         1,  // LIGHT
         1,  // MEDIUM
         1,  // HEAVY
@@ -87,6 +89,7 @@ public static class CharacterMath
 
         // ORC
         {
+        1,      // UN ARMED
         1,      // LIGHT
         1,      // MEDIUM
         2,      // HEAVY

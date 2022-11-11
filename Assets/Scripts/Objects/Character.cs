@@ -89,7 +89,7 @@ public class Character : Pawn, Interaction
     #endregion
     public float GeneratePotency(Equipment equip = null)
     {
-        int equipSkill = equip == null ? (int)SkillType.NONE : (int)equip.EquipSkill;
+        int equipSkill = equip == null ? (int)SkillType.UN_ARMED : (int)equip.EquipSkill;
         float weaponLevelFactor = equip == null ? 0 : equip.EquipLevel;
 
         return 1 +                                                                              // Base
@@ -538,7 +538,6 @@ public class Character : Pawn, Interaction
                 break;
         }
     }
-    
     public bool CheckCCstatus(CCstatus status)
     {
         return Risiduals.Find(x => x is CrowdControlEffect &&
@@ -571,9 +570,6 @@ public class Character : Pawn, Interaction
 
         return Sheet.Faction == target.Sheet.Faction;
     }
-
-    /// MIGRATION ///
-
     public bool AttemptAbility(int abilityIndex)
     {
         CharacterAbility call = AbilitySlots[abilityIndex];
@@ -645,7 +641,7 @@ public class Character : Pawn, Interaction
             }
             ApplyAbilitySingle(CurrentTargetCharacter, call);
         }
-        if (call.AOE_Range > 0)
+        if (call.AOE_Range != 0)
         {
             List<Character> targets = AOEtargetting(call, CharacterPool);
             if (targets.Count < 1)
@@ -653,11 +649,11 @@ public class Character : Pawn, Interaction
             foreach (Character target in targets)
                 ApplyAbilitySingle(target, call);
         }
-        if (call.AOE_Range < 0)
+        /*if (call.AOE_Range < 0)
         {
             Debug.Log("Negative AOE range!   >:| ");
             return false;
-        }
+        }*/
         UseAbility(call, modifier);
         return true;
     }
@@ -686,7 +682,7 @@ public class Character : Pawn, Interaction
             if (call.AbilityTarget == TargetType.ENEMY && CheckAllegiance(target))
                 continue;
 
-            if (Vector3.Distance(target.Root.position, Root.position) <= call.AOE_Range)
+            if (Vector3.Distance(target.Root.position, Root.position) <= Math.Abs(call.AOE_Range))
                 AOEcandidates.Add(target);
         }
 
@@ -705,7 +701,6 @@ public class Character : Pawn, Interaction
             target.ApplySingleEffect(call.Effects[i]);                            // First or only proc
         }
     }
-
     #endregion
 
     #region UPDATES

@@ -76,7 +76,7 @@ public struct CCstateReflection
 }
 public enum SkillType
 {
-    NONE,
+    UN_ARMED,
     LIGHT,
     MEDIUM,
     HEAVY,

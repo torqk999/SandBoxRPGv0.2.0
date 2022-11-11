@@ -839,6 +839,7 @@ MonoBehaviour:
   bIsGrounded: 0
   bControllable: 1
   ID: 0
+  CharacterPool: []
   Render: {fileID: 0}
   AnimType: 0
   IntentForward: 0
@@ -1224,6 +1225,7 @@ MonoBehaviour:
   bIsGrounded: 0
   bControllable: 0
   ID: 0
+  CharacterPool: []
   Render: {fileID: 0}
   AnimType: 0
   IntentForward: 0
@@ -5752,6 +5754,7 @@ MonoBehaviour:
   bIsGrounded: 0
   bControllable: 1
   ID: 0
+  CharacterPool: []
   Render: {fileID: 0}
   AnimType: 0
   IntentForward: 0
