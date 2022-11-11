@@ -12,18 +12,18 @@ public class TargettedAbility : CharacterAbility
     public float AOE_Range;
     public override void UseAbility(Character target)
     {
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i].ApplySingleEffect(target, this, null); // First or only proc
+        //for (int i = 0; i < Effects.Length; i++)
+        //    Effects[i].ApplySingleEffect(target, null, null, null, true); // First or only proc
     }
 
-    public virtual void CloneEffects(TargettedAbility source, Equipment equip = null, bool inject = false)
+    public virtual void CloneEffects(TargettedAbility source, CharacterSheet sheet = null, Equipment equip = null, bool inject = false)
     {
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = source.Effects[i].GenerateEffect(source, equip, inject);
+            Effects[i] = source.Effects[i].GenerateEffect(sheet, source, equip, inject);
     }
 
-    public override void CloneAbility(CharacterAbility source, Equipment equip = null, bool inject = false)
+    public override void CloneAbility(CharacterAbility source, CharacterSheet sheet = null, Equipment equip = null, bool inject = false)
     {
         if (!(source is TargettedAbility))
             return;
@@ -33,7 +33,7 @@ public class TargettedAbility : CharacterAbility
         AbilityTarget = targetSource.AbilityTarget;
         AOE_Range = targetSource.AOE_Range;
 
-        CloneEffects(targetSource, equip, inject);
-        base.CloneAbility(source, equip, inject);
+        CloneEffects(targetSource, sheet, equip, inject);
+        base.CloneAbility(source, sheet, equip, inject);
     }
 }

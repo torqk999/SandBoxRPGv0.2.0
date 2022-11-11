@@ -10,7 +10,7 @@ public class InvulnerableEffect : BaseEffect
 
     public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source, ability, equip, inject);
+        base.CloneEffect(source, sheet, ability, equip, inject);
 
         if (!(source is InvulnerableEffect))
             return;
@@ -20,10 +20,10 @@ public class InvulnerableEffect : BaseEffect
         TargetStat = invulnerableSource.TargetStat;
     }
 
-    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true)
+    public override BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
     {
         InvulnerableEffect newEffect = (InvulnerableEffect)CreateInstance("InvulnerableEffect");
-        newEffect.CloneEffect(this, ability, equip, inject);
+        newEffect.CloneEffect(this, sheet, ability, equip, inject);
         return newEffect;
     }
 }

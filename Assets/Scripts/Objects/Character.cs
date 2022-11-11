@@ -183,7 +183,7 @@ public class Character : Pawn, Interaction
 
         foreach(BaseEffect innate in Sheet.InnatePassives)
         {
-            innate.AddRisidualEffect(this, null, null, true);
+            innate.AddRisidualEffect(this, Sheet, null, null, true);
         }
 
         UpdateAbilites();

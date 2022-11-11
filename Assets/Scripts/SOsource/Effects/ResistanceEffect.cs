@@ -10,7 +10,7 @@ public class ResistanceEffect : StatEffect
 
     public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source, ability, equip, inject, amp);
+        base.CloneEffect(source, sheet, ability, equip, inject);
 
         if (!(source is ResistanceEffect))
             return;
@@ -19,14 +19,13 @@ public class ResistanceEffect : StatEffect
 
         ResAdjustments.Clone(currentStatEffect.ResAdjustments);
         ResAdjustments.Reflection.Reflect(ref ResAdjustments.Elements, inject);
-        if (amp)
         ResAdjustments.Amplify(CharacterMath.GeneratePotency());
     }
 
-    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true, bool amp = false)
+    public override BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
     {
         ResistanceEffect newEffect = (ResistanceEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, ability, equip, inject);
+        newEffect.CloneEffect(this, sheet, ability, equip, inject);
         return newEffect;
     }
 }

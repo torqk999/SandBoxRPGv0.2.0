@@ -10,7 +10,7 @@ public class MaxStatEffect : StatEffect
 
     public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source, ability);
+        base.CloneEffect(source, sheet, ability, equip, inject);
 
         if (!(source is MaxStatEffect))
             return;
@@ -22,10 +22,10 @@ public class MaxStatEffect : StatEffect
         StatAdjustPack.Amplify(CharacterMath.GeneratePotency(null, equip));
     }
 
-    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true)
+    public override BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
     {
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, ability, equip, inject);
+        newEffect.CloneEffect(this, sheet, ability, equip, inject);
         return newEffect;
     }
 }

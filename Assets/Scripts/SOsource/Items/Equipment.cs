@@ -52,13 +52,13 @@ public class Equipment : ItemObject
         Abilities = new CharacterAbility[source.Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
-            Abilities[i] = source.Abilities[i].GenerateAbility(1, inject, EquipID);
+            Abilities[i] = source.Abilities[i].GenerateAbility(source, inject);
         }
 
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
         {
-            Effects[i] = source.Effects[i].GenerateEffect(null, source, inject);
+            Effects[i] = source.Effects[i].GenerateEffect(null, null, source, inject);
         }
     }
 
