@@ -52,11 +52,11 @@ public class Wardrobe : ScriptableObject
         if (ring == null || slotIndex < 0 || slotIndex >= character.RingSlots.Length)
             return;
 
-        RingWrapper newRingWrap = new RingWrapper(ring, equipId, true);
-        character.RingSlots[slotIndex] = newRingWrap;
+        Ring newRing = (Ring)ring.GenerateItem(equipId, true);
+        character.RingSlots[slotIndex] = newRing;
         equipId++;
     }
-    bool AttemptCloneAndEquipHand(Character character, Equipment hand, ref int equipId)
+    bool AttemptCloneAndEquipHand(Character character, Hand hand, ref int equipId)
     {
         if (hand == null)
             return false;
@@ -64,26 +64,26 @@ public class Wardrobe : ScriptableObject
         switch(hand)
         {
             case OneHand:
-                OneHandWrapper newMain = new OneHandWrapper((OneHand)hand, equipId, true);
+                OneHand newMain = (OneHand)hand.GenerateItem(equipId, true);
                 character.EquipmentSlots[(int)EquipSlot.MAIN] = newMain;
                 equipId++;
                 return true;
 
             case OffHand:
-                OffHandWrapper newOff = new OffHandWrapper((OffHand)hand, equipId, true);
+                OffHand newOff = (OffHand)hand.GenerateItem(equipId, true);
                 character.EquipmentSlots[(int)EquipSlot.OFF] = newOff;
                 equipId++;
                 return true;
 
             case TwoHand:
-                TwoHandWrapper newTwo = new TwoHandWrapper((TwoHand)hand, equipId, true);
+                TwoHand newTwo = (TwoHand)hand.GenerateItem(equipId, true);
                 character.EquipmentSlots[(int)EquipSlot.MAIN] = newTwo;
                 character.EquipmentSlots[(int)EquipSlot.OFF] = newTwo;
                 equipId++;
                 return true;
 
             case Shield:
-                ShieldWrapper newShield = new ShieldWrapper((Shield)hand, equipId, true);
+                Shield newShield = (Shield)hand.GenerateItem(equipId, true);
                 character.EquipmentSlots[(int)EquipSlot.OFF] = newShield;
                 equipId++;
                 return true;
@@ -92,17 +92,17 @@ public class Wardrobe : ScriptableObject
     }
     void AttemptCloneAndEquipWear(Character character, Wearable wear, EquipSlot slot, ref int equipId)
     {
-        WearableWrapper newWear = AttemptCloneWear(wear, slot, equipId);
+        Wearable newWear = AttemptCloneWear(wear, slot, equipId);
         if (newWear != null)
         {
             character.EquipmentSlots[(int)slot] = newWear;
             equipId++;
         }
     }
-    WearableWrapper AttemptCloneWear(Wearable wear, EquipSlot slot, int equipId)
+    Wearable AttemptCloneWear(Wearable wearSource, EquipSlot slot, int equipId)
     {
-        if (wear != null && wear.Type == slot)
-            return new WearableWrapper(wear, equipId, true);
+        if (wearSource != null && wearSource.Type == slot)
+            return (Wearable)wearSource.GenerateItem(equipId, true);
         return null;
     }
 }

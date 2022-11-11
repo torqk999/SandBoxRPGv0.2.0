@@ -295,8 +295,7 @@ public class CharacterManager : MonoBehaviour
             GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
 
         CharacterPool.Add(newCharacter);
-        newCharacter.CharacterPool = CharacterPool;
-
+        
         return newCharacter;
     }
 
@@ -339,8 +338,8 @@ public class CharacterManager : MonoBehaviour
 
         // Slots
         character.AbilitySlots = new ProcAbility[CharacterMath.ABILITY_SLOTS];
-        character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
-        character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
+        character.EquipmentSlots = new Equipment[CharacterMath.EQUIP_SLOTS_COUNT];
+        character.RingSlots = new Ring[CharacterMath.RING_SLOT_COUNT];
 
         // Initialize
         character.InitializeCharacter();

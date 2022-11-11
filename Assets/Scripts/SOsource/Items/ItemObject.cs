@@ -16,18 +16,21 @@ public class ItemObject : ScriptableObject
     public int GoldValue;
     public float Weight;
 
-    public virtual ItemObject CloneItem(string instanceType)
+    public virtual ItemObject GenerateItem(int equipId = -1, bool inject = false)
     {
-        ItemObject newItemObject = (ItemObject)ScriptableObject.CreateInstance(instanceType);
-
-        newItemObject.itemID = itemID ;
-        newItemObject.Name = Name;
-        newItemObject.Sprite = Sprite;
-        newItemObject.Quality = Quality;
-        newItemObject.GoldValue = GoldValue;
-        newItemObject.Weight = Weight;
-
+        ItemObject newItemObject = (ItemObject)CreateInstance("ItemObject");
+        newItemObject.CloneItem(this);
         return newItemObject;
+    }
+
+    public virtual void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    {
+        itemID = source.itemID;
+        Name = source.Name;
+        Sprite = source.Sprite;
+        Quality = source.Quality;
+        GoldValue = source.GoldValue;
+        Weight = source.Weight;
     }
 }
 

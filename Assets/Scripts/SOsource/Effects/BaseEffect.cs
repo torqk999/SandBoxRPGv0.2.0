@@ -11,22 +11,40 @@ public class BaseEffect : ScriptableObject
 
     [Header("Persistant Properties")]
     public int EquipID; // id == -1 timed proc, == 0 innate ability, > 0 equip ability
+    public int AbilityID;
     public float DurationLength;   
     public float Timer;
+
     public virtual void ApplySingleEffect(Character character, bool cast = false, int equipId = -1)
     {
-        if (cast)
+        if (!cast)
+            return;
+
+        //if (toggle)
+        //{
+        //    if (character.Risiduals.Find(x => x))
+        //}
+
+        if (DurationLength > 0)
             AddRisidualEffect(character, equipId);
+            
     }
     public virtual void AddRisidualEffect(Character character, int equipId = -1)
     {
-        if (EquipID == -1 && DurationLength > 0) // timed proc
+        if (DurationLength > 0) // Timed
+        {
             character.Risiduals.Add(GenerateEffect(equipId));
+            return;
+        }
 
-        if (EquipID > -1) // Sustain/Passive
+        if (EquipID > -1) // Toggle
         {
 
         }
+    }
+    public virtual void RemoveRisidualEffect(Character character, int equipId)
+    {
+
     }
     public virtual void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
     {
@@ -40,7 +58,7 @@ public class BaseEffect : ScriptableObject
         Timer = DurationLength;
     }
 
-    public virtual BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    public virtual BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
     {
         BaseEffect newEffect = (BaseEffect)CreateInstance("BaseEffect");
         newEffect.CloneEffect(this, equipId);

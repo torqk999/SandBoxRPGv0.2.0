@@ -12,14 +12,8 @@ public class SimpleWorldBuilder : MonoBehaviour
     public GenericContainer LootBox;
     public Wardrobe CloneWardrobe;
 
-    public List<SimpleAIcontroller> myAIpool = new List<SimpleAIcontroller>();
-    public List<Stackable> SampleObjects;
-    public List<Wearable> SampleGear;
-    public List<Ring> SampleRings;
-    public List<OneHand> SampleOneHands;
-    public List<OffHand> SampleOffHands;
-    public List<TwoHand> SampleTwoHands;
-    public List<Shield> SampleShields;
+    public List<SimpleAIcontroller> myAIpool;
+    public List<ItemObject> SampleItems;
 
     public void SpawnSampleItems(Inventory inventory)
     {
@@ -29,81 +23,15 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        foreach (Stackable item in SampleObjects)
+        foreach (ItemObject item in SampleItems)
         {
             if (item == null)
                 continue;
-            inventory.Items.Add(new StackableWrapper(item));
-            //LootBox.Inventory.Items.Add(new StackableWrapper(item));
-        }
 
-        foreach (Wearable wear in SampleGear)
-        {
-            if (wear == null)
-                continue;
+            inventory.Items.Add(item.GenerateItem(GameState.EQUIPMENT_INDEX, true));
 
-            WearableWrapper newWrapper = new WearableWrapper(wear, GameState.EQUIPMENT_INDEX, true);
-            GameState.EQUIPMENT_INDEX++;
-
-            inventory.Items.Add(newWrapper);
-            //LootBox.Inventory.Items.Add(newWrapper);
-        }
-        foreach (Ring ring in SampleRings)
-        {
-            if (ring == null)
-                continue;
-
-            RingWrapper newWrapper = new RingWrapper(ring, GameState.EQUIPMENT_INDEX, true);
-            GameState.EQUIPMENT_INDEX++;
-
-            inventory.Items.Add(newWrapper);
-            //LootBox.Inventory.Items.Add(newWrapper);
-        }
-
-        foreach (OneHand oneHand in SampleOneHands)
-        {
-            if (oneHand == null)
-                continue;
-
-            OneHandWrapper newWrapper = new OneHandWrapper(oneHand, GameState.EQUIPMENT_INDEX, true);
-            GameState.EQUIPMENT_INDEX++;
-
-            inventory.Items.Add(newWrapper);
-            //LootBox.Inventory.Items.Add(newWrapper);
-        }
-
-        foreach (OffHand offHand in SampleOffHands)
-        {
-            if (offHand == null)
-                continue;
-
-            OffHandWrapper newWrapper = new OffHandWrapper(offHand, GameState.EQUIPMENT_INDEX, true);
-            GameState.EQUIPMENT_INDEX++;
-
-            inventory.Items.Add(newWrapper);
-            //LootBox.Inventory.Items.Add(newWrapper);
-        }
-
-        foreach (TwoHand twoHand in SampleTwoHands)
-        {
-            if (twoHand == null)
-                continue;
-            TwoHandWrapper newWrapper = new TwoHandWrapper(twoHand, GameState.EQUIPMENT_INDEX, true);
-            GameState.EQUIPMENT_INDEX++;
-
-            inventory.Items.Add(newWrapper);
-            //LootBox.Inventory.Items.Add(newWrapper);
-        }
-
-        foreach (Shield shield in SampleShields)
-        {
-            if (shield == null)
-                continue;
-            ShieldWrapper newWrapper = new ShieldWrapper(shield, GameState.EQUIPMENT_INDEX, true);
-            GameState.EQUIPMENT_INDEX++;
-
-            inventory.Items.Add(newWrapper);
-            //LootBox.Inventory.Items.Add(newWrapper);
+            if (item is Equipment)
+                GameState.EQUIPMENT_INDEX++;
         }
     }
     public void SpawnMobs()

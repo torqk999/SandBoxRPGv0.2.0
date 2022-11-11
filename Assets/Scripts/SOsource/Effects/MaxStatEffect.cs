@@ -22,7 +22,7 @@ public class MaxStatEffect : StatEffect
         StatAdjustPack.Amplify(potency);
     }
 
-    public override BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    public override BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
     {
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
         newEffect.CloneEffect(this, equipId, potency, inject);

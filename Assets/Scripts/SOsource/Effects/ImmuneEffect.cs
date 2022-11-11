@@ -20,7 +20,7 @@ public class ImmuneEffect : BaseEffect
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
 
-    public override BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    public override BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
     {
         ImmuneEffect newEffect = (ImmuneEffect)CreateInstance("ImmuneEffect");
         newEffect.CloneEffect(this, equipId);

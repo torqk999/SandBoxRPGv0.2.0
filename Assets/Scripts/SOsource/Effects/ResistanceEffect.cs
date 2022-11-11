@@ -22,7 +22,7 @@ public class ResistanceEffect : StatEffect
         ResAdjustments.Amplify(potency);
     }
 
-    public override BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    public override BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
     {
         ResistanceEffect newEffect = (ResistanceEffect)CreateInstance("MaxStatEffect");
         newEffect.CloneEffect(this, equipId, potency, inject);

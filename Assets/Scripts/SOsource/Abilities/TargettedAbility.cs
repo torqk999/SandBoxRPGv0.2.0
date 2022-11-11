@@ -20,7 +20,7 @@ public class TargettedAbility : CharacterAbility
     {
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = source.Effects[i].GenerateEffect(equipId, potency, inject);
+            Effects[i] = source.Effects[i].GenerateEffect(potency, inject, equipId);
     }
 
     public override void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)

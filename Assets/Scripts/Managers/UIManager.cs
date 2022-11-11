@@ -563,9 +563,9 @@ public class UIManager : MonoBehaviour
             if (buttonImage == null)
                 continue;
             if (GameState.pController.CurrentCharacter.EquipmentSlots[i] != null &&
-                GameState.pController.CurrentCharacter.EquipmentSlots[i].Equip.Sprite != null)
+                GameState.pController.CurrentCharacter.EquipmentSlots[i].Sprite != null)
             {
-                buttonImage.sprite = GameState.pController.CurrentCharacter.EquipmentSlots[i].Equip.Sprite;
+                buttonImage.sprite = GameState.pController.CurrentCharacter.EquipmentSlots[i].Sprite;
                 continue;
             }
             if (i < EmptyGearSprites.Length && i > -1 && EmptyGearSprites[i] != null)
@@ -588,9 +588,9 @@ public class UIManager : MonoBehaviour
             if (buttonImage == null)
                 continue;
             if (GameState.pController.CurrentCharacter.RingSlots[i] != null &&
-                GameState.pController.CurrentCharacter.RingSlots[i].Equip.Sprite != null)
+                GameState.pController.CurrentCharacter.RingSlots[i].Sprite != null)
             {
-                buttonImage.sprite = GameState.pController.CurrentCharacter.RingSlots[i].Equip.Sprite;
+                buttonImage.sprite = GameState.pController.CurrentCharacter.RingSlots[i].Sprite;
                 continue;
             }
             if (EmptyRingSprite != null)
@@ -613,7 +613,7 @@ public class UIManager : MonoBehaviour
 
         // Populate new buttons
         int index = 0;
-        foreach (ItemWrapper item in inventory.Items)
+        foreach (ItemObject item in inventory.Items)
         {
             if (item == null)
                 continue;
@@ -623,7 +623,7 @@ public class UIManager : MonoBehaviour
             CreateCallBackIdentity(newButtonObject.GetComponent<Button>(), index, type);
             index++;
 
-            newButtonObject.transform.GetChild(0).GetComponent<Text>().text = (item is StackableWrapper) ? ((StackableWrapper)item).CurrentQuantity.ToString() : string.Empty;
+            newButtonObject.transform.GetChild(0).GetComponent<Text>().text = (item is Stackable) ? ((Stackable)item).CurrentQuantity.ToString() : string.Empty;
 
             Image newImage = newButtonObject.GetComponent<Image>();
             try { newImage.sprite = item.Sprite; }

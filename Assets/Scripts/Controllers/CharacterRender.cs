@@ -29,6 +29,13 @@ public enum GearType
     PLATE
 }
 
+/*public enum HandSlot
+{
+    MAIN,
+    OFF,
+    SHIELD
+}*/
+
 public enum HandSource
 {
     AXE,
@@ -41,17 +48,7 @@ public enum HandSource
     SHIELD
 }
 
-public enum MaterialType
-{
-    FLESH,
-    HAIR,
-    WOOD,
-    IRON,
-    STEEL,
-    GOLD,
-    TRIM_AURA,
-    LEATHER
-}
+
 
 [Serializable]
 public class WardrobeProfile
@@ -92,7 +89,7 @@ public enum CharAnimation
 
 public class CharacterRender : MonoBehaviour
 {
-    public CharacterManager CharManager;
+    //public CharacterManager CharManager;
     public Character MyCharacter;
     public Animator MyAnimator;
 
@@ -165,20 +162,41 @@ public class CharacterRender : MonoBehaviour
             return;
         }
     }
-    public void UpdateGearSlot(Wearable wear, bool equip = true)
+    public void UpdateGearSlot(Equipment equip, bool putOn = true)
     {
+        if (!(equip is Wearable))
+            return;
+
         MeshTarget.Clear();
         //MeshTarget.Append($"{wear.EquipSkill}.{wear.Type}");
     }
-
-    public void UpdateHandSlot(Hand hand = null)
+    /*public void UpdateHandSlot(Hand hand, bool putOn)
     {
+        if (hand == null)
+            return;
+
+        switch(hand)
+        {
+            case OneHand:
+                //if (!putOn)
+
+                break;
+
+            case OffHand:
+                break;
+
+            case Shield:
+                break;
+
+            case TwoHand:
+                break;
+        }
         //if (hand == null)
         //{
         //    MyAnimator.SetInteger("")
         //}
         //MyAnimator
-    }
+    }*/
 
     // Start is called before the first frame update
     void Start()

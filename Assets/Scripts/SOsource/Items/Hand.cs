@@ -5,19 +5,49 @@ using UnityEngine;
 public class Hand : Equipment
 {
     [Header("Hand Properties")]
-    public MaterialType Base;
-    public MaterialType Handle;
+    public MaterialType BaseMaterial;
+    public MaterialType HandleMaterial;
     public List<MaterialType> Details;
+    public GameObject Instantiation;   // Used by equipping only
 
-    public override Equipment GenerateCloneEquip(int equipId = -1, bool inject = false, string instanceType = "Hand")
+    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
     {
-        Hand hand = (Hand)base.GenerateCloneEquip(equipId, inject, instanceType);
-
-        hand.Base = Base;
-        hand.Handle = Handle;
-        hand.Details = new List<MaterialType>();
-        hand.Details.AddRange(Details);
-
+        Hand hand = (Hand)CreateInstance("Hand");
+        hand.CloneItem(this, equipId, inject);
         return hand;
     }
+
+    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    {
+        if (!(source is Hand))
+            return;
+
+        Hand handSource = (Hand)source;
+
+        BaseMaterial = handSource.BaseMaterial;
+        HandleMaterial = handSource.HandleMaterial;
+        Details = new List<MaterialType>();
+        Details.AddRange(Details);
+        Instantiation = null;
+
+        base.CloneItem(source);
+    }
+    public override bool UpdateCharacterRender(Character character, bool putOn = true)
+    {
+        if (!base.UpdateCharacterRender(character))
+            return false;
+
+        character.GameState.SceneMan.InstantiateHandEquip(this, character.Render, putOn);
+
+        return true;
+    }
+
+    /*public override bool EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
+    {
+        if (!base.EquipCharacter(character, inventorySlot))
+            return false;
+
+        return true;
+    }*/
+
 }

@@ -44,6 +44,7 @@ public class CharacterAbility : ScriptableObject
     public float CD_Duration;
     public float CD_Timer;
     public int EquipID;
+    public int AbilityID;
 
     public virtual void UseAbility(Character target)
     {

@@ -78,7 +78,7 @@ public class CurrentStatEffect : StatEffect
         ElementPack.Amplify(potency);
     }
 
-    public override BaseEffect GenerateEffect(int equipId = -1, float potency = 1, bool inject = true)
+    public override BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
     {
         CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
         newEffect.CloneEffect(this, equipId, potency, inject);

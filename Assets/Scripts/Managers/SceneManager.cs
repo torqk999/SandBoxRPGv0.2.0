@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-/*
-enum ParticleCast
-{
 
+public enum MaterialType
+{
+    FLESH,
+    HAIR,
+    WOOD,
+    IRON,
+    STEEL,
+    GOLD,
+    TRIM_AURA,
+    LEATHER
 }
 
-enum Projectiles
-{
-
-}
-*/
 public class SceneManager : MonoBehaviour
 {
     public GameState GameState;
@@ -23,15 +25,11 @@ public class SceneManager : MonoBehaviour
     public List<GameObject> TwoHandPrefabs;
     public List<GameObject> OffHandPrefabs;
     public List<GameObject> ShieldPrefabs;
-    /*
-    public List<ParticleSystem> Casts;
-    public List<ParticleSystem> Projectiles;
-    public List<ParticleSystem> Impacts;
-    public List<ParticleSystem> Conditions;
-    public List<ParticleSystem> Auras;
-    */
-    public int CurrentLootBagIndex;
 
+    public List<Material> Materials;
+
+    #region LOOT
+    public int CurrentLootBagIndex;
     public bool TakeFromContainer(Character character, GenericContainer lootBag, int index)
     {
         // Meeeeeeeeeeeeeeeer -_________-
@@ -91,38 +89,47 @@ public class SceneManager : MonoBehaviour
     {
 
     }
-    public bool InstantiateHandEquip(EquipWrapper equip, CharacterRender render)
-    {
-        GameObject newEquipObject = null;
+    #endregion
 
-        if (equip == null ||
+    #region INSTANTIATIONS & DESTUCTIONS
+    public bool InstantiateHandEquip(Hand hand, CharacterRender render, bool putOn = true)
+    {
+        if (hand == null ||
             render == null)
             return false;
 
+        GameObject newHand = null;
+
         try
         {
-            switch (equip)
+            if (putOn)
             {
-                case OneHandWrapper:
-                    newEquipObject = Instantiate(OneHandPrefabs[(int)((OneHand)equip.Equip).Type], render.MainHandSlot);
-                    break;
+                switch (hand)
+                {
+                    case OneHand:
+                        newHand = Instantiate(OneHandPrefabs[(int)((OneHand)hand).Type], render.MainHandSlot);
+                        break;
 
-                case TwoHandWrapper:
-                    newEquipObject = Instantiate(TwoHandPrefabs[(int)((TwoHand)equip.Equip).Type], render.MainHandSlot);
-                    break;
+                    case TwoHand:
+                        newHand = Instantiate(TwoHandPrefabs[(int)((TwoHand)hand).Type], render.MainHandSlot);
+                        break;
 
-                case OffHandWrapper:
-                    newEquipObject = Instantiate(OffHandPrefabs[(int)((OffHand)equip.Equip).Type], render.OffHandSlot);
-                    break;
+                    case OffHand:
+                        newHand = Instantiate(OffHandPrefabs[(int)((OffHand)hand).Type], render.OffHandSlot);
+                        break;
 
-                case ShieldWrapper:
-                    newEquipObject = Instantiate(ShieldPrefabs[(int)((Shield)equip.Equip).Type], render.ShieldSlot);
-                    break;
+                    case Shield:
+                        newHand = Instantiate(ShieldPrefabs[(int)((Shield)hand).Type], render.ShieldSlot);
+                        break;
 
-                default:
-                    Debug.Log("Wasn't a hand equip...");
-                    return false;
+                    default:
+                        Debug.Log("Wasn't a hand equip...");
+                        return false;
+                }
+                hand.Instantiation = newHand;
             }
+            else
+                Destroy(hand.Instantiation);
         }
         catch
         {
@@ -130,16 +137,28 @@ public class SceneManager : MonoBehaviour
             return false;
         }
 
-        if (newEquipObject != null)
+        try
         {
-            equip.Instantiation = newEquipObject;
-            newEquipObject.transform.localPosition = new Vector3(0, 0, 0);
-            newEquipObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
-            newEquipObject.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+            if (newHand == null)
+                return true;
+
+            newHand.transform.localPosition = new Vector3(0, 0, 0);
+            newHand.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            newHand.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+            MeshRenderer newHandMesh = newHand.GetComponent<MeshRenderer>();
+            newHandMesh.materials[0] = Materials[(int)hand.BaseMaterial];
+            newHandMesh.materials[1] = Materials[(int)hand.HandleMaterial];
         }
-        
+        catch
+        {
+            Debug.Log("Material source and/or target missing! Could not modify!");
+            return false;
+        }
+
         return true;
     }
+    #endregion
 
     // Start is called before the first frame update
     void Start()
