@@ -16,12 +16,7 @@ public enum TargetType
     ALLY,
     ENEMY
 }
-public enum AbilitySchool
-{
-    ATTACK,
-    SPELL,
-    POWER
-}
+
 //[CreateAssetMenu(fileName = "CharacterAbility", menuName = "ScriptableObjects/CharacterAbility")]
 public class CharacterAbility : ScriptableObject
 {
@@ -38,7 +33,7 @@ public class CharacterAbility : ScriptableObject
     public RawStat CostTarget;
     public ValueType CostType;
 
-    public AbilitySchool School;
+    public School School;
     public float CastRange;
 
     public float CD_Duration;
@@ -50,7 +45,7 @@ public class CharacterAbility : ScriptableObject
     {
 
     }
-    public virtual void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)
+    public virtual void CloneAbility(CharacterAbility source, Equipment equip = null, bool inject = false)
     {
         Name = source.Name;
         Sprite = source.Sprite;
@@ -67,7 +62,8 @@ public class CharacterAbility : ScriptableObject
 
         CD_Duration = source.CD_Duration;
         CD_Timer = 0;
-        EquipID = equipId;
+
+        EquipID = equip == null ? -1 : equip.EquipID;
     }
     public void SetCooldown()
     {
@@ -78,14 +74,14 @@ public class CharacterAbility : ScriptableObject
         CD_Timer -= GlobalConstants.TIME_SCALE;
         CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
     }
-    public virtual CharacterAbility GenerateAbility(float potency = 1, bool inject = true, int equipId = 0)
+    public virtual CharacterAbility GenerateAbility(Equipment equip = null, bool inject = true)
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
-        newAbility.CloneAbility(this, equipId);
+        newAbility.CloneAbility(this, equip, inject);
         return newAbility;
     }
     public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
     {
-        return GenerateAbility(currentCharacter.GeneratePotency(equip), false, equip.EquipID);
+        return GenerateAbility(equip, false);
     }
 }

@@ -101,7 +101,7 @@ public class Wardrobe : ScriptableObject
     }
     Wearable AttemptCloneWear(Wearable wearSource, EquipSlot slot, int equipId)
     {
-        if (wearSource != null && wearSource.Type == slot)
+        if (wearSource != null && wearSource.EquipSlot == slot)
             return (Wearable)wearSource.GenerateItem(equipId, true);
         return null;
     }

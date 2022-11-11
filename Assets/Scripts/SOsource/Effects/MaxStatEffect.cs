@@ -6,11 +6,11 @@ using UnityEngine;
 public class MaxStatEffect : StatEffect
 {
     [Header ("Adjust Values")]
-    public StatPackage StatAdjustPack;
+    public RawStatPackage StatAdjustPack;
 
-    public override void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
+    public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source);
+        base.CloneEffect(source, ability);
 
         if (!(source is MaxStatEffect))
             return;
@@ -19,13 +19,13 @@ public class MaxStatEffect : StatEffect
 
         StatAdjustPack.Clone(maxSource.StatAdjustPack); //= new StatPackage(maxSource.StatAdjustPack);
         StatAdjustPack.Reflect(inject);
-        StatAdjustPack.Amplify(potency);
+        StatAdjustPack.Amplify(CharacterMath.GeneratePotency(null, equip));
     }
 
-    public override BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
+    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true)
     {
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, equipId, potency, inject);
+        newEffect.CloneEffect(this, ability, equip, inject);
         return newEffect;
     }
 }

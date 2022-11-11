@@ -9,21 +9,21 @@ public class CurrentStatEffect : StatEffect
     public RawStat TargetStat;
     public ElementPackage ElementPack;
 
-    public override void ApplySingleEffect(Character character, bool cast = false, int equipId = -1)
+    public override void ApplySingleEffect(Character target, CharacterAbility ability = null, Equipment equip = null, bool cast = false, bool toggle = true)
     {
-        base.ApplySingleEffect(character, cast, equipId);
+        base.ApplySingleEffect(target, ability, equip, cast, toggle);
 
-        if (character.CheckDamageImmune(TargetStat))
+        if (target.CheckDamageImmune(TargetStat))
             return;
 
         float totalDamage = 0;
-        float damageAmount = character.GenerateStatValueModifier(Value, TargetStat);
+        float damageAmount = target.GenerateStatValueModifier(Value, TargetStat);
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
             //if (CheckElementalImmune((Element)i))
             //continue;
-            float res = character.CurrentResistances.Elements[i];
+            float res = target.CurrentResistances.Elements[i];
             float change = (damageAmount * ElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
             totalDamage += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
@@ -31,26 +31,26 @@ public class CurrentStatEffect : StatEffect
         if (totalDamage == 0)
             return;
 
-        float[] stats = character.CurrentStats.Stats;
-        float[] max = character.MaximumStatValues.Stats;
+        float[] stats = target.CurrentStats.Stats;
+        float[] max = target.MaximumStatValues.Stats;
 
         stats[(int)TargetStat] -= totalDamage;
         stats[(int)TargetStat] = stats[(int)TargetStat] <= max[(int)TargetStat] ? stats[(int)TargetStat] : max[(int)TargetStat];
         stats[(int)TargetStat] = stats[(int)TargetStat] >= 0 ? stats[(int)TargetStat] : 0;
 
         // Debugging
-        character.bAssetUpdate = true;
+        target.bAssetUpdate = true;
 
         switch (TargetStat)
         {
             case RawStat.HEALTH:
                 if (totalDamage > 0)
-                    character.DebugState = DebugState.LOSS_H;
+                    target.DebugState = DebugState.LOSS_H;
                 break;
 
             case RawStat.MANA:
                 if (totalDamage > 0)
-                    character.DebugState = DebugState.LOSS_M;
+                    target.DebugState = DebugState.LOSS_M;
                 break;
 
             case RawStat.SPEED:
@@ -59,14 +59,14 @@ public class CurrentStatEffect : StatEffect
 
             case RawStat.STAMINA:
                 if (totalDamage > 0)
-                    character.DebugState = DebugState.LOSS_S;
+                    target.DebugState = DebugState.LOSS_S;
                 break;
         }
     }
 
-    public override void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
+    public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source, equipId);
+        base.CloneEffect(source, ability, equip, inject);
 
         if (!(source is CurrentStatEffect))
             return;
@@ -78,10 +78,10 @@ public class CurrentStatEffect : StatEffect
         ElementPack.Amplify(potency);
     }
 
-    public override BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
+    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true)
     {
         CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
-        newEffect.CloneEffect(this, equipId, potency, inject);
+        newEffect.CloneEffect(this, ability, equip, inject);
         return newEffect;
     }
 

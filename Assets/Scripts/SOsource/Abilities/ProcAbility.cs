@@ -9,12 +9,12 @@ public class ProcAbility : TargettedAbility
     [Header("Proc Properties")]
     public ParticleSystem Projectile;
 
-    public override void CloneEffects(TargettedAbility source, int equipId = -1, float potency = 1, bool inject = false)
+    public override void CloneEffects(TargettedAbility source, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffects(source, -1, potency, inject);
+        base.CloneEffects(source, equip, inject);
     }
 
-    public override void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)
+    public override void CloneAbility(CharacterAbility source, Equipment equip = null, bool inject = false)
     {
         if (!(source is ProcAbility))
             return;
@@ -22,15 +22,14 @@ public class ProcAbility : TargettedAbility
         ProcAbility procSource = (ProcAbility)source;
 
         Projectile = procSource.Projectile;
-        equipId = -1; // Hard write procs
 
-        base.CloneAbility(source, equipId, potency, inject);
+        base.CloneAbility(source, equip, inject);
     }
 
-    public override CharacterAbility GenerateAbility(float potency = 1, bool inject = false, int equipId = 0)
+    public override CharacterAbility GenerateAbility(Equipment equip = null, bool inject = false)
     {
         ProcAbility newAbility = (ProcAbility)CreateInstance("ProcAbility");
-        newAbility.CloneAbility(this, equipId, potency, inject);
+        newAbility.CloneAbility(this, equip, inject);
         return newAbility;
     }
 }

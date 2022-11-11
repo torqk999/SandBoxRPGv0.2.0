@@ -15,7 +15,6 @@ public class Ring : Equipment
         newOneHand.CloneItem(this, equipId, inject);
         return newOneHand;
     }
-
     public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
     {
         if (!(source is Ring))
@@ -26,8 +25,8 @@ public class Ring : Equipment
         //CurrentSlotIndex = -1;
 
         base.CloneItem(source, equipId, inject);
+        //EquipSkill = SkillType.MAGIC;
     }
-
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
     {
         int callReturn = base.EquipCharacter(character, inventorySlot);

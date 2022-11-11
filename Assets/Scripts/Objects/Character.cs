@@ -39,10 +39,10 @@ public class Character : Pawn, Interaction
     public bool bIntent;
 
     [Header("Stats")]
-    public StatPackage BaseStats;
-    public StatPackage CurrentStats;
-    public StatPackage SustainedStatValues;
-    public StatPackage MaximumStatValues;
+    public RawStatPackage BaseStats;
+    public RawStatPackage CurrentStats;
+    public RawStatPackage SustainedStatValues;
+    public RawStatPackage MaximumStatValues;
     public ElementPackage BaseResistances;
     public ElementPackage CurrentResistances;
 
@@ -84,9 +84,10 @@ public class Character : Pawn, Interaction
     public float AssetTimer;
 
     #endregion
-    public float GeneratePotency(Equipment equip = null)
+    /*public float GeneratePotency(Equipment equip = null, bool skill = true)
     {
-        int equipSkill = equip == null ? (int)SkillType.UN_ARMED : (int)equip.EquipSkill;
+        int equipSkill = equip == null ? (int)School.MONK : (int)equip.EquipSchool;
+        equipSkill = skill ? equipSkill : 1;
         float weaponLevelFactor = equip == null ? 0 : equip.EquipLevel;
 
         return 1 +                                                                              // Base
@@ -98,7 +99,7 @@ public class Character : Pawn, Interaction
         (Sheet.SkillsLevels.Levels[equipSkill] * CharacterMath.SKILL_MUL_LEVEL[equipSkill])) *  // Skill
 
         CharacterMath.SKILL_MUL_RACE[(int)Sheet.Race, equipSkill]);                             // Race
-    }
+    }*/
     public void UpdateAbilites()
     {
         RebuildAbilityList();
@@ -169,9 +170,9 @@ public class Character : Pawn, Interaction
 
         Debug.Log("Initializing Char Sheet");
 
-        BaseStats = new StatPackage(Sheet);
-        MaximumStatValues = new StatPackage(BaseStats);
-        CurrentStats = new StatPackage(BaseStats);
+        BaseStats = new RawStatPackage(Sheet);
+        MaximumStatValues = new RawStatPackage(BaseStats);
+        CurrentStats = new RawStatPackage(BaseStats);
 
         BaseResistances = new ElementPackage(Sheet);
         CurrentResistances = new ElementPackage(BaseResistances);
@@ -180,10 +181,9 @@ public class Character : Pawn, Interaction
 
         Risiduals = new List<BaseEffect>();
 
-        //if ()
         foreach(BaseEffect innate in Sheet.InnatePassives)
         {
-            Risiduals.Add(innate.GenerateEffect(GeneratePotency(), true, 0));
+            innate.AddRisidualEffect(this, null, null, true);
         }
 
         UpdateAbilites();
@@ -194,8 +194,8 @@ public class Character : Pawn, Interaction
 
         for (int i = 0; i < 3; i++)
         {
-            float magnitude = CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.BASE_REGEN[i] + 
-                (CharacterMath.RAW_GROWTH[i] * Sheet.Level));
+            float magnitude = CharacterMath.STAT_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.BASE_REGEN[i] + 
+                (CharacterMath.STAT_GROWTH[i] * Sheet.Level));
 
             CurrentStatEffect newRegen = (CurrentStatEffect)ScriptableObject.CreateInstance("CurrentStatEffect");
             newRegen.FormRegen((RawStat)i, magnitude);
@@ -217,7 +217,7 @@ public class Character : Pawn, Interaction
 
         foreach (CharacterAbility innate in Sheet.InnateAbilities)
         {
-            Abilities.Add(innate.GenerateAbility(GeneratePotency()));
+            Abilities.Add(innate.GenerateAbility());
         }
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
@@ -403,17 +403,26 @@ public class Character : Pawn, Interaction
 
         switch (call.School) // Check CC
         {
-            case AbilitySchool.ATTACK:
+            case School.BERZERKER:
+            case School.WARRIOR:
+            case School.RANGER:
+            case School.ROGUE:
                 if (CheckCCstatus(CCstatus.UN_ARMED))
                     return false;
                 break;
 
-            case AbilitySchool.SPELL:
+            case School.PYROMANCER:
+            case School.GEOMANCER:
+            case School.NECROMANCER:
+            case School.AEROTHURGE:
+            case School.HYDROSOPHIST:
                 if (CheckCCstatus(CCstatus.SILENCED))
                     return false;
                 break;
 
-            case AbilitySchool.POWER:
+            case School.MONK:
+                if (CheckCCstatus(CCstatus.DRUNK))
+                    return false;
                 break;
         }
 

@@ -36,7 +36,7 @@ public enum GearType
     SHIELD
 }*/
 
-public enum HandSource
+public enum HandPosition
 {
     AXE,
     SWORD,
@@ -102,7 +102,7 @@ public class CharacterRender : MonoBehaviour
     public int AnimationLayer;
     public float AniCombatTimer;
 
-    public SkillType CurrentWepPose;
+    public HandPosition CurrentWepPose;
 
     StringBuilder MeshTarget = new StringBuilder();
 

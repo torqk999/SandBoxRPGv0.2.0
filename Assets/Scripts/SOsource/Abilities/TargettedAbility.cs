@@ -13,17 +13,17 @@ public class TargettedAbility : CharacterAbility
     public override void UseAbility(Character target)
     {
         for (int i = 0; i < Effects.Length; i++)
-            Effects[i].ApplySingleEffect(target, true, EquipID); // First or only proc
+            Effects[i].ApplySingleEffect(target, this, null); // First or only proc
     }
 
-    public virtual void CloneEffects(TargettedAbility source, int equipId = -1, float potency = 1, bool inject = false)
+    public virtual void CloneEffects(TargettedAbility source, Equipment equip = null, bool inject = false)
     {
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = source.Effects[i].GenerateEffect(potency, inject, equipId);
+            Effects[i] = source.Effects[i].GenerateEffect(source, equip, inject);
     }
 
-    public override void CloneAbility(CharacterAbility source, int equipId = -1, float potency = 1, bool inject = false)
+    public override void CloneAbility(CharacterAbility source, Equipment equip = null, bool inject = false)
     {
         if (!(source is TargettedAbility))
             return;
@@ -33,7 +33,7 @@ public class TargettedAbility : CharacterAbility
         AbilityTarget = targetSource.AbilityTarget;
         AOE_Range = targetSource.AOE_Range;
 
-        CloneEffects(targetSource, equipId, potency, inject);
-        base.CloneAbility(source, equipId);
+        CloneEffects(targetSource, equip, inject);
+        base.CloneAbility(source, equip, inject);
     }
 }

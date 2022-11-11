@@ -6,9 +6,9 @@ using UnityEngine;
 public class Wearable : Equipment
 {
     [Header("Wearable Properties")]
-    public EquipSlot Type;
-    public MaterialType Base;
-    public MaterialType Trim;
+    public EquipSlot EquipSlot;
+    public MaterialType BaseMaterial;
+    public MaterialType TrimMaterial;
 
     public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
     {
@@ -16,7 +16,6 @@ public class Wearable : Equipment
         newOneHand.CloneItem(this, equipId, inject);
         return newOneHand;
     }
-
     public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
     {
         if (!(source is Wearable))
@@ -25,10 +24,9 @@ public class Wearable : Equipment
         Wearable wearSource = (Wearable)source;
 
         base.CloneItem(source, equipId, inject);
-        EquipSkill = SkillType.MEDIUM;
-        Type = wearSource.Type;
+        //EquipSkill = SkillType.MEDIUM;
+        EquipSlot = wearSource.EquipSlot;
     }
-
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
     {
         int callReturn = base.EquipCharacter(character, inventorySlot);
@@ -39,7 +37,7 @@ public class Wearable : Equipment
                 return -1;
 
             case 0:
-                Equipment slot = character.EquipmentSlots[(int)Type];
+                Equipment slot = character.EquipmentSlots[(int)EquipSlot];
 
                 if (slot != null && slot.EquipCharacter(character, -1) == -1)
                 {
@@ -60,7 +58,6 @@ public class Wearable : Equipment
                 return 1;
         }
     }
-
     public override bool UpdateCharacterRender(Character character, bool putOn = true)
     {
         if (character == null ||

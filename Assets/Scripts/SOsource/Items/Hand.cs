@@ -5,6 +5,7 @@ using UnityEngine;
 public class Hand : Equipment
 {
     [Header("Hand Properties")]
+    public HandPosition HandPosition;
     public MaterialType BaseMaterial;
     public MaterialType HandleMaterial;
     public List<MaterialType> Details;
@@ -24,6 +25,7 @@ public class Hand : Equipment
 
         Hand handSource = (Hand)source;
 
+        HandPosition = handSource.HandPosition;
         BaseMaterial = handSource.BaseMaterial;
         HandleMaterial = handSource.HandleMaterial;
         Details = new List<MaterialType>();

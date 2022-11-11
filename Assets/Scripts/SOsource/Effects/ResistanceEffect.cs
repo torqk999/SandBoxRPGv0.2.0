@@ -8,9 +8,9 @@ public class ResistanceEffect : StatEffect
     [Header("Resistance Properties")]
     public ElementPackage ResAdjustments;
 
-    public override void CloneEffect(BaseEffect source, int equipId = -1, float potency = 1, bool inject = true)
+    public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source, equipId, potency, inject);
+        base.CloneEffect(source, ability, equip, inject, amp);
 
         if (!(source is ResistanceEffect))
             return;
@@ -19,13 +19,14 @@ public class ResistanceEffect : StatEffect
 
         ResAdjustments.Clone(currentStatEffect.ResAdjustments);
         ResAdjustments.Reflection.Reflect(ref ResAdjustments.Elements, inject);
-        ResAdjustments.Amplify(potency);
+        if (amp)
+        ResAdjustments.Amplify(CharacterMath.GeneratePotency());
     }
 
-    public override BaseEffect GenerateEffect(float potency = 1, bool inject = true, int equipId = -1)
+    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true, bool amp = false)
     {
         ResistanceEffect newEffect = (ResistanceEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, equipId, potency, inject);
+        newEffect.CloneEffect(this, ability, equip, inject);
         return newEffect;
     }
 }

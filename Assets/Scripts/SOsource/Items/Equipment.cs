@@ -5,18 +5,25 @@ using UnityEngine;
 public class Equipment : ItemObject
 {
     [Header("Equipment Properties")]
-    public SkillType EquipSkill;
+    public School EquipSchool;
     public ClassType ClassType;
 
+    public CharacterAbility[] Abilities;
+    public BaseEffect[] Effects;
+
+    [Header("Equip Logic - Do not touch")]
     public int EquipLevel;
     public int EquipID;
 
     public int SlotIndex;
     public Equipment[] SlotFamily;
 
-    public CharacterAbility[] Abilities;
-    public BaseEffect[] Effects;
+    float GeneratePotency()
+    {
+        return 1 +
 
+        (EquipLevel * CharacterMath.WEP_LEVEL_FACTOR);
+    }
     public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
     {
         Equipment newEquip = (Equipment)CreateInstance("Equipment");
@@ -30,7 +37,7 @@ public class Equipment : ItemObject
 
         Equipment equipSource = (Equipment)source;
 
-        EquipSkill = equipSource.EquipSkill;
+        //EquipSkill = equipSource.EquipSkill;
         ClassType = equipSource.ClassType;
 
         EquipLevel = equipSource.EquipLevel;
@@ -45,13 +52,13 @@ public class Equipment : ItemObject
         Abilities = new CharacterAbility[source.Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
-            Abilities[i] = source.Abilities[i].GenerateAbility(1, true, EquipID);
+            Abilities[i] = source.Abilities[i].GenerateAbility(1, inject, EquipID);
         }
 
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
         {
-            Effects[i] = source.Effects[i].GenerateEffect(1, true, EquipID);
+            Effects[i] = source.Effects[i].GenerateEffect(null, source, inject);
         }
     }
 

@@ -26,7 +26,6 @@ public class TwoHand : Hand
         newOneHand.CloneItem(this, equipId, inject);
         return newOneHand;
     }
-
     public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
     {
         if (!(source is TwoHand))
@@ -35,10 +34,9 @@ public class TwoHand : Hand
         TwoHand twoSource = (TwoHand)source;
 
         base.CloneItem(source, equipId, inject);
-
+        //EquipSkill = SkillType.HAND_TWO;
         Type = twoSource.Type;
     }
-
     public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
     {
         int callReturn = base.EquipCharacter(character, inventorySlot);

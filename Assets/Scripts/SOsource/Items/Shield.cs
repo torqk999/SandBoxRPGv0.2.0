@@ -22,7 +22,6 @@ public class Shield : Hand
         newOneHand.CloneItem(this, equipId, inject);
         return newOneHand;
     }
-
     public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
     {
         if (!(source is Shield))
@@ -31,7 +30,7 @@ public class Shield : Hand
         Shield shieldSource = (Shield)source;
 
         base.CloneItem(source, equipId, inject);
-        EquipSkill = SkillType.HAND_OFF;
+        //EquipSkill = SkillType.SHIELD;
         Type = shieldSource.Type;
     }
 
