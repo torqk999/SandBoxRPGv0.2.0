@@ -10,7 +10,7 @@ public class CrowdControlEffect : BaseEffect
 
     public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source, ability, equip, inject);
+        base.CloneEffect(source, sheet, ability, equip, inject);
 
         if (!(source is CrowdControlEffect))
             return;
@@ -20,10 +20,10 @@ public class CrowdControlEffect : BaseEffect
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
 
-    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true, bool amp = false)
+    public override BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
     {
         CrowdControlEffect newEffect = (CrowdControlEffect)CreateInstance("ImmuneEffect");
-        newEffect.CloneEffect(this, ability, equip, inject);
+        newEffect.CloneEffect(this, sheet, ability, equip, inject);
         return newEffect;
     }
 
@@ -31,7 +31,6 @@ public class CrowdControlEffect : BaseEffect
     {
         Name = name;
         Sprite = sprite;
-        EquipID = 0;
         TargetCCstatus = status;
     }
 }

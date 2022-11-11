@@ -9,9 +9,9 @@ public class CurrentStatEffect : StatEffect
     public RawStat TargetStat;
     public ElementPackage ElementPack;
 
-    public override void ApplySingleEffect(Character target, CharacterAbility ability = null, Equipment equip = null, bool cast = false, bool toggle = true)
+    public override void ApplySingleEffect(Character target, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool cast = false, bool toggle = true)
     {
-        base.ApplySingleEffect(target, ability, equip, cast, toggle);
+        base.ApplySingleEffect(target, sheet, ability, equip, cast, toggle);
 
         if (target.CheckDamageImmune(TargetStat))
             return;
@@ -66,7 +66,7 @@ public class CurrentStatEffect : StatEffect
 
     public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
     {
-        base.CloneEffect(source, ability, equip, inject);
+        base.CloneEffect(source, sheet, ability, equip, inject);
 
         if (!(source is CurrentStatEffect))
             return;
@@ -78,10 +78,10 @@ public class CurrentStatEffect : StatEffect
         ElementPack.Amplify(potency);
     }
 
-    public override BaseEffect GenerateEffect(CharacterAbility ability = null, Equipment equip = null, bool inject = true)
+    public override BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
     {
         CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
-        newEffect.CloneEffect(this, ability, equip, inject);
+        newEffect.CloneEffect(this, sheet, ability, equip, inject);
         return newEffect;
     }
 
