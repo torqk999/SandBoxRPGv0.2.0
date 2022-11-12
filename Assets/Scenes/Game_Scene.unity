@@ -856,29 +856,29 @@ MonoBehaviour:
   bIntent: 1
   BaseStats:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   CurrentStats:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   SustainedStatValues:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   MaximumStatValues:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
@@ -909,6 +909,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  AOE_buffer: []
   Abilities:
   - {fileID: 11400000, guid: 85b3d7ef40f064a47b0a4b91c1a73c40, type: 2}
   Risiduals: []
@@ -1241,29 +1242,29 @@ MonoBehaviour:
   bIntent: 0
   BaseStats:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   CurrentStats:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   SustainedStatValues:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   MaximumStatValues:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
@@ -1294,6 +1295,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  AOE_buffer: []
   Abilities: []
   Risiduals: []
   CurrentParty: {fileID: 0}
@@ -2489,6 +2491,7 @@ MonoBehaviour:
   bPauseMenuOpen: 0
   bHUDactive: 1
   bGameMenuOpen: 0
+  ABILITY_INDEX: 0
   EQUIPMENT_INDEX: 0
   RigidBodyPawns: []
 --- !u!1 &586143228
@@ -4004,7 +4007,7 @@ MonoBehaviour:
   CloneWardrobe: {fileID: 0}
   myAIpool: []
   SampleItems:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 177682e4dd18b4c4e8ed8b22c5d142a2, type: 2}
 --- !u!114 &1010888937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5796,29 +5799,29 @@ MonoBehaviour:
   bIntent: 0
   BaseStats:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   CurrentStats:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   SustainedStatValues:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
   MaximumStatValues:
     Reflection:
-      HEALTH: 0
       STAMINA: 0
+      HEALTH: 0
       MANA: 0
       SPEED: 0
     Stats: []
@@ -5849,6 +5852,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  AOE_buffer: []
   Abilities:
   - {fileID: 11400000, guid: 76d1a3c863e5cbe46864486982432ef2, type: 2}
   - {fileID: 11400000, guid: 358636cff03cd164491d5979df1c8062, type: 2}

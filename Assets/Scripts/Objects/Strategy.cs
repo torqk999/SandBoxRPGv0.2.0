@@ -68,12 +68,12 @@ public class Strategy : MonoBehaviour
 
             switch(source)
             {
-                case TargettedAbility:
-                    if (!(ability is TargettedAbility))
+                case EffectAbility:
+                    if (!(ability is EffectAbility))
                         continue;
 
-                    TargettedAbility effectSource = (TargettedAbility)source;
-                    TargettedAbility effectAbility = (TargettedAbility)ability;
+                    EffectAbility effectSource = (EffectAbility)source;
+                    EffectAbility effectAbility = (EffectAbility)ability;
 
                     foreach (BaseEffect effect in effectSource.Effects) // Check for atleast one matching effect
                     {
@@ -85,7 +85,7 @@ public class Strategy : MonoBehaviour
         }
         return null;
     }
-    bool CheckForComparableEffect(TargettedAbility target, BaseEffect source)
+    bool CheckForComparableEffect(EffectAbility target, BaseEffect source)
     {
         //BaseEffect effect = Array.Find(target.Effects, x => x.Action == source.Action);
         //if (effect == null)

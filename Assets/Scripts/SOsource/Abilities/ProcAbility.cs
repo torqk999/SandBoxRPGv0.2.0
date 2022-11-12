@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ProcAbility", menuName = "ScriptableObjects/Abilities/Proc")]
-public class ProcAbility : TargettedAbility
+public class ProcAbility : EffectAbility
 {
     [Header("Proc Properties")]
     public ParticleSystem Projectile;
@@ -14,7 +14,7 @@ public class ProcAbility : TargettedAbility
         for (int i = 0; i < Effects.Length; i++)
             Effects[i].ApplySingleEffect(target, true, false); // First or only proc
     }
-    public override void CloneEffects(TargettedAbility source, bool inject = false)
+    public override void CloneEffects(EffectAbility source, bool inject = false)
     {
         base.CloneEffects(source, inject);
     }

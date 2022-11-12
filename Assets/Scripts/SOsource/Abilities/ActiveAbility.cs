@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActiveAbility : CharacterAbility
+/*public class ActiveAbility : CharacterAbility
 {
 
-}
+}*/

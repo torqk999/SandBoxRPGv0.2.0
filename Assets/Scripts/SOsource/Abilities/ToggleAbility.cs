@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu(fileName = "ToggleAbility", menuName = "ScriptableObjects/Abilities/Toggle")]
-public class ToggleAbility : TargettedAbility
+public class ToggleAbility : EffectAbility
 {
     [Header("Toggle Properties")]
     public ParticleSystem Aura;
@@ -18,7 +18,7 @@ public class ToggleAbility : TargettedAbility
             Effects[i].ApplySingleEffect(target, true, Active);
     }
 
-    public override void CloneEffects(TargettedAbility source, bool inject = false)
+    public override void CloneEffects(EffectAbility source, bool inject = false)
     {
         base.CloneEffects(source, inject);
     }

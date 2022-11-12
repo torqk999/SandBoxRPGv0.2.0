@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PassiveAbility", menuName = "ScriptableObjects/Abilities/Passive")]
-public class PassiveAbility : CharacterAbility
+public class PassiveAbility : EffectAbility
 {
     [Header("Proc Properties")]
     public ParticleSystem AuraSelf;
     public ParticleSystem AuraAOE;
-    public BaseEffect[] Passives;
+    //public BaseEffect[] Passives;
     public float ProcTimer;
     public float ProcDelay;
 
-    void ClonePassives(PassiveAbility source, bool inject = false)
+    /*void ClonePassives(PassiveAbility source, bool inject = false)
     {
-        Passives = new BaseEffect[source.Passives.Length];
-        for (int i = 0; i < Passives.Length; i++)
-            Passives[i] = source.Passives[i].GenerateEffect(inject);
-    }
+        Effects = new BaseEffect[source.Effects.Length];
+        for (int i = 0; i < Effects.Length; i++)
+            Effects[i] = source.Effects[i].GenerateEffect(inject);
+    }*/
 
     public override void CloneAbility(CharacterAbility source, bool inject = false)
     {
@@ -29,7 +29,7 @@ public class PassiveAbility : CharacterAbility
         AuraSelf = passiveSource.AuraSelf;
         AuraAOE = passiveSource.AuraAOE;
 
-        ClonePassives(passiveSource, inject);
+        //ClonePassives(passiveSource, inject);
 
         ProcDelay = passiveSource.ProcDelay;
         ProcTimer = ProcDelay;

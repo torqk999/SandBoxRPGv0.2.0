@@ -7,11 +7,10 @@ public class Equipment : ItemObject
     [Header("Equipment Properties")]
     public School EquipSchool;
     public ClassType ClassType;
-
     public CharacterAbility[] Abilities;
-    public CharacterAbility[] Equipped;
 
     [Header("Equip Logic - Do not touch")]
+    public CharacterAbility[] Equipped;
     public int EquipLevel;
     public int EquipID;
 
@@ -107,7 +106,15 @@ public class Equipment : ItemObject
         }    
 
         foreach (CharacterAbility equipped in Equipped)
+        {
+            foreach (BaseEffect effect in equipped.SpawnedEffects)
+            {
+                if (effect.EffectType == EffectType.PASSIVE ||
+                    effect.EffectType == EffectType.TOGGLE)
+                    Destroy(effect);
+            }
             Destroy(equipped);
+        }
 
         UpdateCharacterRender(character, false);
         return true;

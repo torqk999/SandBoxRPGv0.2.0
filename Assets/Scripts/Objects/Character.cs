@@ -408,7 +408,7 @@ public class Character : Pawn, Interaction
 
         return true; // Good to do things Sam!
     }
-    bool UseTargettedAbility(TargettedAbility call, float costModifier)
+    bool UseTargettedAbility(EffectAbility call, float costModifier)
     {
         if (call.AOE_Range == 0)
         {
@@ -463,7 +463,7 @@ public class Character : Pawn, Interaction
         else
             call.SetCooldown();
     }
-    void AOEtargetting(ref List<Character> AOEcandidates, TargettedAbility call, List<Character> pool)
+    void AOEtargetting(ref List<Character> AOEcandidates, EffectAbility call, List<Character> pool)
     {
         AOEcandidates.Clear();
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class TargettedAbility : ActiveAbility
+public class EffectAbility : CharacterAbility
 {
     [Header("Target Properties")]
     public BaseEffect[] Effects;
@@ -20,7 +20,7 @@ public class TargettedAbility : ActiveAbility
         float amp = CharacterMath.GeneratePotency(sheet, equip);
 
     }
-    public virtual void CloneEffects(TargettedAbility source, bool inject = false)
+    public virtual void CloneEffects(EffectAbility source, bool inject = false)
     {
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
@@ -28,13 +28,12 @@ public class TargettedAbility : ActiveAbility
     }
     public override void CloneAbility(CharacterAbility source, bool inject = false)
     {
-        if (!(source is TargettedAbility))
+        if (!(source is EffectAbility))
             return;
 
-        TargettedAbility targetSource = (TargettedAbility)source;
+        EffectAbility targetSource = (EffectAbility)source;
 
         AbilityTarget = targetSource.AbilityTarget;
-        //AOE_Range = targetSource.AOE_Range;
 
         CloneEffects(targetSource, inject);
         base.CloneAbility(source, inject);

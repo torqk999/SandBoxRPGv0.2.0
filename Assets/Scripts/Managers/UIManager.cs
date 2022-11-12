@@ -675,8 +675,8 @@ public class UIManager : MonoBehaviour
 
         switch(selection)
         {
-            case TargettedAbility:
-                foreach (BaseEffect effect in ((TargettedAbility)selection).Effects)
+            case EffectAbility:
+                foreach (BaseEffect effect in ((EffectAbility)selection).Effects)
                 {
                     GameObject newEffectPanel = Instantiate(EffectPanelPrefab);
                     StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);

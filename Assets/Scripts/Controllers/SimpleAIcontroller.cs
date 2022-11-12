@@ -154,10 +154,10 @@ public class SimpleAIcontroller : CharacterController
         if (CurrentCharacter.CurrentAction == null)
             return false;
 
-        if (!(CurrentCharacter.CurrentAction is TargettedAbility))
+        if (!(CurrentCharacter.CurrentAction is EffectAbility))
             return true;
 
-        TargettedAbility currentTargettedAction = (TargettedAbility)CurrentCharacter.CurrentAction;
+        EffectAbility currentTargettedAction = (EffectAbility)CurrentCharacter.CurrentAction;
 
         return (/*State == AIstate.AGGRO
     && */CurrentCharacter.CurrentTargetCharacter != null

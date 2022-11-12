@@ -30,7 +30,7 @@ public class CharacterAbility : ScriptableObject
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
 
-    public School School;
+    public School School; // CC prevention for now, damage scaling later
     public ValueType CostType;
     public RawStat CostTarget;
 
