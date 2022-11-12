@@ -103,7 +103,7 @@ public class Character : Pawn, Interaction
     public void UpdateAbilites()
     {
         RebuildAbilityList();
-        UpdateAbilitySlots();
+        //UpdateAbilitySlots();
     }
     public void InitializeCharacter()
     {
@@ -180,12 +180,6 @@ public class Character : Pawn, Interaction
         Debug.Log("Char Packages Initialized");
 
         Risiduals = new List<BaseEffect>();
-
-        foreach(BaseEffect innate in Sheet.InnatePassives)
-        {
-            innate.AddRisidualEffect(this, Sheet, null, null, true);
-        }
-
         UpdateAbilites();
     }
     void InitializePassiveRegen()
@@ -205,12 +199,12 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region ABILITIES
-    void UpdateAbilitySlots()
+    /*void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
             if (AbilitySlots[i] != null && Abilities.FindIndex(x => x.EquipID == AbilitySlots[i].EquipID) < 0)
                 AbilitySlots[i] = null;
-    }
+    }*/
     void RebuildAbilityList()
     {
         Abilities.Clear();
@@ -563,10 +557,10 @@ public class Character : Pawn, Interaction
         for (int i = Risiduals.Count - 1; i > -1; i--)
         {
             Risiduals[i].ApplySingleEffect(this);
-            if (Risiduals[i].EquipID < 0) // Proc abiility, will run out
+            if (Risiduals[i].EffectType == EffectType.PROC) // Proc abiility, will run out
             {
-                Risiduals[i].Timer -= GlobalConstants.TIME_SCALE;
-                if (Risiduals[i].Timer <= 0)
+                Risiduals[i].DurationTimer -= GlobalConstants.TIME_SCALE;
+                if (Risiduals[i].DurationTimer <= 0)
                 {
                     Risiduals.RemoveAt(i);
                     continue;

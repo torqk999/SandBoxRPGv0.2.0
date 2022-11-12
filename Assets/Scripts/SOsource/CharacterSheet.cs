@@ -50,7 +50,7 @@ public class CharacterSheet : ScriptableObject
     public LVLpackage SkillsLevels;
 
     public CharacterAbility[] InnateAbilities;
-    public BaseEffect[] InnatePassives;
+    //public BaseEffect[] InnatePassives;
 
     public void Clone(CharacterSheet target)
     {
@@ -68,7 +68,6 @@ public class CharacterSheet : ScriptableObject
         SkillsLevels = target.SkillsLevels;
 
         InnateAbilities = new CharacterAbility[target.InnateAbilities.Length];
-        InnatePassives = new BaseEffect[target.InnatePassives.Length];
     }
 
     public void Fresh()

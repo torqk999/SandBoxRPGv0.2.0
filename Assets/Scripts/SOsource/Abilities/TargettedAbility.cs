@@ -15,15 +15,18 @@ public class TargettedAbility : CharacterAbility
         //for (int i = 0; i < Effects.Length; i++)
         //    Effects[i].ApplySingleEffect(target, null, null, null, true); // First or only proc
     }
+    public override void Amplify(CharacterSheet sheet = null, Equipment equip = null)
+    {
+        float amp = CharacterMath.GeneratePotency(sheet, equip);
 
-    public virtual void CloneEffects(TargettedAbility source, CharacterSheet sheet = null, Equipment equip = null, bool inject = false)
+    }
+    public virtual void CloneEffects(TargettedAbility source, bool inject = false)
     {
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = source.Effects[i].GenerateEffect(sheet, source, equip, inject);
+            Effects[i] = source.Effects[i].GenerateEffect(inject);
     }
-
-    public override void CloneAbility(CharacterAbility source, CharacterSheet sheet = null, Equipment equip = null, bool inject = false)
+    public override void CloneAbility(CharacterAbility source, bool inject = false)
     {
         if (!(source is TargettedAbility))
             return;
@@ -33,7 +36,7 @@ public class TargettedAbility : CharacterAbility
         AbilityTarget = targetSource.AbilityTarget;
         AOE_Range = targetSource.AOE_Range;
 
-        CloneEffects(targetSource, sheet, equip, inject);
-        base.CloneAbility(source, sheet, equip, inject);
+        CloneEffects(targetSource, inject);
+        base.CloneAbility(source, inject);
     }
 }

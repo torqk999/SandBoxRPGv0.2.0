@@ -10,9 +10,9 @@ public class SummonAbility : CharacterAbility
     public int Quantity;
     public float LifeSpan;
 
-    public override void CloneAbility(CharacterAbility source, Equipment equip = null, bool inject = false)
+    public override void CloneAbility(CharacterAbility source, bool inject = false)
     {
-        base.CloneAbility(source, equip, inject);
+        base.CloneAbility(source, inject);
 
         if (!(source is SummonAbility))
             return;
@@ -25,10 +25,10 @@ public class SummonAbility : CharacterAbility
         LifeSpan = summonSource.LifeSpan;
     }
 
-    public override CharacterAbility GenerateAbility(Equipment equip = null, bool inject = false)
+    public override CharacterAbility GenerateAbility(bool inject = false)
     {
         SummonAbility newAbility = (SummonAbility)CreateInstance("SummonAbility");
-        newAbility.CloneAbility(this, equip, inject);
+        newAbility.CloneAbility(this, inject);
         return newAbility;
     }
 }

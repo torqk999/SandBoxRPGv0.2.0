@@ -9,12 +9,17 @@ public class ProcAbility : TargettedAbility
     [Header("Proc Properties")]
     public ParticleSystem Projectile;
 
-    public override void CloneEffects(TargettedAbility source, Equipment equip = null, bool inject = false)
+    public override void UseAbility(Character target)
     {
-        base.CloneEffects(source, equip, inject);
+        for (int i = 0; i < Effects.Length; i++)
+            Effects[i].ApplySingleEffect(target, true, false); // First or only proc
+    }
+    public override void CloneEffects(TargettedAbility source, bool inject = false)
+    {
+        base.CloneEffects(source, inject);
     }
 
-    public override void CloneAbility(CharacterAbility source, Equipment equip = null, bool inject = false)
+    public override void CloneAbility(CharacterAbility source, bool inject = false)
     {
         if (!(source is ProcAbility))
             return;
@@ -23,13 +28,13 @@ public class ProcAbility : TargettedAbility
 
         Projectile = procSource.Projectile;
 
-        base.CloneAbility(source, equip, inject);
+        base.CloneAbility(source, inject);
     }
 
-    public override CharacterAbility GenerateAbility(Equipment equip = null, bool inject = false)
+    public override CharacterAbility GenerateAbility(bool inject = false)
     {
         ProcAbility newAbility = (ProcAbility)CreateInstance("ProcAbility");
-        newAbility.CloneAbility(this, equip, inject);
+        newAbility.CloneAbility(this, inject);
         return newAbility;
     }
 }

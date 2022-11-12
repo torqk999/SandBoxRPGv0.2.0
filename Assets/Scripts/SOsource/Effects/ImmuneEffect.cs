@@ -8,9 +8,9 @@ public class ImmuneEffect : BaseEffect
     [Header("ImmuneProperties")]
     public CCstatus TargetCCstatus;
 
-    public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
+    public override void CloneEffect(BaseEffect source, bool inject = false)
     {
-        base.CloneEffect(source, sheet, ability, equip, inject);
+        base.CloneEffect(source, inject);
 
         if (!(source is ImmuneEffect))
             return;
@@ -20,10 +20,10 @@ public class ImmuneEffect : BaseEffect
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
 
-    public override BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
+    public override BaseEffect GenerateEffect(bool inject = true)
     {
         ImmuneEffect newEffect = (ImmuneEffect)CreateInstance("ImmuneEffect");
-        newEffect.CloneEffect(this, sheet, ability, equip, inject);
+        newEffect.CloneEffect(this, inject);
         return newEffect;
     }
 }

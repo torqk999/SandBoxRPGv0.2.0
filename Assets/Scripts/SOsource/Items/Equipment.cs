@@ -9,7 +9,7 @@ public class Equipment : ItemObject
     public ClassType ClassType;
 
     public CharacterAbility[] Abilities;
-    public BaseEffect[] Effects;
+    public CharacterAbility[] Equipped;
 
     [Header("Equip Logic - Do not touch")]
     public int EquipLevel;
@@ -43,26 +43,23 @@ public class Equipment : ItemObject
         EquipLevel = equipSource.EquipLevel;
         EquipID = equipId;
 
-        CloneAbilitiesAndEffects(equipSource, inject);
+        CloneAbilities(equipSource);
 
         base.CloneItem(source);
     }
-    public void CloneAbilitiesAndEffects(Equipment source, bool inject = false)
+    void CloneAbilities(Equipment source)
     {
         Abilities = new CharacterAbility[source.Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
-            Abilities[i] = source.Abilities[i].GenerateAbility(source, inject);
-        }
-
-        Effects = new BaseEffect[source.Effects.Length];
-        for (int i = 0; i < Effects.Length; i++)
-        {
-            Effects[i] = source.Effects[i].GenerateEffect(null, null, source, inject);
+            Abilities[i] = source.Abilities[i].GenerateAbility(true);
         }
     }
-
-    // -1 = equipAction failed // 0 = equipPutOn // 1 = equipRemove //
+    public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
+    {
+        foreach(CharacterAbility ability in Abilities)
+            ability.Amplify(sheet, equip);
+    }
     public virtual int EquipCharacter(Character character, int inventoryIndex = -1, int destinationIndex = -1)
     {
         if (character == null ||
@@ -90,11 +87,8 @@ public class Equipment : ItemObject
     }
     public void AppendAbilitiesAndEffects(Character character)
     {
-        foreach (CharacterAbility ability in Abilities)
-            ability.EquipAbility(character, this);
-
-        foreach (BaseEffect effect in Effects)
-            effect.ApplySingleEffect(character, true, EquipID);
+        for (int i = 0; i < Abilities.Length; i++)
+            Equipped[i] = Abilities[i].EquipAbility(character, this);
     }
     public void RemoveAbilitiesAndEffects(Character character)
     {

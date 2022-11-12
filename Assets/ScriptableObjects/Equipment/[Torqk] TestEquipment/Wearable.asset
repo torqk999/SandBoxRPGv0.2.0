@@ -18,7 +18,7 @@ MonoBehaviour:
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipSkill: 2
+  EquipSchool: 0
   ClassType: 0
   Abilities: []
   Effects: []
@@ -26,6 +26,6 @@ MonoBehaviour:
   EquipID: 0
   SlotIndex: 0
   SlotFamily: []
-  Type: 0
-  Base: 0
-  Trim: 0
+  EquipSlot: 0
+  BaseMaterial: 0
+  TrimMaterial: 0

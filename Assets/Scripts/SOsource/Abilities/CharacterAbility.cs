@@ -38,14 +38,12 @@ public class CharacterAbility : ScriptableObject
 
     public float CD_Duration;
     public float CD_Timer;
-    public int EquipID;
-    public int AbilityID;
+    public List<BaseEffect> SpawnedEffects;
 
-    public virtual void UseAbility(Character target)
-    {
+    public virtual void UseAbility(Character target) { }
+    public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null) { }
 
-    }
-    public virtual void CloneAbility(CharacterAbility source, CharacterSheet sheet = null, Equipment equip = null, bool inject = false)
+    public virtual void CloneAbility(CharacterAbility source, bool inject = false)
     {
         Name = source.Name;
         Sprite = source.Sprite;
@@ -62,8 +60,7 @@ public class CharacterAbility : ScriptableObject
 
         CD_Duration = source.CD_Duration;
         CD_Timer = 0;
-
-        EquipID = equip == null ? -1 : equip.EquipID;
+        SpawnedEffects = new List<BaseEffect>();
     }
     public void SetCooldown()
     {
@@ -74,14 +71,17 @@ public class CharacterAbility : ScriptableObject
         CD_Timer -= GlobalConstants.TIME_SCALE;
         CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
     }
-    public virtual CharacterAbility GenerateAbility(CharacterSheet sheet = null, Equipment equip = null, bool inject = true)
+    public virtual CharacterAbility GenerateAbility(bool inject = true)
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
-        newAbility.CloneAbility(this, sheet, equip, inject);
+        newAbility.CloneAbility(this, inject);
         return newAbility;
     }
-    public CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
+    public virtual CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
     {
-        return GenerateAbility(currentCharacter.Sheet, equip, false);
+        CharacterAbility newAbility = GenerateAbility();
+        newAbility.Amplify(currentCharacter.Sheet, equip);
+        currentCharacter.Abilities.Add(newAbility);
+        return newAbility;
     }
 }

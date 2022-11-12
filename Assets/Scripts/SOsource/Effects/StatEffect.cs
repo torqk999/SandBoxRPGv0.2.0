@@ -7,9 +7,9 @@ public class StatEffect : BaseEffect
     [Header ("Stat Properties")]
     public ValueType Value;
 
-    public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
+    public override void CloneEffect(BaseEffect source,  bool inject = false)
     {
-        base.CloneEffect(source, ability, equip, inject, amp);
+        base.CloneEffect(source, inject);
 
         if (!(source is StatEffect))
             return;

@@ -18,16 +18,17 @@ MonoBehaviour:
   Quality: 0
   GoldValue: 0
   Weight: 0
-  EquipSkill: 4
+  EquipSchool: 0
   ClassType: 0
+  Abilities: []
+  Effects: []
   EquipLevel: 0
   EquipID: 0
   SlotIndex: 0
   SlotFamily: []
-  Abilities: []
-  Effects: []
-  BaseMaterial: 0
-  HandleMaterial: 0
+  HandPosition: 0
+  BaseMaterial: 3
+  HandleMaterial: 2
   Details: 
   Instantiation: {fileID: 0}
   Type: 0

@@ -26,8 +26,9 @@ MonoBehaviour:
   CD_Duration: 0
   CD_Timer: 0
   EquipID: 0
+  AbilityID: 0
   Effects: []
   AbilityTarget: 0
   AOE_Range: 0
-  Aura: {fileID: 0}
-  Innate: 0
+  Aura: {fileID: 6184551407830934238, guid: e7e9d60f79592d24192db660eae36261, type: 3}
+  Active: 0

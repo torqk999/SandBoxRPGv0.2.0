@@ -8,24 +8,23 @@ public class MaxStatEffect : StatEffect
     [Header ("Adjust Values")]
     public RawStatPackage StatAdjustPack;
 
-    public override void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
+    public override void CloneEffect(BaseEffect source, bool inject = false)
     {
-        base.CloneEffect(source, sheet, ability, equip, inject);
+        base.CloneEffect(source, inject);
 
         if (!(source is MaxStatEffect))
             return;
 
         MaxStatEffect maxSource = (MaxStatEffect)source;
 
-        StatAdjustPack.Clone(maxSource.StatAdjustPack); //= new StatPackage(maxSource.StatAdjustPack);
+        StatAdjustPack.Clone(maxSource.StatAdjustPack);
         StatAdjustPack.Reflect(inject);
-        StatAdjustPack.Amplify(CharacterMath.GeneratePotency(null, equip));
     }
 
-    public override BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
+    public override BaseEffect GenerateEffect(bool inject = true)
     {
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, sheet, ability, equip, inject);
+        newEffect.CloneEffect(this, inject);
         return newEffect;
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum EffectType
 {
@@ -20,92 +21,87 @@ public class BaseEffect : ScriptableObject
     public CharacterSheet SourceSheet;
     public CharacterAbility SourceAbility;
     public Equipment SourceEquip;
+    public List<BaseEffect> Residing;
 
     public EffectType EffectType;
-    //public int EquipID; 
-    //public int AbilityID;
-    public float DurationLength;
-    public float Timer;
 
-    public virtual void ApplySingleEffect(Character target, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool cast = false, bool toggle = true)
+    public float DurationLength;
+    public float DurationTimer;
+    public float PeriodLength;
+    public float PeriodTimer;
+
+    public virtual void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
         if (!cast)
             return;
         switch(EffectType)
         {
             case EffectType.PASSIVE:
-                AddRisidualEffect(target, sheet, ability, equip);
+                AddRisidualEffect(target);
                 break;
 
             case EffectType.TOGGLE:
                 if (toggle)
-                    AddRisidualEffect(target, sheet, ability, equip);
+                    AddRisidualEffect(target);
                 else
-                    RemoveRisidualEffect(target, equip.EquipID);
+                    RemoveRisidualEffect(target);
                 break;
 
             case EffectType.PROC:
                 if (DurationLength > 0)
-                    AddRisidualEffect(target, sheet, ability, equip);
+                    AddRisidualEffect(target);
                 break;
         }  
     }
-    public virtual void AddRisidualEffect(Character target, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
+    public void AddRisidualEffect(Character target)
     {
         switch(EffectType)
         {
             case EffectType.PASSIVE:
+                BaseEffect newPassive = GenerateEffect(false);
+                newPassive.Amplify();
+                target.Risiduals.Add(newPassive);
+                break;
+
             case EffectType.TOGGLE:
-                target.Risiduals.Add(GenerateEffect(sheet, ability, equip, inject));
+                target.Risiduals.Add(GenerateEffect(false));
                 break;
 
             case EffectType.PROC:
                 if (DurationLength > 0) // Timed
-                    target.Risiduals.Add(GenerateEffect(sheet, ability, equip, inject));
+                    target.Risiduals.Add(GenerateEffect(false));
                 break;
         }
     }
-    public virtual void RemoveRisidualEffect(Character character, int equipId)
+    public virtual void RemoveRisidualEffect(Character character)
     {
 
     }
-    public virtual void CloneEffect(BaseEffect source, CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = false)
+    public virtual void Amplify(float amp)
+    {
+
+    }
+    public virtual void CloneEffect(BaseEffect source, bool inject = false)
     {
         Name = source.Name;
         Sprite = source.Sprite;
         Condition = source.Condition;
         Impact = source.Impact;
+        EffectType = source.EffectType;
 
-        SourceSheet = sheet;
-        SourceAbility = ability;
-        SourceEquip = equip;
+        //SourceSheet = sheet;
+        //SourceAbility = ability;
+        //SourceEquip = equip;
 
-        if (ability != null)
-        {
-            //AbilityID = ability.AbilityID;
-            switch(ability)
-            {
-                case ToggleAbility:
-                    EffectType = EffectType.TOGGLE;
-                    break;
 
-                case ProcAbility:
-                    EffectType = EffectType.PROC;
-                    break;
-
-                default:
-                    EffectType = EffectType.PASSIVE;
-                    break;
-            }
-        }
-        
         DurationLength = source.DurationLength;
-        Timer = DurationLength;
+        DurationTimer = DurationLength;
     }
-    public virtual BaseEffect GenerateEffect(CharacterSheet sheet = null, CharacterAbility ability = null, Equipment equip = null, bool inject = true)
+
+    public virtual BaseEffect GenerateEffect(bool inject = true)
     {
         BaseEffect newEffect = (BaseEffect)CreateInstance("BaseEffect");
-        newEffect.CloneEffect(this, sheet, ability, equip);
+        newEffect.CloneEffect(this, inject);
         return newEffect;
     }
 }
