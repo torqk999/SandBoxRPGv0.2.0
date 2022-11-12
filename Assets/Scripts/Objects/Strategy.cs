@@ -131,7 +131,7 @@ public class Strategy : MonoBehaviour
     }
     bool CheckTacticConditions(Tactic tactic)
     {
-        float costModifier = Character.GenerateStatValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget);
+        float costModifier = Character.GenerateRawStatValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget);
 
         if (!Character.CheckCanCastAbility(tactic.Ability, costModifier))
             return false;

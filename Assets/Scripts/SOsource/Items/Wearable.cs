@@ -27,36 +27,24 @@ public class Wearable : Equipment
         //EquipSkill = SkillType.MEDIUM;
         EquipSlot = wearSource.EquipSlot;
     }
-    public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, ref int abilityId, int inventorySlot, int destinationIndex = 0)
     {
-        int callReturn = base.EquipCharacter(character, inventorySlot);
 
-        switch (callReturn)
+        Equipment slot = character.EquipmentSlots[(int)EquipSlot];
+
+        if (slot != null && !slot.UnEquipFromCharacter(character))
         {
-            default: // failed action
-                return -1;
-
-            case 0:
-                Equipment slot = character.EquipmentSlots[(int)EquipSlot];
-
-                if (slot != null && slot.EquipCharacter(character, -1) == -1)
-                {
-                    return -1;
-                }
-
-                slot = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-
-                SlotFamily = character.EquipmentSlots;
-                SlotIndex = (int)EquipSlot.OFF;
-                SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-                AppendAbilitiesAndEffects(character);
-                UpdateCharacterRender(character);
-                return 0;
-
-            case 1:
-                UpdateCharacterRender(character, false);
-                return 1;
+            return false;
         }
+
+        slot = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+
+        SlotFamily = character.EquipmentSlots;
+        SlotIndex = (int)EquipSlot.OFF;
+        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+        AppendAbilities(character, ref abilityId);
+        UpdateCharacterRender(character);
+        return true;
     }
     public override bool UpdateCharacterRender(Character character, bool putOn = true)
     {

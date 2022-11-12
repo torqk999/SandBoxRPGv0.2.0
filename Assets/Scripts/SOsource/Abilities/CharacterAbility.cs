@@ -22,27 +22,32 @@ public class CharacterAbility : ScriptableObject
 {
     [Header("Ability Properties")]
     public string Name;
+
     public Sprite Sprite;
     public ParticleSystem Cast;
-    public CastLocation CastLocation;
 
+    public CastLocation CastLocation;
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
 
-    public float CostValue;
-    public RawStat CostTarget;
-    public ValueType CostType;
-
     public School School;
-    public float CastRange;
+    public ValueType CostType;
+    public RawStat CostTarget;
 
+    public float CostValue;
+    public float CastRange;
+    public float AOE_Range;
     public float CD_Duration;
+
+    [Header("Ability Logic - Do Not Touch")]
+    public int AbilityID;
+    public int EquipID;
     public float CD_Timer;
     public List<BaseEffect> SpawnedEffects;
+    public Character Source;
 
     public virtual void UseAbility(Character target) { }
     public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null) { }
-
     public virtual void CloneAbility(CharacterAbility source, bool inject = false)
     {
         Name = source.Name;
@@ -57,8 +62,9 @@ public class CharacterAbility : ScriptableObject
 
         School = source.School;
         CastRange = source.CastRange;
-
+        AOE_Range = source.AOE_Range;
         CD_Duration = source.CD_Duration;
+
         CD_Timer = 0;
         SpawnedEffects = new List<BaseEffect>();
     }
@@ -77,10 +83,13 @@ public class CharacterAbility : ScriptableObject
         newAbility.CloneAbility(this, inject);
         return newAbility;
     }
-    public virtual CharacterAbility EquipAbility(Character currentCharacter, Equipment equip)
+    public virtual CharacterAbility EquipAbility(Character currentCharacter, int abilityID, Equipment equip = null)
     {
         CharacterAbility newAbility = GenerateAbility();
         newAbility.Amplify(currentCharacter.Sheet, equip);
+        newAbility.Source = currentCharacter;
+        newAbility.AbilityID = abilityID;
+        newAbility.EquipID = equip == null ? -1 : equip.EquipID;
         currentCharacter.Abilities.Add(newAbility);
         return newAbility;
     }

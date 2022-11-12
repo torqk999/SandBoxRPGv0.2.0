@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class TargettedAbility : CharacterAbility
+public class TargettedAbility : ActiveAbility
 {
     [Header("Target Properties")]
     public BaseEffect[] Effects;
     public TargetType AbilityTarget;
-    public float AOE_Range;
+    
     public override void UseAbility(Character target)
     {
         //for (int i = 0; i < Effects.Length; i++)
@@ -34,7 +34,7 @@ public class TargettedAbility : CharacterAbility
         TargettedAbility targetSource = (TargettedAbility)source;
 
         AbilityTarget = targetSource.AbilityTarget;
-        AOE_Range = targetSource.AOE_Range;
+        //AOE_Range = targetSource.AOE_Range;
 
         CloneEffects(targetSource, inject);
         base.CloneAbility(source, inject);

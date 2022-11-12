@@ -11,25 +11,33 @@ public class CurrentStatEffect : StatEffect
 
     public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
-        base.ApplySingleEffect(target, cast, toggle);
+        base.ApplySingleEffect(target, cast, toggle); // Risidual proc
 
         if (target.CheckDamageImmune(TargetStat))
             return;
 
+        if (!PeriodClock())
+            return;
+
+        Damage(target);
+        //DamageDebug(target, Damage(target));
+    }
+    float Damage(Character target)
+    {
         float totalDamage = 0;
-        float damageAmount = target.GenerateStatValueModifier(Value, TargetStat);
+        float damageModifier = target.GenerateRawStatValueModifier(Value, TargetStat);
 
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
             //if (CheckElementalImmune((Element)i))
             //continue;
             float res = target.CurrentResistances.Elements[i];
-            float change = (damageAmount * ElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
+            float change = (damageModifier * ElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
             totalDamage += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
 
         if (totalDamage == 0)
-            return;
+            return 0;
 
         float[] stats = target.CurrentStats.Stats;
         float[] max = target.MaximumStatValues.Stats;
@@ -38,7 +46,10 @@ public class CurrentStatEffect : StatEffect
         stats[(int)TargetStat] = stats[(int)TargetStat] <= max[(int)TargetStat] ? stats[(int)TargetStat] : max[(int)TargetStat];
         stats[(int)TargetStat] = stats[(int)TargetStat] >= 0 ? stats[(int)TargetStat] : 0;
 
-        // Debugging
+        return totalDamage;
+    }
+    void DamageDebug(Character target, float totalDamage)
+    {
         target.bAssetUpdate = true;
 
         switch (TargetStat)
@@ -54,7 +65,7 @@ public class CurrentStatEffect : StatEffect
                 break;
 
             case RawStat.SPEED:
-
+                // custom speed adjust logic? haste, slow, decay?
                 break;
 
             case RawStat.STAMINA:
@@ -63,9 +74,9 @@ public class CurrentStatEffect : StatEffect
                 break;
         }
     }
-    public override void Amplify()
+    public override void Amplify(float amp)
     {
-
+        ElementPack.Amplify(amp);
     }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
@@ -79,14 +90,12 @@ public class CurrentStatEffect : StatEffect
         ElementPack.Clone(currentStatEffect.ElementPack);
         ElementPack.Reflect(inject);
     }
-
     public override BaseEffect GenerateEffect(bool inject = true)
     {
         CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
         newEffect.CloneEffect(this, inject);
         return newEffect;
     }
-
     public void FormRegen(RawStat targetStat, float healMagnitude) // Default regen
     {
         Name = $"{targetStat} REGEN";

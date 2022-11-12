@@ -18,12 +18,6 @@ public class Equipment : ItemObject
     public int SlotIndex;
     public Equipment[] SlotFamily;
 
-    float GeneratePotency()
-    {
-        return 1 +
-
-        (EquipLevel * CharacterMath.WEP_LEVEL_FACTOR);
-    }
     public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
     {
         Equipment newEquip = (Equipment)CreateInstance("Equipment");
@@ -37,9 +31,8 @@ public class Equipment : ItemObject
 
         Equipment equipSource = (Equipment)source;
 
-        //EquipSkill = equipSource.EquipSkill;
+        EquipSchool = equipSource.EquipSchool;
         ClassType = equipSource.ClassType;
-
         EquipLevel = equipSource.EquipLevel;
         EquipID = equipId;
 
@@ -50,6 +43,7 @@ public class Equipment : ItemObject
     void CloneAbilities(Equipment source)
     {
         Abilities = new CharacterAbility[source.Abilities.Length];
+        Equipped = new CharacterAbility[Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
             Abilities[i] = source.Abilities[i].GenerateAbility(true);
@@ -57,42 +51,74 @@ public class Equipment : ItemObject
     }
     public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
     {
-        foreach(CharacterAbility ability in Abilities)
+        foreach (CharacterAbility ability in Abilities)
             ability.Amplify(sheet, equip);
     }
-    public virtual int EquipCharacter(Character character, int inventoryIndex = -1, int destinationIndex = -1)
+    public virtual bool EquipToCharacter(Character character, ref int abilityId, int inventoryIndex = -1, int destinationIndex = -1)
     {
+        return true;
+        /*
         if (character == null ||
             character.Inventory == null)
-            return -1;
+            return false;
 
         if (inventoryIndex >= character.Inventory.Items.Count)
-            return -1;
+            return false;
+
 
         if (SlotFamily == null ||
             SlotIndex < 0 ||
             SlotIndex >= SlotFamily.Length)
-            return 0; // No currently found slot
+            return false; // Nothing currently occupied, cannot push non-existant item into inventory
 
-        if (inventoryIndex < 0 || destinationIndex == SlotIndex) 
+        if (inventoryIndex < 0 || destinationIndex == SlotIndex)
         {
             if (!character.Inventory.PushItemIntoInventory(this))
-                return -1;
+                return false;
             SlotFamily[SlotIndex] = null;
-            RemoveAbilitiesAndEffects(character);
-            return 1; // Successfully removed
+            SlotIndex = 0;
+            UnEquipFromCharacter(character);
+            return true; // Successfully removed
         }
 
-        return 0; // Switch between slots? 
+        return false; // Switch between slots? 
+        */
     }
-    public void AppendAbilitiesAndEffects(Character character)
+    public virtual bool UnEquipFromCharacter(Character character)
+    {
+        if (SlotFamily == null ||
+            SlotIndex < 0 ||
+            SlotIndex >= SlotFamily.Length)
+        {
+            Debug.Log("Not equipped!");
+            return false;
+        }
+
+        if (character.Inventory == null)
+        {
+            Debug.Log("Null inventory!");
+            return false;
+        }
+
+        if (!character.Inventory.PushItemIntoInventory(this))
+        {
+            Debug.Log("No room in inventory!");
+            return false;
+        }    
+
+        foreach (CharacterAbility equipped in Equipped)
+            Destroy(equipped);
+
+        UpdateCharacterRender(character, false);
+        return true;
+    }
+    public void AppendAbilities(Character character, ref int abilityID)
     {
         for (int i = 0; i < Abilities.Length; i++)
-            Equipped[i] = Abilities[i].EquipAbility(character, this);
-    }
-    public void RemoveAbilitiesAndEffects(Character character)
-    {
-
+        {
+            Equipped[i] = Abilities[i].EquipAbility(character, abilityID, this);
+            abilityID++;
+        }
     }
     public virtual bool UpdateCharacterRender(Character character, bool putOn = true)
     {

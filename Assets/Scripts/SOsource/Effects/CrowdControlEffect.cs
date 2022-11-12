@@ -8,6 +8,18 @@ public class CrowdControlEffect : BaseEffect
     [Header("CC Properties")]
     public CCstatus TargetCCstatus;
 
+    /*public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
+    {
+        base.ApplySingleEffect(target, cast, toggle); // Risidual proc
+
+        if (target.CheckCCimmune(TargetCCstatus))
+            return;
+
+        if (!PeriodClock())
+            return;
+
+        target.Risiduals.Add(G)
+    }*/
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
         base.CloneEffect(source, inject);

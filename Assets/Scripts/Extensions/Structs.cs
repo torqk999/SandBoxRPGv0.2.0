@@ -259,6 +259,7 @@ public struct RawStatPackage
         Clone(source);
     }
 
+
     public void Clone(RawStatPackage source)
     {
         if (source.Stats != null && source.Stats.Length == CharacterMath.STATS_RAW_COUNT)

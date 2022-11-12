@@ -9,10 +9,10 @@ public class PassiveAbility : CharacterAbility
     public ParticleSystem AuraSelf;
     public ParticleSystem AuraAOE;
     public BaseEffect[] Passives;
-    public float Timer;
-    public float Period;
+    public float ProcTimer;
+    public float ProcDelay;
 
-    public void ClonePassives(PassiveAbility source, bool inject = false)
+    void ClonePassives(PassiveAbility source, bool inject = false)
     {
         Passives = new BaseEffect[source.Passives.Length];
         for (int i = 0; i < Passives.Length; i++)
@@ -27,14 +27,38 @@ public class PassiveAbility : CharacterAbility
         PassiveAbility passiveSource = (PassiveAbility)source;
 
         AuraSelf = passiveSource.AuraSelf;
+        AuraAOE = passiveSource.AuraAOE;
+
+        ClonePassives(passiveSource, inject);
+
+        ProcDelay = passiveSource.ProcDelay;
+        ProcTimer = ProcDelay;
 
         base.CloneAbility(source, inject);
     }
-
     public override CharacterAbility GenerateAbility(bool inject = false)
     {
         PassiveAbility newAbility = (PassiveAbility)CreateInstance("PassiveAbility");
         newAbility.CloneAbility(this, inject);
         return newAbility;
+    }
+    public void UpdatePassiveTimer()
+    {
+        ProcTimer -= GlobalConstants.TIME_SCALE;
+        if (ProcTimer <= 0)
+        {
+            ProcTimer = ProcDelay;
+            PassiveProc();
+        }
+    }
+    void PassiveProc()
+    {
+        if (Source == null)
+        {
+            Debug.Log("No source!");
+            return;
+        }
+
+        Source.AttemptAbility(this);
     }
 }

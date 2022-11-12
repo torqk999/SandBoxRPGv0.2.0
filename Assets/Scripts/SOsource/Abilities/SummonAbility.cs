@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SummonAbility", menuName = "ScriptableObjects/Abilities/Summon")]
-public class SummonAbility : CharacterAbility
+public class SummonAbility : ActiveAbility
 {
     [Header("Summon Properties")]
     public Character SummonPrefab;

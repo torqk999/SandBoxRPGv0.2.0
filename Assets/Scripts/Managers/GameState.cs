@@ -40,8 +40,9 @@ public class GameState : MonoBehaviour
     public bool bPauseMenuOpen;
     public bool bHUDactive;
     public bool bGameMenuOpen;
-    
+
     [Header("Generated Indices")]
+    public int ABILITY_INDEX;
     public int EQUIPMENT_INDEX;
 
     [Header("Dynamic References")]

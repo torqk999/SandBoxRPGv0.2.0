@@ -32,37 +32,24 @@ public class OneHand : Hand
         OneHand oneSource = (OneHand)source;
 
         base.CloneItem(source, equipId, inject);
-        //EquipSkill = SkillType.HAND_ONE;
+
         Type = oneSource.Type;
     }
-    public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, ref int abilityId, int inventorySlot, int destinationIndex = 0)
     {
-        int callReturn = base.EquipCharacter(character, inventorySlot);
+        Equipment[] slots = character.EquipmentSlots;
 
-        switch (callReturn)
+        if (slots[(int)EquipSlot.MAIN] != null &&
+            !slots[(int)EquipSlot.MAIN].UnEquipFromCharacter(character))
         {
-            default: // failed action
-                return -1;
-
-            case 0:
-                Equipment[] slots = character.EquipmentSlots;
-
-                if (slots[(int)EquipSlot.MAIN] != null &&
-                    slots[(int)EquipSlot.MAIN].EquipCharacter(character, -1) == -1)
-                {
-                    return -1; // failed to remove the piece currently occupying the slot
-                }
-
-                SlotFamily = character.EquipmentSlots;
-                SlotIndex = (int)EquipSlot.MAIN;
-                SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-                AppendAbilitiesAndEffects(character);
-                base.UpdateCharacterRender(character);
-                return 0;
-
-            case 1:
-                base.UpdateCharacterRender(character, false);
-                return 1;
+            return false; // failed to remove the piece currently occupying the slot
         }
+
+        SlotFamily = character.EquipmentSlots;
+        SlotIndex = (int)EquipSlot.MAIN;
+        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+        AppendAbilities(character, ref abilityId);
+        base.UpdateCharacterRender(character);
+        return true;
     }
 }

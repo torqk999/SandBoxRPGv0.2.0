@@ -37,39 +37,26 @@ public class TwoHand : Hand
         //EquipSkill = SkillType.HAND_TWO;
         Type = twoSource.Type;
     }
-    public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, ref int abilityId, int inventorySlot, int destinationIndex = 0)
     {
-        int callReturn = base.EquipCharacter(character, inventorySlot);
+        Equipment[] slots = character.EquipmentSlots;
 
-        switch (callReturn)
-        {
-            default: // failed action
-                return -1;
+        if (slots[(int)EquipSlot.OFF] != null &&
+            !slots[(int)EquipSlot.OFF].UnEquipFromCharacter(character))
+        { return false; }
 
-            case 0:
-                Equipment[] slots = character.EquipmentSlots;
+        if (slots[(int)EquipSlot.MAIN] != null &&
+            !slots[(int)EquipSlot.MAIN].UnEquipFromCharacter(character))
+        { return false; }
 
-                if (slots[(int)EquipSlot.OFF] != null &&
-                    slots[(int)EquipSlot.OFF].EquipCharacter(character, -1) == -1)
-                { return -1; }
+        slots[(int)EquipSlot.MAIN] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+        slots[(int)EquipSlot.OFF] = slots[(int)EquipSlot.MAIN];
 
-                if (slots[(int)EquipSlot.MAIN] != null &&
-                    slots[(int)EquipSlot.MAIN].EquipCharacter(character, -1) == -1)
-                { return -1; }
-
-                slots[(int)EquipSlot.MAIN] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-                slots[(int)EquipSlot.OFF] = slots[(int)EquipSlot.MAIN];
-
-                SlotFamily = character.EquipmentSlots;
-                SlotIndex = (int)EquipSlot.OFF;
-                SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-                AppendAbilitiesAndEffects(character);
-                base.UpdateCharacterRender(character);
-                return 0;
-
-            case 1:
-                base.UpdateCharacterRender(character, false);
-                return 1;
-        }
+        SlotFamily = character.EquipmentSlots;
+        SlotIndex = (int)EquipSlot.OFF;
+        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+        AppendAbilities(character, ref abilityId);
+        base.UpdateCharacterRender(character);
+        return true;
     }
 }

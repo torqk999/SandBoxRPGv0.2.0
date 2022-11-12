@@ -8,6 +8,21 @@ public class ImmuneEffect : BaseEffect
     [Header("ImmuneProperties")]
     public CCstatus TargetCCstatus;
 
+    public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
+    {
+        base.ApplySingleEffect(target, cast, toggle); // Risidual proc
+
+        if (cast)
+            Cleanse(target);
+    }
+
+    void Cleanse(Character target)
+    {
+        foreach (CrowdControlEffect ccEffect in target.Risiduals)
+            if (ccEffect.TargetCCstatus == TargetCCstatus)
+                Destroy(ccEffect);
+    }
+
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
         base.CloneEffect(source, inject);

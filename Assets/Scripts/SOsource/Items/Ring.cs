@@ -25,39 +25,23 @@ public class Ring : Equipment
         //CurrentSlotIndex = -1;
 
         base.CloneItem(source, equipId, inject);
-        //EquipSkill = SkillType.MAGIC;
     }
-    public override int EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, ref int abilityId, int inventorySlot, int destinationIndex = 0)
     {
-        int callReturn = base.EquipCharacter(character, inventorySlot);
+        Ring[] slots = character.RingSlots;
 
-        switch(callReturn)
+        for (int i = 0; i <= CharacterMath.RING_SLOT_COUNT; i++)
         {
-            default:
-                return -1;
-
-            case 0:
-                Ring[] slots = character.RingSlots;
-                //int sourceIndex = Array.FindIndex(slots, x => x == this);
-
-                for (int i = 0; i <= CharacterMath.RING_SLOT_COUNT; i++)
-                {
-                    if (slots[i] == null)
-                    {
-                        slots[i] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-                        break;
-                    }
-                }
-
-                slots[0].EquipCharacter(character, -1);
-                slots[0] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot); // Default first index of rings
-
-                // Add Abilities and Risiduals
-
-                return 0;
-
-            case 1:
-                return 1;
+            if (slots[i] == null)
+            {
+                slots[i] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+                return true;
+            }
         }
+
+        if (!slots[0].UnEquipFromCharacter(character))
+            return false;
+                slots[0] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot); // Default first index of rings
+        return true;
     }
 }

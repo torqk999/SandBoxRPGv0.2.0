@@ -342,7 +342,7 @@ public class CharacterManager : MonoBehaviour
         character.RingSlots = new Ring[CharacterMath.RING_SLOT_COUNT];
 
         // Initialize
-        character.InitializeCharacter();
+        character.InitializeCharacterSheet();
     }
     void SetupSheet(Character character, Character source, int index, bool fresh)
     {

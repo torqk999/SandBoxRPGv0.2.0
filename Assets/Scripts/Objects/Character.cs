@@ -56,6 +56,7 @@ public class Character : Pawn, Interaction
     public float ChannelTimer;
 
     [Header("References")]
+    public List<Character> AOE_buffer;
     public List<CharacterAbility> Abilities;
     public List<BaseEffect> Risiduals;
     public Party CurrentParty;
@@ -84,31 +85,10 @@ public class Character : Pawn, Interaction
     public float AssetTimer;
 
     #endregion
-    /*public float GeneratePotency(Equipment equip = null, bool skill = true)
-    {
-        int equipSkill = equip == null ? (int)School.MONK : (int)equip.EquipSchool;
-        equipSkill = skill ? equipSkill : 1;
-        float weaponLevelFactor = equip == null ? 0 : equip.EquipLevel;
 
-        return 1 +                                                                              // Base
-
-        (((Sheet.SkillsLevels.Levels[equipSkill] * CharacterMath.CHAR_LEVEL_FACTOR) +           // Level
-
-        (weaponLevelFactor * CharacterMath.WEP_LEVEL_FACTOR) +                                  // Weapon
-
-        (Sheet.SkillsLevels.Levels[equipSkill] * CharacterMath.SKILL_MUL_LEVEL[equipSkill])) *  // Skill
-
-        CharacterMath.SKILL_MUL_RACE[(int)Sheet.Race, equipSkill]);                             // Race
-    }*/
     public void UpdateAbilites()
     {
-        RebuildAbilityList();
-        //UpdateAbilitySlots();
-    }
-    public void InitializeCharacter()
-    {
-        InitializeCharacterSheet();
-        InitializePassiveRegen();
+        UpdateAbilitySlots();
     }
 
     #region INTERACTION
@@ -121,7 +101,7 @@ public class Character : Pawn, Interaction
             CurrentTargetCharacter = (Character)CurrentTargetInteraction;
             return;
         }
-        
+
         if (CurrentTargetCharacter != null)
         {
             CurrentTargetCharacter = null;
@@ -163,12 +143,10 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region INITIALIZERS
-    void InitializeCharacterSheet()
+    public void InitializeCharacterSheet()
     {
         if (Sheet == null)
             return;
-
-        Debug.Log("Initializing Char Sheet");
 
         BaseStats = new RawStatPackage(Sheet);
         MaximumStatValues = new RawStatPackage(BaseStats);
@@ -177,41 +155,18 @@ public class Character : Pawn, Interaction
         BaseResistances = new ElementPackage(Sheet);
         CurrentResistances = new ElementPackage(BaseResistances);
 
-        Debug.Log("Char Packages Initialized");
-
         Risiduals = new List<BaseEffect>();
-        UpdateAbilites();
+        RebuildAbilityList(ref GameState.ABILITY_INDEX);
+        //UpdateAbilites();
     }
-    void InitializePassiveRegen()
-    {
-        Risiduals = new List<BaseEffect>();
-
-        for (int i = 0; i < 3; i++)
-        {
-            float magnitude = CharacterMath.STAT_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.BASE_REGEN[i] + 
-                (CharacterMath.STAT_GROWTH[i] * Sheet.Level));
-
-            CurrentStatEffect newRegen = (CurrentStatEffect)ScriptableObject.CreateInstance("CurrentStatEffect");
-            newRegen.FormRegen((RawStat)i, magnitude);
-            Risiduals.Add(newRegen);
-        }
-    }
-    #endregion
-
-    #region ABILITIES
-    /*void UpdateAbilitySlots()
-    {
-        for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
-            if (AbilitySlots[i] != null && Abilities.FindIndex(x => x.EquipID == AbilitySlots[i].EquipID) < 0)
-                AbilitySlots[i] = null;
-    }*/
-    void RebuildAbilityList()
+    void RebuildAbilityList(ref int abilityId)
     {
         Abilities.Clear();
 
         foreach (CharacterAbility innate in Sheet.InnateAbilities)
         {
-            Abilities.Add(innate.GenerateAbility());
+            Abilities.Add(innate.EquipAbility(this, abilityId));
+            abilityId++;
         }
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
@@ -219,9 +174,10 @@ public class Character : Pawn, Interaction
             if (EquipmentSlots[i] == null)
                 continue;
 
-            for(int j = 0; j < EquipmentSlots[i].Abilities.Length; j++)
+            for (int j = 0; j < EquipmentSlots[i].Abilities.Length; j++)
             {
-                Abilities.Add(EquipmentSlots[i].Abilities[j].EquipAbility(this, EquipmentSlots[i]));
+                Abilities.Add(EquipmentSlots[i].Abilities[j].EquipAbility(this, abilityId, EquipmentSlots[i]));
+                abilityId++;
             }
         }
 
@@ -232,11 +188,11 @@ public class Character : Pawn, Interaction
 
             for (int j = 0; j < RingSlots[i].Abilities.Length; j++)
             {
-                Abilities.Add(RingSlots[i].Abilities[j].EquipAbility(this, RingSlots[i]));
+                Abilities.Add(RingSlots[i].Abilities[j].EquipAbility(this, abilityId, RingSlots[i]));
+                abilityId++;
             }
         }
     }
-
     #endregion
 
     #region EQUIPPING
@@ -257,16 +213,10 @@ public class Character : Pawn, Interaction
             if (Inventory.Items[inventoryIndex] == null ||
                 !(Inventory.Items[inventoryIndex] is Equipment))
                 return false;
-
-            Equipment equip = (Equipment)Inventory.Items[inventoryIndex];
-
-            if (equip.EquipCharacter(this, inventoryIndex) != -1)
-            {
-                //GameState.SceneMan.InstantiateHandEquip(equip, Render);
-                return true;
-            }
         }
-        return false;
+
+        Equipment equip = (Equipment)Inventory.Items[inventoryIndex];
+        return equip.EquipToCharacter(this, ref GameState.ABILITY_INDEX, inventoryIndex);
     }
     public bool AttemptEquipRemoval(Equipment[] slotList, int equipIndex)
     {
@@ -282,7 +232,7 @@ public class Character : Pawn, Interaction
         if (equip == null)
             return false;
 
-        return equip.EquipCharacter(this) != -1;
+        return equip.UnEquipFromCharacter(this);
     }
     public Equipment SwapEquipWithInventory(Equipment input, int inventoryIndex)
     {
@@ -295,7 +245,7 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region COMBAT
-    public float GenerateStatValueModifier(ValueType type, RawStat stat, bool root = false)
+    public float GenerateRawStatValueModifier(ValueType type, RawStat stat)
     {
         float changeType = 0;
         switch (type)
@@ -322,14 +272,39 @@ public class Character : Pawn, Interaction
         }
         return changeType;
     }
-    public void ApplyCleanse(ImmuneEffect effect)
+    /*
+    public float GenerateResValueModifier(ValueType type, Element res)
     {
-        foreach(CrowdControlEffect ccEffect in Risiduals)
+        float changeType = 0;
+        switch (type)
         {
-            if (ccEffect.TargetCCstatus == effect.TargetCCstatus)
-                Risiduals.Remove(ccEffect);
+            case ValueType.NONE:
+                changeType = 0;
+                break;
+
+            case ValueType.FLAT:
+                changeType = 1;
+                break;
+
+            case ValueType.PERC_CURR:
+                changeType = CurrentResistances.Elements[(int)res] / 100;
+                break;
+
+                // lets try sumthin saucy... perc_max & perc_min give bonus res based on characters relative health proportions
+
+            case ValueType.PERC_MAX:
+                changeType = MaximumStatValues.Stats[(int)RawStat.HEALTH] / 100;
+                //changeType = (CurrentResistances.Elements[(int)res] - BaseResistances.Elements[(int)res]) / 100;
+                break;
+
+            case ValueType.PERC_MISS:
+                changeType = (MaximumStatValues.Stats[(int)RawStat.HEALTH] - CurrentStats.Stats[(int)RawStat.HEALTH]) / 100;
+                //changeType = (MaximumStatValues.Stats[(int)stat] - CurrentStats.Stats[(int)stat]) / 100;
+                break;
         }
+        return changeType;
     }
+    */
     public bool CheckCCstatus(CCstatus status)
     {
         return Risiduals.Find(x => x is CrowdControlEffect &&
@@ -368,7 +343,12 @@ public class Character : Pawn, Interaction
         if (call == null) // Am I a joke to you?
             return false;
 
-        float costModifier = GenerateStatValueModifier(call.CostType, call.CostTarget);
+        AttemptAbility(call);
+        return true;
+    }
+    public bool AttemptAbility(CharacterAbility call)
+    {
+        float costModifier = GenerateRawStatValueModifier(call.CostType, call.CostTarget);
 
         if (!CheckCanCastAbility(call, costModifier))
             return false;
@@ -432,7 +412,7 @@ public class Character : Pawn, Interaction
     {
         if (call.AOE_Range == 0)
         {
-            switch(call.AbilityTarget)
+            switch (call.AbilityTarget)
             {
                 case TargetType.SELF:
                     SpendResource(call, costModifier);
@@ -451,13 +431,14 @@ public class Character : Pawn, Interaction
             }
             SpendResource(call, costModifier);
             call.UseAbility(CurrentTargetCharacter);
+            return true;
         }
         if (call.AOE_Range != 0)
         {
-            List<Character> targets = AOEtargetting(call, GameState.CharacterMan.CharacterPool);
-            if (targets.Count < 1)
+            AOEtargetting(ref AOE_buffer, call, GameState.CharacterMan.CharacterPool);
+            if (AOE_buffer.Count < 1)
                 return false;
-            foreach (Character target in targets)
+            foreach (Character target in AOE_buffer)
                 call.UseAbility(target);
         }
         /*if (call.AOE_Range < 0)
@@ -465,7 +446,7 @@ public class Character : Pawn, Interaction
             Debug.Log("Negative AOE range!   >:| ");
             return false;
         }*/
-        
+
         return true;
     }
     bool UseSummonAbility(SummonAbility call, float modifier)
@@ -482,12 +463,12 @@ public class Character : Pawn, Interaction
         else
             call.SetCooldown();
     }
-    List<Character> AOEtargetting(TargettedAbility call, List<Character> pool)
+    void AOEtargetting(ref List<Character> AOEcandidates, TargettedAbility call, List<Character> pool)
     {
-        List<Character> AOEcandidates = new List<Character>();
+        AOEcandidates.Clear();
 
         if (pool == null)
-            return AOEcandidates;
+            return;
 
         foreach (Character target in pool)
         {
@@ -500,15 +481,13 @@ public class Character : Pawn, Interaction
             if (Vector3.Distance(target.Root.position, Root.position) <= Math.Abs(call.AOE_Range))
                 AOEcandidates.Add(target);
         }
-
-        return AOEcandidates;
     }
     #endregion
 
     #region UPDATES
     void UpdateLife() // Get a life...
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
         {
             CurrentStats.Stats[i] = (CurrentStats.Stats[i] < 0) ? 0 : CurrentStats.Stats[i];
             CurrentStats.Stats[i] = (CurrentStats.Stats[i] > MaximumStatValues.Stats[i]) ? MaximumStatValues.Stats[i] : CurrentStats.Stats[i];
@@ -528,51 +507,62 @@ public class Character : Pawn, Interaction
             }
         }
     }
-    public void UpdateResAdjust(ResistanceEffect adjust, bool apply = true)
+    public void UpdateResAdjust()
     {
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+        CurrentResistances.Clone(BaseResistances);
+
+        foreach (ResistanceEffect adjust in Risiduals)
         {
-            float change = adjust.ResAdjustments.Elements[i];
-            change = apply ? change : -change;
-            CurrentResistances.Elements[i] += change;
+            float resValueModifier = GenerateRawStatValueModifier(adjust.Value, RawStat.HEALTH);
+
+            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            {
+                float change = adjust.ResAdjustments.Elements[i] * resValueModifier;
+                CurrentResistances.Elements[i] += change;
+            }
         }
     }
-    public void UpdateStatAdjust(MaxStatEffect adjust, bool apply = true)
+    public void UpdateStatAdjust()
     {
-        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+        MaximumStatValues.Clone(BaseStats);
+
+        foreach (MaxStatEffect adjust in Risiduals)
         {
-            float change = adjust.StatAdjustPack.Stats[i];
-            change = apply ? change : -change;
-            MaximumStatValues.Stats[i] += change;
+            for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+            {
+                float statValueModifier = GenerateRawStatValueModifier(adjust.Value, (RawStat)i);
+                float change = adjust.StatAdjustPack.Stats[i] * statValueModifier;
+                MaximumStatValues.Stats[i] += change;
+            }
         }
     }
-    void UpdateCooldowns()
+    void UpdateAbilitySlots()
+    {
+        for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
+            if (AbilitySlots[i] != null && Abilities.FindIndex(x => x.EquipID == AbilitySlots[i].EquipID && x.AbilityID == AbilitySlots[i].AbilityID) < 0)
+                AbilitySlots[i] = null;
+    }
+    void UpdateAbilityCooldowns()
     {
         for (int i = 0; i < AbilitySlots.Length; i++)
             if (AbilitySlots[i] != null)
                 AbilitySlots[i].UpdateCooldown();
     }
+    void UpdatePassives()
+    {
+        foreach (PassiveAbility passive in Abilities)
+            passive.UpdatePassiveTimer();
+    }
     void UpdateRisidualEffects()
     {
-        for (int i = Risiduals.Count - 1; i > -1; i--)
-        {
-            Risiduals[i].ApplySingleEffect(this);
-            if (Risiduals[i].EffectType == EffectType.PROC) // Proc abiility, will run out
-            {
-                Risiduals[i].DurationTimer -= GlobalConstants.TIME_SCALE;
-                if (Risiduals[i].DurationTimer <= 0)
-                {
-                    Risiduals.RemoveAt(i);
-                    continue;
-                }
-            }
-        }
+        foreach (BaseEffect risidual in Risiduals)
+            risidual.ApplySingleEffect(this);
     }
     void UpdateAdjustments()
     {
         MaximumStatValues.Clone(BaseStats);
 
-        foreach(MaxStatEffect statAdjust in Risiduals)
+        foreach (MaxStatEffect statAdjust in Risiduals)
         {
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
             {
@@ -629,7 +619,7 @@ public class Character : Pawn, Interaction
         }
 
         AssetTimer = GlobalConstants.TIME_BLIP;
-        bAssetTimer = !(DebugState == DebugState.DEFAULT 
+        bAssetTimer = !(DebugState == DebugState.DEFAULT
                      || DebugState == DebugState.DEAD);
         bAssetUpdate = false;
     }
@@ -652,18 +642,11 @@ public class Character : Pawn, Interaction
             Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
             Render.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
             return;
-        }         
-        
+        }
+
         Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
         Render.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
-    }
-    void UpdateCanvas()
-    {
-        if (CharacterCanvas == null)
-            return;
-
-
     }
     #endregion
 
@@ -681,7 +664,8 @@ public class Character : Pawn, Interaction
 
         UpdateRisidualEffects();
         UpdateLife();
-        UpdateCooldowns();
+        UpdatePassives();
+        UpdateAbilityCooldowns();
         UpdateAnimation();
         UpdateAssetTimer();
         UpdateAssets();
