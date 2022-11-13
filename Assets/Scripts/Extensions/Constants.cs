@@ -88,6 +88,7 @@ public static class CharacterMath
     public const float LEVEL_EXP_CAP_MULTIPLIER = 1.1f;
     public const float CHAR_LEVEL_FACTOR = .2f;
     public const float WEP_LEVEL_FACTOR = .1f;
+    public const float GLOBAL_COOLDOWN = .5f;
 
     public static readonly float[] BASE_REGEN =
     {

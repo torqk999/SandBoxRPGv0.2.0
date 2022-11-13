@@ -50,7 +50,7 @@ public class CharacterAbility : ScriptableObject
     public float CD_Timer;
     public float Cast_Timer;
     public float Projectile_Timer;
-    public List<BaseEffect> SpawnedEffects;
+    public List<BaseEffect> Projectiles;
     public Character SourceCharacter;
 
     public virtual void UseAbility(Character target)
@@ -99,13 +99,13 @@ public class CharacterAbility : ScriptableObject
 
         CD_Duration = source.CD_Duration;
         Cast_Duration = source.Cast_Duration;
-        Projectile_Duration = source.Projectile_Duration;
+        
 
         CD_Timer = 0;
         Cast_Timer = 0;
         Projectile_Timer = 0;
 
-        SpawnedEffects = new List<BaseEffect>();
+        Projectiles = new List<BaseEffect>();
     }
     public void SetCooldown()
     {
@@ -123,13 +123,12 @@ public class CharacterAbility : ScriptableObject
             Cast_Timer -= GlobalConstants.TIME_SCALE;
             Cast_Timer = (Cast_Timer < 0) ? 0 : Cast_Timer;
         }
-        if (Projectile_Timer)
         if (Cast_Timer == 0 && Cast != null)
         {
             Destroy(Cast);
         }
     }
-    public void LerpProjectile()
+    public void UpdateProjectiles()
     {
 
     }
