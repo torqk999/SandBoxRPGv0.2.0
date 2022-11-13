@@ -42,10 +42,15 @@ public class Equipment : ItemObject
     void CloneAbilities(Equipment source)
     {
         Abilities = new CharacterAbility[source.Abilities.Length];
+
+
         //Equipped = new CharacterAbility[Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
-            Abilities[i] = source.Abilities[i].GenerateAbility(true);
+            if (source.Abilities[i] != null)
+                Abilities[i] = source.Abilities[i].GenerateAbility(true);
+            else
+                Debug.Log($"Ability missing from id#{EquipID}:{Name}");
         }
     }
     public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
@@ -65,9 +70,18 @@ public class Equipment : ItemObject
             inventorySlot >= character.Inventory.Items.Count)
             return false;
 
+        if (character.Abilities == null)
+            return false;
+
         SlotFamily = character.EquipmentSlots;
         SlotIndex = slotIndex;
         SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+
+        foreach (CharacterAbility ability in Abilities)
+        {
+            ability.Source = character;
+            character.Abilities.Add(ability);
+        }
 
         return true;
     }
@@ -105,6 +119,9 @@ public class Equipment : ItemObject
             equipped.Source.UpdateAbilites();
             equipped.Source = null;
         }
+
+        SlotFamily[SlotIndex] = null;
+        SlotFamily = null;
 
         UpdateCharacterRender(character, false);
         return true;

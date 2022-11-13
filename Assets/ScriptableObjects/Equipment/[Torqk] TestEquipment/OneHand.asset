@@ -21,8 +21,7 @@ MonoBehaviour:
   EquipSchool: 4
   ClassType: 2
   Abilities:
-  - {fileID: 0}
-  Equipped: []
+  - {fileID: 11400000, guid: 159976e0345343249b4578cc91a5c082, type: 2}
   EquipLevel: 0
   EquipID: 0
   SlotIndex: 0

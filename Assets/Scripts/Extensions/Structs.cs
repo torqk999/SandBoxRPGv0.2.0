@@ -266,8 +266,10 @@ public struct RawStatPackage
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
                 Stats[i] = source.Stats[i];
     }
-    public void Amplify(float amp)
+    public void Amplify(RawStatPackage source, float amp)
     {
+        Clone(source);
+
         for (int i = 0; i < Stats.Length; i++)
             Stats[i] *= amp;
     }
@@ -366,8 +368,10 @@ public struct ElementPackage
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
                 Elements[i] = source.Elements[i];
     }
-    public void Amplify(float amp)
+    public void Amplify(ElementPackage source, float amp)
     {
+        Clone(source);
+
         for (int i = 0; i < Elements.Length; i++)
             Elements[i] *= amp;
     }

@@ -25,10 +25,9 @@ public class BaseEffect : ScriptableObject
     public EffectType EffectType;
     public float TetherRange;
 
-    public int AbilityID;
     public int EffectIndex;
 
-    public Character SourceCharacter;
+    public CharacterAbility Source;
     public Character EffectedCharacter;
 
     public bool PeriodClock(bool reset = false)
@@ -89,7 +88,7 @@ public class BaseEffect : ScriptableObject
     public void AddRisidualEffect(Character target)
     {
         foreach (BaseEffect effect in target.Risiduals)
-            if (effect.AbilityID == AbilityID &&
+            if (effect.Source == Source &&
                 effect.EffectIndex == EffectIndex)
                 Destroy(effect);
 

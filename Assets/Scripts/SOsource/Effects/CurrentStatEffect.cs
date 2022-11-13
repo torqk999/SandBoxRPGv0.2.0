@@ -33,7 +33,7 @@ public class CurrentStatEffect : StatEffect
             //if (CheckElementalImmune((Element)i))
             //continue;
             float res = target.CurrentResistances.Elements[i];
-            float change = (damageModifier * BaseElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
+            float change = (damageModifier * AmpedElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
             totalDamage += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
 
@@ -77,7 +77,7 @@ public class CurrentStatEffect : StatEffect
     }
     public override void Amplify(float amp)
     {
-        BaseElementPack.Amplify(amp);
+        AmpedElementPack.Amplify(BaseElementPack, amp);
     }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
@@ -90,6 +90,8 @@ public class CurrentStatEffect : StatEffect
 
         BaseElementPack.Clone(currentStatEffect.BaseElementPack);
         BaseElementPack.Reflect(inject);
+
+        AmpedElementPack.Clone(BaseElementPack);
     }
     public override BaseEffect GenerateEffect(bool inject = true)
     {

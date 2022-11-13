@@ -15,7 +15,7 @@ public class MaxStatEffect : StatEffect
     }
     public override void Amplify(float amp)
     {
-        BaseStatAdjustPack.Amplify(amp);
+        AmpedStatAdjustPack.Amplify(BaseStatAdjustPack, amp);
     }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {

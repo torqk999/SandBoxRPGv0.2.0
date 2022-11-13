@@ -36,12 +36,9 @@ public class Wearable : Equipment
             return false;
         }
 
-        slotBin = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot, subSlotIndex))
+            return false;
 
-        SlotFamily = character.EquipmentSlots;
-        SlotIndex = (int)EquipSlot.OFF;
-        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-        //AppendAbilities(character, ref abilityId);
         UpdateCharacterRender(character);
         return true;
     }

@@ -308,16 +308,25 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region ACTIONS
+    public void QuitGame()
+    {
+        GameState.QuitGame();
+    }
+    public void ToggleCharacterPage(CharPage page)
+    {
+        UpdateGameMenuCanvasState(page);
+        GameState.pController.TogglePlayStatus();
+    }
     public void PauseMenuCanvasNavigation(int index)
     {
         if (index < -1 || index >= PauseMenuCanvas.gameObject.transform.childCount)
-        {
             CurrentMenu = GameMenu.NONE;
-            PauseMenuRefresh();
-            return;
-        }
-        CurrentMenu = (GameMenu)index;
+
+        else
+            CurrentMenu = (GameMenu)index;
+
         PauseMenuRefresh();
+        GameState.GamePause(CurrentMenu != GameMenu.NONE);
     }
     public void EquipSelection()
     {
@@ -347,7 +356,7 @@ public class UIManager : MonoBehaviour
         GameState.pController.CurrentCharacter.Inventory.LootContainer(GameState.pController.targetContainer, ContainerListSelection, InventoryListSelection);
         UpdateGameMenuCanvasState(CharPage.Looting);
     }
-    void EquipmentSlotClick(int index)
+    public void EquipmentSlotClick(int index)
     {
         //if (index >= CharacterMath.EQUIP_SLOTS_COUNT)
         //    return;
@@ -357,7 +366,7 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
             EquipButtons[i].image.color = (i == index) ? Selected : Unselected;
     }
-    void RingSlotClick(int index)
+    public void RingSlotClick(int index)
     {
         //if (index >= CharacterMath.RING_SLOT_COUNT)
         //    return;
@@ -389,49 +398,6 @@ public class UIManager : MonoBehaviour
         string @event = hovering ? "Entered" : "Exited";
         //Debug.Log($"Mouse has {@event} Inv Item {index}");
     }
-    void UpdateSelections(ButtonType type, int index)
-    {
-        //Debug.Log($"SelectionType: {type}");
-
-        switch (type)
-        {
-            case ButtonType.INVENTORY:
-                InventoryItemClick(index);
-                ContainerItemClick(-1);
-                EquipmentSlotClick(-1);
-                RingSlotClick(-1);
-                break;
-
-            case ButtonType.CONTAINER:
-                InventoryItemClick(-1);
-                ContainerItemClick(index);
-                EquipmentSlotClick(-1);
-                RingSlotClick(-1);
-                break;
-
-            case ButtonType.SLOT_EQUIP:
-                InventoryItemClick(-1);
-                ContainerItemClick(-1);
-                EquipmentSlotClick(index);
-                RingSlotClick(-1);
-                break;
-
-            case ButtonType.SLOT_RING:
-                InventoryItemClick(-1);
-                ContainerItemClick(-1);
-                EquipmentSlotClick(-1);
-                RingSlotClick(index);
-                break;
-
-            case ButtonType.SLOT_SKILL:
-                AbilitySlotClick(index);
-                break;
-
-            case ButtonType.LIST_SKILL:
-                SkillListClick(index);
-                break;
-        }
-    }
     public void SkillListClick(int index)
     {
         SkillListSelection = index;
@@ -451,34 +417,6 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region MENUS
-    public void PauseMenuRefresh()
-    {
-        // Set menu
-        for (int i = 0; i < PauseMenuCanvas.transform.childCount; i++)
-            PauseMenuCanvas.transform.GetChild(i).gameObject.SetActive((i == (int)CurrentMenu) ? true : false);
-
-        PauseMenuCanvas.gameObject.SetActive((int)CurrentMenu != -1);
-        //return; // <<<<<<<<<<<<<<<<<<<<<
-
-        // Clean-ups
-        GameState.KeyMap.bMapOpen = false;
-
-        switch (CurrentMenu)
-        {
-            case GameMenu.MAIN:
-                break;
-
-            case GameMenu.KEY_MAP:
-                PopulateKeyMaps();
-                break;
-
-            case GameMenu.OPTIONS:
-                break;
-
-            case GameMenu.HELP:
-                break;
-        }
-    }
     public void UpdateGameMenuCanvasState(CharPage page)
     {
         if (GameState.bPause)
@@ -527,6 +465,34 @@ public class UIManager : MonoBehaviour
         UpdateActionBar();
         UpdatePartyPanel();
     }
+    void PauseMenuRefresh()
+    {
+        // Set menu
+        for (int i = 0; i < PauseMenuCanvas.transform.childCount; i++)
+            PauseMenuCanvas.transform.GetChild(i).gameObject.SetActive((i == (int)CurrentMenu) ? true : false);
+
+        PauseMenuCanvas.gameObject.SetActive((int)CurrentMenu != -1);
+        //return; // <<<<<<<<<<<<<<<<<<<<<
+
+        // Clean-ups
+        GameState.KeyMap.bMapOpen = false;
+
+        switch (CurrentMenu)
+        {
+            case GameMenu.MAIN:
+                break;
+
+            case GameMenu.KEY_MAP:
+                PopulateKeyMaps();
+                break;
+
+            case GameMenu.OPTIONS:
+                break;
+
+            case GameMenu.HELP:
+                break;
+        }
+    }
     void RefreshGameMenuCanvas()
     {
         switch (CurrentPage)
@@ -549,6 +515,49 @@ public class UIManager : MonoBehaviour
             case CharPage.Skills:
                 PopulateSkillListButtons();
                 PopulateEffectPanels();
+                break;
+        }
+    }
+    void UpdateSelections(ButtonType type, int index)
+    {
+        //Debug.Log($"SelectionType: {type}");
+
+        switch (type)
+        {
+            case ButtonType.INVENTORY:
+                InventoryItemClick(index);
+                ContainerItemClick(-1);
+                EquipmentSlotClick(-1);
+                RingSlotClick(-1);
+                break;
+
+            case ButtonType.CONTAINER:
+                InventoryItemClick(-1);
+                ContainerItemClick(index);
+                EquipmentSlotClick(-1);
+                RingSlotClick(-1);
+                break;
+
+            case ButtonType.SLOT_EQUIP:
+                InventoryItemClick(-1);
+                ContainerItemClick(-1);
+                EquipmentSlotClick(index);
+                RingSlotClick(-1);
+                break;
+
+            case ButtonType.SLOT_RING:
+                InventoryItemClick(-1);
+                ContainerItemClick(-1);
+                EquipmentSlotClick(-1);
+                RingSlotClick(index);
+                break;
+
+            case ButtonType.SLOT_SKILL:
+                AbilitySlotClick(index);
+                break;
+
+            case ButtonType.LIST_SKILL:
+                SkillListClick(index);
                 break;
         }
     }
@@ -637,7 +646,7 @@ public class UIManager : MonoBehaviour
 
         // Populate new buttons
         int index = 0;
-        foreach (ProcAbility ability in GameState.pController.CurrentCharacter.Abilities)
+        foreach (CharacterAbility ability in GameState.pController.CurrentCharacter.Abilities)
         {
             if (ability == null)
                 continue;
@@ -695,7 +704,7 @@ public class UIManager : MonoBehaviour
                                 //if (effect.ElementPack.Elements[i] == 0)
                                 //    continue;
 
-                                outputBuild.Append($"\n{(Element)i} : {((CurrentStatEffect)effect).BaseElementPack.Elements[i]}");
+                                outputBuild.Append($"\n{(Element)i} : {((CurrentStatEffect)effect).AmpedElementPack.Elements[i]}");
                             }
                             break;
 

@@ -216,7 +216,10 @@ public class Character : Pawn, Interaction
         }
 
         Equipment equip = (Equipment)Inventory.Items[inventoryIndex];
-        return equip.EquipToCharacter(this, ref GameState.ABILITY_INDEX, inventoryIndex);
+        if (equip is Ring)
+            return equip.EquipToCharacter(this, RingSlots, inventoryIndex);
+
+        return equip.EquipToCharacter(this, EquipmentSlots, inventoryIndex);
     }
     public bool AttemptEquipRemoval(Equipment[] slotList, int equipIndex)
     {
@@ -517,7 +520,7 @@ public class Character : Pawn, Interaction
 
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
             {
-                float change = adjust.BaseResAdjustments.Elements[i] * resValueModifier;
+                float change = adjust.AmpedResAdjustments.Elements[i] * resValueModifier;
                 CurrentResistances.Elements[i] += change;
             }
         }
@@ -531,7 +534,7 @@ public class Character : Pawn, Interaction
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
             {
                 float statValueModifier = GenerateRawStatValueModifier(adjust.Value, (RawStat)i);
-                float change = adjust.BaseStatAdjustPack.Stats[i] * statValueModifier;
+                float change = adjust.AmpedStatAdjustPack.Stats[i] * statValueModifier;
                 MaximumStatValues.Stats[i] += change;
             }
         }
@@ -550,8 +553,8 @@ public class Character : Pawn, Interaction
     }
     void UpdatePassives()
     {
-        foreach (PassiveAbility passive in Abilities)
-            passive.UpdatePassiveTimer();
+        //foreach (PassiveAbility passive in Abilities)
+        //    passive.UpdatePassiveTimer();
     }
     void UpdateRisidualEffects()
     {

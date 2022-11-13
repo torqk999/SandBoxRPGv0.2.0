@@ -27,6 +27,7 @@ public class SceneManager : MonoBehaviour
     public List<GameObject> ShieldPrefabs;
 
     public List<Material> Materials;
+    public Material[] BUFFER;
 
     #region LOOT
     public int CurrentLootBagIndex;
@@ -140,15 +141,29 @@ public class SceneManager : MonoBehaviour
         try
         {
             if (newHand == null)
+            {
+                Debug.Log("Instantiated hand equip successfully removed!");
                 return true;
+            }
+                
+
+            MeshRenderer newHandMesh = newHand.GetComponent<MeshRenderer>();
+            if (newHandMesh == null)
+            {
+                Debug.Log("Mesh Renderer componenet not found!");
+            }
+
+
+            newHand.name = "oh rally?";
 
             newHand.transform.localPosition = new Vector3(0, 0, 0);
             newHand.transform.localRotation = Quaternion.Euler(0, 0, 0);
             newHand.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
-            MeshRenderer newHandMesh = newHand.GetComponent<MeshRenderer>();
-            newHandMesh.materials[0] = Materials[(int)hand.BaseMaterial];
-            newHandMesh.materials[1] = Materials[(int)hand.HandleMaterial];
+            BUFFER = newHandMesh.materials;
+            BUFFER[0] = Materials[(int)hand.BaseMaterial];
+            BUFFER[1] = Materials[(int)hand.HandleMaterial];
+            newHandMesh.materials = BUFFER;
         }
         catch
         {

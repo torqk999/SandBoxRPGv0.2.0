@@ -132,19 +132,8 @@ public class PlayerController : CharacterController
         bIsInPlay = !toggle;
         CursorToggle((toggle) ? true : (CurrentControlMode != ControlMode.TACTICAL) ? false : true);
     }
-    public void QuitGame()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-         Application.Quit();
-#endif
-    }
-    public void ToggleCharacterPage(CharPage page)
-    {
-        GameState.UIman.UpdateGameMenuCanvasState(page);
-        TogglePlayStatus();
-    }
+
+    
     public void InitialPawnControl()
     {
         PawnIndex = -1;
@@ -160,7 +149,7 @@ public class PlayerController : CharacterController
     #endregion
 
     #region INPUT
-    void TogglePlayStatus()
+    public void TogglePlayStatus()
     {
         bIsInPlay = GameState.UIman.CurrentPage == CharPage.None;
         CursorToggle(!bIsInPlay);
@@ -265,10 +254,10 @@ public class PlayerController : CharacterController
             CurrentCharacter.SwapInteractions();
         
         if (CheckAction(KeyAction.CHARACTER))
-            ToggleCharacterPage(CharPage.Character);
+            GameState.UIman.ToggleCharacterPage(CharPage.Character);
 
         if (CheckAction(KeyAction.SKILLS))
-            ToggleCharacterPage(CharPage.Skills);
+            GameState.UIman.ToggleCharacterPage(CharPage.Skills);
 
         if (CheckAction(KeyAction.CYCLE_TARGETS))
             CycleCharacterTargets();

@@ -24,7 +24,8 @@ public class EffectAbility : CharacterAbility
     {
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = source.Effects[i].GenerateEffect(inject);
+            if (source.Effects[i] != null)
+                Effects[i] = source.Effects[i].GenerateEffect(inject);
     }
     public override void CloneAbility(CharacterAbility source, bool inject = false)
     {

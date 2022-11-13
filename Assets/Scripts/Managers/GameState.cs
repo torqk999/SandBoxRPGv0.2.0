@@ -48,6 +48,14 @@ public class GameState : MonoBehaviour
     [Header("Dynamic References")]
     public List<Pawn> RigidBodyPawns;
 
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+         Application.Quit();
+#endif
+    }
     public void GamePause(bool toggle)
     {
         bPause = toggle;
@@ -68,7 +76,7 @@ public class GameState : MonoBehaviour
     public void InteractWithContainer(GenericContainer container)
     {
         pController.targetContainer = container;
-        pController.ToggleCharacterPage(CharPage.Looting);
+        UIman.ToggleCharacterPage(CharPage.Looting);
     }
     void UpdateHUDstate()
     {
