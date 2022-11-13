@@ -33,7 +33,7 @@ public class MaxStatEffect : StatEffect
         BaseStatAdjustPack.Clone(maxSource.BaseStatAdjustPack);
         AmpedStatAdjustPack.Clone(BaseStatAdjustPack);
     }
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(Character effected = null, bool inject = true)
     {
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
         newEffect.CloneEffect(this, inject);

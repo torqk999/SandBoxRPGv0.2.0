@@ -49,8 +49,6 @@ public class Equipment : ItemObject
     {
         Abilities = new CharacterAbility[source.Abilities.Length];
 
-
-        //Equipped = new CharacterAbility[Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
             if (source.Abilities[i] != null)
@@ -107,15 +105,22 @@ public class Equipment : ItemObject
 
         foreach (CharacterAbility equipped in Abilities)
         {
-            foreach (BaseEffect effect in equipped.SpawnedEffects)
-            {
-                if (effect.EffectType == EffectType.PASSIVE ||
-                    effect.EffectType == EffectType.TOGGLE)
-                    Destroy(effect);
-            }
-            equipped.SourceCharacter.Abilities.Remove(equipped);
-            equipped.SourceCharacter.UpdateAbilites();
-            equipped.SourceCharacter = null;
+            if (!(equipped is EffectAbility))
+                continue;
+
+            EffectAbility effectAbility = (EffectAbility)equipped;
+
+            foreach (BaseEffect effect in effectAbility.Effects)
+                foreach (BaseEffect spawnedEffect in effect.Clones)
+                {
+                    if (effect.EffectType == EffectType.PASSIVE ||
+                        effect.EffectType == EffectType.TOGGLE)
+                        Destroy(spawnedEffect);
+                }
+            
+            effectAbility.SourceCharacter.Abilities.Remove(effectAbility);
+            effectAbility.SourceCharacter.UpdateAbilites();
+            effectAbility.SourceCharacter = null;
         }
 
         SlotFamily[SlotIndex] = null;

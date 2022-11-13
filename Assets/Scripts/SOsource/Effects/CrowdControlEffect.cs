@@ -32,7 +32,7 @@ public class CrowdControlEffect : BaseEffect
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
 
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(Character effected = null, bool inject = true)
     {
         CrowdControlEffect newEffect = (CrowdControlEffect)CreateInstance("ImmuneEffect");
         newEffect.CloneEffect(this, inject);

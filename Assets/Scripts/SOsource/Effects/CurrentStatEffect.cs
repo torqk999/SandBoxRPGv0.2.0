@@ -96,7 +96,7 @@ public class CurrentStatEffect : StatEffect
         BaseElementPack.Clone(currentStatEffectSource.BaseElementPack);
         AmpedElementPack.Clone(BaseElementPack);
     }
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(Character effected = null, bool inject = true)
     {
         CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
         newEffect.CloneEffect(this, inject);

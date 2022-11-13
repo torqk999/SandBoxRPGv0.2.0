@@ -28,7 +28,8 @@ public class BaseEffect : ScriptableObject
     [Header("LOGIC - Do Not Touch!")]
     public EffectType EffectType;
     public float TetherRange;
-    public int EffectIndex;
+    //public int EffectIndex;
+    public bool Toggle;
 
     public float PeriodTimer;
     public float DurationTimer;
@@ -36,6 +37,7 @@ public class BaseEffect : ScriptableObject
 
     public CharacterAbility Source;
     public Character EffectedCharacter;
+    public List<BaseEffect> Clones;
 
     public bool PeriodClock(bool reset = false)
     {
@@ -45,11 +47,13 @@ public class BaseEffect : ScriptableObject
             return true;
         }
 
-        PeriodTimer -= GlobalConstants.TIME_SCALE;
-        if (PeriodTimer <= 0)
-            PeriodTimer = PeriodLength;
+        if (PeriodTimer != 0)
+            PeriodTimer -= GlobalConstants.TIME_SCALE;
 
-        return PeriodTimer == PeriodLength;
+        if (PeriodTimer < 0)
+            PeriodTimer = 0;
+
+        return PeriodTimer == 0;
     }
     public bool DurationClock(bool reset = false)
     {
@@ -62,11 +66,13 @@ public class BaseEffect : ScriptableObject
             return true;
         }
 
-        DurationTimer -= GlobalConstants.TIME_SCALE;
-        if (DurationTimer <= 0)
-            DurationTimer = DurationLength;
+        if (DurationTimer != 0)
+            DurationTimer -= GlobalConstants.TIME_SCALE;
 
-        return DurationTimer == DurationLength;
+        if (DurationTimer < 0)
+            DurationTimer = 0;
+
+        return DurationTimer == 0;
     }
     public bool ProjectileClock(bool reset = false)
     {
@@ -76,11 +82,13 @@ public class BaseEffect : ScriptableObject
             return true;
         }
 
-        ProjectileTimer -= GlobalConstants.TIME_SCALE;
-        if (ProjectileTimer <= 0)
-            ProjectileTimer = ProjectileLength;
+        if (ProjectileTimer != 0)
+            ProjectileTimer -= GlobalConstants.TIME_SCALE;
 
-        return ProjectileTimer == ProjectileLength;
+        if (ProjectileTimer < 0)
+            ProjectileTimer = 0;
+
+        return ProjectileTimer == 0;
     }
     void ProjectilePsystem()
     {
@@ -101,51 +109,91 @@ public class BaseEffect : ScriptableObject
     }
     public virtual void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
-        if (!cast)
+        if (cast)
         {
-            if (DurationClock())
-            RemoveRisidualEffect();
-            return;
+            Toggle = toggle;
+            if (!Toggle)
+                return;
+
+            if (ProjectileLength > 0 ||
+                DurationLength > 0 ||
+                EffectType == EffectType.PASSIVE ||
+                EffectType == EffectType.TOGGLE)
+            {
+                GenerateRisidualEffect(target);
+            }
         }
 
+        if (!cast)
+        {
+            if (!ProjectileClock())
+                return;
 
-        if (cast)
+            if (Projectile != null)
+                Destroy(Projectile);
+
+            if (DurationClock() &&
+                EffectType == EffectType.PROC)
+                RemoveRisidualEffect();
+        }
+    }
+    /*void EngageRisidual(Character target, bool toggle = true) // Post Projectile
+    {
         switch (EffectType)
         {
             case EffectType.PROC:
             case EffectType.PASSIVE:
-                AddRisidualEffect(target);
+                GenerateRisidualEffect(target);
                 break;
 
             case EffectType.TOGGLE:
                 if (toggle)
-                    AddRisidualEffect(target);
+                    GenerateRisidualEffect(target);
                 else
                     RemoveRisidualEffect();
                 break;
         }
-    }
-    public void AddRisidualEffect(Character target)
+    }*/
+    public void GenerateRisidualEffect(Character target)
     {
         foreach (BaseEffect effect in target.Risiduals)
-            if (effect.Source == Source &&
-                effect.EffectIndex == EffectIndex)
-                Destroy(effect);
+        {
+            if (Clones.Find(x => x == effect) != null)
+            {
+                switch(EffectType)
+                {
+                    case EffectType.TOGGLE:
+                        effect.Toggle = !effect.Toggle;
+                        break;
 
-        switch(EffectType)
+                    case EffectType.PROC:
+                        effect.DurationClock(true);
+                        break;
+                }
+                return;
+            }
+        }
+
+        BaseEffect newEffect = GenerateEffect(target, false);
+
+        newEffect.ProjectileClock(true);
+        newEffect.DurationClock(true);
+        newEffect.PeriodClock(true);
+
+        Clones.Add(newEffect);
+
+        switch (EffectType)
         {
             case EffectType.PASSIVE:
             case EffectType.TOGGLE:
-                target.Risiduals.Add(GenerateEffect(false));
+                target.Risiduals.Add(newEffect);
                 break;
 
             case EffectType.PROC:
                 if (DurationLength > 0) // Timed
-                    target.Risiduals.Add(GenerateEffect(false));
+                    target.Risiduals.Add(newEffect);
                 break;
         }
-
-        EffectedCharacter = target;
     }
     public virtual void RemoveRisidualEffect()
     {
@@ -155,7 +203,7 @@ public class BaseEffect : ScriptableObject
         EffectedCharacter.Risiduals.Remove(this);
         EffectedCharacter = null;
     }
-    
+
     public virtual void Amplify(float amp)
     {
 
@@ -177,10 +225,11 @@ public class BaseEffect : ScriptableObject
         DurationTimer = DurationLength;
         ProjectileLength = source.ProjectileLength;
     }
-    public virtual BaseEffect GenerateEffect(bool inject = true)
+    public virtual BaseEffect GenerateEffect(Character effected = null, bool inject = true)
     {
         BaseEffect newEffect = (BaseEffect)CreateInstance("BaseEffect");
         newEffect.CloneEffect(this, inject);
+        newEffect.EffectedCharacter = effected;
         return newEffect;
     }
 }

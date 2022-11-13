@@ -43,7 +43,7 @@ public class ResistanceEffect : StatEffect
         BaseResAdjustments.Clone(currentStatEffect.BaseResAdjustments);
         AmpedResAdjustments.Clone(BaseResAdjustments);
     }
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(Character effected = null, bool inject = true)
     {
         ResistanceEffect newEffect = (ResistanceEffect)CreateInstance("MaxStatEffect");
         newEffect.CloneEffect(this, inject);

@@ -35,7 +35,7 @@ public class ImmuneEffect : BaseEffect
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
 
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(Character effected = null, bool inject = true)
     {
         ImmuneEffect newEffect = (ImmuneEffect)CreateInstance("ImmuneEffect");
         newEffect.CloneEffect(this, inject);

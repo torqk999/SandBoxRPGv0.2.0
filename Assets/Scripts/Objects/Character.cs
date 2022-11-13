@@ -554,11 +554,11 @@ public class Character : Pawn, Interaction
             ability.UpdatePassiveTimer();
         }
     }
-    void UpdateRisidualEffects()
+    /*void UpdateRisidualEffects()
     {
         foreach (BaseEffect risidual in Risiduals)
             risidual.ApplySingleEffect(this);
-    }
+    }*/
     void UpdateAdjustments()
     {
         MaximumStatValues.Clone(BaseStats);
@@ -671,7 +671,7 @@ public class Character : Pawn, Interaction
         if (bIsPaused)
             return;
 
-        UpdateRisidualEffects();
+        //UpdateRisidualEffects();
         UpdateLife();
         UpdatePassives();
         UpdateAbilityCooldowns();

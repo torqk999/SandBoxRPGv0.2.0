@@ -20,7 +20,7 @@ public class InvulnerableEffect : BaseEffect
         TargetStat = invulnerableSource.TargetStat;
     }
 
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(Character effected = null, bool inject = true)
     {
         InvulnerableEffect newEffect = (InvulnerableEffect)CreateInstance("InvulnerableEffect");
         newEffect.CloneEffect(this, inject);

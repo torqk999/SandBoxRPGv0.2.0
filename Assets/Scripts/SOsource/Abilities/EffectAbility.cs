@@ -32,7 +32,7 @@ public class EffectAbility : CharacterAbility
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
             if (source.Effects[i] != null)
-                Effects[i] = source.Effects[i].GenerateEffect(inject);
+                Effects[i] = source.Effects[i].GenerateEffect(null, inject);
     }
     public override void CloneAbility(CharacterAbility source, bool inject = false)
     {
