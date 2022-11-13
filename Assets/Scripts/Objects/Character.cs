@@ -165,8 +165,8 @@ public class Character : Pawn, Interaction
 
         foreach (CharacterAbility innate in Sheet.InnateAbilities)
         {
-            Abilities.Add(innate.EquipAbility(this, abilityId));
-            abilityId++;
+            innate.EquipAbility(this);
+            //abilityId++;
         }
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
@@ -176,7 +176,7 @@ public class Character : Pawn, Interaction
 
             for (int j = 0; j < EquipmentSlots[i].Abilities.Length; j++)
             {
-                Abilities.Add(EquipmentSlots[i].Abilities[j].EquipAbility(this, abilityId, EquipmentSlots[i]));
+                EquipmentSlots[i].Abilities[j].EquipAbility(this);
                 abilityId++;
             }
         }
@@ -188,7 +188,7 @@ public class Character : Pawn, Interaction
 
             for (int j = 0; j < RingSlots[i].Abilities.Length; j++)
             {
-                Abilities.Add(RingSlots[i].Abilities[j].EquipAbility(this, abilityId, RingSlots[i]));
+                RingSlots[i].Abilities[j].EquipAbility(this);
                 abilityId++;
             }
         }
@@ -517,7 +517,7 @@ public class Character : Pawn, Interaction
 
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
             {
-                float change = adjust.ResAdjustments.Elements[i] * resValueModifier;
+                float change = adjust.BaseResAdjustments.Elements[i] * resValueModifier;
                 CurrentResistances.Elements[i] += change;
             }
         }
@@ -531,7 +531,7 @@ public class Character : Pawn, Interaction
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
             {
                 float statValueModifier = GenerateRawStatValueModifier(adjust.Value, (RawStat)i);
-                float change = adjust.StatAdjustPack.Stats[i] * statValueModifier;
+                float change = adjust.BaseStatAdjustPack.Stats[i] * statValueModifier;
                 MaximumStatValues.Stats[i] += change;
             }
         }
@@ -539,7 +539,7 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
-            if (AbilitySlots[i] != null && Abilities.FindIndex(x => x.EquipID == AbilitySlots[i].EquipID && x.AbilityID == AbilitySlots[i].AbilityID) < 0)
+            if (AbilitySlots[i] != null && Abilities.Find(x => x == AbilitySlots[i]) == null)
                 AbilitySlots[i] = null;
     }
     void UpdateAbilityCooldowns()

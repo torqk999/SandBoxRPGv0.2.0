@@ -324,7 +324,7 @@ public class UIManager : MonoBehaviour
         if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(SelectedEquipSlot, SelectedRingSlot, InventoryListSelection))
             return;
 
-        GameState.pController.CurrentCharacter.UpdateAbilites();
+        //GameState.pController.CurrentCharacter.UpdateAbilites();
         RefreshGameMenuCanvas();
         UpdateActionBar(); // may have lost equipped abillities
     }
@@ -695,7 +695,7 @@ public class UIManager : MonoBehaviour
                                 //if (effect.ElementPack.Elements[i] == 0)
                                 //    continue;
 
-                                outputBuild.Append($"\n{(Element)i} : {((CurrentStatEffect)effect).ElementPack.Elements[i]}");
+                                outputBuild.Append($"\n{(Element)i} : {((CurrentStatEffect)effect).BaseElementPack.Elements[i]}");
                             }
                             break;
 

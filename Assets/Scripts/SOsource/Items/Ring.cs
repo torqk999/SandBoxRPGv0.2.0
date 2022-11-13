@@ -26,22 +26,28 @@ public class Ring : Equipment
 
         base.CloneItem(source, equipId, inject);
     }
-    public override bool EquipToCharacter(Character character, ref int abilityId, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
     {
-        Ring[] slots = character.RingSlots;
+        slotBin = character.RingSlots;
+
+        if ((subSlotIndex >= 0 ||
+            subSlotIndex < CharacterMath.RING_SLOT_COUNT) &&
+            !slotBin[subSlotIndex].UnEquipFromCharacter(character))
+            return false;
+            
 
         for (int i = 0; i <= CharacterMath.RING_SLOT_COUNT; i++)
         {
-            if (slots[i] == null)
+            if (slotBin[i] == null)
             {
-                slots[i] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+                slotBin[i] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot);
                 return true;
             }
         }
 
-        if (!slots[0].UnEquipFromCharacter(character))
+        if (!slotBin[0].UnEquipFromCharacter(character))
             return false;
-                slots[0] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot); // Default first index of rings
+                slotBin[0] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot); // Default first index of rings
         return true;
     }
 }

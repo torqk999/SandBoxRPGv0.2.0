@@ -47,7 +47,7 @@ public class Shield : Hand
         SlotFamily = character.EquipmentSlots;
         SlotIndex = (int)EquipSlot.OFF;
         SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-        AppendAbilities(character, ref abilityId);
+        //AppendAbilities(character, ref abilityId);
         base.UpdateCharacterRender(character);
         return true;
     }

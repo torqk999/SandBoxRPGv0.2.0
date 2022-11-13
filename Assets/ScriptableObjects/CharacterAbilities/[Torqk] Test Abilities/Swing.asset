@@ -30,6 +30,7 @@ MonoBehaviour:
   CD_Timer: 0
   SpawnedEffects: []
   Source: {fileID: 0}
-  Effects: []
+  Effects:
+  - {fileID: 0}
   AbilityTarget: 0
   Projectile: {fileID: 0}

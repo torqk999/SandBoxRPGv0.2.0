@@ -6,7 +6,8 @@ using UnityEngine;
 public class MaxStatEffect : StatEffect
 {
     [Header ("Adjust Values")]
-    public RawStatPackage StatAdjustPack;
+    public RawStatPackage BaseStatAdjustPack;
+    public RawStatPackage AmpedStatAdjustPack;
 
     public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
@@ -14,7 +15,7 @@ public class MaxStatEffect : StatEffect
     }
     public override void Amplify(float amp)
     {
-        StatAdjustPack.Amplify(amp);
+        BaseStatAdjustPack.Amplify(amp);
     }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
@@ -25,8 +26,8 @@ public class MaxStatEffect : StatEffect
 
         MaxStatEffect maxSource = (MaxStatEffect)source;
 
-        StatAdjustPack.Clone(maxSource.StatAdjustPack);
-        StatAdjustPack.Reflect(inject);
+        BaseStatAdjustPack.Clone(maxSource.BaseStatAdjustPack);
+        BaseStatAdjustPack.Reflect(inject);
     }
     public override BaseEffect GenerateEffect(bool inject = true)
     {

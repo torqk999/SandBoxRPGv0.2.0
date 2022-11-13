@@ -42,7 +42,7 @@ public class Wearable : Equipment
         SlotFamily = character.EquipmentSlots;
         SlotIndex = (int)EquipSlot.OFF;
         SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-        AppendAbilities(character, ref abilityId);
+        //AppendAbilities(character, ref abilityId);
         UpdateCharacterRender(character);
         return true;
     }

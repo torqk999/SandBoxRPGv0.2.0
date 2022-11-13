@@ -6,7 +6,8 @@ using UnityEngine;
 public class ResistanceEffect : StatEffect
 {
     [Header("Resistance Properties")]
-    public ElementPackage ResAdjustments;
+    public ElementPackage BaseResAdjustments;
+    public ElementPackage AmpedResAdjustments;
 
     public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
@@ -24,7 +25,7 @@ public class ResistanceEffect : StatEffect
     }
     public override void Amplify(float amp)
     {
-        ResAdjustments.Amplify(amp);
+        BaseResAdjustments.Amplify(amp);
     }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
@@ -35,9 +36,9 @@ public class ResistanceEffect : StatEffect
 
         ResistanceEffect currentStatEffect = (ResistanceEffect)source;
 
-        ResAdjustments.Clone(currentStatEffect.ResAdjustments);
-        ResAdjustments.Reflection.Reflect(ref ResAdjustments.Elements, inject);
-        ResAdjustments.Amplify(CharacterMath.GeneratePotency());
+        BaseResAdjustments.Clone(currentStatEffect.BaseResAdjustments);
+        BaseResAdjustments.Reflection.Reflect(ref BaseResAdjustments.Elements, inject);
+        BaseResAdjustments.Amplify(CharacterMath.GeneratePotency());
     }
     public override BaseEffect GenerateEffect(bool inject = true)
     {

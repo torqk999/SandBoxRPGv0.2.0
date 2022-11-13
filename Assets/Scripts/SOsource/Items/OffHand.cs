@@ -34,20 +34,19 @@ public class OffHand : Hand
         Type = offSource.Type;
     }
 
-    public override bool EquipToCharacter(Character character, ref int abilityID, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
     {
-        Equipment[] slots = character.EquipmentSlots;
+        slotBin = character.EquipmentSlots;
 
-        if (slots[(int)EquipSlot.OFF] != null &&
-            !slots[(int)EquipSlot.OFF].UnEquipFromCharacter(character))
+        if (slotBin[(int)EquipSlot.OFF] != null &&
+            !slotBin[(int)EquipSlot.OFF].UnEquipFromCharacter(character))
         {
             return false; // failed to remove the piece currently occupying the slot
         }
 
-        SlotFamily = character.EquipmentSlots;
-        SlotIndex = (int)EquipSlot.OFF;
-        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-        AppendAbilities(character, ref abilityID);
+        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot.MAIN, subSlotIndex))
+            return false;
+
         base.UpdateCharacterRender(character);
         return true;
     }

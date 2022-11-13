@@ -40,8 +40,8 @@ public class CharacterAbility : ScriptableObject
     public float CD_Duration;
 
     [Header("Ability Logic - Do Not Touch")]
-    public int AbilityID;
-    public int EquipID;
+    //public int AbilityID;
+    //public int EquipID;
     public float CD_Timer;
     public List<BaseEffect> SpawnedEffects;
     public Character Source;
@@ -83,8 +83,13 @@ public class CharacterAbility : ScriptableObject
         newAbility.CloneAbility(this, inject);
         return newAbility;
     }
-    public virtual CharacterAbility EquipAbility(Character currentCharacter, int abilityID, Equipment equip = null)
+    public virtual void EquipAbility(Character currentCharacter, Equipment equip = null)
     {
+        Amplify(currentCharacter.Sheet, equip);
+        currentCharacter.Abilities.Add(this);
+        Source = currentCharacter;
+
+        /*
         CharacterAbility newAbility = GenerateAbility();
         newAbility.Amplify(currentCharacter.Sheet, equip);
         newAbility.Source = currentCharacter;
@@ -92,5 +97,6 @@ public class CharacterAbility : ScriptableObject
         newAbility.EquipID = equip == null ? -1 : equip.EquipID;
         currentCharacter.Abilities.Add(newAbility);
         return newAbility;
+        */
     }
 }

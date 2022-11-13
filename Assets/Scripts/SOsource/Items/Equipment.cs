@@ -10,7 +10,7 @@ public class Equipment : ItemObject
     public CharacterAbility[] Abilities;
 
     [Header("Equip Logic - Do not touch")]
-    public CharacterAbility[] Equipped;
+    //public CharacterAbility[] Equipped;
     public int EquipLevel;
     public int EquipID;
 
@@ -42,7 +42,7 @@ public class Equipment : ItemObject
     void CloneAbilities(Equipment source)
     {
         Abilities = new CharacterAbility[source.Abilities.Length];
-        Equipped = new CharacterAbility[Abilities.Length];
+        //Equipped = new CharacterAbility[Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
             Abilities[i] = source.Abilities[i].GenerateAbility(true);
@@ -53,35 +53,23 @@ public class Equipment : ItemObject
         foreach (CharacterAbility ability in Abilities)
             ability.Amplify(sheet, equip);
     }
-    public virtual bool EquipToCharacter(Character character, ref int abilityId, int inventoryIndex = -1, int destinationIndex = -1)
+    public virtual bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
     {
-        return true;
-        /*
         if (character == null ||
-            character.Inventory == null)
+            slotBin == null ||
+            slotIndex == -1)
             return false;
 
-        if (inventoryIndex >= character.Inventory.Items.Count)
+        if (character.Inventory == null ||
+            inventorySlot < 0 ||
+            inventorySlot >= character.Inventory.Items.Count)
             return false;
 
+        SlotFamily = character.EquipmentSlots;
+        SlotIndex = slotIndex;
+        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
 
-        if (SlotFamily == null ||
-            SlotIndex < 0 ||
-            SlotIndex >= SlotFamily.Length)
-            return false; // Nothing currently occupied, cannot push non-existant item into inventory
-
-        if (inventoryIndex < 0 || destinationIndex == SlotIndex)
-        {
-            if (!character.Inventory.PushItemIntoInventory(this))
-                return false;
-            SlotFamily[SlotIndex] = null;
-            SlotIndex = 0;
-            UnEquipFromCharacter(character);
-            return true; // Successfully removed
-        }
-
-        return false; // Switch between slots? 
-        */
+        return true;
     }
     public virtual bool UnEquipFromCharacter(Character character)
     {
@@ -105,7 +93,7 @@ public class Equipment : ItemObject
             return false;
         }    
 
-        foreach (CharacterAbility equipped in Equipped)
+        foreach (CharacterAbility equipped in Abilities)
         {
             foreach (BaseEffect effect in equipped.SpawnedEffects)
             {
@@ -113,19 +101,13 @@ public class Equipment : ItemObject
                     effect.EffectType == EffectType.TOGGLE)
                     Destroy(effect);
             }
-            Destroy(equipped);
+            equipped.Source.Abilities.Remove(equipped);
+            equipped.Source.UpdateAbilites();
+            equipped.Source = null;
         }
 
         UpdateCharacterRender(character, false);
         return true;
-    }
-    public void AppendAbilities(Character character, ref int abilityID)
-    {
-        for (int i = 0; i < Abilities.Length; i++)
-        {
-            Equipped[i] = Abilities[i].EquipAbility(character, abilityID, this);
-            abilityID++;
-        }
     }
     public virtual bool UpdateCharacterRender(Character character, bool putOn = true)
     {

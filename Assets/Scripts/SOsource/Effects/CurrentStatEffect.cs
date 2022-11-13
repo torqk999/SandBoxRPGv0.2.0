@@ -7,7 +7,8 @@ public class CurrentStatEffect : StatEffect
 {
     [Header("Damage Values")]
     public RawStat TargetStat;
-    public ElementPackage ElementPack;
+    public ElementPackage BaseElementPack;
+    public ElementPackage AmpedElementPack;
 
     public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
@@ -32,7 +33,7 @@ public class CurrentStatEffect : StatEffect
             //if (CheckElementalImmune((Element)i))
             //continue;
             float res = target.CurrentResistances.Elements[i];
-            float change = (damageModifier * ElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
+            float change = (damageModifier * BaseElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
             totalDamage += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
 
@@ -76,7 +77,7 @@ public class CurrentStatEffect : StatEffect
     }
     public override void Amplify(float amp)
     {
-        ElementPack.Amplify(amp);
+        BaseElementPack.Amplify(amp);
     }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
@@ -87,8 +88,8 @@ public class CurrentStatEffect : StatEffect
 
         CurrentStatEffect currentStatEffect = (CurrentStatEffect)source;
 
-        ElementPack.Clone(currentStatEffect.ElementPack);
-        ElementPack.Reflect(inject);
+        BaseElementPack.Clone(currentStatEffect.BaseElementPack);
+        BaseElementPack.Reflect(inject);
     }
     public override BaseEffect GenerateEffect(bool inject = true)
     {
@@ -101,6 +102,6 @@ public class CurrentStatEffect : StatEffect
         Name = $"{targetStat} REGEN";
         TargetStat = targetStat;
         Value = ValueType.FLAT;
-        ElementPack = new ElementPackage(healMagnitude);
+        BaseElementPack = new ElementPackage(healMagnitude);
     }
 }
