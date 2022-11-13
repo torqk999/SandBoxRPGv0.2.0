@@ -107,7 +107,7 @@ public class Equipment : ItemObject
 
         foreach (CharacterAbility equipped in Abilities)
         {
-            foreach (BaseEffect effect in equipped.Projectiles)
+            foreach (BaseEffect effect in equipped.SpawnedEffects)
             {
                 if (effect.EffectType == EffectType.PASSIVE ||
                     effect.EffectType == EffectType.TOGGLE)

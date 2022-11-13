@@ -50,7 +50,7 @@ public class CharacterAbility : ScriptableObject
     public float CD_Timer;
     public float Cast_Timer;
     public float Projectile_Timer;
-    public List<BaseEffect> Projectiles;
+    public List<BaseEffect> SpawnedEffects;
     public Character SourceCharacter;
 
     public virtual void UseAbility(Character target)
@@ -105,7 +105,7 @@ public class CharacterAbility : ScriptableObject
         Cast_Timer = 0;
         Projectile_Timer = 0;
 
-        Projectiles = new List<BaseEffect>();
+        SpawnedEffects = new List<BaseEffect>();
     }
     public void SetCooldown()
     {

@@ -101,14 +101,14 @@ public class BaseEffect : ScriptableObject
     }
     public virtual void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
-        /*if (!cast)
+        if (!cast)
         {
-            
-            return;
-        }*/
-
-        if (DurationClock())
+            if (DurationClock())
             RemoveRisidualEffect();
+            return;
+        }
+
+
         if (cast)
         switch (EffectType)
         {
