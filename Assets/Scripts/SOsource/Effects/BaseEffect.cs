@@ -17,18 +17,19 @@ public class BaseEffect : ScriptableObject
     public GameObject Condition;
     public GameObject Projectile;
     public GameObject Impact;
+
     public float PeriodLength;
-    public float PeriodTimer;
     public float DurationLength;
-    public float DurationTimer;
     public float ProjectileLength;
-    public float ProjectileTimer;
 
     [Header("LOGIC - Do Not Touch!")]
     public EffectType EffectType;
     public float TetherRange;
-
     public int EffectIndex;
+
+    public float PeriodTimer;
+    public float DurationTimer;
+    public float ProjectileTimer;
 
     public CharacterAbility Source;
     public Character EffectedCharacter;
