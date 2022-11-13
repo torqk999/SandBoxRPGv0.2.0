@@ -24,12 +24,14 @@ public class CharacterManager : MonoBehaviour
 
     [Header("Default Party Defs")]
     public Transform DefaultPartyPrefabs;
+    public Transform MobPrefabs;
     //public Transform DefaultPartyStart;
     public Formation DefaultPartyFormation;
 
     [Header("Logic")]
     public List<Character> CharacterPool;
     public List<Party> Parties;
+
     public int CurrentPartyIndex;
 
     #region POSSESSION
@@ -206,20 +208,69 @@ public class CharacterManager : MonoBehaviour
 
     #endregion
 
+    #region WORLD GENERATION
+    public void SpawnPeeps(Transform partyStartLocation, Transform mobSpawnLocationFolder)
+    {
+        InitializeCharacterSheets();
+
+        /// CHECK THESE FIRST!!! ///
+        GameObject mobPrefab = MobPrefabs.GetChild(0).gameObject;
+        CurrentPartyIndex = 0;
+
+        CreateDefaultParty(partyStartLocation);
+        CreateCloneParty(mobPrefab, mobSpawnLocationFolder, Faction.BADDIES);
+
+        UpdatePartyFoes();
+    }
+    #endregion
+
     #region CHARACTER GENERATION
-    public void CreateLiteralParty(Transform partyPrefabFolder, Faction faction, Formation formation, Transform startPosition)
+    public void InitializeCharacterSheets()
+    {
+        if (DefaultPartyPrefabs == null)
+            return;
+
+        Debug.Log($"defaultCount: {DefaultPartyPrefabs.childCount}");
+
+        for (int i = 0; i < DefaultPartyPrefabs.childCount; i++)
+        {
+            Character nextChar = DefaultPartyPrefabs.GetChild(i).GetComponent<Character>();
+            if (nextChar == null || nextChar.Sheet == null)
+                continue;
+            nextChar.Sheet.Initialize(false);
+        }
+
+        if (MobPrefabs == null)
+            return;
+
+        Debug.Log($"mobCount: {MobPrefabs.childCount}");
+
+        for (int i = 0; i < MobPrefabs.childCount; i++)
+        {
+            Character nextChar = MobPrefabs.GetChild(i).GetComponent<Character>();
+            if (nextChar == null || nextChar.Sheet == null)
+                continue;
+            nextChar.Sheet.Initialize(false);
+        }
+    }
+    public void CreateDefaultParty(Transform startLocation = null)
+    {
+        CreateLiteralParty(DefaultPartyPrefabs, Faction.GOODIES,
+            DefaultPartyFormation, startLocation, false);
+    }
+    bool CreateLiteralParty(Transform partyPrefabFolder, Faction faction, Formation formation, Transform startPosition, bool fresh = true)
     {
         if (partyPrefabFolder == null)
         {
             Debug.Log("partyPrefabFolder null, no party generated");
-            return;
+            return false;
         }
 
         Party literalParty = GenerateParty(faction, formation);
 
         for (int i = 0; i < partyPrefabFolder.childCount; i++)
         {
-            Character newCharacter = GenerateCharacter(partyPrefabFolder.GetChild(i).gameObject, literalParty, startPosition);
+            Character newCharacter = GenerateCharacter(partyPrefabFolder.GetChild(i).gameObject, literalParty, startPosition, -1, fresh);
             if (newCharacter == null)
             {
                 Debug.Log("Literal Character generation failed");
@@ -231,9 +282,14 @@ public class CharacterManager : MonoBehaviour
         }
 
         Parties.Add(literalParty);
+        return true;
     }
-    public void CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction, Wardrobe wardrobe)
+    public bool CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction)//, Wardrobe wardrobe)
     {
+        if (mobPrefab == null ||
+            spawnPointFolder == null)
+            return false;
+
         Party cloneParty = GenerateParty(faction);
 
         for (int i = 0; i < spawnPointFolder.childCount; i++)
@@ -241,7 +297,7 @@ public class CharacterManager : MonoBehaviour
             if (!spawnPointFolder.GetChild(i).gameObject.activeSelf)
                 continue;
 
-            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i), wardrobe, i);
+            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i));//, wardrobe, i);
             if (newCharacter == null)
             {
                 Debug.Log("Clone Character generation failed");
@@ -254,6 +310,7 @@ public class CharacterManager : MonoBehaviour
         }
 
         Parties.Add(cloneParty);
+        return true;
     }
     Party GenerateParty(Faction faction, Formation formation = null, int startIndex = 0)
     {
@@ -274,25 +331,25 @@ public class CharacterManager : MonoBehaviour
 
         return newParty;
     }
-    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null, Wardrobe wardrobe = null, int index = -1, bool fresh = true)
+    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null/*, Wardrobe wardrobe = null*/, int index = -1, bool fresh = true)
     {
         Character newCharacter = (Character)GameState.PawnMan.PawnGeneration(prefab, party.transform, spawnTransform);
         if (newCharacter == null)
             return null;
 
-        Character source = prefab.GetComponent<Character>();
+        Character sourceCharacter = prefab.GetComponent<Character>();
 
         if (index != -1)
             newCharacter.Root.name = $"{prefab.name} : {index}";
 
-        SetupSheet(newCharacter, source, index, fresh);
+        SetupSheet(newCharacter, sourceCharacter, index, fresh);
         SetupAI(newCharacter);
         SetupCharacterCanvas(newCharacter);
         SetupCharacter(newCharacter, party);
         SetupRender(newCharacter);
 
-        if (wardrobe != null)
-            GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
+        //if (wardrobe != null)
+        //    GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
 
         CharacterPool.Add(newCharacter);
         
@@ -346,18 +403,25 @@ public class CharacterManager : MonoBehaviour
     }
     void SetupSheet(Character character, Character source, int index, bool fresh)
     {
-        if (source == null)
+        if (source == null ||
+            source.Sheet == null)
             return;
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
-        if (source != null && source.Sheet != null)
+        if (fresh)
         {
-            character.Sheet.Clone(source.Sheet);
-            if (fresh)
-                character.Sheet.Fresh();
+            Debug.Log("freshSheet");
+            character.Sheet.Initialize();
         }
-
+            
+        else
+        {
+            Debug.Log("rawSheet");
+            character.Sheet.Clone(source.Sheet);
+        }
+            
+        
         if (index > -1)
             character.Sheet.Name += index.ToString();
     }

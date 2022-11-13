@@ -312,6 +312,10 @@ public class UIManager : MonoBehaviour
     {
         GameState.QuitGame();
     }
+    public void PauseGame(bool pause = true)
+    {
+        GameState.GamePause(pause);
+    }
     public void ToggleCharacterPage(CharPage page)
     {
         UpdateGameMenuCanvasState(page);
@@ -326,7 +330,6 @@ public class UIManager : MonoBehaviour
             CurrentMenu = (GameMenu)index;
 
         PauseMenuRefresh();
-        GameState.GamePause(CurrentMenu != GameMenu.NONE);
     }
     public void EquipSelection()
     {
@@ -652,11 +655,17 @@ public class UIManager : MonoBehaviour
                 continue;
 
             GameObject newButtonObject = Instantiate(SkillListButtonPrefab, SkillButtonContent);
+
+            newButtonObject.transform.GetChild(0).GetComponent<Text>().text = ability.Name;
+            if (ability.Sprite != null)
+                newButtonObject.transform.GetChild(1).GetComponent<Image>().sprite = ability.Sprite;
+
+
             newButtonObject.SetActive(true);
             CreateCallBackIdentity(newButtonObject.GetComponent<Button>(), index, ButtonType.LIST_SKILL);
             index++;
 
-            newButtonObject.transform.GetChild(0).GetComponent<Text>().text = ability.Name;
+            
         }
     }
     void PopulateSkillSlotButtons()
@@ -687,10 +696,10 @@ public class UIManager : MonoBehaviour
             case EffectAbility:
                 foreach (BaseEffect effect in ((EffectAbility)selection).Effects)
                 {
-                    GameObject newEffectPanel = Instantiate(EffectPanelPrefab);
+                    GameObject newEffectPanel = Instantiate(EffectPanelPrefab, EffectStatsContent);
                     StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);
                     outputBuild.Append($"Effect: {effect.Name}\n");
-                    outputBuild.Append($"Duration: {effect.DurationLength}");
+                    outputBuild.Append($"Duration: {effect.DurationLength}\n");
 
                     switch (effect)
                     {
@@ -713,13 +722,19 @@ public class UIManager : MonoBehaviour
                             break;
                     }
 
+                    Text effectText = newEffectPanel.transform.GetChild(0).GetComponent<Text>();
+                    //CanvasRenderer render = newEffectPanel.GetComponent<CanvasRenderer>();
+                    effectText.text = outputBuild.ToString();
+
                     if (effect.Sprite != null)
                         newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.Sprite;
 
-                    newEffectPanel.transform.GetChild(0).GetComponent<Text>().text = outputBuild.ToString();
+                    
 
                     newEffectPanel.transform.SetParent(EffectStatsContent);
                     newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
+
+                    newEffectPanel.SetActive(true);
                 }
                 break;
         }

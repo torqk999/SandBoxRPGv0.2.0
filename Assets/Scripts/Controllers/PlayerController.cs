@@ -63,7 +63,6 @@ public class PlayerController : CharacterController
     public int PawnIndex;
     public GenericContainer targetContainer;
 
-    //public Interaction CurrentInteraction;
     public ControlMode CurrentControlMode;
     public TacticalMode CurrentTacticalMode = TacticalMode.SELECT;
 
@@ -126,14 +125,16 @@ public class PlayerController : CharacterController
     {
 
     }
-    public void TogglePause(bool toggle)
+    public void CursorToggle(bool toggle)
     {
-        GameState.GamePause(toggle);
-        bIsInPlay = !toggle;
-        CursorToggle((toggle) ? true : (CurrentControlMode != ControlMode.TACTICAL) ? false : true);
-    }
+        //CursorToggle(toggle ? true : (CurrentControlMode != ControlMode.TACTICAL) ? false : true);
+        if (toggle)
+            Cursor.lockState = CursorLockMode.None;
+        else
+            Cursor.lockState = CursorLockMode.Locked;
 
-    
+        Cursor.visible = toggle;
+    }
     public void InitialPawnControl()
     {
         PawnIndex = -1;
@@ -193,7 +194,7 @@ public class PlayerController : CharacterController
     {
         if (CheckAction(KeyAction.PAUSE) &&
             GameState.UIman.CurrentMenu != GameMenu.KEY_MAP)
-            TogglePause(!GameState.bPause);
+            GameState.GamePause(!GameState.bPause);
 
         if (GameState.bPause)
             return;
@@ -462,15 +463,6 @@ public class PlayerController : CharacterController
     {
         CurrentControlMode = CurrentPawn.ControlMode;
         CursorToggle((CurrentControlMode == ControlMode.TACTICAL) ? true : false);
-    }
-    void CursorToggle(bool toggle)
-    {
-        if (toggle)
-            Cursor.lockState = CursorLockMode.None;
-        else
-            Cursor.lockState = CursorLockMode.Locked;
-
-        Cursor.visible = toggle;
     }
     void JumpHome()
     {

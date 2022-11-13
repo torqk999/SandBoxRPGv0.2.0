@@ -52,30 +52,43 @@ public class CharacterSheet : ScriptableObject
     public CharacterAbility[] InnateAbilities;
     //public BaseEffect[] InnatePassives;
 
-    public void Clone(CharacterSheet target)
+    public void Clone(CharacterSheet source)
     {
-        Name = target.Name;
-        Level = target.Level;
-        CurrentEXP = target.CurrentEXP;
-        NextLevelEXP = target.NextLevelEXP;
+        Name = source.Name;
+        Level = source.Level;
+        CurrentEXP = source.CurrentEXP;
+        NextLevelEXP = source.NextLevelEXP;
 
-        Portrait = target.Portrait;
-        Race = target.Race;
-        Faction = target.Faction;
+        Portrait = source.Portrait;
+        Race = source.Race;
+        Faction = source.Faction;
 
-        CurrentSkillEXP = target.CurrentSkillEXP;
-        NextLevelSkillEXP = target.NextLevelSkillEXP;
-        SkillsLevels = target.SkillsLevels;
+        CurrentSkillEXP.Clone(source.CurrentSkillEXP);
+        NextLevelSkillEXP.Clone(source.NextLevelSkillEXP);
+        SkillsLevels.Clone(source.SkillsLevels);
 
-        InnateAbilities = new CharacterAbility[target.InnateAbilities.Length];
+        if (source.InnateAbilities != null)
+        {
+            InnateAbilities = new CharacterAbility[source.InnateAbilities.Length];
+            for (int i = 0; i < source.InnateAbilities.Length; i++)
+                InnateAbilities[i] = source.InnateAbilities[i];
+        }
     }
 
-    public void Fresh()
+    public void Initialize(bool fresh = true)
     {
-        Level = 0;
-        CurrentSkillEXP = new EXPpackage(CharacterMath.STATS_SKILLS_COUNT);
-        NextLevelSkillEXP = new EXPpackage(CharacterMath.STATS_SKILLS_COUNT);
-        SkillsLevels = new LVLpackage(CharacterMath.STATS_SKILLS_COUNT);
+        Debug.Log("Sheet init");
+        if (fresh)
+        {
+            Level = 0;
+            CurrentEXP = 0;
+            NextLevelEXP = 0;
+        }
+        CurrentSkillEXP.Initialize(!fresh);
+        NextLevelSkillEXP.Initialize(!fresh);
+        SkillsLevels.Initialize(!fresh);// = new LVLpackage(CharacterMath.STATS_SKILLS_COUNT);
+
+        Debug.Log($"Innates: {InnateAbilities != null}");
     }
 
     /*== GOOD ==

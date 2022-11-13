@@ -1,3 +1,4 @@
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,7 +48,14 @@ public class CharacterAbility : ScriptableObject
     public Character Source;
 
     public virtual void UseAbility(Character target) { }
-    public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null) { }
+    public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
+    {
+
+    }
+    public virtual void InitializeSource()
+    {
+
+    }
     public virtual void CloneAbility(CharacterAbility source, bool inject = false)
     {
         Name = source.Name;
@@ -81,6 +89,7 @@ public class CharacterAbility : ScriptableObject
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
         newAbility.CloneAbility(this, inject);
+        newAbility.InitializeSource();
         return newAbility;
     }
     public virtual void EquipAbility(Character currentCharacter, Equipment equip = null)

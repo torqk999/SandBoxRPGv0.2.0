@@ -27,6 +27,10 @@ public class ResistanceEffect : StatEffect
     {
         AmpedResAdjustments.Amplify(BaseResAdjustments, amp);
     }
+    public override void InitializeSource()
+    {
+        BaseResAdjustments.Initialize();
+    }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
         base.CloneEffect(source, inject);
@@ -37,8 +41,7 @@ public class ResistanceEffect : StatEffect
         ResistanceEffect currentStatEffect = (ResistanceEffect)source;
 
         BaseResAdjustments.Clone(currentStatEffect.BaseResAdjustments);
-        BaseResAdjustments.Reflection.Reflect(ref BaseResAdjustments.Elements, inject);
-        //BaseResAdjustments.Amplify(CharacterMath.GeneratePotency());
+        AmpedResAdjustments.Clone(BaseResAdjustments);
     }
     public override BaseEffect GenerateEffect(bool inject = true)
     {

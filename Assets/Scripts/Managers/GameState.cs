@@ -72,6 +72,8 @@ public class GameState : MonoBehaviour
         UIman.PauseMenuCanvasNavigation((toggle) ? 0 : -1);
         UpdateRigidBodyPawns();
         CharacterMan.ToggleCharactersPauseState(bPause);
+        pController.bIsInPlay = !toggle;
+        pController.CursorToggle(toggle);
     }
     public void InteractWithContainer(GenericContainer container)
     {

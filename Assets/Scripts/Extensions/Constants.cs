@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,15 +35,25 @@ public static class GlobalConstants
 
 public static class CharacterMath
 {
-    public static float GeneratePotency(CharacterSheet sheet = null, Equipment equip = null)
+    public static float GeneratePotency(ref StringBuilder debug, CharacterSheet sheet = null, Equipment equip = null)
     {
         try
         {
             int school = equip == null ? (int)School.MONK : (int)equip.EquipSchool;
+            debug.Append("0\n");
             float weaponLevelFactor = equip == null ? 0 : equip.EquipLevel;
+            debug.Append("1\n");
             Race race = sheet == null ? Race.HUMAN : sheet.Race;
+            debug.Append("2\n");
             int skillLevel = sheet == null ? 0 : sheet.SkillsLevels.Levels[school];
+            debug.Append("3\n");
             int charLevel = sheet == null ? 0 : sheet.Level;
+            debug.Append("4\n");
+
+            debug.Append($"{charLevel * CharacterMath.CHAR_LEVEL_FACTOR}:" +
+                $"{weaponLevelFactor * CharacterMath.WEP_LEVEL_FACTOR}:" +
+                $"{skillLevel * CharacterMath.SKILL_MUL_LEVEL[school]}:" +
+                $"{CharacterMath.SKILL_MUL_RACE[(int)race, school]}");
 
             return 1 +                                                                  // Base
 

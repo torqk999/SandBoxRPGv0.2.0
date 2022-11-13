@@ -25,12 +25,10 @@ MonoBehaviour:
   CastRange: 0
   AOE_Range: 0
   CD_Duration: 0
-  AbilityID: 0
-  EquipID: 0
   CD_Timer: 0
   SpawnedEffects: []
   Source: {fileID: 0}
   Effects:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: fef5323f18c13aa4ca1af08d28e9ec61, type: 2}
   AbilityTarget: 0
   Projectile: {fileID: 0}

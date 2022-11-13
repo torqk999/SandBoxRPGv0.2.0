@@ -79,6 +79,10 @@ public class CurrentStatEffect : StatEffect
     {
         AmpedElementPack.Amplify(BaseElementPack, amp);
     }
+    public override void InitializeSource()
+    {
+        BaseElementPack.Initialize();
+    }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
         base.CloneEffect(source, inject);
@@ -89,8 +93,6 @@ public class CurrentStatEffect : StatEffect
         CurrentStatEffect currentStatEffect = (CurrentStatEffect)source;
 
         BaseElementPack.Clone(currentStatEffect.BaseElementPack);
-        BaseElementPack.Reflect(inject);
-
         AmpedElementPack.Clone(BaseElementPack);
     }
     public override BaseEffect GenerateEffect(bool inject = true)

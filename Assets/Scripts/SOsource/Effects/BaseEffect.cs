@@ -120,6 +120,10 @@ public class BaseEffect : ScriptableObject
     {
 
     }
+    public virtual void InitializeSource()
+    {
+
+    }
     public virtual void CloneEffect(BaseEffect source, bool inject = false)
     {
         Name = source.Name;
@@ -127,9 +131,8 @@ public class BaseEffect : ScriptableObject
         Condition = source.Condition;
         Impact = source.Impact;
         EffectType = source.EffectType;
-        AbilityID = source.AbilityID;
         TetherRange = source.TetherRange;
-        SourceCharacter = source.SourceCharacter;
+        Source = source.Source;
         DurationLength = source.DurationLength;
         DurationTimer = DurationLength;
     }

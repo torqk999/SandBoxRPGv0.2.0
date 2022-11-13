@@ -17,6 +17,10 @@ public class MaxStatEffect : StatEffect
     {
         AmpedStatAdjustPack.Amplify(BaseStatAdjustPack, amp);
     }
+    public override void InitializeSource()
+    {
+        BaseStatAdjustPack.Initialize();
+    }
     public override void CloneEffect(BaseEffect source, bool inject = false)
     {
         base.CloneEffect(source, inject);
@@ -27,7 +31,7 @@ public class MaxStatEffect : StatEffect
         MaxStatEffect maxSource = (MaxStatEffect)source;
 
         BaseStatAdjustPack.Clone(maxSource.BaseStatAdjustPack);
-        BaseStatAdjustPack.Reflect(inject);
+        AmpedStatAdjustPack.Clone(BaseStatAdjustPack);
     }
     public override BaseEffect GenerateEffect(bool inject = true)
     {

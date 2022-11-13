@@ -149,25 +149,24 @@ public class Character : Pawn, Interaction
             return;
 
         BaseStats = new RawStatPackage(Sheet);
-        MaximumStatValues = new RawStatPackage(BaseStats);
-        CurrentStats = new RawStatPackage(BaseStats);
+        MaximumStatValues.Clone(BaseStats);
+        CurrentStats.Clone(BaseStats);
 
         BaseResistances = new ElementPackage(Sheet);
-        CurrentResistances = new ElementPackage(BaseResistances);
+        CurrentResistances.Clone(BaseResistances);
 
         Risiduals = new List<BaseEffect>();
-        RebuildAbilityList(ref GameState.ABILITY_INDEX);
+        RebuildAbilityList();
         //UpdateAbilites();
     }
-    void RebuildAbilityList(ref int abilityId)
+    void RebuildAbilityList()
     {
         Abilities.Clear();
 
+        if (Sheet.InnateAbilities != null)
         foreach (CharacterAbility innate in Sheet.InnateAbilities)
-        {
             innate.EquipAbility(this);
-            //abilityId++;
-        }
+
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
         {
@@ -175,10 +174,7 @@ public class Character : Pawn, Interaction
                 continue;
 
             for (int j = 0; j < EquipmentSlots[i].Abilities.Length; j++)
-            {
                 EquipmentSlots[i].Abilities[j].EquipAbility(this);
-                abilityId++;
-            }
         }
 
         for (int i = 0; i < CharacterMath.RING_SLOT_COUNT; i++)
@@ -187,10 +183,7 @@ public class Character : Pawn, Interaction
                 continue;
 
             for (int j = 0; j < RingSlots[i].Abilities.Length; j++)
-            {
                 RingSlots[i].Abilities[j].EquipAbility(this);
-                abilityId++;
-            }
         }
     }
     #endregion
@@ -553,8 +546,8 @@ public class Character : Pawn, Interaction
     }
     void UpdatePassives()
     {
-        //foreach (PassiveAbility passive in Abilities)
-        //    passive.UpdatePassiveTimer();
+        foreach (PassiveAbility passive in Abilities)
+            passive.UpdatePassiveTimer();
     }
     void UpdateRisidualEffects()
     {

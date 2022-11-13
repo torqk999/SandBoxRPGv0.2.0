@@ -22,15 +22,24 @@ MonoBehaviour:
   DurationTimer: 0
   EffectType: 1
   TetherRange: 0
-  AbilityID: 0
   EffectIndex: 0
-  SourceCharacter: {fileID: 0}
+  Source: {fileID: 0}
   EffectedCharacter: {fileID: 0}
   Value: 4
   TargetStat: 1
-  ElementPack:
+  BaseElementPack:
     Reflection:
-      PHYSICAL: 10
+      PHYSICAL: 15
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Elements: []
+  AmpedElementPack:
+    Reflection:
+      PHYSICAL: 0
       FIRE: 0
       WATER: 0
       EARTH: 0

@@ -556,6 +556,7 @@ MonoBehaviour:
   CharCanvasPrefab: {fileID: 704980465}
   MatProfiles: []
   DefaultPartyPrefabs: {fileID: 1034490503}
+  MobPrefabs: {fileID: 316186418}
   DefaultPartyFormation:
     Parent: {fileID: 0}
     Type: 0
@@ -779,6 +780,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
   - {fileID: 2100000, guid: 5b5741e1a304b254da481450c500d8ab, type: 2}
   - {fileID: 2100000, guid: 2c1e2a194df267e45bc1dd816cc76800, type: 2}
+  BUFFER: []
   CurrentLootBagIndex: 0
 --- !u!1 &109683109
 GameObject:
@@ -4001,8 +4003,6 @@ MonoBehaviour:
   GameState: {fileID: 559339747}
   SpawnLocations: {fileID: 2106307092}
   PartyStartLocation: {fileID: 1820977878}
-  MobPrefab: {fileID: 234244371}
-  MobFolder: {fileID: 814169861}
   LootBox: {fileID: 0}
   CloneWardrobe: {fileID: 0}
   myAIpool: []

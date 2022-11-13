@@ -21,7 +21,13 @@ public class Equipment : ItemObject
     {
         Equipment newEquip = (Equipment)CreateInstance("Equipment");
         newEquip.CloneItem(this, equipId, inject);
+        newEquip.InitializeSource();
         return newEquip;
+    }
+    public override void InitializeSource()
+    {
+        foreach (CharacterAbility ability in Abilities)
+            ability.InitializeSource();
     }
     public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
     {
@@ -53,11 +59,6 @@ public class Equipment : ItemObject
                 Debug.Log($"Ability missing from id#{EquipID}:{Name}");
         }
     }
-    public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
-    {
-        foreach (CharacterAbility ability in Abilities)
-            ability.Amplify(sheet, equip);
-    }
     public virtual bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
     {
         if (character == null ||
@@ -79,6 +80,7 @@ public class Equipment : ItemObject
 
         foreach (CharacterAbility ability in Abilities)
         {
+            ability.Amplify(character.Sheet, this);
             ability.Source = character;
             character.Abilities.Add(ability);
         }

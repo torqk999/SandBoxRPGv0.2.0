@@ -22,7 +22,7 @@ MonoBehaviour:
   ClassType: 2
   Abilities:
   - {fileID: 11400000, guid: 159976e0345343249b4578cc91a5c082, type: 2}
-  EquipLevel: 0
+  EquipLevel: 3
   EquipID: 0
   SlotIndex: 0
   SlotFamily: []

@@ -20,7 +20,12 @@ public class ItemObject : ScriptableObject
     {
         ItemObject newItemObject = (ItemObject)CreateInstance("ItemObject");
         newItemObject.CloneItem(this);
+        newItemObject.InitializeSource();
         return newItemObject;
+    }
+    public virtual void InitializeSource()
+    {
+
     }
 
     public virtual void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
