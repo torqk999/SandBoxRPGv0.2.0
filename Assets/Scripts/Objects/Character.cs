@@ -54,6 +54,7 @@ public class Character : Pawn, Interaction
     public int CountBuffer; // Currently used by the strategy system
     public float SpawnTimer;
     public float ChannelTimer;
+    public float GlobalCDtimer;
 
     [Header("References")]
     public List<Character> AOE_buffer;
@@ -343,30 +344,30 @@ public class Character : Pawn, Interaction
 
         if (!CheckCanCastAbility(call, costModifier))
             return false;
-
+        bool chk = false;
         switch (call)
         {
-            case ProcAbility:
-                return UseTargettedAbility((ProcAbility)call, costModifier);
-
-            case ToggleAbility:
-                return UseTargettedAbility((ToggleAbility)call, costModifier);
+            case EffectAbility:
+                chk = UseTargettedAbility((EffectAbility)call, costModifier);
+                break;
 
             case SummonAbility:
-                return UseSummonAbility((SummonAbility)call, costModifier);
+                chk = UseSummonAbility((SummonAbility)call, costModifier);
+                break;
         }
 
-        Debug.Log("Unrecognized Ability sub-class");
-        return false;
+        GlobalCDtimer = CharacterMath.GLOBAL_COOLDOWN;
+        return true;
     }
     public bool CheckCanCastAbility(CharacterAbility call, float costModifier)
     {
-        // Add Global Cooldown
+        if (GlobalCDtimer != 0)
+            return false;
 
         if (CurrentTargetCharacter == null)
             return false;
 
-        if (call.CD_Timer > 0) // Check Cooldown
+        if (call.CD_Timer > 0)
             return false;
 
         switch (call.School) // Check CC
@@ -647,6 +648,14 @@ public class Character : Pawn, Interaction
         Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
         Render.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
+    }
+    void UpdateGlobalCooldown()
+    {
+        if (GlobalCDtimer != 0)
+        {
+            GlobalCDtimer -= GlobalConstants.TIME_SCALE;
+            GlobalCDtimer = GlobalCDtimer < 0 ? 0 : GlobalCDtimer;
+        }
     }
     #endregion
 
