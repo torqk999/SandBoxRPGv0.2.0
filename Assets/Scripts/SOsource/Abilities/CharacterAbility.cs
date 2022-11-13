@@ -99,7 +99,7 @@ public class CharacterAbility : ScriptableObject
 
         CD_Duration = source.CD_Duration;
         Cast_Duration = source.Cast_Duration;
-        Projectile_Duration = source.Projectile_Duration;
+        
 
         CD_Timer = 0;
         Cast_Timer = 0;
@@ -123,13 +123,12 @@ public class CharacterAbility : ScriptableObject
             Cast_Timer -= GlobalConstants.TIME_SCALE;
             Cast_Timer = (Cast_Timer < 0) ? 0 : Cast_Timer;
         }
-        if (Projectile_Timer)
         if (Cast_Timer == 0 && Cast != null)
         {
             Destroy(Cast);
         }
     }
-    public void LerpProjectile()
+    public void UpdateProjectiles()
     {
 
     }

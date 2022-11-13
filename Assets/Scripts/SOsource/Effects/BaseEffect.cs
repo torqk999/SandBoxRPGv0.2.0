@@ -14,9 +14,12 @@ public class BaseEffect : ScriptableObject
     [Header("Base Properties")]
     public string Name;
     public Sprite Sprite;
+
     public GameObject Condition;
     public GameObject Projectile;
     public GameObject Impact;
+
+    public PsystemType ProjectileType;
 
     public float PeriodLength;
     public float DurationLength;
@@ -65,16 +68,49 @@ public class BaseEffect : ScriptableObject
 
         return DurationTimer == DurationLength;
     }
+    public bool ProjectileClock(bool reset = false)
+    {
+        if (reset)
+        {
+            ProjectileTimer = ProjectileLength;
+            return true;
+        }
+
+        ProjectileTimer -= GlobalConstants.TIME_SCALE;
+        if (ProjectileTimer <= 0)
+            ProjectileTimer = ProjectileLength;
+
+        return ProjectileTimer == ProjectileLength;
+    }
+    void ProjectilePsystem()
+    {
+        Debug.Log("Stepped into Cast system");
+
+        if (Source == null ||
+            Source.SourceCharacter == null)
+            return;
+
+        Debug.Log("Casting...");
+
+        if (Projectile != null)
+            Destroy(Projectile);
+
+        Projectile = Instantiate(Source.SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)ProjectileType], Source.SourceCharacter.transform);
+        Projectile.transform.localPosition = Vector3.zero;
+        ProjectileTimer = ProjectileLength;
+    }
     public virtual void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
     {
         if (!cast)
         {
             if (DurationClock())
-                RemoveRisidualEffect();
+            RemoveRisidualEffect();
             return;
         }
-            
-        switch(EffectType)
+
+
+        if (cast)
+        switch (EffectType)
         {
             case EffectType.PROC:
             case EffectType.PASSIVE:
@@ -87,7 +123,7 @@ public class BaseEffect : ScriptableObject
                 else
                     RemoveRisidualEffect();
                 break;
-        }  
+        }
     }
     public void AddRisidualEffect(Character target)
     {
@@ -139,6 +175,7 @@ public class BaseEffect : ScriptableObject
         Source = source.Source;
         DurationLength = source.DurationLength;
         DurationTimer = DurationLength;
+        ProjectileLength = source.ProjectileLength;
     }
     public virtual BaseEffect GenerateEffect(bool inject = true)
     {
