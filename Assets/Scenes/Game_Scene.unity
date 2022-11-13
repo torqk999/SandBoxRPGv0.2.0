@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43505645, g: 0.61270875, b: 0.8033019, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -779,9 +779,9 @@ MonoBehaviour:
   Materials:
   - {fileID: 2100000, guid: 3cb0c1b1aa4fe044a87932179e4d476f, type: 2}
   - {fileID: 2100000, guid: ac518b1795f8c1849a37296065ec527e, type: 2}
-  - {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
-  - {fileID: 2100000, guid: 298d27ae3f6560d478503c3f5a1134a7, type: 2}
-  - {fileID: 2100000, guid: 0afe8a513ae6b774da6376438a8c3d2f, type: 2}
+  - {fileID: 2100000, guid: 3cb0c1b1aa4fe044a87932179e4d476f, type: 2}
+  - {fileID: 2100000, guid: 78af10544ec942844abfe4e8e5c61819, type: 2}
+  - {fileID: 2100000, guid: 78af10544ec942844abfe4e8e5c61819, type: 2}
   - {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
   - {fileID: 2100000, guid: 5b5741e1a304b254da481450c500d8ab, type: 2}
   - {fileID: 2100000, guid: 2c1e2a194df267e45bc1dd816cc76800, type: 2}
@@ -2855,6 +2855,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cam: {fileID: 0}
   Character: {fileID: 0}
+  myCanvas: {fileID: 0}
   Offset: {x: 0, y: 2, z: 0}
   LevelText: {fileID: 356928664}
   HealthBar: {fileID: 1413027461}
@@ -5497,7 +5498,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1820977877}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.42, z: -10.33}
+  m_LocalPosition: {x: 0, y: 8.63, z: -10.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

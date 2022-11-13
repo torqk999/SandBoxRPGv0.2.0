@@ -64,8 +64,8 @@ public class CharacterAbility : ScriptableObject
 
         Debug.Log("Casting...");
 
-        //if (Cast != null)
-            //Destroy(Cast);
+        if (Cast != null)
+            Destroy(Cast);
 
         Cast = Instantiate(SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastType], SourceCharacter.transform);
         Cast.transform.localPosition = Vector3.zero;
@@ -115,11 +115,11 @@ public class CharacterAbility : ScriptableObject
         if (Cast_Timer != 0)
         {
             Cast_Timer -= GlobalConstants.TIME_SCALE;
-            Cast_Timer = (CD_Timer < 0) ? 0 : Cast_Timer;
+            Cast_Timer = (Cast_Timer < 0) ? 0 : Cast_Timer;
         }
         if (Cast_Timer == 0 && Cast != null)
         {
-            //Destroy(Cast);
+            Destroy(Cast);
         }
     }
     public virtual void UpdatePassiveTimer()
