@@ -63,24 +63,35 @@ public class Strategy : MonoBehaviour
     {
         foreach (CharacterAbility ability in Character.Abilities) // Check all abilities
         {
-            if (ability.AbilityType != source.AbilityType)
+            if (ability.School != source.School)
                 continue;
 
-            foreach (Effect effect in source.Effects) // Check for atleast one matching effect
+            switch(source)
             {
-                if (CheckForComparableEffect(ability, effect))
-                    return ability;
+                case EffectAbility:
+                    if (!(ability is EffectAbility))
+                        continue;
+
+                    EffectAbility effectSource = (EffectAbility)source;
+                    EffectAbility effectAbility = (EffectAbility)ability;
+
+                    foreach (BaseEffect effect in effectSource.Effects) // Check for atleast one matching effect
+                    {
+                        if (CheckForComparableEffect(effectAbility, effect))
+                            return ability;
+                    }
+                    break;
             }
         }
         return null;
     }
-    bool CheckForComparableEffect(CharacterAbility target, Effect source)
+    bool CheckForComparableEffect(EffectAbility target, BaseEffect source)
     {
-        Effect effect = Array.Find(target.Effects, x => x.Action == source.Action);
-        if (effect == null)
-            return false;
+        //BaseEffect effect = Array.Find(target.Effects, x => x.Action == source.Action);
+        //if (effect == null)
+        //    return false;
 
-        switch(effect.Action)
+        /*switch(effect.Action)
         {
             case EffectAction.DMG_HEAL:
                 if (effect.Duration != source.Duration
@@ -92,7 +103,7 @@ public class Strategy : MonoBehaviour
             case EffectAction.SPAWN:
                 return true;
 
-            case EffectAction.CLEANSE:
+            case EffectAction.CC_CLEANSE:
                 if (effect.TargetCCstatus != source.TargetCCstatus)
                     return false;
                 return true;
@@ -115,12 +126,14 @@ public class Strategy : MonoBehaviour
                  || effect.Value != source.Value)
                     return false;
                 return true;
-        }
+        }*/
         return false;
     }
     bool CheckTacticConditions(Tactic tactic)
     {
-        if (!GameState.CharacterMan.CheckAbility(tactic.Ability, Character, Character.GenerateStatModifier(tactic.Ability.CostType, tactic.Ability.CostTarget)))
+        float costModifier = Character.GenerateRawStatValueModifier(tactic.Ability.CostType, tactic.Ability.CostTarget);
+
+        if (!Character.CheckCanCastAbility(tactic.Ability, costModifier))
             return false;
 
         ReturnEligableCharacters(tactic, ref CandidateBuffer);
@@ -234,10 +247,10 @@ public class Strategy : MonoBehaviour
 
                 case TacFloatType.RESISTANCE:
                     if ((tactic.Relative &&
-                       (tactic.GTE_LT == (next.Resistances.Elements[(int)tactic.TargetElement] >= Character.Resistances.Elements[(int)tactic.TargetElement])))
+                       (tactic.GTE_LT == (next.CurrentResistances.Elements[(int)tactic.TargetElement] >= Character.CurrentResistances.Elements[(int)tactic.TargetElement])))
                     ||
                         (!tactic.Relative &&
-                       (tactic.GTE_LT == (next.Resistances.Elements[(int)tactic.TargetElement] >= tactic.Value))))
+                       (tactic.GTE_LT == (next.CurrentResistances.Elements[(int)tactic.TargetElement] >= tactic.Value))))
                     {
                         break;
                     }
@@ -275,9 +288,9 @@ public class Strategy : MonoBehaviour
         foreach (Character source in eligable)
         {
             Array.Fill(CCstateBuffer, false);
-            foreach (Effect effect in source.Effects)
-                if (effect.Action == EffectAction.CROWD_CONTROL)
-                    CCstateBuffer[(int)effect.TargetCCstatus] = true;
+            foreach (CrowdControlEffect effect in source.Risiduals)
+                //if (effect.Action == EffectAction.CROWD_CONTROL)
+                CCstateBuffer[(int)effect.TargetCCstatus] = true;
 
             bool check = tactic.AND_OR;
             for (int i = 0; i < CharacterMath.STATS_CC_COUNT; i++)

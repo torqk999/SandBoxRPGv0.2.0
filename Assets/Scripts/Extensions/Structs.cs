@@ -9,22 +9,6 @@ public enum ClassType
     MAGE,
     ROGUE
 }
-public enum EffectDuration
-{
-    ONCE,
-    TIMED,
-    PASSIVE,
-    SUSTAINED
-}
-public enum EffectAction
-{
-    DMG_HEAL,
-    SPAWN,
-    CLEANSE,
-    CROWD_CONTROL,
-    RES_ADJ,
-    STAT_ADJ,
-}
 public enum ValueType
 {
     NONE,
@@ -44,6 +28,8 @@ public enum CCstatus
     DRUNK,
     STUNNED
 }
+
+
 [Serializable]
 public struct CCstateReflection
 {
@@ -90,50 +76,46 @@ public struct CCstateReflection
         }
     }
 }
-public enum SkillType
+public enum CharStat
 {
-    LIGHT,
-    MEDIUM,
-    HEAVY,
-    HAND_ONE,
-    HAND_OFF,
-    HAND_TWO,
-    SHIELD,
-    RANGED,
-    MAGIC,
-}
-public enum RawStat
-{
-    HEALTH,
-    STAMINA,
-    MANA,
-    SPEED,
+    STR,
+    INT,
+    DEX
 }
 [Serializable]
-public struct StatReflection
+public struct CharStatPackageReflection
 {
-    public float HEALTH;
-    public float STAMINA;
-    public float MANA;
-    public float SPEED;
+    ///public float STAMINA;
+    ///public float HEALTH;
+    ///public float MANA;
+    ///public float SPEED;
+    public int STR;
+    public int INT;
+    public int DEX;
 
-    public bool Reflect(ref float[] rawStats, bool inject = true)
+    public bool Reflect(ref int[] rawStats, bool inject = true)
     {
         try
         {
             if (inject)
             {
-                rawStats[(int)RawStat.HEALTH] = HEALTH;
-                rawStats[(int)RawStat.STAMINA] = STAMINA;
-                rawStats[(int)RawStat.MANA] = MANA;
-                rawStats[(int)RawStat.SPEED] = SPEED;
+                ///rawStats[(int)RawStat.STAMINA] = STAMINA;
+                ///rawStats[(int)RawStat.HEALTH] = HEALTH;
+                ///rawStats[(int)RawStat.MANA] = MANA;
+                ///rawStats[(int)RawStat.SPEED] = SPEED;
+                rawStats[(int)CharStat.STR] = STR;
+                rawStats[(int)CharStat.INT] = INT;
+                rawStats[(int)CharStat.DEX] = DEX;
             }
             else
             {
-                HEALTH = rawStats[(int)RawStat.HEALTH];
-                STAMINA = rawStats[(int)RawStat.STAMINA];
-                MANA = rawStats[(int)RawStat.MANA];
-                SPEED = rawStats[(int)RawStat.SPEED];
+                ///STAMINA = rawStats[(int)RawStat.STAMINA];
+                ///HEALTH = rawStats[(int)RawStat.HEALTH];
+                ///MANA = rawStats[(int)RawStat.MANA];
+                ///SPEED = rawStats[(int)RawStat.SPEED];
+                STR = rawStats[(int)CharStat.STR];
+                INT = rawStats[(int)CharStat.INT];
+                DEX = rawStats[(int)CharStat.DEX];
             }
             return true;
         }
@@ -144,26 +126,146 @@ public struct StatReflection
     }
 }
 [Serializable]
-public struct StatPackage
+public struct CharStatPackage
 {
-    public float[] Stats;
-    public StatReflection Reflection;
-    public StatPackage(StatPackage source)
+    public CharStatPackageReflection Reflection;
+    public int[] Stats;
+
+    public CharStatPackage(CharacterSheet sheet)
     {
-        Reflection = source.Reflection;
-        Stats = new float[CharacterMath.STATS_RAW_COUNT];
-        if (source.Stats != null && source.Stats.Length == CharacterMath.STATS_RAW_COUNT)
-            for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
-                Stats[i] = source.Stats[i];
+        Stats = new int[CharacterMath.STATS_CHAR_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_CHAR_COUNT; i++)
+        {
+
+            // NOT YET IMPLEMENTED!!! //
+
+            float stat = CharacterMath.STAT_BASE[i] +
+                (CharacterMath.STAT_GROWTH[i] *
+                CharacterMath.STAT_MUL_RACE[(int)sheet.Race, i] *
+                sheet.Level);
+
+            Stats[i] = (int)stat;
+        }
+        Reflection = new CharStatPackageReflection();
+        Reflection.Reflect(ref Stats, false);
     }
-    public void Init()
+
+    public void Clone(CharStatPackage source)
     {
-        Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        if (source.Stats == null || source.Stats.Length == CharacterMath.STATS_CHAR_COUNT)
+            return;
+
+        Reflection = source.Reflection;
+        Stats = new int[CharacterMath.STATS_CHAR_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_CHAR_COUNT; i++)
+            Stats[i] = source.Stats[i];
     }
     public void Amplify(float amp)
     {
         for (int i = 0; i < Stats.Length; i++)
+            Stats[i] = (int)(Stats[i] * amp);
+    }
+    public void Initialize(bool inject = true)
+    {
+        Stats = new int[CharacterMath.STATS_CHAR_COUNT];
+        Reflection.Reflect(ref Stats, inject);
+    }
+}
+public enum RawStat
+{
+    STAMINA,
+    HEALTH,
+    MANA,
+    SPEED
+}
+[Serializable]
+public struct RawStatPackageReflection
+{
+    public float STAMINA;
+    public float HEALTH;
+    public float MANA;
+    public float SPEED;
+    ///public float STR;
+    ///public float INT;
+    ///public float DEX;
+
+    public bool Reflect(ref float[] rawStats, bool inject = true)
+    {
+        try
+        {
+            if (inject)
+            {
+                rawStats[(int)RawStat.STAMINA] = STAMINA;
+                rawStats[(int)RawStat.HEALTH] = HEALTH;
+                rawStats[(int)RawStat.MANA] = MANA;
+                rawStats[(int)RawStat.SPEED] = SPEED;
+                ///rawStats[(int)RawStat.SPEED] = STR;
+                ///rawStats[(int)RawStat.SPEED] = INT;
+                ///rawStats[(int)RawStat.SPEED] = DEX;
+            }
+            else
+            {
+                STAMINA = rawStats[(int)RawStat.STAMINA];
+                HEALTH = rawStats[(int)RawStat.HEALTH];
+                MANA = rawStats[(int)RawStat.MANA];
+                SPEED = rawStats[(int)RawStat.SPEED];
+                ///STR = rawStats[(int)RawStat.STR];
+                ///INT = rawStats[(int)RawStat.INT];
+                ///DEX = rawStats[(int)RawStat.DEX];
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
+[Serializable]
+public struct RawStatPackage
+{
+    public RawStatPackageReflection Reflection;
+    public float[] Stats;
+
+    public RawStatPackage(CharacterSheet sheet)
+    {
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+        {
+            float stat = CharacterMath.STAT_BASE[i] +
+                (CharacterMath.STAT_GROWTH[i] *
+                CharacterMath.STAT_MUL_RACE[(int)sheet.Race, i] *
+                sheet.Level);
+
+            Stats[i] = stat;
+        }
+        Reflection = new RawStatPackageReflection();
+        Reflection.Reflect(ref Stats, false);
+    }
+
+    public bool Clone(RawStatPackage source)
+    {
+        if (source.Stats == null || source.Stats.Length != CharacterMath.STATS_RAW_COUNT)
+            return false;
+
+        Reflection = source.Reflection;
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+            Stats[i] = source.Stats[i];
+
+        return true;
+    }
+    public void Amplify(RawStatPackage source, float amp)
+    {
+        Clone(source);
+
+        for (int i = 0; i < Stats.Length; i++)
             Stats[i] *= amp;
+    }
+    public void Initialize(bool inject = true)
+    {
+        Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        Reflection.Reflect(ref Stats, inject);
     }
 }
 public enum Element
@@ -225,42 +327,225 @@ public struct ElementPackage
     public ElementReflection Reflection;
     public float[] Elements;
 
-    public ElementPackage(ElementPackage source)
+    public ElementPackage(float healMagnitude)
     {
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        Elements[(int)Element.HEALING] = healMagnitude;
+        Reflection = new ElementReflection();
+        Reflection.Reflect(ref Elements, false);
+    }
+    public ElementPackage(CharacterSheet sheet)
+    {
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+        {
+            Elements[i] = CharacterMath.RES_MUL_RACE[(int)sheet.Race, i] * (CharacterMath.RES_BASE[i] +
+                (CharacterMath.RES_GROWTH[i] * sheet.Level));
+        }
+        Reflection = new ElementReflection();
+        Reflection.Reflect(ref Elements, false);
+    }
+
+    public bool Clone(ElementPackage source)
+    {
+        if (source.Elements == null || source.Elements.Length != CharacterMath.STATS_ELEMENT_COUNT)
+            return false;
+
         Reflection = source.Reflection;
         Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
-        if (source.Elements != null && source.Elements.Length == CharacterMath.STATS_ELEMENT_COUNT)
-            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-                Elements[i] = source.Elements[i];
-    }
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            Elements[i] = source.Elements[i];
 
-    public void Init()
-    {
-        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        return true;
     }
-
-    public void Amplify(float amp)
+    public void Amplify(ElementPackage source, float amp)
     {
+        Clone(source);
+
         for (int i = 0; i < Elements.Length; i++)
             Elements[i] *= amp;
+    }
+    public void Initialize(bool inject = true)
+    {
+        Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        Reflection.Reflect(ref Elements, inject);
+    }
+}
+[Serializable]
+public struct EXPreflection
+{
+    public float BERZERKER;
+    public float WARRIOR;
+    public float MONK;
+    public float RANGER;
+    public float ROGUE;
+    public float PYROMANCER;
+    public float GEOMANCER;
+    public float NECROMANCER;
+    public float AEROTHURGE;
+    public float HYDROSOPHIST;
+
+    public bool Reflect(ref float[] elements, bool inject = true)
+    {
+        try
+        {
+            if (inject)
+            {
+                elements[(int)School.BERZERKER] = BERZERKER;
+                elements[(int)School.WARRIOR] = WARRIOR;
+                elements[(int)School.MONK] = MONK;
+                elements[(int)School.RANGER] = RANGER;
+                elements[(int)School.ROGUE] = ROGUE;
+                elements[(int)School.PYROMANCER] = PYROMANCER;
+                elements[(int)School.GEOMANCER] = GEOMANCER;
+                elements[(int)School.NECROMANCER] = NECROMANCER;
+                elements[(int)School.AEROTHURGE] = AEROTHURGE;
+                elements[(int)School.HYDROSOPHIST] = HYDROSOPHIST;
+            }
+            else
+            {
+                BERZERKER = elements[(int)School.BERZERKER];
+                WARRIOR = elements[(int)School.WARRIOR];
+                MONK = elements[(int)School.MONK];
+                RANGER = elements[(int)School.RANGER];
+                ROGUE = elements[(int)School.ROGUE];
+                PYROMANCER = elements[(int)School.PYROMANCER];
+                GEOMANCER = elements[(int)School.GEOMANCER];
+                NECROMANCER = elements[(int)School.NECROMANCER];
+                AEROTHURGE = elements[(int)School.AEROTHURGE];
+                HYDROSOPHIST = elements[(int)School.HYDROSOPHIST];
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
 [Serializable]
 public struct EXPpackage
 {
+    public EXPreflection Reflection;
     public float[] Experience;
-    public EXPpackage(int count)
+
+    public EXPpackage(int skillCount)
     {
-        Experience = new float[count];
+        Experience = new float[skillCount];
+        Reflection = new EXPreflection();
+    }
+    public bool Clone(EXPpackage source)
+    {
+        if (source.Experience == null || source.Experience.Length != CharacterMath.STATS_SKILLS_COUNT)
+            return false;
+
+        Reflection = source.Reflection;
+        Experience = new float[CharacterMath.STATS_SKILLS_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            Experience[i] = source.Experience[i];
+
+        return true;
+    }
+    public void Initialize(bool inject = true)
+    {
+        Experience = new float[CharacterMath.STATS_SKILLS_COUNT];
+        Reflection.Reflect(ref Experience, inject);
+    }
+}
+public enum School
+{
+    BERZERKER,
+    WARRIOR,
+    MONK,
+    RANGER,
+    ROGUE,
+    PYROMANCER,
+    GEOMANCER,
+    NECROMANCER,
+    AEROTHURGE,
+    HYDROSOPHIST
+}
+[Serializable]
+public struct LVLreflection
+{
+    public int BERZERKER;
+    public int WARRIOR;
+    public int MONK;
+    public int RANGER;
+    public int ROGUE;
+    public int PYROMANCER;
+    public int GEOMANCER;
+    public int NECROMANCER;
+    public int AEROTHURGE;
+    public int HYDROSOPHIST;
+
+    public bool Reflect(ref int[] elements, bool inject = true)
+    {
+        try
+        {
+            if (inject)
+            {
+                elements[(int)School.BERZERKER] = BERZERKER;
+                elements[(int)School.WARRIOR] = WARRIOR;
+                elements[(int)School.MONK] = MONK;
+                elements[(int)School.RANGER] = RANGER;
+                elements[(int)School.ROGUE] = ROGUE;
+                elements[(int)School.PYROMANCER] = PYROMANCER;
+                elements[(int)School.GEOMANCER] = GEOMANCER;
+                elements[(int)School.NECROMANCER] = NECROMANCER;
+                elements[(int)School.AEROTHURGE] = AEROTHURGE;
+                elements[(int)School.HYDROSOPHIST] = HYDROSOPHIST;
+            }
+            else
+            {
+                BERZERKER = elements[(int)School.BERZERKER];
+                WARRIOR = elements[(int)School.WARRIOR];
+                MONK = elements[(int)School.MONK];
+                RANGER = elements[(int)School.RANGER];
+                ROGUE = elements[(int)School.ROGUE];
+                PYROMANCER = elements[(int)School.PYROMANCER];
+                GEOMANCER = elements[(int)School.GEOMANCER];
+                NECROMANCER = elements[(int)School.NECROMANCER];
+                AEROTHURGE = elements[(int)School.AEROTHURGE];
+                HYDROSOPHIST = elements[(int)School.HYDROSOPHIST];
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
 [Serializable]
 public struct LVLpackage
 {
+    LVLreflection Reflection;
     public int[] Levels;
-    public LVLpackage(int count)
+
+    public LVLpackage(int skillCount)
     {
-        Levels = new int[count];
+        Levels = new int[skillCount];
+        Reflection = new LVLreflection();
+    }
+    public bool Clone(LVLpackage source)
+    {
+        if (source.Levels == null || source.Levels.Length != CharacterMath.STATS_SKILLS_COUNT)
+            return false;
+
+        Reflection = source.Reflection;
+        Levels = new int[CharacterMath.STATS_SKILLS_COUNT];
+        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            Levels[i] = source.Levels[i];
+
+        return true;
+    }
+    public void Initialize(bool inject = true)
+    {
+        Levels = new int[CharacterMath.STATS_SKILLS_COUNT];
+        Reflection.Reflect(ref Levels, inject);
     }
 }
 [Serializable]

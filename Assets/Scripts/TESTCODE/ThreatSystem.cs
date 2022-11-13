@@ -56,11 +56,11 @@ public class ResCondition : ThreatCondition, IthreatSingleCondition
         if (character == null)
             return 0;
 
-        if (character.Resistances.Elements == null ||
-            character.Resistances.Elements.Length != CharacterMath.STATS_ELEMENT_COUNT)
+        if (character.CurrentResistances.Elements == null ||
+            character.CurrentResistances.Elements.Length != CharacterMath.STATS_ELEMENT_COUNT)
             return 0;
 
-        float output = character.Resistances.Elements[(int)Target] / RampValue;
+        float output = character.CurrentResistances.Elements[(int)Target] / RampValue;
         output = RampUp ? output : 1 - output;
         return (int)(ThreatValue * output);
     }
@@ -161,7 +161,7 @@ public class TargettedCondition : ThreatCondition, IthreatSingleCondition
 public struct ThreatAction
 {
     public int Threshold;
-    public CharacterAbility Ability;
+    public ProcAbility Ability;
 }
 public class ThreatProfile
 {

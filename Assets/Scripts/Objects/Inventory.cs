@@ -6,18 +6,18 @@ using UnityEngine;
 [System.Serializable]
 public class Inventory
 {
-    public List<ItemWrapper> Items;
+    public List<ItemObject> Items;
     public int MaxCount;
 
     public Inventory(int count = CharacterMath.PARTY_INVENTORY_MAX)
     {
-        Items = new List<ItemWrapper>();
+        Items = new List<ItemObject>();
     }
     #region LOOTING
     public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
     {
-        if (loot.Inventory.Items[containerIndex] is StackableWrapper &&
-            PushItemIntoStack((StackableWrapper)loot.Inventory.Items[containerIndex]))
+        if (loot.Inventory.Items[containerIndex] is Stackable &&
+            PushItemIntoStack((Stackable)loot.Inventory.Items[containerIndex]))
         {
             loot.Inventory.RemoveIndexFromInventory(containerIndex);
             return true;
@@ -34,24 +34,24 @@ public class Inventory
     #endregion
 
     #region INVENTORY
-    public bool PushItemIntoStack(StackableWrapper stackItem)
+    public bool PushItemIntoStack(Stackable stackItem)
     {
         int stackIndex = Items.FindIndex(x =>
-        x is StackableWrapper &&
+        x is Stackable &&
         x.Name == stackItem.Name);
 
         if (stackIndex == -1) // Not Found
             return false;
 
-        StackableWrapper stackTarget = (StackableWrapper)Items[stackIndex];
-        if (stackTarget.Item.MaxQuantity - stackTarget.CurrentQuantity > stackItem.CurrentQuantity)
+        Stackable stackTarget = (Stackable)Items[stackIndex];
+        if (stackTarget.MaxQuantity - stackTarget.CurrentQuantity > stackItem.CurrentQuantity)
         {
 
         } // Move Whole Stack
 
         return true;
     }
-    public bool PushItemIntoInventory(ItemWrapper input, int inventoryIndex = 0)
+    public bool PushItemIntoInventory(ItemObject input, int inventoryIndex = 0)
     {
         if (Items.Count >= MaxCount)
             return false;
@@ -59,21 +59,21 @@ public class Inventory
         Items.Insert(inventoryIndex, input);
         return true;
     }
-    public ItemWrapper RemoveIndexFromInventory(int inventoryIndex)
+    public ItemObject RemoveIndexFromInventory(int inventoryIndex)
     {
-        ItemWrapper output = Items[inventoryIndex];
+        ItemObject output = Items[inventoryIndex];
         Items.RemoveAt(inventoryIndex);
         return output;
     }
-    public ItemWrapper SwapItemSlots(ItemWrapper input, int InventoryIndex)
+    public ItemObject SwapItemSlots(ItemObject input, int InventoryIndex)
     {
-        ItemWrapper output = Items[InventoryIndex];
+        ItemObject output = Items[InventoryIndex];
         Items[InventoryIndex] = input;
         return output;
     }
     public bool TransferItem(Inventory targetInventory, int inventoryIndex, int targetIndex = 0)
     {
-        if (targetInventory.PushItemIntoInventory(Items[inventoryIndex]))
+        if (targetInventory.PushItemIntoInventory(Items[inventoryIndex], targetIndex))
         {
             Items[inventoryIndex] = null;
             return true;

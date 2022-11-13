@@ -11,7 +11,6 @@ public enum AnimatorType
     BIRD,
     FISH
 }
-
 public enum EquipSlot
 {
     HEAD,
@@ -29,10 +28,8 @@ public enum EquipSlot
 public class Character : Pawn, Interaction
 {
     #region VARS
-
-    [Header("Character Defs")]
     [Header("==== CHARACTER CLASS ====")]
-    public int ID;
+    public CharacterSheet Sheet;
 
     [Header("Rendering")]
     public CharacterRender Render;
@@ -41,16 +38,16 @@ public class Character : Pawn, Interaction
     public float IntentRight;
     public bool bIntent;
 
-    [Header("Character Stats")]
-    public StatPackage CurrentStats;
-    public StatPackage MaximumStatValues;
-    public ElementPackage Resistances;
+    [Header("Stats")]
+    public RawStatPackage BaseStats;
+    public RawStatPackage CurrentStats;
+    public RawStatPackage SustainedStatValues;
+    public RawStatPackage MaximumStatValues;
+    public ElementPackage BaseResistances;
+    public ElementPackage CurrentResistances;
 
-    public CharacterSheet Sheet;
-    public List<CharacterAbility> Abilities;
-    public List<Effect> Effects;
-
-    [Header("Character Logic")]
+    [Header("Logic")]
+    public int ID;
     public bool bIsPaused;
     public bool bIsSpawn;
     public bool bTimedSpawn;
@@ -58,6 +55,10 @@ public class Character : Pawn, Interaction
     public float SpawnTimer;
     public float ChannelTimer;
 
+    [Header("References")]
+    public List<Character> AOE_buffer;
+    public List<CharacterAbility> Abilities;
+    public List<BaseEffect> Risiduals;
     public Party CurrentParty;
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
@@ -65,10 +66,10 @@ public class Character : Pawn, Interaction
     public Inventory Inventory;
     public GameObject CharacterCanvas;
 
-    [Header("Character Slots")]
+    [Header("Slots")]
     public CharacterAbility[] AbilitySlots;
-    public EquipWrapper[] EquipmentSlots;
-    public RingWrapper[] RingSlots;
+    public Equipment[] EquipmentSlots;
+    public Ring[] RingSlots;
 
     [Header("Interaction")]
     public Interaction CurrentTargetInteraction;
@@ -87,13 +88,7 @@ public class Character : Pawn, Interaction
 
     public void UpdateAbilites()
     {
-        UpdateAbilityList();
         UpdateAbilitySlots();
-    }
-    public void InitializeCharacter()
-    {
-        InitializeCharacterSheet();
-        InitializePassiveRegen();
     }
 
     #region INTERACTION
@@ -106,7 +101,7 @@ public class Character : Pawn, Interaction
             CurrentTargetCharacter = (Character)CurrentTargetInteraction;
             return;
         }
-        
+
         if (CurrentTargetCharacter != null)
         {
             CurrentTargetCharacter = null;
@@ -148,90 +143,38 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region INITIALIZERS
-    void InitializeCharacterSheet()
+    public void InitializeCharacterSheet()
     {
         if (Sheet == null)
             return;
 
-        CurrentStats = new StatPackage();
-        CurrentStats.Init();
-        MaximumStatValues = new StatPackage();
-        MaximumStatValues.Init();
+        BaseStats = new RawStatPackage(Sheet);
+        MaximumStatValues.Clone(BaseStats);
+        CurrentStats.Clone(BaseStats);
 
-        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
-        {
-            float stat = CharacterMath.RAW_BASE[i] +
-                (CharacterMath.RAW_GROWTH[i] *
-                CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] *
-                Sheet.Level);
+        BaseResistances = new ElementPackage(Sheet);
+        CurrentResistances.Clone(BaseResistances);
 
-            CurrentStats.Stats[i] = stat;
-            MaximumStatValues.Stats[i] = stat;
-        }
-
-        Resistances = new ElementPackage();// CharacterMath.STATS_ELEMENT_COUNT);
-        Resistances.Init();
-
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-        {
-            Resistances.Elements[i] = CharacterMath.RES_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.RES_BASE[i] +
-                (CharacterMath.RES_GROWTH[i] * Sheet.Level));
-        }
-
-        //Debug.Log($"{Sheet.Name}/{name} : {CurrentStats.Stats.Length} : {MaximumStatValues.Stats.Length}");
-
-        UpdateAbilites();
+        Risiduals = new List<BaseEffect>();
+        RebuildAbilityList();
+        //UpdateAbilites();
     }
-    void InitializePassiveRegen()
-    {
-        Effects = new List<Effect>();
-
-        for (int i = 0; i < 3; i++)
-        {
-            float magnitude = CharacterMath.RAW_MUL_RACE[(int)Sheet.Race, i] * (CharacterMath.BASE_REGEN[i] + 
-                (CharacterMath.RAW_GROWTH[i] * Sheet.Level));
-
-            //Debug.Log($"{Sheet.Name} : REGEN {(RawStat)i} : {magnitude}");
-            Effects.Add(CreateRegen((RawStat)i, magnitude));
-        }
-    }
-    Effect CreateRegen(RawStat targetStat, float magnitude)
-    {
-        Effect regen = (Effect)ScriptableObject.CreateInstance("Effect");
-        regen.Name = $"{targetStat} REGEN";
-        regen.TargetStat = targetStat;
-        regen.Value = ValueType.FLAT;
-        regen.Action = EffectAction.DMG_HEAL;
-        regen.Duration = EffectDuration.SUSTAINED;
-        regen.ElementPack = new ElementPackage();
-        regen.ElementPack.Init();
-        regen.ElementPack.Elements[(int)Element.HEALING] = magnitude;
-
-        return regen;
-    }
-
-    #endregion
-
-    #region ABILITIES
-    void UpdateAbilitySlots()
-    {
-        for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
-            if (AbilitySlots[i] != null && Abilities.FindIndex(x => x.EquipID == AbilitySlots[i].EquipID) < 0)
-                AbilitySlots[i] = null;
-    }
-    void UpdateAbilityList()
+    void RebuildAbilityList()
     {
         Abilities.Clear();
+
+        if (Sheet.InnateAbilities != null)
+        foreach (CharacterAbility innate in Sheet.InnateAbilities)
+            innate.EquipAbility(this);
+
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
         {
             if (EquipmentSlots[i] == null)
                 continue;
 
-            for(int j = 0; j < EquipmentSlots[i].Equip.EquipAbilities.Length; j++)
-            {
-                Abilities.Add(EquipmentSlots[i].Equip.EquipAbilities[j].EquipAbility(this, EquipmentSlots[i].Equip));
-            }
+            for (int j = 0; j < EquipmentSlots[i].Abilities.Length; j++)
+                EquipmentSlots[i].Abilities[j].EquipAbility(this);
         }
 
         for (int i = 0; i < CharacterMath.RING_SLOT_COUNT; i++)
@@ -239,13 +182,10 @@ public class Character : Pawn, Interaction
             if (RingSlots[i] == null)
                 continue;
 
-            for (int j = 0; j < RingSlots[i].Equip.EquipAbilities.Length; j++)
-            {
-                Abilities.Add(RingSlots[i].Equip.EquipAbilities[j].EquipAbility(this, RingSlots[i].Equip));
-            }
+            for (int j = 0; j < RingSlots[i].Abilities.Length; j++)
+                RingSlots[i].Abilities[j].EquipAbility(this);
         }
     }
-
     #endregion
 
     #region EQUIPPING
@@ -259,132 +199,22 @@ public class Character : Pawn, Interaction
 
         if (inventoryIndex != -1)
         {
-            if (Inventory.Items[inventoryIndex] == null || !(Inventory.Items[inventoryIndex] is EquipWrapper))
+            if (inventoryIndex >= Inventory.Items.Count ||
+                inventoryIndex < 0)
                 return false;
 
-            EquipWrapper equip = (EquipWrapper)Inventory.Items[inventoryIndex];
-            bool check = false;
-
-            switch(equip)
-            {
-                case WearableWrapper:
-                    check = InventoryEquipWear(((Wearable)equip.Equip).Type, inventoryIndex);
-                    break;
-
-                case RingWrapper:
-                    check = InventoryEquipRing(inventoryIndex);
-                    break;
-
-                case OneHandWrapper:
-                    check = InventoryEquipOneHand(inventoryIndex);
-                    break;
-
-                case TwoHandWrapper:
-                    check = InventoryEquipTwoHand(inventoryIndex);
-                    break;
-
-                case OffHandWrapper:
-                    check = InventoryEquipOneHand(inventoryIndex, false);
-                    break;
-            }
-
-            if (check)
-            {
-                GameState.SceneMan.InstantiateHandEquip(equip, Render);
-                return true;
-            }
-        }
-
-        return false;
-    }
-    public bool InventoryEquipWear(EquipSlot equipSlot, int inventoryIndex)
-    {
-        if (EquipmentSlots[(int)equipSlot] == null)
-        {
-            EquipmentSlots[(int)equipSlot] =
-                (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return true;
-        }
-
-        EquipmentSlots[(int)equipSlot] = SwapEquipWithInventory(EquipmentSlots[(int)equipSlot], inventoryIndex);
-        return true;
-    }
-    public bool InventoryEquipOneHand(int inventoryIndex, bool main = true)
-    {
-        int IND = main ? (int)EquipSlot.MAIN : (int)EquipSlot.OFF;
-        int ind = main ? (int)EquipSlot.OFF : (int)EquipSlot.MAIN;
-
-        if (EquipmentSlots[IND] == null)
-        {
-            EquipmentSlots[IND] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-            return true;
-        }
-        if (EquipmentSlots[IND] != null)
-        {
-            if (EquipmentSlots[IND] is TwoHandWrapper)
-                EquipmentSlots[ind] = null;
-
-            EquipmentSlots[IND] =
-                SwapEquipWithInventory(EquipmentSlots[IND], inventoryIndex);
-            return true;
-        }
-        
-        return false;
-    }
-    public bool InventoryEquipTwoHand(int inventoryIndex)
-    {
-        if (EquipmentSlots[(int)EquipSlot.MAIN] == null && EquipmentSlots[(int)EquipSlot.OFF] == null) // none occupied
-        {
-            EquipmentSlots[(int)EquipSlot.MAIN] = (EquipWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-
-            EquipmentSlots[(int)EquipSlot.OFF] = EquipmentSlots[(int)EquipSlot.MAIN];
-            return true;
-        }
-        if (EquipmentSlots[(int)EquipSlot.MAIN] != null && EquipmentSlots[(int)EquipSlot.OFF] != null) // both occupied
-        {
-            if (Inventory.Items.Count == Inventory.MaxCount)
+            if (Inventory.Items[inventoryIndex] == null ||
+                !(Inventory.Items[inventoryIndex] is Equipment))
                 return false;
-            EquipmentSlots[(int)EquipSlot.MAIN] =
-                SwapEquipWithInventory(EquipmentSlots[(int)EquipSlot.MAIN], inventoryIndex);
-            Inventory.PushItemIntoInventory(EquipmentSlots[(int)EquipSlot.OFF]);
-
-            EquipmentSlots[(int)EquipSlot.OFF] = EquipmentSlots[(int)EquipSlot.MAIN];
-            return true;
         }
-        if (EquipmentSlots[(int)EquipSlot.MAIN] != null && EquipmentSlots[(int)EquipSlot.OFF] == null) // main occupied
-        {
-            EquipmentSlots[(int)EquipSlot.MAIN] =
-                SwapEquipWithInventory(EquipmentSlots[(int)EquipSlot.MAIN], inventoryIndex);
 
-            EquipmentSlots[(int)EquipSlot.OFF] = EquipmentSlots[(int)EquipSlot.MAIN];
-            return true;
-        }
-        if (EquipmentSlots[(int)EquipSlot.MAIN] == null && EquipmentSlots[(int)EquipSlot.OFF] != null) // off occupied
-        {
-            EquipmentSlots[7] =
-                SwapEquipWithInventory(EquipmentSlots[(int)EquipSlot.OFF], inventoryIndex);
+        Equipment equip = (Equipment)Inventory.Items[inventoryIndex];
+        if (equip is Ring)
+            return equip.EquipToCharacter(this, RingSlots, inventoryIndex);
 
-            EquipmentSlots[(int)EquipSlot.MAIN] = EquipmentSlots[(int)EquipSlot.OFF];
-            return true;
-        }
-        Debug.Log("How did you get here? >.>");
-        return false;
+        return equip.EquipToCharacter(this, EquipmentSlots, inventoryIndex);
     }
-    public bool InventoryEquipRing(int inventoryIndex)
-    {
-        for (int i = 0; i < CharacterMath.RING_SLOT_COUNT;i++)
-        {
-            if (RingSlots[i] == null)
-            {
-                RingSlots[i] = (RingWrapper)Inventory.RemoveIndexFromInventory(inventoryIndex);
-                return true;
-            }
-        }
-
-        RingSlots[0] = (RingWrapper)Inventory.SwapItemSlots(RingSlots[0], inventoryIndex); // Default first index of rings
-        return true;
-    }
-    public bool AttemptEquipRemoval(EquipWrapper[] slotList, int equipIndex)
+    public bool AttemptEquipRemoval(Equipment[] slotList, int equipIndex)
     {
         if (slotList == null ||
             slotList.Length == 0)
@@ -394,38 +224,24 @@ public class Character : Pawn, Interaction
             equipIndex >= slotList.Length)
             return false;
 
-        EquipWrapper equip = slotList[equipIndex];
+        Equipment equip = slotList[equipIndex];
         if (equip == null)
             return false;
 
-        if (Inventory.PushItemIntoInventory(equip))
-        {
-            if (EquipmentSlots[equipIndex] is TwoHandWrapper)
-            {
-                EquipmentSlots[(int)EquipSlot.MAIN] = null;
-                EquipmentSlots[(int)EquipSlot.OFF] = null;
-            }
-            else
-                EquipmentSlots[equipIndex] = null;
-
-            if (equip.Instantiation != null)
-                Destroy(equip.Instantiation);
-
-            return true;
-        }
-        return false;
+        return equip.UnEquipFromCharacter(this);
     }
-    public EquipWrapper SwapEquipWithInventory(EquipWrapper input, int inventoryIndex)
+    public Equipment SwapEquipWithInventory(Equipment input, int inventoryIndex)
     {
         // Only worry about hand slots
-        if (input.Instantiation != null)
-            Destroy(input.Instantiation);
-        return (EquipWrapper)Inventory.SwapItemSlots(input, inventoryIndex);
+        if (input is Hand &&
+            ((Hand)input).Instantiation != null)
+            Destroy(((Hand)input).Instantiation);
+        return (Equipment)Inventory.SwapItemSlots(input, inventoryIndex);
     }
     #endregion
 
     #region COMBAT
-    public float GenerateStatModifier(ValueType type, RawStat stat)
+    public float GenerateRawStatValueModifier(ValueType type, RawStat stat)
     {
         float changeType = 0;
         switch (type)
@@ -452,145 +268,222 @@ public class Character : Pawn, Interaction
         }
         return changeType;
     }
-    public void ApplySingleEffect(Effect effect)
+    /*
+    public float GenerateResValueModifier(ValueType type, Element res)
     {
-        //Debug.Log($"{Root.name} : {effect.Name}");
-        if (effect.bIsImmune)
-            return;
-        //Debug.Log("yo0");
-        switch(effect.Action)
+        float changeType = 0;
+        switch (type)
         {
-            case EffectAction.DMG_HEAL:
-                //Debug.Log("yo1");
-                ApplyDamage(effect);
+            case ValueType.NONE:
+                changeType = 0;
                 break;
 
-            case EffectAction.SPAWN:
+            case ValueType.FLAT:
+                changeType = 1;
                 break;
 
-            case EffectAction.CROWD_CONTROL:
+            case ValueType.PERC_CURR:
+                changeType = CurrentResistances.Elements[(int)res] / 100;
+                break;
+
+                // lets try sumthin saucy... perc_max & perc_min give bonus res based on characters relative health proportions
+
+            case ValueType.PERC_MAX:
+                changeType = MaximumStatValues.Stats[(int)RawStat.HEALTH] / 100;
+                //changeType = (CurrentResistances.Elements[(int)res] - BaseResistances.Elements[(int)res]) / 100;
+                break;
+
+            case ValueType.PERC_MISS:
+                changeType = (MaximumStatValues.Stats[(int)RawStat.HEALTH] - CurrentStats.Stats[(int)RawStat.HEALTH]) / 100;
+                //changeType = (MaximumStatValues.Stats[(int)stat] - CurrentStats.Stats[(int)stat]) / 100;
                 break;
         }
+        return changeType;
     }
-    public void ApplyRisidualEffect(Effect mod)
-    {
-        Effect modInstance = (Effect)ScriptableObject.CreateInstance("Effect");
-        modInstance.CloneEffect(mod);
-
-        switch (modInstance.Action)
-        {
-            //case EffectAction.CROWD_CONTROL:
-            //    break;
-
-            case EffectAction.RES_ADJ:
-                break;
-
-            case EffectAction.STAT_ADJ:
-                break;
-        }
-
-        Effects.Add(modInstance);
-    }
-    void ApplyDamage(Effect damage)
-    {
-        if (CheckDamageImmune(damage.TargetStat))
-            return;
-
-        float totalValue = 0;
-        float changeType = GenerateStatModifier(damage.Value, damage.TargetStat);
-
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-        {
-            if (CheckElementalImmune((Element)i))
-                continue;
-
-            float change = (changeType * damage.ElementPack.Elements[i]) * (1 - (Resistances.Elements[i] / (Resistances.Elements[i] + CharacterMath.RES_PRIME_DENOM)));
-            totalValue += (Element)i == Element.HEALING ? -change : change; // Everything but healing
-        }
-
-        if (totalValue == 0)
-            return;
-
-        CurrentStats.Stats[(int)damage.TargetStat] -= totalValue;
-        CurrentStats.Stats[(int)damage.TargetStat] =
-            CurrentStats.Stats[(int)damage.TargetStat] <= MaximumStatValues.Stats[(int)damage.TargetStat] ?
-            CurrentStats.Stats[(int)damage.TargetStat] : MaximumStatValues.Stats[(int)damage.TargetStat];
-        CurrentStats.Stats[(int)damage.TargetStat] =
-            CurrentStats.Stats[(int)damage.TargetStat] >= 0 ?
-            CurrentStats.Stats[(int)damage.TargetStat] : 0;
-
-        // Debugging
-        bAssetUpdate = true;
-
-        switch (damage.TargetStat)
-        {
-            case RawStat.HEALTH:
-                if (totalValue > 0)
-                    DebugState = DebugState.LOSS_H;
-                break;
-
-            case RawStat.MANA:
-                if (totalValue > 0)
-                    DebugState = DebugState.LOSS_M;
-                break;
-
-            case RawStat.SPEED:
-
-                break;
-
-            case RawStat.STAMINA:
-                if (totalValue > 0)
-                    DebugState = DebugState.LOSS_S;
-                break;
-        }
-    }
-    public void UpdateResAdjust(Effect adjust, bool apply = true)
-    {
-        for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-        {
-            float change = adjust.ElementPack.Elements[i];
-            change = apply ? change : -change;
-            Resistances.Elements[i] += change;
-        }
-    }
-    public void UpdateStatAdjust(Effect adjust, bool apply = true)
-    {
-        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
-        {
-            float change = adjust.StatAdjustPack.Stats[i];
-            change = apply ? change : -change;
-            MaximumStatValues.Stats[i] += change;
-        }
-    }
+    */
     public bool CheckCCstatus(CCstatus status)
     {
-        return Effects.Find(x => x.Action == EffectAction.CROWD_CONTROL &&
-                                 x.TargetCCstatus == status) != null;
+        return Risiduals.Find(x => x is CrowdControlEffect &&
+                                 ((CrowdControlEffect)x).TargetCCstatus == status) != null;
     }
     public bool CheckCCimmune(CCstatus status)
     {
-        return Effects.Find(x => x.Action == EffectAction.CROWD_CONTROL &&
-                                 x.bIsImmune &&
-                                 x.TargetCCstatus == status) != null;
+        return Risiduals.Find(x => x is ImmuneEffect &&
+                                 ((ImmuneEffect)x).TargetCCstatus == status) != null;
     }
-    public bool CheckElementalImmune(Element element)
+    /*public bool CheckElementalImmune(Element element)
     {
-        return Effects.Find(x => x.Action == EffectAction.RES_ADJ &&
+        return Risiduals.Find(x => x.Action == EffectAction.RES_ADJ &&
                                  x.bIsImmune &&
                                  x.TargetElement == element) != null;
-    }
+    }*/
     public bool CheckDamageImmune(RawStat stat)
     {
-        return Effects.Find(x => x.Action == EffectAction.DMG_HEAL &&
-                                 x.bIsImmune &&
-                                 x.TargetStat == stat) != null;
+        return Risiduals.Find(x => x is InvulnerableEffect &&
+                                 ((InvulnerableEffect)x).TargetStat == stat) != null;
+    }
+    public bool CheckAllegiance(Character target)
+    {
+        if (Sheet == null)
+            return false;
+
+        if (target == null ||
+            target.Sheet == null)
+            return false;
+
+        return Sheet.Faction == target.Sheet.Faction;
+    }
+    public bool AttemptAbility(int abilityIndex)
+    {
+        CharacterAbility call = AbilitySlots[abilityIndex];
+        if (call == null) // Am I a joke to you?
+            return false;
+
+        AttemptAbility(call);
+        return true;
+    }
+    public bool AttemptAbility(CharacterAbility call)
+    {
+        float costModifier = GenerateRawStatValueModifier(call.CostType, call.CostTarget);
+
+        if (!CheckCanCastAbility(call, costModifier))
+            return false;
+
+        switch (call)
+        {
+            case ProcAbility:
+                return UseTargettedAbility((ProcAbility)call, costModifier);
+
+            case ToggleAbility:
+                return UseTargettedAbility((ToggleAbility)call, costModifier);
+
+            case SummonAbility:
+                return UseSummonAbility((SummonAbility)call, costModifier);
+        }
+
+        Debug.Log("Unrecognized Ability sub-class");
+        return false;
+    }
+    public bool CheckCanCastAbility(CharacterAbility call, float costModifier)
+    {
+        // Add Global Cooldown
+
+        if (call.CD_Timer > 0) // Check Cooldown
+            return false;
+
+        switch (call.School) // Check CC
+        {
+            case School.BERZERKER:
+            case School.WARRIOR:
+            case School.RANGER:
+            case School.ROGUE:
+                if (CheckCCstatus(CCstatus.UN_ARMED))
+                    return false;
+                break;
+
+            case School.PYROMANCER:
+            case School.GEOMANCER:
+            case School.NECROMANCER:
+            case School.AEROTHURGE:
+            case School.HYDROSOPHIST:
+                if (CheckCCstatus(CCstatus.SILENCED))
+                    return false;
+                break;
+
+            case School.MONK:
+                if (CheckCCstatus(CCstatus.DRUNK))
+                    return false;
+                break;
+        }
+
+        if (call.CostValue * costModifier > CurrentStats.Stats[(int)call.CostTarget])
+            return false; // Check Cost
+
+        if (call.CastRange > Vector3.Distance(Root.position, CurrentTargetCharacter.Root.position))
+            return false; // Check Cast Range
+
+        return true; // Good to do things Sam!
+    }
+    bool UseTargettedAbility(EffectAbility call, float costModifier)
+    {
+        if (call.AOE_Range == 0)
+        {
+            switch (call.AbilityTarget)
+            {
+                case TargetType.SELF:
+                    SpendResource(call, costModifier);
+                    call.UseAbility(this);
+                    return true;
+
+                case TargetType.ALLY:
+                    if (!CheckAllegiance(CurrentTargetCharacter))
+                        return false;
+                    break;
+
+                case TargetType.ENEMY:
+                    if (CheckAllegiance(CurrentTargetCharacter))
+                        return false;
+                    break;
+            }
+            SpendResource(call, costModifier);
+            call.UseAbility(CurrentTargetCharacter);
+            return true;
+        }
+        if (call.AOE_Range != 0)
+        {
+            AOEtargetting(ref AOE_buffer, call, GameState.CharacterMan.CharacterPool);
+            if (AOE_buffer.Count < 1)
+                return false;
+            foreach (Character target in AOE_buffer)
+                call.UseAbility(target);
+        }
+        /*if (call.AOE_Range < 0)
+        {
+            Debug.Log("Negative AOE range!   >:| ");
+            return false;
+        }*/
+
+        return true;
+    }
+    bool UseSummonAbility(SummonAbility call, float modifier)
+    {
+        return false;
+    }
+    void SpendResource(CharacterAbility call, float costModifier)
+    {
+        CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * costModifier;
+
+        if (call is ToggleAbility)
+            SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * costModifier;
+
+        else
+            call.SetCooldown();
+    }
+    void AOEtargetting(ref List<Character> AOEcandidates, EffectAbility call, List<Character> pool)
+    {
+        AOEcandidates.Clear();
+
+        if (pool == null)
+            return;
+
+        foreach (Character target in pool)
+        {
+            if (call.AbilityTarget == TargetType.ALLY && !CheckAllegiance(target))
+                continue;
+
+            if (call.AbilityTarget == TargetType.ENEMY && CheckAllegiance(target))
+                continue;
+
+            if (Vector3.Distance(target.Root.position, Root.position) <= Math.Abs(call.AOE_Range))
+                AOEcandidates.Add(target);
+        }
     }
     #endregion
 
     #region UPDATES
     void UpdateLife() // Get a life...
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
         {
             CurrentStats.Stats[i] = (CurrentStats.Stats[i] < 0) ? 0 : CurrentStats.Stats[i];
             CurrentStats.Stats[i] = (CurrentStats.Stats[i] > MaximumStatValues.Stats[i]) ? MaximumStatValues.Stats[i] : CurrentStats.Stats[i];
@@ -598,7 +491,7 @@ public class Character : Pawn, Interaction
 
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
-            Effects.Add(new Effect("Death", CCstatus.DEAD));
+            Risiduals.Add(new CrowdControlEffect("Death", CCstatus.DEAD));
             bAssetUpdate = true;
             DebugState = DebugState.DEAD;
             //Source.GetComponent<Collider>().enabled = false;
@@ -610,29 +503,69 @@ public class Character : Pawn, Interaction
             }
         }
     }
-    void UpdateCooldowns()
+    public void UpdateResAdjust()
+    {
+        CurrentResistances.Clone(BaseResistances);
+
+        foreach (ResistanceEffect adjust in Risiduals)
+        {
+            float resValueModifier = GenerateRawStatValueModifier(adjust.Value, RawStat.HEALTH);
+
+            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
+            {
+                float change = adjust.AmpedResAdjustments.Elements[i] * resValueModifier;
+                CurrentResistances.Elements[i] += change;
+            }
+        }
+    }
+    public void UpdateStatAdjust()
+    {
+        MaximumStatValues.Clone(BaseStats);
+
+        foreach (MaxStatEffect adjust in Risiduals)
+        {
+            for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
+            {
+                float statValueModifier = GenerateRawStatValueModifier(adjust.Value, (RawStat)i);
+                float change = adjust.AmpedStatAdjustPack.Stats[i] * statValueModifier;
+                MaximumStatValues.Stats[i] += change;
+            }
+        }
+    }
+    void UpdateAbilitySlots()
+    {
+        for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
+            if (AbilitySlots[i] != null && Abilities.Find(x => x == AbilitySlots[i]) == null)
+                AbilitySlots[i] = null;
+    }
+    void UpdateAbilityCooldowns()
     {
         for (int i = 0; i < AbilitySlots.Length; i++)
             if (AbilitySlots[i] != null)
                 AbilitySlots[i].UpdateCooldown();
     }
+    void UpdatePassives()
+    {
+        foreach (CharacterAbility ability in Abilities)
+        {
+            ability.UpdatePassiveTimer();
+        }
+    }
     void UpdateRisidualEffects()
     {
-        for (int i = Effects.Count - 1; i > -1; i--)
+        foreach (BaseEffect risidual in Risiduals)
+            risidual.ApplySingleEffect(this);
+    }
+    void UpdateAdjustments()
+    {
+        MaximumStatValues.Clone(BaseStats);
+
+        foreach (MaxStatEffect statAdjust in Risiduals)
         {
-            //Debug.Log($"{Root.name} : {Effects[i].Name}");
-            //Effect risidual = character.Effects[i];
-            if (Effects[i].Duration == EffectDuration.TIMED)
+            for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
             {
-                Effects[i].Timer -= GlobalConstants.TIME_SCALE;
-                if (Effects[i].Timer <= 0)
-                {
-                    Effects.RemoveAt(i);
-                    continue;
-                }
+                //MaximumStatValues.Stats[i] += (GenerateStatValueModifier(statAdjust.Value,  ) * statAdjust.StatAdjustPack.Stats[i]);
             }
-            //character.Effects[i] = risidual;
-            ApplySingleEffect(Effects[i]);
         }
     }
     void UpdateAssetTimer()
@@ -684,7 +617,7 @@ public class Character : Pawn, Interaction
         }
 
         AssetTimer = GlobalConstants.TIME_BLIP;
-        bAssetTimer = !(DebugState == DebugState.DEFAULT 
+        bAssetTimer = !(DebugState == DebugState.DEFAULT
                      || DebugState == DebugState.DEAD);
         bAssetUpdate = false;
     }
@@ -707,18 +640,11 @@ public class Character : Pawn, Interaction
             Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, 0);
             Render.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, 0);
             return;
-        }         
-        
+        }
+
         Render.MyAnimator.SetFloat(GlobalConstants.ANIM_HORZ_WALK, IntentRight);
         Render.MyAnimator.SetFloat(GlobalConstants.ANIM_VERT_WALK, IntentForward);
         bIntent = false;
-    }
-    void UpdateCanvas()
-    {
-        if (CharacterCanvas == null)
-            return;
-
-
     }
     #endregion
 
@@ -736,7 +662,8 @@ public class Character : Pawn, Interaction
 
         UpdateRisidualEffects();
         UpdateLife();
-        UpdateCooldowns();
+        UpdatePassives();
+        UpdateAbilityCooldowns();
         UpdateAnimation();
         UpdateAssetTimer();
         UpdateAssets();

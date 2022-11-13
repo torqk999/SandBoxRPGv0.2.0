@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
 [System.Serializable]
 public class ItemWrapper
 {
@@ -38,15 +39,13 @@ public class EquipWrapper : ItemWrapper
 [System.Serializable]
 public class RingWrapper : EquipWrapper
 {
-    //public Ring Ring;
     public int CurrentSlotIndex;
 
     public RingWrapper(Ring ring, int equipId = -1, bool inject = false)
     {
         Name = ring.Name;
         Sprite = ring.Sprite;
-        Equip = ring.CloneRing(equipId, inject);
-        //Equip = ring;
+        Equip = ring.GenerateCloneEquip(equipId, inject);
         CurrentSlotIndex = -1;
     }
 
@@ -58,14 +57,11 @@ public class RingWrapper : EquipWrapper
 [System.Serializable]
 public class WearableWrapper : EquipWrapper
 {
-    //public Wearable Wear;
-
     public WearableWrapper(Wearable wear, int equipId = -1, bool inject = false)
     {
         Name = wear.Name;
         Sprite = wear.Sprite;
-        Equip = wear.CloneWear(equipId, inject);
-        //Equip = Wear;
+        Equip = wear.GenerateCloneEquip(equipId, inject);
     }
 
     public WearableWrapper CloneWearWrapper()
@@ -76,14 +72,11 @@ public class WearableWrapper : EquipWrapper
 [System.Serializable]
 public class OneHandWrapper : EquipWrapper
 {
-    //public OneHand Hand;
-
     public OneHandWrapper(OneHand oneHand, int equipId = -1, bool inject = false)
     {
         Name = oneHand.Name;
         Sprite = oneHand.Sprite;
-        Equip = oneHand.CloneOneHand(equipId, inject);
-        //Equip = Hand;
+        Equip = oneHand.GenerateCloneEquip(equipId, inject);
     }
 
     public OneHandWrapper CloneOneHandWrapper()
@@ -94,14 +87,11 @@ public class OneHandWrapper : EquipWrapper
 [System.Serializable]
 public class OffHandWrapper : EquipWrapper
 {
-    //public OffHand Hand;
-
     public OffHandWrapper(OffHand offHand, int equipId = -1, bool inject = false)
     {
         Name = offHand.Name;
         Sprite = offHand.Sprite;
-        Equip = offHand.CloneOffHand(equipId, inject);
-        //Equip = Hand;
+        Equip = offHand.GenerateCloneEquip(equipId, inject);
     }
 
     public OffHandWrapper CloneOffHandWrapper()
@@ -112,14 +102,11 @@ public class OffHandWrapper : EquipWrapper
 [System.Serializable]
 public class TwoHandWrapper : EquipWrapper
 {
-    //public TwoHand Hand;
-
     public TwoHandWrapper(TwoHand twoHand, int equipId = -1, bool inject = false)
     {
         Name = twoHand.Name;
         Sprite = twoHand.Sprite;
-        Equip = twoHand.CloneTwoHand(equipId, inject);
-        //Equip = Hand;
+        Equip = twoHand.GenerateCloneEquip(equipId, inject);
     }
 
     public TwoHandWrapper CloneTwoHandWrapper()
@@ -127,3 +114,18 @@ public class TwoHandWrapper : EquipWrapper
         return new TwoHandWrapper((TwoHand)Equip);
     }
 }
+public class ShieldWrapper : EquipWrapper
+{
+    public ShieldWrapper(Shield shield, int equipId = -1, bool inject = false)
+    {
+        Name = shield.Name;
+        Sprite = shield.Sprite;
+        Equip = shield.GenerateCloneEquip(equipId, inject);
+    }
+
+    public ShieldWrapper CloneShieldWrapper()
+    {
+        return new ShieldWrapper((Shield)Equip);
+    }
+}
+*/

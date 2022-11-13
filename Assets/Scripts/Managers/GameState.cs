@@ -40,13 +40,22 @@ public class GameState : MonoBehaviour
     public bool bPauseMenuOpen;
     public bool bHUDactive;
     public bool bGameMenuOpen;
-    
+
     [Header("Generated Indices")]
+    public int ABILITY_INDEX;
     public int EQUIPMENT_INDEX;
 
     [Header("Dynamic References")]
     public List<Pawn> RigidBodyPawns;
 
+    public void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+         Application.Quit();
+#endif
+    }
     public void GamePause(bool toggle)
     {
         bPause = toggle;
@@ -63,11 +72,13 @@ public class GameState : MonoBehaviour
         UIman.PauseMenuCanvasNavigation((toggle) ? 0 : -1);
         UpdateRigidBodyPawns();
         CharacterMan.ToggleCharactersPauseState(bPause);
+        pController.bIsInPlay = !toggle;
+        pController.CursorToggle(toggle);
     }
     public void InteractWithContainer(GenericContainer container)
     {
         pController.targetContainer = container;
-        pController.ToggleCharacterPage(CharPage.Looting);
+        UIman.ToggleCharacterPage(CharPage.Looting);
     }
     void UpdateHUDstate()
     {
@@ -89,6 +100,7 @@ public class GameState : MonoBehaviour
     {
         try
         {
+            EQUIPMENT_INDEX = 1; // reserve zero for universal passive index
             UIman = (UIManager)GameObject.FindGameObjectWithTag("UI_MAN").GetComponent("UIManager");
             UIman.GameStateLinked = true;
             KeyMap.GenerateKeyMap();// Key-Sensitive action. Migrate later maybe?

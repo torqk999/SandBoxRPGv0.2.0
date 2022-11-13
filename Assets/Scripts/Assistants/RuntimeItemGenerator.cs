@@ -27,43 +27,7 @@ public class RuntimeItemGenerator : MonoBehaviour
         if (Character == null || Item == null)
             return;
 
-        switch(Item)
-        {
-            case OneHand:
-                Debug.Log("OneHand");
-                Character.Inventory.PushItemIntoInventory(new OneHandWrapper((OneHand)Item, GameState.EQUIPMENT_INDEX, true));
-                break;
-
-            case OffHand:
-                Debug.Log("OffHand");
-                Character.Inventory.PushItemIntoInventory(new OffHandWrapper((OffHand)Item, GameState.EQUIPMENT_INDEX, true));
-                break;
-
-            case TwoHand:
-                Debug.Log("TwoHand");
-                Character.Inventory.PushItemIntoInventory(new TwoHandWrapper((TwoHand)Item, GameState.EQUIPMENT_INDEX, true));
-                break;
-
-            case Ring:
-                Debug.Log("Ring");
-                Character.Inventory.PushItemIntoInventory(new RingWrapper((Ring)Item, GameState.EQUIPMENT_INDEX, true));
-                break;
-
-            case Wearable:
-                Debug.Log("Wearable");
-                Character.Inventory.PushItemIntoInventory(new WearableWrapper((Wearable)Item, GameState.EQUIPMENT_INDEX, true));
-                break;
-
-            case Stackable:
-                Debug.Log("Stackable");
-                Character.Inventory.PushItemIntoInventory(new StackableWrapper((Stackable)Item), STACK_COUNT);
-                break;
-
-            case ItemObject:
-                Debug.Log("ItemObject");
-                //Character.Inventory.PushItemIntoInventory(new ItemWrapper(Item);
-                break;
-        }
+        Character.Inventory.PushItemIntoInventory(Item.GenerateItem(GameState.EQUIPMENT_INDEX, true));
 
         if (Item is Equipment)
             GameState.EQUIPMENT_INDEX++;

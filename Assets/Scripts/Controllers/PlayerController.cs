@@ -63,7 +63,6 @@ public class PlayerController : CharacterController
     public int PawnIndex;
     public GenericContainer targetContainer;
 
-    //public Interaction CurrentInteraction;
     public ControlMode CurrentControlMode;
     public TacticalMode CurrentTacticalMode = TacticalMode.SELECT;
 
@@ -126,24 +125,15 @@ public class PlayerController : CharacterController
     {
 
     }
-    public void TogglePause(bool toggle)
+    public void CursorToggle(bool toggle)
     {
-        GameState.GamePause(toggle);
-        bIsInPlay = !toggle;
-        CursorToggle((toggle) ? true : (CurrentControlMode != ControlMode.TACTICAL) ? false : true);
-    }
-    public void QuitGame()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-         Application.Quit();
-#endif
-    }
-    public void ToggleCharacterPage(CharPage page)
-    {
-        GameState.UIman.UpdateGameMenuCanvasState(page);
-        TogglePlayStatus();
+        //CursorToggle(toggle ? true : (CurrentControlMode != ControlMode.TACTICAL) ? false : true);
+        if (toggle)
+            Cursor.lockState = CursorLockMode.None;
+        else
+            Cursor.lockState = CursorLockMode.Locked;
+
+        Cursor.visible = toggle;
     }
     public void InitialPawnControl()
     {
@@ -160,7 +150,7 @@ public class PlayerController : CharacterController
     #endregion
 
     #region INPUT
-    void TogglePlayStatus()
+    public void TogglePlayStatus()
     {
         bIsInPlay = GameState.UIman.CurrentPage == CharPage.None;
         CursorToggle(!bIsInPlay);
@@ -204,7 +194,7 @@ public class PlayerController : CharacterController
     {
         if (CheckAction(KeyAction.PAUSE) &&
             GameState.UIman.CurrentMenu != GameMenu.KEY_MAP)
-            TogglePause(!GameState.bPause);
+            GameState.GamePause(!GameState.bPause);
 
         if (GameState.bPause)
             return;
@@ -265,10 +255,10 @@ public class PlayerController : CharacterController
             CurrentCharacter.SwapInteractions();
         
         if (CheckAction(KeyAction.CHARACTER))
-            ToggleCharacterPage(CharPage.Character);
+            GameState.UIman.ToggleCharacterPage(CharPage.Character);
 
         if (CheckAction(KeyAction.SKILLS))
-            ToggleCharacterPage(CharPage.Skills);
+            GameState.UIman.ToggleCharacterPage(CharPage.Skills);
 
         if (CheckAction(KeyAction.CYCLE_TARGETS))
             CycleCharacterTargets();
@@ -474,15 +464,6 @@ public class PlayerController : CharacterController
         CurrentControlMode = CurrentPawn.ControlMode;
         CursorToggle((CurrentControlMode == ControlMode.TACTICAL) ? true : false);
     }
-    void CursorToggle(bool toggle)
-    {
-        if (toggle)
-            Cursor.lockState = CursorLockMode.None;
-        else
-            Cursor.lockState = CursorLockMode.Locked;
-
-        Cursor.visible = toggle;
-    }
     void JumpHome()
     {
         CurrentPawn.Root.position = CurrentPawn.DefPos;
@@ -562,7 +543,7 @@ public class PlayerController : CharacterController
     void AttemptAction(int abilityIndex)
     {
         Debug.Log("Attempting");
-        GameState.CharacterMan.AttemptAbility(abilityIndex, CurrentCharacter);
+        CurrentCharacter.AttemptAbility(abilityIndex);
     }
     public void UpdateInteractionTarget(Interaction target = null)
     {

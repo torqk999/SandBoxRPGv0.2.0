@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CharacterCanvas : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class CharacterCanvas : MonoBehaviour
     public Character Character;
 
     public Vector3 Offset;
-    public Text LevelText;
+    public TextMeshProUGUI LevelText;
     public Slider HealthBar;
     public Transform EffectContainer;
     public GameObject EffectImagePrefab;
@@ -18,12 +19,12 @@ public class CharacterCanvas : MonoBehaviour
 
     void CheckCharacterEffects()
     {
-        if (Character.Effects == null)
+        if (Character.Risiduals == null)
             return;
 
-        if (Character.Effects.Count != OldEffectsCount)
+        if (Character.Risiduals.Count != OldEffectsCount)
         {
-            OldEffectsCount = Character.Effects.Count;
+            OldEffectsCount = Character.Risiduals.Count;
             BuildEffectImages();
         }
     }
@@ -37,9 +38,10 @@ public class CharacterCanvas : MonoBehaviour
         }
             
 
-        foreach(Effect effect in Character.Effects)
+        foreach(BaseEffect effect in Character.Risiduals)
         {
             GameObject newEffectIcon = Instantiate(EffectImagePrefab, EffectContainer);
+            newEffectIcon.SetActive(true);
             Image newEffectImage = newEffectIcon.GetComponent<Image>();
             newEffectImage.sprite = effect.Sprite != null ? effect.Sprite : MissingSprite;
         }
@@ -60,15 +62,12 @@ public class CharacterCanvas : MonoBehaviour
         if (Character != null)
         {
             if (Character.Sheet != null)
-                LevelText.text = Character.Sheet.Level.ToString();
+                LevelText.text = $"{Character.Sheet.Name}\n Lvl: {Character.Sheet.Level}";
 
             if (Character.CurrentStats.Stats != null && Character.MaximumStatValues.Stats != null)
                 HealthBar.value = Character.CurrentStats.Stats[(int)RawStat.HEALTH] / Character.MaximumStatValues.Stats[(int)RawStat.HEALTH];
 
             CheckCharacterEffects();
         }
-            
-
-
     }
 }

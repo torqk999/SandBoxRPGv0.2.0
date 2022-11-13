@@ -9,6 +9,7 @@ public class Party : MonoBehaviour
     public Inventory PartyLoot;
     public Formation Formation;
     public Faction Faction;
+    //public Character CurrentTargetMember;
     public int CurrentMemberIndex;
 
     public Party()

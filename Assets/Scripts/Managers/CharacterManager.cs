@@ -15,6 +15,8 @@ public class CharacterManager : MonoBehaviour
     [Header("References")]
     public GameState GameState;
     public Transform CharacterPartyFolder;
+    
+    public GameObject CharacterPrefab;
     public GameObject CharCanvasPrefab;
 
     [Header("CharacterWardrobe")]
@@ -22,12 +24,14 @@ public class CharacterManager : MonoBehaviour
 
     [Header("Default Party Defs")]
     public Transform DefaultPartyPrefabs;
+    public Transform MobPrefabs;
     //public Transform DefaultPartyStart;
     public Formation DefaultPartyFormation;
 
     [Header("Logic")]
     public List<Character> CharacterPool;
     public List<Party> Parties;
+
     public int CurrentPartyIndex;
 
     #region POSSESSION
@@ -72,7 +76,7 @@ public class CharacterManager : MonoBehaviour
         return Parties[CurrentPartyIndex].Members[Parties[CurrentPartyIndex].CurrentMemberIndex];
     }
     #endregion
-
+    /*
     #region COMBAT
     public bool AttemptAbility(int abilityIndex, Character caller)
     {
@@ -80,61 +84,67 @@ public class CharacterManager : MonoBehaviour
         if (call == null) // Am I a joke to you?
             return false;
 
-        float modifier = caller.GenerateStatModifier(call.CostType, call.CostTarget);
+        float costModifier = caller.GenerateStatValueModifier(call.CostType, call.CostTarget);
 
-        if (!CheckAbility(call, caller, modifier))
+        if (!CheckAbility(call, caller, costModifier))
             return false;
 
-        return TargetAbility(call, caller, modifier);
+        switch(call)
+        {
+            case ProcAbility:
+                return TargettedAbility((ProcAbility)call, caller, costModifier);
+        }
+
+        Debug.Log("Unrecognized Ability sub-class");
+        return false;
     }
-    public bool CheckAbility(CharacterAbility call, Character caller, float modifier)
+    public bool CheckAbility(CharacterAbility call, Character caller, float costModifier)
     {
         if (call.CD_Timer > 0) // Check Cooldown
             return false;
 
-        switch(call.AbilityType) // Check CC
+        switch(call.School) // Check CC
         {
-            case AbilityType.ATTACK:
+            case AbilitySchool.ATTACK:
                 if (caller.CheckCCstatus(CCstatus.UN_ARMED))
                     return false;
                 break;
 
-            case AbilityType.SPELL:
+            case AbilitySchool.SPELL:
                 if (caller.CheckCCstatus(CCstatus.SILENCED))
                     return false;
                 break;
 
-            case AbilityType.POWER:
+            case AbilitySchool.POWER:
                 break;
         }
 
-        if (call.CostValue * modifier > caller.CurrentStats.Stats[(int)call.CostTarget])
+        if (call.CostValue * costModifier > caller.CurrentStats.Stats[(int)call.CostTarget])
+            return false;
+
+        if (call.CastRange > Vector3.Distance(caller.Root.position, caller.CurrentTargetCharacter.Root.position))
             return false;
 
         return true; // Good to do things Sam!
     }
-    bool TargetAbility(CharacterAbility call, Character caller, float modifier)
+    bool TargettedAbility(TargettedAbility call, Character caller, float modifier)
     {
-        switch (call.RangeType)
+        if (call.AOE_Range == 0)
         {
-            case RangeType.SELF:
-                ApplyAbilitySingle(caller, call);
-                break;
-
-            case RangeType.TARGET:
-                if (caller.CurrentTargetCharacter == null)
-                    return false;
-                if (Vector3.Distance(caller.CurrentTargetCharacter.Root.position, caller.Root.position) <= call.RangeValue)
-                    ApplyAbilitySingle(caller.CurrentTargetCharacter, call);
-                break;
-
-            case RangeType.AOE:
-                List<Character> targets = AOEtargetting(call, caller);
-                if (targets.Count < 1)
-                    return false;
-                foreach (Character target in targets)
-                    ApplyAbilitySingle(target, call);
-                break;
+            ApplyAbilitySingle(caller, call);
+        }
+        if (call.AOE_Range > 0)
+        {
+            List<Character> targets = AOEtargetting(call, caller);
+            if (targets.Count < 1)
+                return false;
+            foreach (Character target in targets)
+                ApplyAbilitySingle(target, call);
+        }
+        if(call.AOE_Range < 0)
+        {
+            Debug.Log("Negative AOE range!   >:| ");
+            return false;
         }
         UseAbility(call, caller, modifier);
         return true;
@@ -142,51 +152,46 @@ public class CharacterManager : MonoBehaviour
     void UseAbility(CharacterAbility call, Character caller, float modifier)
     {
         caller.CurrentStats.Stats[(int)call.CostTarget] -= call.CostValue * modifier;
-        call.SetCooldown();
+
+        if (call is PassiveAbility)
+            caller.SustainedStatValues.Stats[(int)call.CostTarget] += call.CostValue * modifier;
+
+        else
+            call.SetCooldown();
     }
-    List<Character> AOEtargetting(CharacterAbility call, Character caller)
+    List<Character> AOEtargetting(TargettedAbility call, Character caller)
     {
         List<Character> AOEcandidates = new List<Character>();
 
-
         foreach (Character target in CharacterPool)
         {
-            if (call.Target == TargetType.ALLY && target.Sheet.Faction != caller.Sheet.Faction)
+            if (call.AbilityTarget == TargetType.ALLY && target.Sheet.Faction != caller.Sheet.Faction)
                 continue;
 
-            if (call.Target == TargetType.ENEMY && target.Sheet.Faction == caller.Sheet.Faction)
+            if (call.AbilityTarget == TargetType.ENEMY && target.Sheet.Faction == caller.Sheet.Faction)
                 continue;
 
-            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.RangeValue)
+            if (Vector3.Distance(target.Root.position, caller.Root.position) <= call.AOE_Range)
                 AOEcandidates.Add(target);
         }
             
         return AOEcandidates;
     }
-    void ApplyAbilitySingle(Character target, CharacterAbility call)
+    void ApplyAbilitySingle(Character target, TargettedAbility call)
     {
         for (int i = 0; i < call.Effects.Length; i++)
         {
-            Effect mod = call.Effects[i];
+            BaseEffect effect = call.Effects[i];
 
-            switch (mod.Duration)
-            {
-                case EffectDuration.ONCE:
-                    target.ApplySingleEffect(call.Effects[i]);
-                    break;
+            if (effect.EquipID < 0 && (effect.DurationLength > 0) // Timed
+                || effect.EquipID > -1)                                       // Sustain or passive
+                target.AddRisidiualEffect(call.Effects[i], call.EquipID);
 
-                case EffectDuration.TIMED:
-                    target.ApplyRisidualEffect(call.Effects[i]);
-                    break;
-
-                case EffectDuration.SUSTAINED:
-                    target.ApplyRisidualEffect(call.Effects[i]);
-                    break;
-            }
+            target.ApplySingleEffect(call.Effects[i]);                            // First or only proc
         }
     }
     #endregion
-
+    */
     #region CHECK-UPS
     public void ToggleCharactersPauseState(bool bPause = false)
     {
@@ -203,20 +208,69 @@ public class CharacterManager : MonoBehaviour
 
     #endregion
 
+    #region WORLD GENERATION
+    public void SpawnPeeps(Transform partyStartLocation, Transform mobSpawnLocationFolder)
+    {
+        InitializeCharacterSheets();
+
+        /// CHECK THESE FIRST!!! ///
+        GameObject mobPrefab = MobPrefabs.GetChild(0).gameObject;
+        CurrentPartyIndex = 0;
+
+        CreateDefaultParty(partyStartLocation);
+        CreateCloneParty(mobPrefab, mobSpawnLocationFolder, Faction.BADDIES);
+
+        UpdatePartyFoes();
+    }
+    #endregion
+
     #region CHARACTER GENERATION
-    public void CreateLiteralParty(Transform partyPrefabFolder, Faction faction, Formation formation, Transform startPosition)
+    public void InitializeCharacterSheets()
+    {
+        if (DefaultPartyPrefabs == null)
+            return;
+
+        Debug.Log($"defaultCount: {DefaultPartyPrefabs.childCount}");
+
+        for (int i = 0; i < DefaultPartyPrefabs.childCount; i++)
+        {
+            Character nextChar = DefaultPartyPrefabs.GetChild(i).GetComponent<Character>();
+            if (nextChar == null || nextChar.Sheet == null)
+                continue;
+            nextChar.Sheet.Initialize(false);
+        }
+
+        if (MobPrefabs == null)
+            return;
+
+        Debug.Log($"mobCount: {MobPrefabs.childCount}");
+
+        for (int i = 0; i < MobPrefabs.childCount; i++)
+        {
+            Character nextChar = MobPrefabs.GetChild(i).GetComponent<Character>();
+            if (nextChar == null || nextChar.Sheet == null)
+                continue;
+            nextChar.Sheet.Initialize(false);
+        }
+    }
+    public void CreateDefaultParty(Transform startLocation = null)
+    {
+        CreateLiteralParty(DefaultPartyPrefabs, Faction.GOODIES,
+            DefaultPartyFormation, startLocation, false);
+    }
+    bool CreateLiteralParty(Transform partyPrefabFolder, Faction faction, Formation formation, Transform startPosition, bool fresh = true)
     {
         if (partyPrefabFolder == null)
         {
             Debug.Log("partyPrefabFolder null, no party generated");
-            return;
+            return false;
         }
 
         Party literalParty = GenerateParty(faction, formation);
 
         for (int i = 0; i < partyPrefabFolder.childCount; i++)
         {
-            Character newCharacter = GenerateCharacter(partyPrefabFolder.GetChild(i).gameObject, literalParty, startPosition);
+            Character newCharacter = GenerateCharacter(partyPrefabFolder.GetChild(i).gameObject, literalParty, startPosition, -1, fresh);
             if (newCharacter == null)
             {
                 Debug.Log("Literal Character generation failed");
@@ -228,9 +282,14 @@ public class CharacterManager : MonoBehaviour
         }
 
         Parties.Add(literalParty);
+        return true;
     }
-    public void CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction, Wardrobe wardrobe)
+    public bool CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction)
     {
+        if (mobPrefab == null ||
+            spawnPointFolder == null)
+            return false;
+
         Party cloneParty = GenerateParty(faction);
 
         for (int i = 0; i < spawnPointFolder.childCount; i++)
@@ -238,7 +297,7 @@ public class CharacterManager : MonoBehaviour
             if (!spawnPointFolder.GetChild(i).gameObject.activeSelf)
                 continue;
 
-            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i), wardrobe, i);
+            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i), i);
             if (newCharacter == null)
             {
                 Debug.Log("Clone Character generation failed");
@@ -251,6 +310,7 @@ public class CharacterManager : MonoBehaviour
         }
 
         Parties.Add(cloneParty);
+        return true;
     }
     Party GenerateParty(Faction faction, Formation formation = null, int startIndex = 0)
     {
@@ -271,29 +331,42 @@ public class CharacterManager : MonoBehaviour
 
         return newParty;
     }
-    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null, Wardrobe wardrobe = null, int index = -1, bool fresh = true)
+    Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null/*, Wardrobe wardrobe = null*/, int index = -1, bool fresh = true)
     {
         Character newCharacter = (Character)GameState.PawnMan.PawnGeneration(prefab, party.transform, spawnTransform);
         if (newCharacter == null)
             return null;
 
-        Character source = prefab.GetComponent<Character>();
+        Character sourceCharacter = prefab.GetComponent<Character>();
 
         if (index != -1)
             newCharacter.Root.name = $"{prefab.name} : {index}";
 
-        SetupSheet(newCharacter, source, index, fresh);
+        SetupSheet(newCharacter, sourceCharacter, index, fresh);
         SetupAI(newCharacter);
         SetupCharacterCanvas(newCharacter);
         SetupCharacter(newCharacter, party);
+        SetupRender(newCharacter);
 
-        if (wardrobe != null)
-            GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
+        //if (wardrobe != null)
+        //    GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
 
         CharacterPool.Add(newCharacter);
-
+        
         return newCharacter;
     }
+
+    private void SetupRender(Character newCharacter)
+    {
+        GameObject newRenderObject = Instantiate(CharacterPrefab, newCharacter.transform);
+        newRenderObject.SetActive(true);
+        CharacterRender newRender = newRenderObject.GetComponent<CharacterRender>();
+        newCharacter.Render = newRender;
+        newRender.MyCharacter = newCharacter;
+
+        // Need hand slot logic
+    }
+
     void EquipWardobe(Character character, Wardrobe wardrobe)
     {
 
@@ -321,27 +394,25 @@ public class CharacterManager : MonoBehaviour
         character.CurrentProximityInteractions = new List<Interaction>();
 
         // Slots
-        character.AbilitySlots = new CharacterAbility[CharacterMath.ABILITY_SLOTS];
-        character.EquipmentSlots = new EquipWrapper[CharacterMath.EQUIP_SLOTS_COUNT];
-        character.RingSlots = new RingWrapper[CharacterMath.RING_SLOT_COUNT];
+        character.AbilitySlots = new ProcAbility[CharacterMath.ABILITY_SLOTS];
+        character.EquipmentSlots = new Equipment[CharacterMath.EQUIP_SLOTS_COUNT];
+        character.RingSlots = new Ring[CharacterMath.RING_SLOT_COUNT];
 
         // Initialize
-        character.InitializeCharacter();
+        character.InitializeCharacterSheet();
     }
     void SetupSheet(Character character, Character source, int index, bool fresh)
     {
-        if (source == null)
+        if (source == null ||
+            source.Sheet == null)
             return;
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
-        if (source != null && source.Sheet != null)
-        {
-            character.Sheet.Clone(source.Sheet);
-            if (fresh)
-                character.Sheet.Fresh();
-        }
-
+        character.Sheet.Clone(source.Sheet);
+        if (fresh)
+            character.Sheet.Initialize();
+        
         if (index > -1)
             character.Sheet.Name += index.ToString();
     }

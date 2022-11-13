@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b49634b4c3f27c44a48644ebfb6b45d, type: 3}
+  m_Name: Dagger
+  m_EditorClassIdentifier: 
+  itemID: 0
+  Name: Dagger
+  Sprite: {fileID: 21300000, guid: aa1f529d0ca78eb49bd0013a22c1b1a7, type: 3}
+  Quality: 0
+  GoldValue: 0
+  Weight: 0
+  EquipSchool: 4
+  ClassType: 2
+  Abilities:
+  - {fileID: 11400000, guid: 159976e0345343249b4578cc91a5c082, type: 2}
+  EquipLevel: 3
+  EquipID: 0
+  SlotIndex: 0
+  SlotFamily: []
+  HandPosition: 0
+  BaseMaterial: 3
+  HandleMaterial: 2
+  Details: 
+  Instantiation: {fileID: 0}
+  Type: 0

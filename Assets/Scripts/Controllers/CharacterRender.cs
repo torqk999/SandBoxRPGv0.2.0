@@ -29,7 +29,14 @@ public enum GearType
     PLATE
 }
 
-public enum HandSource
+/*public enum HandSlot
+{
+    MAIN,
+    OFF,
+    SHIELD
+}*/
+
+public enum HandPosition
 {
     AXE,
     SWORD,
@@ -41,17 +48,7 @@ public enum HandSource
     SHIELD
 }
 
-public enum MaterialType
-{
-    FLESH,
-    HAIR,
-    WOOD,
-    IRON,
-    STEEL,
-    GOLD,
-    TRIM_AURA,
-    LEATHER
-}
+
 
 [Serializable]
 public class WardrobeProfile
@@ -67,8 +64,6 @@ public class GearProfile : WardrobeProfile
     public MaterialType MatType;
     public SkinnedMeshRenderer thisMesh;
 }
-
-
 public enum CharAnimationState
 {
     Idle,
@@ -86,28 +81,28 @@ public enum CharAnimation
     Poke,
     Self
 }
-public enum AnimationTarget
+/*public enum AnimationTarget
 {
     ElementalBall,
     ElementalArrow
-}
+}*/
 
 public class CharacterRender : MonoBehaviour
 {
-    public CharacterManager CharManager;
+    //public CharacterManager CharManager;
     public Character MyCharacter;
     public Animator MyAnimator;
-    //public List<HandProfile> Hands;
-    public List<GearProfile> Gear;
-    //public CharAnimationState MyAnimationState;
 
     public Transform Base;
     public Transform MainHandSlot;
     public Transform OffHandSlot;
+    public Transform ShieldSlot;
 
     public bool bRunning;
     public int AnimationLayer;
     public float AniCombatTimer;
+
+    public HandPosition CurrentWepPose;
 
     StringBuilder MeshTarget = new StringBuilder();
 
@@ -167,12 +162,41 @@ public class CharacterRender : MonoBehaviour
             return;
         }
     }
-    public void UpdateGearSlot(Wearable wear, bool equip = true)
+    public void UpdateGearSlot(Equipment equip, bool putOn = true)
     {
+        if (!(equip is Wearable))
+            return;
+
         MeshTarget.Clear();
         //MeshTarget.Append($"{wear.EquipSkill}.{wear.Type}");
     }
+    /*public void UpdateHandSlot(Hand hand, bool putOn)
+    {
+        if (hand == null)
+            return;
 
+        switch(hand)
+        {
+            case OneHand:
+                //if (!putOn)
+
+                break;
+
+            case OffHand:
+                break;
+
+            case Shield:
+                break;
+
+            case TwoHand:
+                break;
+        }
+        //if (hand == null)
+        //{
+        //    MyAnimator.SetInteger("")
+        //}
+        //MyAnimator
+    }*/
 
     // Start is called before the first frame update
     void Start()

@@ -18,7 +18,11 @@ public enum Race
     LIKIN,
     REPTILIAN,
     AVIAN,
-    CEPHILOPOD
+    CEPHILOPOD,
+    ///
+    ELEMENTAL,
+    GOLEM,
+    SPRITE
 }
 public enum Faction
 {
@@ -29,34 +33,60 @@ public enum Faction
 [CreateAssetMenu(fileName = "CharacterSheet", menuName = "ScriptableObjects/CharacterSheet")]
 public class CharacterSheet : ScriptableObject
 {
-    public string Name;
-    public int Level;
+    // Random Gen
     public Sprite Portrait;
+    public string Name;
+
+    // Persistent
+    public int Level;
+    public float CurrentEXP;
+    public float NextLevelEXP;
+
     public Race Race;
     public Faction Faction;
 
-    public EXPpackage CurrentEXP;
-    public EXPpackage NextLevelEXP;
-    public LVLpackage Skills;
-    
-    public void Clone(CharacterSheet target)
+    public EXPpackage CurrentSkillEXP;
+    public EXPpackage NextLevelSkillEXP;
+    public LVLpackage SkillsLevels;
+
+    public CharacterAbility[] InnateAbilities;
+    //public BaseEffect[] InnatePassives;
+
+    public void Clone(CharacterSheet source)
     {
-        Name = target.Name;
-        Level = target.Level;
-        Portrait = target.Portrait;
-        Race = target.Race;
-        //Faction = target.Faction;
-        CurrentEXP = target.CurrentEXP;
-        NextLevelEXP = target.NextLevelEXP;
-        Skills = target.Skills;
+        Name = source.Name;
+        Portrait = source.Portrait;
+        Race = source.Race;
+        Faction = source.Faction;
+
+        Level = source.Level;
+        CurrentEXP = source.CurrentEXP;
+        NextLevelEXP = source.NextLevelEXP;
+
+        CurrentSkillEXP.Clone(source.CurrentSkillEXP);
+        NextLevelSkillEXP.Clone(source.NextLevelSkillEXP);
+        SkillsLevels.Clone(source.SkillsLevels);
+
+        if (source.InnateAbilities != null)
+        {
+            InnateAbilities = new CharacterAbility[source.InnateAbilities.Length];
+            for (int i = 0; i < source.InnateAbilities.Length; i++)
+                InnateAbilities[i] = source.InnateAbilities[i];
+        }
     }
 
-    public void Fresh()
+    public void Initialize(bool fresh = true)
     {
-        Level = 0;
-        CurrentEXP = new EXPpackage(CharacterMath.STATS_LEVELS_COUNT);
-        NextLevelEXP = new EXPpackage(CharacterMath.STATS_LEVELS_COUNT);
-        Skills = new LVLpackage(CharacterMath.STATS_LEVELS_COUNT);
+        if (fresh)
+        {
+            Level = 0;
+            CurrentEXP = 0;
+            NextLevelEXP = 0;
+        }
+
+        CurrentSkillEXP.Initialize(!fresh);
+        NextLevelSkillEXP.Initialize(!fresh);
+        SkillsLevels.Initialize(!fresh);// = new LVLpackage(CharacterMath.STATS_SKILLS_COUNT);
     }
 
     /*== GOOD ==
