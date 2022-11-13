@@ -85,6 +85,10 @@ public class CharacterAbility : ScriptableObject
         CD_Timer -= GlobalConstants.TIME_SCALE;
         CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
     }
+    public virtual void UpdatePassiveTimer()
+    {
+
+    }
     public virtual CharacterAbility GenerateAbility(bool inject = true)
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
@@ -96,6 +100,7 @@ public class CharacterAbility : ScriptableObject
     {
         Amplify(currentCharacter.Sheet, equip);
         currentCharacter.Abilities.Add(this);
+        //Debug.Log(this.GetType().ToString());
         Source = currentCharacter;
 
         /*

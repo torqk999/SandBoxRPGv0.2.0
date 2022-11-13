@@ -42,7 +42,7 @@ public class PassiveAbility : EffectAbility
         newAbility.CloneAbility(this, inject);
         return newAbility;
     }
-    public void UpdatePassiveTimer()
+    public override void UpdatePassiveTimer()
     {
         ProcTimer -= GlobalConstants.TIME_SCALE;
         if (ProcTimer <= 0)

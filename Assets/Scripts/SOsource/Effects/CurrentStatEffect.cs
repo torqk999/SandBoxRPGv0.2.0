@@ -90,9 +90,10 @@ public class CurrentStatEffect : StatEffect
         if (!(source is CurrentStatEffect))
             return;
 
-        CurrentStatEffect currentStatEffect = (CurrentStatEffect)source;
+        CurrentStatEffect currentStatEffectSource = (CurrentStatEffect)source;
+        TargetStat = currentStatEffectSource.TargetStat;
 
-        BaseElementPack.Clone(currentStatEffect.BaseElementPack);
+        BaseElementPack.Clone(currentStatEffectSource.BaseElementPack);
         AmpedElementPack.Clone(BaseElementPack);
     }
     public override BaseEffect GenerateEffect(bool inject = true)

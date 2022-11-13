@@ -19,12 +19,12 @@ MonoBehaviour:
   AnimationState: 0
   CharAnimation: 1
   School: 0
-  CostType: 0
+  CostType: 4
   CostTarget: 0
-  CostValue: 0
+  CostValue: 5
   CastRange: 0
   AOE_Range: 0
-  CD_Duration: 0
+  CD_Duration: 2
   CD_Timer: 0
   SpawnedEffects: []
   Source: {fileID: 0}

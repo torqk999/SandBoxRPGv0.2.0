@@ -546,8 +546,10 @@ public class Character : Pawn, Interaction
     }
     void UpdatePassives()
     {
-        foreach (PassiveAbility passive in Abilities)
-            passive.UpdatePassiveTimer();
+        foreach (CharacterAbility ability in Abilities)
+        {
+            ability.UpdatePassiveTimer();
+        }
     }
     void UpdateRisidualEffects()
     {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b49634b4c3f27c44a48644ebfb6b45d, type: 3}
-  m_Name: OneHand
+  m_Name: Dagger
   m_EditorClassIdentifier: 
   itemID: 0
   Name: Dagger

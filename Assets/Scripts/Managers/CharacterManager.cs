@@ -411,13 +411,13 @@ public class CharacterManager : MonoBehaviour
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
         if (fresh)
         {
-            Debug.Log("freshSheet");
+            //Debug.Log("freshSheet");
             character.Sheet.Initialize();
         }
             
         else
         {
-            Debug.Log("rawSheet");
+            //Debug.Log("rawSheet");
             character.Sheet.Clone(source.Sheet);
         }
             

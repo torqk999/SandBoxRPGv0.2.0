@@ -903,8 +903,6 @@ public class UIManager : MonoBehaviour
             image.color = (SelectedAbilitySlot == i) ? Selected : Unselected;
         }
     }
-
-
     void UpdateInteractionHUD()
     {
         if (GameState.pController == null ||

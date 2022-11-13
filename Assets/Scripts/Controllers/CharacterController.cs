@@ -28,6 +28,8 @@ public class CharacterController : MonoBehaviour
         CurrentCharacter.UpdateAnimationIntents(IntentVector.z, IntentVector.x);
     }
 
+
+
     // Start is called before the first frame update
     void Start()
     {

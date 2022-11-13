@@ -79,11 +79,7 @@ public class Equipment : ItemObject
         SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
 
         foreach (CharacterAbility ability in Abilities)
-        {
-            ability.Amplify(character.Sheet, this);
-            ability.Source = character;
-            character.Abilities.Add(ability);
-        }
+            ability.EquipAbility(character, this);
 
         return true;
     }
