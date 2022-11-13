@@ -177,6 +177,9 @@ public class SceneManager : MonoBehaviour
                 if (BUFFER[i].name.Contains("Base") ||
                     BUFFER[i].name.Contains("Metal"))
                     BUFFER[i] = Materials[(int)hand.BaseMaterial];
+                if (BUFFER[i].name.Contains("Trim") ||
+                    BUFFER[i].name.Contains("Detail"))
+                    BUFFER[i] = Materials[(int)hand.TrimMaterial];
             }
 
             //BUFFER[0] = Materials[(int)hand.BaseMaterial];

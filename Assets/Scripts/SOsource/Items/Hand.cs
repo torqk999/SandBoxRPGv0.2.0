@@ -8,7 +8,8 @@ public class Hand : Equipment
     public HandPosition HandPosition;
     public MaterialType BaseMaterial;
     public MaterialType HandleMaterial;
-    public List<MaterialType> Details;
+    public MaterialType TrimMaterial;
+    //public List<MaterialType> Details;
     public GameObject Instantiation;   // Used by equipping only
 
     public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
@@ -28,8 +29,10 @@ public class Hand : Equipment
         HandPosition = handSource.HandPosition;
         BaseMaterial = handSource.BaseMaterial;
         HandleMaterial = handSource.HandleMaterial;
-        Details = new List<MaterialType>();
-        Details.AddRange(Details);
+        TrimMaterial = handSource.TrimMaterial;
+
+        //Details = new List<MaterialType>();
+        //Details.AddRange(Details);
         Instantiation = null;
 
         base.CloneItem(source);
