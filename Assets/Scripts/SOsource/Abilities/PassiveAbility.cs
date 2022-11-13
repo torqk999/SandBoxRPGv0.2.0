@@ -53,12 +53,12 @@ public class PassiveAbility : EffectAbility
     }
     void PassiveProc()
     {
-        if (Source == null)
+        if (SourceCharacter == null)
         {
             Debug.Log("No source!");
             return;
         }
 
-        Source.AttemptAbility(this);
+        SourceCharacter.AttemptAbility(this);
     }
 }

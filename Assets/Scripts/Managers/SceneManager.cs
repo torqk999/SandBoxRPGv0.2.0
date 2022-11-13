@@ -13,7 +13,13 @@ public enum MaterialType
     TRIM_AURA,
     LEATHER
 }
-
+public enum PsystemType
+{
+    BALL_FIRE,
+    CONE_FIRE,
+    CONE_FROST,
+    BEAM_SOLO
+}
 public class SceneManager : MonoBehaviour
 {
     public GameState GameState;
@@ -25,6 +31,8 @@ public class SceneManager : MonoBehaviour
     public List<GameObject> TwoHandPrefabs;
     public List<GameObject> OffHandPrefabs;
     public List<GameObject> ShieldPrefabs;
+
+    public List<GameObject> PsystemPrefabs;
 
     public List<Material> Materials;
     public Material[] BUFFER;
@@ -161,8 +169,18 @@ public class SceneManager : MonoBehaviour
             newHand.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
             BUFFER = newHandMesh.materials;
-            BUFFER[0] = Materials[(int)hand.BaseMaterial];
-            BUFFER[1] = Materials[(int)hand.HandleMaterial];
+            for (int i = 0; i < BUFFER.Length; i++)
+            {
+                Debug.Log($"materialName: {BUFFER[i].name}");
+                if (BUFFER[i].name.Contains("Handle"))
+                    BUFFER[i] = Materials[(int)hand.HandleMaterial];
+                if (BUFFER[i].name.Contains("Base") ||
+                    BUFFER[i].name.Contains("Metal"))
+                    BUFFER[i] = Materials[(int)hand.BaseMaterial];
+            }
+
+            //BUFFER[0] = Materials[(int)hand.BaseMaterial];
+            //BUFFER[1] = Materials[(int)hand.HandleMaterial];
             newHandMesh.materials = BUFFER;
         }
         catch

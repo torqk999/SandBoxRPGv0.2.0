@@ -86,10 +86,7 @@ public class Character : Pawn, Interaction
 
     #endregion
 
-    public void UpdateAbilites()
-    {
-        UpdateAbilitySlots();
-    }
+    
 
     #region INTERACTION
     public void SwapInteractions()
@@ -481,6 +478,10 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region UPDATES
+    public void UpdateAbilites()
+    {
+        UpdateAbilitySlots();
+    }
     void UpdateLife() // Get a life...
     {
         for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
@@ -542,7 +543,7 @@ public class Character : Pawn, Interaction
     {
         for (int i = 0; i < AbilitySlots.Length; i++)
             if (AbilitySlots[i] != null)
-                AbilitySlots[i].UpdateCooldown();
+                AbilitySlots[i].UpdateCooldowns();
     }
     void UpdatePassives()
     {

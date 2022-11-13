@@ -18,6 +18,7 @@ public enum TargetType
     ENEMY
 }
 
+
 //[CreateAssetMenu(fileName = "CharacterAbility", menuName = "ScriptableObjects/CharacterAbility")]
 public class CharacterAbility : ScriptableObject
 {
@@ -25,7 +26,8 @@ public class CharacterAbility : ScriptableObject
     public string Name;
 
     public Sprite Sprite;
-    public ParticleSystem Cast;
+    public GameObject Cast;
+    public PsystemType CastType;
 
     public CastLocation CastLocation;
     public CharAnimationState AnimationState;
@@ -39,15 +41,36 @@ public class CharacterAbility : ScriptableObject
     public float CastRange;
     public float AOE_Range;
     public float CD_Duration;
+    public float Cast_Duration;
 
     [Header("Ability Logic - Do Not Touch")]
     //public int AbilityID;
     //public int EquipID;
     public float CD_Timer;
+    public float Cast_Timer;
     public List<BaseEffect> SpawnedEffects;
-    public Character Source;
+    public Character SourceCharacter;
 
-    public virtual void UseAbility(Character target) { }
+    public virtual void UseAbility(Character target)
+    {
+        CastPsystem();
+    }
+    void CastPsystem()
+    {
+        Debug.Log("Stepped into Cast system");
+
+        if (SourceCharacter == null)
+            return;
+
+        Debug.Log("Casting...");
+
+        //if (Cast != null)
+            //Destroy(Cast);
+
+        Cast = Instantiate(SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastType], SourceCharacter.transform);
+        Cast.transform.localPosition = Vector3.zero;
+        Cast_Timer = Cast_Duration;
+    }
     public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
     {
 
@@ -72,18 +95,32 @@ public class CharacterAbility : ScriptableObject
         CastRange = source.CastRange;
         AOE_Range = source.AOE_Range;
         CD_Duration = source.CD_Duration;
+        Cast_Duration = source.Cast_Duration;
 
         CD_Timer = 0;
+        Cast_Timer = 0;
         SpawnedEffects = new List<BaseEffect>();
     }
     public void SetCooldown()
     {
         CD_Timer = CD_Duration;
     }
-    public void UpdateCooldown()
+    public void UpdateCooldowns()
     {
-        CD_Timer -= GlobalConstants.TIME_SCALE;
-        CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
+        if (CD_Timer != 0)
+        {
+            CD_Timer -= GlobalConstants.TIME_SCALE;
+            CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
+        }
+        if (Cast_Timer != 0)
+        {
+            Cast_Timer -= GlobalConstants.TIME_SCALE;
+            Cast_Timer = (CD_Timer < 0) ? 0 : Cast_Timer;
+        }
+        if (Cast_Timer == 0 && Cast != null)
+        {
+            //Destroy(Cast);
+        }
     }
     public virtual void UpdatePassiveTimer()
     {
@@ -101,7 +138,7 @@ public class CharacterAbility : ScriptableObject
         Amplify(currentCharacter.Sheet, equip);
         currentCharacter.Abilities.Add(this);
         //Debug.Log(this.GetType().ToString());
-        Source = currentCharacter;
+        SourceCharacter = currentCharacter;
 
         /*
         CharacterAbility newAbility = GenerateAbility();

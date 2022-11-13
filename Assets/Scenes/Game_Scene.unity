@@ -771,11 +771,16 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  PsystemPrefabs:
+  - {fileID: 3753533628294104958, guid: 33fc0e3d044d03c4c8d2dca7aaeb39b7, type: 3}
+  - {fileID: 8647462742836620833, guid: cd6f2a9ccff73af41b698d6ab823de84, type: 3}
+  - {fileID: 2191088178451580555, guid: 5fce6412be45e9e42a931990844b0320, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
   Materials:
   - {fileID: 2100000, guid: 3cb0c1b1aa4fe044a87932179e4d476f, type: 2}
   - {fileID: 2100000, guid: ac518b1795f8c1849a37296065ec527e, type: 2}
-  - {fileID: 2100000, guid: 8b7535bda05ecd248a08d9f50f54bdba, type: 2}
-  - {fileID: 2100000, guid: 4488daaa06cdff84b8ebe982bb6386f0, type: 2}
+  - {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
+  - {fileID: 2100000, guid: 298d27ae3f6560d478503c3f5a1134a7, type: 2}
   - {fileID: 2100000, guid: 0afe8a513ae6b774da6376438a8c3d2f, type: 2}
   - {fileID: 2100000, guid: bdd787a2ff237d7429fef2825967deca, type: 2}
   - {fileID: 2100000, guid: 5b5741e1a304b254da481450c500d8ab, type: 2}
@@ -4008,6 +4013,9 @@ MonoBehaviour:
   myAIpool: []
   SampleItems:
   - {fileID: 11400000, guid: 177682e4dd18b4c4e8ed8b22c5d142a2, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &1010888937
 MonoBehaviour:
   m_ObjectHideFlags: 0

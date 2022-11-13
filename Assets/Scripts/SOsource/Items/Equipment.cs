@@ -113,9 +113,9 @@ public class Equipment : ItemObject
                     effect.EffectType == EffectType.TOGGLE)
                     Destroy(effect);
             }
-            equipped.Source.Abilities.Remove(equipped);
-            equipped.Source.UpdateAbilites();
-            equipped.Source = null;
+            equipped.SourceCharacter.Abilities.Remove(equipped);
+            equipped.SourceCharacter.UpdateAbilites();
+            equipped.SourceCharacter = null;
         }
 
         SlotFamily[SlotIndex] = null;

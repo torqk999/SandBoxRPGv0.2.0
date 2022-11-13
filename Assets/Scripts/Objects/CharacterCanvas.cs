@@ -8,6 +8,7 @@ public class CharacterCanvas : MonoBehaviour
 {
     public Camera Cam;
     public Character Character;
+    public Canvas myCanvas;
 
     public Vector3 Offset;
     public TextMeshProUGUI LevelText;
@@ -50,7 +51,7 @@ public class CharacterCanvas : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        myCanvas = gameObject.GetComponent<Canvas>();
     }
 
     // Update is called once per frame
@@ -61,6 +62,16 @@ public class CharacterCanvas : MonoBehaviour
 
         if (Character != null)
         {
+            bool state = Character.GameState.pController.CurrentCharacter != null &&
+                Character.GameState.pController.CurrentCharacter.CurrentTargetCharacter != null &&
+                Character.GameState.pController.CurrentCharacter.CurrentTargetCharacter == Character;
+
+
+            myCanvas.enabled = state;
+
+            if (!myCanvas.enabled)
+                return;
+
             if (Character.Sheet != null)
                 LevelText.text = $"{Character.Sheet.Name}\n Lvl: {Character.Sheet.Level}";
 

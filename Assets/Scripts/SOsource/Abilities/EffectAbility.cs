@@ -11,11 +11,6 @@ public class EffectAbility : CharacterAbility
     public BaseEffect[] Effects;
     public TargetType AbilityTarget;
     
-    public override void UseAbility(Character target)
-    {
-        //for (int i = 0; i < Effects.Length; i++)
-        //    Effects[i].ApplySingleEffect(target, null, null, null, true); // First or only proc
-    }
     public override void Amplify(CharacterSheet sheet = null, Equipment equip = null)
     {
         StringBuilder debug = new StringBuilder();

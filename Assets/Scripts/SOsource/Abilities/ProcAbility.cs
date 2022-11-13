@@ -13,6 +13,8 @@ public class ProcAbility : EffectAbility
     {
         for (int i = 0; i < Effects.Length; i++)
             Effects[i].ApplySingleEffect(target, true, false); // First or only proc
+
+        base.UseAbility(target);
     }
     public override void CloneEffects(EffectAbility source, bool inject = false)
     {
