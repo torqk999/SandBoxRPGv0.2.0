@@ -42,12 +42,14 @@ public class CharacterAbility : ScriptableObject
     public float AOE_Range;
     public float CD_Duration;
     public float Cast_Duration;
+    
 
     [Header("Ability Logic - Do Not Touch")]
     //public int AbilityID;
     //public int EquipID;
     public float CD_Timer;
     public float Cast_Timer;
+    public float Projectile_Timer;
     public List<BaseEffect> SpawnedEffects;
     public Character SourceCharacter;
 
@@ -64,8 +66,8 @@ public class CharacterAbility : ScriptableObject
 
         Debug.Log("Casting...");
 
-        //if (Cast != null)
-            //Destroy(Cast);
+        if (Cast != null)
+            Destroy(Cast);
 
         Cast = Instantiate(SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastType], SourceCharacter.transform);
         Cast.transform.localPosition = Vector3.zero;
@@ -94,11 +96,15 @@ public class CharacterAbility : ScriptableObject
         School = source.School;
         CastRange = source.CastRange;
         AOE_Range = source.AOE_Range;
+
         CD_Duration = source.CD_Duration;
         Cast_Duration = source.Cast_Duration;
+        Projectile_Duration = source.Projectile_Duration;
 
         CD_Timer = 0;
         Cast_Timer = 0;
+        Projectile_Timer = 0;
+
         SpawnedEffects = new List<BaseEffect>();
     }
     public void SetCooldown()
@@ -115,12 +121,17 @@ public class CharacterAbility : ScriptableObject
         if (Cast_Timer != 0)
         {
             Cast_Timer -= GlobalConstants.TIME_SCALE;
-            Cast_Timer = (CD_Timer < 0) ? 0 : Cast_Timer;
+            Cast_Timer = (Cast_Timer < 0) ? 0 : Cast_Timer;
         }
+        if (Projectile_Timer)
         if (Cast_Timer == 0 && Cast != null)
         {
-            //Destroy(Cast);
+            Destroy(Cast);
         }
+    }
+    public void LerpProjectile()
+    {
+
     }
     public virtual void UpdatePassiveTimer()
     {

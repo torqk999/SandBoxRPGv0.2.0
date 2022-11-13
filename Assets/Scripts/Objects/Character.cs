@@ -86,8 +86,6 @@ public class Character : Pawn, Interaction
 
     #endregion
 
-    
-
     #region INTERACTION
     public void SwapInteractions()
     {
@@ -364,6 +362,9 @@ public class Character : Pawn, Interaction
     public bool CheckCanCastAbility(CharacterAbility call, float costModifier)
     {
         // Add Global Cooldown
+
+        if (CurrentTargetCharacter == null)
+            return false;
 
         if (call.CD_Timer > 0) // Check Cooldown
             return false;

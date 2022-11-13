@@ -14,12 +14,15 @@ public class BaseEffect : ScriptableObject
     [Header("Base Properties")]
     public string Name;
     public Sprite Sprite;
-    public ParticleSystem Condition;
-    public ParticleSystem Impact;
+    public GameObject Condition;
+    public GameObject Projectile;
+    public GameObject Impact;
     public float PeriodLength;
     public float PeriodTimer;
     public float DurationLength;
     public float DurationTimer;
+    public float ProjectileLength;
+    public float ProjectileTimer;
 
     [Header("LOGIC - Do Not Touch!")]
     public EffectType EffectType;
