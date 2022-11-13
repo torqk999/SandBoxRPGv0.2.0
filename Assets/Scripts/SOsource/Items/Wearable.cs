@@ -27,17 +27,16 @@ public class Wearable : Equipment
         //EquipSkill = SkillType.MEDIUM;
         EquipSlot = wearSource.EquipSlot;
     }
-    public override bool EquipToCharacter(Character character, ref int abilityId, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
     {
+        slotBin = character.EquipmentSlots;
 
-        Equipment slot = character.EquipmentSlots[(int)EquipSlot];
-
-        if (slot != null && !slot.UnEquipFromCharacter(character))
+        if (slotBin[(int)EquipSlot] != null && !slotBin[(int)EquipSlot].UnEquipFromCharacter(character))
         {
             return false;
         }
 
-        slot = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+        slotBin = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
 
         SlotFamily = character.EquipmentSlots;
         SlotIndex = (int)EquipSlot.OFF;

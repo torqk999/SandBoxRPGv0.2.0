@@ -37,25 +37,24 @@ public class TwoHand : Hand
         //EquipSkill = SkillType.HAND_TWO;
         Type = twoSource.Type;
     }
-    public override bool EquipToCharacter(Character character, ref int abilityId, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
     {
-        Equipment[] slots = character.EquipmentSlots;
+        slotBin = character.EquipmentSlots;
 
-        if (slots[(int)EquipSlot.OFF] != null &&
-            !slots[(int)EquipSlot.OFF].UnEquipFromCharacter(character))
+        if (slotBin[(int)EquipSlot.OFF] != null &&
+            !slotBin[(int)EquipSlot.OFF].UnEquipFromCharacter(character))
         { return false; }
 
-        if (slots[(int)EquipSlot.MAIN] != null &&
-            !slots[(int)EquipSlot.MAIN].UnEquipFromCharacter(character))
+        if (slotBin[(int)EquipSlot.MAIN] != null &&
+            !slotBin[(int)EquipSlot.MAIN].UnEquipFromCharacter(character))
         { return false; }
 
-        slots[(int)EquipSlot.MAIN] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-        slots[(int)EquipSlot.OFF] = slots[(int)EquipSlot.MAIN];
 
-        SlotFamily = character.EquipmentSlots;
-        SlotIndex = (int)EquipSlot.OFF;
-        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-        //AppendAbilities(character, ref abilityId);
+        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot.MAIN, subSlotIndex))
+            return false;
+
+        slotBin[(int)EquipSlot.OFF] = slotBin[(int)EquipSlot.MAIN];
+
         base.UpdateCharacterRender(character);
         return true;
     }

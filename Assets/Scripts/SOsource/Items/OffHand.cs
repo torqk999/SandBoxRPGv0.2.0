@@ -44,7 +44,7 @@ public class OffHand : Hand
             return false; // failed to remove the piece currently occupying the slot
         }
 
-        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot.MAIN, subSlotIndex))
+        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot.OFF, subSlotIndex))
             return false;
 
         base.UpdateCharacterRender(character);

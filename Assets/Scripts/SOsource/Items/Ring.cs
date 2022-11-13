@@ -47,7 +47,10 @@ public class Ring : Equipment
 
         if (!slotBin[0].UnEquipFromCharacter(character))
             return false;
-                slotBin[0] = (Ring)character.Inventory.RemoveIndexFromInventory(inventorySlot); // Default first index of rings
+
+        if (!base.EquipToCharacter(character, slotBin, inventorySlot, 0))// Default first index of rings
+            return false; 
+
         return true;
     }
 }
