@@ -284,7 +284,7 @@ public class CharacterManager : MonoBehaviour
         Parties.Add(literalParty);
         return true;
     }
-    public bool CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction)//, Wardrobe wardrobe)
+    public bool CreateCloneParty(GameObject mobPrefab, Transform spawnPointFolder, Faction faction)
     {
         if (mobPrefab == null ||
             spawnPointFolder == null)
@@ -297,7 +297,7 @@ public class CharacterManager : MonoBehaviour
             if (!spawnPointFolder.GetChild(i).gameObject.activeSelf)
                 continue;
 
-            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i));//, wardrobe, i);
+            Character newCharacter = GenerateCharacter(mobPrefab, cloneParty, spawnPointFolder.GetChild(i), i);
             if (newCharacter == null)
             {
                 Debug.Log("Clone Character generation failed");
@@ -409,18 +409,9 @@ public class CharacterManager : MonoBehaviour
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
+        character.Sheet.Clone(source.Sheet);
         if (fresh)
-        {
-            //Debug.Log("freshSheet");
             character.Sheet.Initialize();
-        }
-            
-        else
-        {
-            //Debug.Log("rawSheet");
-            character.Sheet.Clone(source.Sheet);
-        }
-            
         
         if (index > -1)
             character.Sheet.Name += index.ToString();

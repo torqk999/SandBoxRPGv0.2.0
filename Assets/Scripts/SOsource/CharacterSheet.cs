@@ -55,13 +55,13 @@ public class CharacterSheet : ScriptableObject
     public void Clone(CharacterSheet source)
     {
         Name = source.Name;
-        Level = source.Level;
-        CurrentEXP = source.CurrentEXP;
-        NextLevelEXP = source.NextLevelEXP;
-
         Portrait = source.Portrait;
         Race = source.Race;
         Faction = source.Faction;
+
+        Level = source.Level;
+        CurrentEXP = source.CurrentEXP;
+        NextLevelEXP = source.NextLevelEXP;
 
         CurrentSkillEXP.Clone(source.CurrentSkillEXP);
         NextLevelSkillEXP.Clone(source.NextLevelSkillEXP);
@@ -77,18 +77,16 @@ public class CharacterSheet : ScriptableObject
 
     public void Initialize(bool fresh = true)
     {
-        Debug.Log("Sheet init");
         if (fresh)
         {
             Level = 0;
             CurrentEXP = 0;
             NextLevelEXP = 0;
         }
+
         CurrentSkillEXP.Initialize(!fresh);
         NextLevelSkillEXP.Initialize(!fresh);
         SkillsLevels.Initialize(!fresh);// = new LVLpackage(CharacterMath.STATS_SKILLS_COUNT);
-
-        Debug.Log($"Innates: {InnateAbilities != null}");
     }
 
     /*== GOOD ==
