@@ -6,12 +6,12 @@ using UnityEngine;
 public class ResistanceEffect : StatEffect
 {
     [Header("Resistance Properties")]
-    public ElementPackage BaseResAdjustments;
-    public ElementPackage AmpedResAdjustments;
+    public ElementPackage ResAdjustments;
+    //public ElementPackage AmpedResAdjustments;
 
-    public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
+    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
     {
-        base.ApplySingleEffect(target, cast, toggle); // Risidual proc
+        base.ApplySingleEffect(target, options, cast); // Risidual proc
 
         if (!PeriodClock())
             return;
@@ -20,33 +20,32 @@ public class ResistanceEffect : StatEffect
     }
     public override void RemoveRisidualEffect()
     {
-        EffectedCharacter.UpdateResAdjust();
+        Logic.EffectedCharacter.UpdateResAdjust();
         base.RemoveRisidualEffect();
     }
     public override void Amplify(float amp)
     {
-        AmpedResAdjustments.Amplify(BaseResAdjustments, amp);
+        ResAdjustments.Amplify(amp);
     }
     public override void InitializeSource()
     {
-        BaseResAdjustments.Initialize();
+        ResAdjustments.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, bool inject = false)
+    public override void CloneEffect(BaseEffect source, EffectOptions options)
     {
-        base.CloneEffect(source, inject);
+        base.CloneEffect(source, options);
 
         if (!(source is ResistanceEffect))
             return;
 
         ResistanceEffect currentStatEffect = (ResistanceEffect)source;
 
-        BaseResAdjustments.Clone(currentStatEffect.BaseResAdjustments);
-        AmpedResAdjustments.Clone(BaseResAdjustments);
+        ResAdjustments.Clone(currentStatEffect.ResAdjustments);
     }
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
         ResistanceEffect newEffect = (ResistanceEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, inject);
+        newEffect.CloneEffect(this, options);
         return newEffect;
     }
 }

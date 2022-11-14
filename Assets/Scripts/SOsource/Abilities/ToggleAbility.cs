@@ -10,17 +10,22 @@ public class ToggleAbility : EffectAbility
     public ParticleSystem Aura;
     public bool Active;
 
-    public override void UseAbility(Character target)
+    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
         Active = !Active;
 
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i].ApplySingleEffect(target, true, Active);
+        options.EffectType = EffectType.TOGGLE;
+        options.ToggleActive = Active;
+        options.IsProjectile = true;
+        options.IsClone = true;
+        options.Inject = false;
+
+        base.UseAbility(target, options);
     }
 
-    public override void CloneEffects(EffectAbility source, bool inject = false)
+    public override void ProduceOriginalEffects(EffectAbility source, bool inject = false)
     {
-        base.CloneEffects(source, inject);
+        base.ProduceOriginalEffects(source, inject);
     }
 
     public override void CloneAbility(CharacterAbility source, bool inject = false)

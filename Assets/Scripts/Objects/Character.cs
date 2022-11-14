@@ -367,7 +367,7 @@ public class Character : Pawn, Interaction
         if (CurrentTargetCharacter == null)
             return false;
 
-        if (call.CD_Timer > 0)
+        if (call.Logic.CD_Timer > 0)
             return false;
 
         switch (call.School) // Check CC
@@ -516,7 +516,7 @@ public class Character : Pawn, Interaction
 
             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
             {
-                float change = adjust.AmpedResAdjustments.Elements[i] * resValueModifier;
+                float change = adjust.ResAdjustments.Amplification[i] * resValueModifier;
                 CurrentResistances.Elements[i] += change;
             }
         }
@@ -530,7 +530,7 @@ public class Character : Pawn, Interaction
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
             {
                 float statValueModifier = GenerateRawStatValueModifier(adjust.Value, (RawStat)i);
-                float change = adjust.AmpedStatAdjustPack.Stats[i] * statValueModifier;
+                float change = adjust.StatAdjustPack.Amplification[i] * statValueModifier;
                 MaximumStatValues.Stats[i] += change;
             }
         }
@@ -554,11 +554,11 @@ public class Character : Pawn, Interaction
             ability.UpdatePassiveTimer();
         }
     }
-    void UpdateRisidualEffects()
+    /*void UpdateRisidualEffects()
     {
         foreach (BaseEffect risidual in Risiduals)
             risidual.ApplySingleEffect(this);
-    }
+    }*/
     void UpdateAdjustments()
     {
         MaximumStatValues.Clone(BaseStats);
@@ -671,7 +671,7 @@ public class Character : Pawn, Interaction
         if (bIsPaused)
             return;
 
-        UpdateRisidualEffects();
+        //UpdateRisidualEffects();
         UpdateLife();
         UpdatePassives();
         UpdateAbilityCooldowns();

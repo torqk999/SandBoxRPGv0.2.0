@@ -1,6 +1,14 @@
 using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+//Interfaces
+public interface Interaction
+{
+    public void Interact();
+    public InteractData GetInteractData();
+}
 
 // Enums
 public enum ClassType
@@ -225,11 +233,15 @@ public struct RawStatPackageReflection
 public struct RawStatPackage
 {
     public RawStatPackageReflection Reflection;
+
+    [Header("NO TOUCHY!")]
     public float[] Stats;
+    public float[] Amplification;
 
     public RawStatPackage(CharacterSheet sheet)
     {
         Stats = new float[CharacterMath.STATS_RAW_COUNT];
+        Amplification = new float[CharacterMath.STATS_RAW_COUNT];
         for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
         {
             float stat = CharacterMath.STAT_BASE[i] +
@@ -255,12 +267,10 @@ public struct RawStatPackage
 
         return true;
     }
-    public void Amplify(RawStatPackage source, float amp)
+    public void Amplify(float amp)
     {
-        Clone(source);
-
         for (int i = 0; i < Stats.Length; i++)
-            Stats[i] *= amp;
+            Amplification[i] = Stats[i] * amp;
     }
     public void Initialize(bool inject = true)
     {
@@ -325,11 +335,15 @@ public struct ElementReflection
 public struct ElementPackage
 {
     public ElementReflection Reflection;
+
+    [Header("NO TOUCHY!")]
     public float[] Elements;
+    public float[] Amplification;
 
     public ElementPackage(float healMagnitude)
     {
         Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        Amplification = new float[CharacterMath.STATS_ELEMENT_COUNT];
         Elements[(int)Element.HEALING] = healMagnitude;
         Reflection = new ElementReflection();
         Reflection.Reflect(ref Elements, false);
@@ -337,6 +351,7 @@ public struct ElementPackage
     public ElementPackage(CharacterSheet sheet)
     {
         Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        Amplification = new float[CharacterMath.STATS_ELEMENT_COUNT];
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
             Elements[i] = CharacterMath.RES_MUL_RACE[(int)sheet.Race, i] * (CharacterMath.RES_BASE[i] +
@@ -353,17 +368,16 @@ public struct ElementPackage
 
         Reflection = source.Reflection;
         Elements = new float[CharacterMath.STATS_ELEMENT_COUNT];
+        Amplification = new float[CharacterMath.STATS_ELEMENT_COUNT];
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
             Elements[i] = source.Elements[i];
 
         return true;
     }
-    public void Amplify(ElementPackage source, float amp)
+    public void Amplify(float amp)
     {
-        Clone(source);
-
         for (int i = 0; i < Elements.Length; i++)
-            Elements[i] *= amp;
+            Amplification[i] = Elements[i] * amp;
     }
     public void Initialize(bool inject = true)
     {
@@ -576,9 +590,88 @@ public class LootData : InteractData
     public Quality Quality;
 }
 
-//Interfaces
-public interface Interaction
+
+
+[Serializable]
+public struct AbilityLogic
 {
-    public void Interact();
-    public InteractData GetInteractData();
+    public float CD_Timer;
+    public float Cast_Timer;
+    public Character SourceCharacter;
+    public GameObject CastInstance;
+
+    public void Clone(AbilityLogic source)
+    {
+        SourceCharacter = source.SourceCharacter;
+
+        CD_Timer = 0;
+        Cast_Timer = 0;
+    }
+}
+
+[Serializable]
+public struct EffectLogic
+{
+    // Sourced from ability
+    public EffectOptions Options;
+    public float TetherRange;
+    public float ProjectileLength;
+
+    // Timers
+    public float ProjectileTimer;
+    public float PeriodTimer;
+    public float DurationTimer;
+
+    // Active object references
+    public CharacterAbility SourceAbility;
+    public Character EffectedCharacter;
+    public BaseEffect Original;
+    public List<BaseEffect> Clones;
+
+    // Psystem Instantiations
+    public GameObject Condition;
+    public GameObject Projectile;
+    public GameObject Impact;
+
+    public void Clone(EffectLogic source, EffectOptions options)
+    {
+        Options = options;
+
+        TetherRange = source.TetherRange;
+        ProjectileLength = source.ProjectileLength;
+
+        ProjectileTimer = 0;
+        PeriodTimer = 0;
+        DurationTimer = 0;
+
+        SourceAbility = source.SourceAbility;
+        EffectedCharacter = source.EffectedCharacter;
+        if (options.IsClone)
+            Original = source.Original;
+        else
+            Clones = new List<BaseEffect>();
+
+        Condition = null;
+        Projectile = null;
+        Impact = null;
+    }
+}
+[Serializable]
+public struct EffectOptions
+{
+    public bool Inject;
+    public bool ToggleActive;
+
+    public EffectType EffectType;
+    public bool IsClone;
+    public bool IsProjectile;
+
+    public EffectOptions(EffectType type, bool toggled, bool clone, bool projectile = false, bool inject = false)
+    {
+        Inject = inject;
+        IsClone = clone;
+        EffectType = type;
+        ToggleActive = toggled;
+        IsProjectile = projectile;
+    }
 }
