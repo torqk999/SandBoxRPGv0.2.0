@@ -3,14 +3,41 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-//Interfaces
+//Interactions
 public interface Interaction
 {
     public void Interact();
     public InteractData GetInteractData();
 }
+[Serializable]
+public class InteractData
+{
+    public TriggerType Type;
+    public string Name;
+}
+public class CharacterData : InteractData
+{
+    public Character myCharacter;
 
-// Enums
+    public float HealthCurrent;
+    public float HealthMax;
+
+    public CharacterData(Character character)
+    {
+        Name = character.Sheet.Name;
+        myCharacter = character;
+
+        HealthCurrent = character.CurrentStats.Stats[(int)RawStat.HEALTH];
+        HealthMax = character.MaximumStatValues.Stats[(int)RawStat.HEALTH];
+    }
+}
+public class LootData : InteractData
+{
+    public float Weight;
+    public Quality Quality;
+}
+
+
 public enum ClassType
 {
     WARRIOR,
@@ -181,8 +208,8 @@ public struct CharStatPackage
 }
 public enum RawStat
 {
-    STAMINA,
     HEALTH,
+    STAMINA,
     MANA,
     SPEED
 }
@@ -563,36 +590,6 @@ public struct LVLpackage
     }
 }
 [Serializable]
-public class InteractData
-{
-    public TriggerType Type;
-    public string Name;
-}
-public class CharacterData : InteractData
-{
-    public Character myCharacter;
-
-    public float HealthCurrent;
-    public float HealthMax;
-
-    public CharacterData(Character character)
-    {
-        Name = character.Sheet.Name;
-        myCharacter = character;
-
-        HealthCurrent = character.CurrentStats.Stats[(int)RawStat.HEALTH];
-        HealthMax = character.MaximumStatValues.Stats[(int)RawStat.HEALTH];
-    }
-}
-public class LootData : InteractData
-{
-    public float Weight;
-    public Quality Quality;
-}
-
-
-
-[Serializable]
 public struct AbilityLogic
 {
     public float CD_Timer;
@@ -608,7 +605,6 @@ public struct AbilityLogic
         Cast_Timer = 0;
     }
 }
-
 [Serializable]
 public struct EffectLogic
 {
@@ -646,6 +642,7 @@ public struct EffectLogic
 
         SourceAbility = source.SourceAbility;
         EffectedCharacter = source.EffectedCharacter;
+
         if (options.IsClone)
             Original = source.Original;
         else
@@ -674,4 +671,14 @@ public struct EffectOptions
         ToggleActive = toggled;
         IsProjectile = projectile;
     }
+}
+[Serializable]
+public struct InventoryOptions
+{
+
+}
+[Serializable]
+public struct ItemOptions
+{
+
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.4350488, g: 0.61271507, b: 0.80330473, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -869,6 +869,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   CurrentStats:
     Reflection:
       STAMINA: 0
@@ -876,6 +877,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   SustainedStatValues:
     Reflection:
       STAMINA: 0
@@ -883,6 +885,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   MaximumStatValues:
     Reflection:
       STAMINA: 0
@@ -890,6 +893,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   BaseResistances:
     Reflection:
       PHYSICAL: 0
@@ -900,6 +904,7 @@ MonoBehaviour:
       POISON: 0
       HEALING: 0
     Elements: []
+    Amplification: []
   CurrentResistances:
     Reflection:
       PHYSICAL: 0
@@ -910,6 +915,7 @@ MonoBehaviour:
       POISON: 0
       HEALING: 0
     Elements: []
+    Amplification: []
   ID: 0
   bIsPaused: 0
   bIsSpawn: 0
@@ -1256,6 +1262,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   CurrentStats:
     Reflection:
       STAMINA: 0
@@ -1263,6 +1270,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   SustainedStatValues:
     Reflection:
       STAMINA: 0
@@ -1270,6 +1278,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   MaximumStatValues:
     Reflection:
       STAMINA: 0
@@ -1277,6 +1286,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   BaseResistances:
     Reflection:
       PHYSICAL: 0
@@ -1287,6 +1297,7 @@ MonoBehaviour:
       POISON: 0
       HEALING: 0
     Elements: []
+    Amplification: []
   CurrentResistances:
     Reflection:
       PHYSICAL: 0
@@ -1297,6 +1308,7 @@ MonoBehaviour:
       POISON: 0
       HEALING: 0
     Elements: []
+    Amplification: []
   ID: 0
   bIsPaused: 0
   bIsSpawn: 0
@@ -1422,7 +1434,7 @@ MonoBehaviour:
   - {fileID: 993416059}
   - {fileID: 2045316613}
   Strategy: {fileID: 0}
-  bIsAgressive: 0
+  bIsAgressive: 1
   bIsFollowing: 0
   bIsUsingNavMesh: 1
   bStrategyActive: 0
@@ -5816,6 +5828,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   CurrentStats:
     Reflection:
       STAMINA: 0
@@ -5823,6 +5836,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   SustainedStatValues:
     Reflection:
       STAMINA: 0
@@ -5830,6 +5844,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   MaximumStatValues:
     Reflection:
       STAMINA: 0
@@ -5837,6 +5852,7 @@ MonoBehaviour:
       MANA: 0
       SPEED: 0
     Stats: []
+    Amplification: []
   BaseResistances:
     Reflection:
       PHYSICAL: 0
@@ -5847,6 +5863,7 @@ MonoBehaviour:
       POISON: 0
       HEALING: 0
     Elements: []
+    Amplification: []
   CurrentResistances:
     Reflection:
       PHYSICAL: 0
@@ -5857,6 +5874,7 @@ MonoBehaviour:
       POISON: 0
       HEALING: 0
     Elements: []
+    Amplification: []
   ID: 0
   bIsPaused: 0
   bIsSpawn: 0

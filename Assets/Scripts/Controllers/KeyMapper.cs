@@ -33,7 +33,37 @@ public struct KeyMap
         }
     }
 }
+public enum KeyState
+{
+    DOWN,
+    PRESSED,
+    UP
+}
+public enum KeyAction
+{
+    LEFT,
+    RIGHT,
+    FORWARD,
+    BACKWARD,
+    SPRINT,
+    JUMP,
+    HOTBAR,
 
+    PAUSE,
+    HOME_TP,
+    TELEPORT,
+    TOG_PARTY,
+    TOG_CHAR,
+    TOG_PAWN,
+    TOG_CAM_MODE,
+
+    INTERACT,
+    CYCLE_TARGETS,
+    CHARACTER,
+    SKILLS,
+    CAM_LOOK,
+    CAM_RESET
+}
 public class KeyMapper : MonoBehaviour
 {
     public KeyMap[] Map;

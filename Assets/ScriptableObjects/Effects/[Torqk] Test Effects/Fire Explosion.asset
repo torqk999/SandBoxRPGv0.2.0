@@ -14,20 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Explosion!
   Sprite: {fileID: 0}
-  Condition: {fileID: 0}
-  Impact: {fileID: 0}
-  EquipID: 0
-  DurationLength: 0
-  Timer: 0
+  ProjectileType: 1
+  PeriodLength: 0.25
+  DurationLength: 4
+  Logic:
+    Options:
+      Inject: 0
+      ToggleActive: 0
+      EffectType: 0
+      IsClone: 0
+      IsProjectile: 0
+    TetherRange: 0
+    ProjectileLength: 0
+    ProjectileTimer: 0
+    PeriodTimer: 0
+    DurationTimer: 0
+    SourceAbility: {fileID: 0}
+    EffectedCharacter: {fileID: 0}
+    Original: {fileID: 0}
+    Clones: []
+    Condition: {fileID: 0}
+    Projectile: {fileID: 0}
+    Impact: {fileID: 0}
   Value: 4
-  TargetStat: 0
+  TargetStat: 1
   ElementPack:
     Reflection:
       PHYSICAL: 0
-      FIRE: 10
+      FIRE: 0
       WATER: 0
       EARTH: 0
       AIR: 0
       POISON: 0
       HEALING: 0
     Elements: []
+    Amplification: []

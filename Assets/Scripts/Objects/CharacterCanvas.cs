@@ -29,7 +29,6 @@ public class CharacterCanvas : MonoBehaviour
             BuildEffectImages();
         }
     }
-
     void BuildEffectImages()
     {
         for (int i = EffectContainer.childCount - 1; i > -1; i--)

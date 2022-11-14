@@ -558,18 +558,18 @@ public class Character : Pawn, Interaction
             if (AbilitySlots[i] != null)
                 AbilitySlots[i].UpdateCooldowns();
     }
-    void UpdatePassives()
+    void UpdatePassiveAbilities()
     {
         foreach (CharacterAbility ability in Abilities)
         {
             ability.UpdatePassiveTimer();
         }
     }
-    /*void UpdateRisidualEffects()
+    void UpdateRisidualEffects()
     {
         foreach (BaseEffect risidual in Risiduals)
-            risidual.ApplySingleEffect(this);
-    }*/
+            risidual.ApplySingleEffect(this, risidual.Logic.Options);
+    }
     void UpdateAdjustments()
     {
         MaximumStatValues.Clone(BaseStats);
@@ -642,7 +642,7 @@ public class Character : Pawn, Interaction
         IntentRight = right;
         bIntent = true;
     }
-    void UpdateAnimation()
+    void UpdateAnimation(bool pause = false)
     {
         if (Render == null)
             return;
@@ -682,10 +682,12 @@ public class Character : Pawn, Interaction
         if (bIsPaused)
             return;
 
-        UpdateGlobalCooldown();
+        
         UpdateLife();
-        UpdatePassives();
+        UpdatePassiveAbilities();
+        UpdateRisidualEffects();
         UpdateAbilityCooldowns();
+        UpdateGlobalCooldown();
         UpdateAnimation();
         UpdateAssetTimer();
         UpdateAssets();

@@ -107,6 +107,8 @@ public class SimpleAIcontroller : CharacterController
             TargetCharacter = GameState.CharacterMan.CharacterPool.Find(
                 x => x.Sheet.Faction != CurrentCharacter.Sheet.Faction &&
                 Vector3.Distance(x.Root.position, CurrentCharacter.Root.position) <= AggroRange);
+            //if (TargetCharacter != null)
+                //Debug.Log("Found you!");
             return;
         }
 
@@ -252,6 +254,7 @@ public class SimpleAIcontroller : CharacterController
                 if (TargetCharacter == null)
                     return false;
 
+                Debug.Log("Pathing to you!");
                 TravelPoint = TargetCharacter.Root.position;
                 if (!Pathing.GenerateNewPath(CurrentCharacter.Root.position, TravelPoint))
                 {

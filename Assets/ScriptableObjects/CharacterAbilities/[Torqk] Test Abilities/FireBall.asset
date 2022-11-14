@@ -14,21 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: FireBall
   Sprite: {fileID: 21300000, guid: 67be5c17b14c6924d818bb426caba20d, type: 3}
-  Cast: {fileID: 0}
+  CastType: 0
   CastLocation: 0
   AnimationState: 0
   CharAnimation: 2
-  CostValue: 20
-  CostTarget: 2
+  School: 5
   CostType: 4
-  School: 0
+  CostTarget: 2
+  CostValue: 20
   CastRange: 50
-  CD_Duration: 200
-  CD_Timer: 0
-  EquipID: 0
+  AOE_Range: 2.5
+  CD_Duration: 10
+  Cast_Duration: 0
+  ProjectileLength: 2
+  Logic:
+    CD_Timer: 0
+    Cast_Timer: 0
+    SourceCharacter: {fileID: 0}
+    CastInstance: {fileID: 0}
   Effects:
   - {fileID: 11400000, guid: 194e9ddef060bdb438a1dc4f2f8db7a4, type: 2}
   - {fileID: 11400000, guid: f90fb015e7479a84fb3dd1c6037aa7d1, type: 2}
   AbilityTarget: 3
-  AOE_Range: 2.5
   Projectile: {fileID: 0}

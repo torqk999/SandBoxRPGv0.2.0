@@ -19,7 +19,6 @@ public enum GearSlot
     PAULDRONS,
     GLOVES
 }
-
 public enum GearType
 {
     NAKED,
@@ -28,14 +27,6 @@ public enum GearType
     RING_MAIL,
     PLATE
 }
-
-/*public enum HandSlot
-{
-    MAIN,
-    OFF,
-    SHIELD
-}*/
-
 public enum HandPosition
 {
     AXE,
@@ -47,9 +38,6 @@ public enum HandPosition
     DAGGER,
     SHIELD
 }
-
-
-
 [Serializable]
 public class WardrobeProfile
 {
@@ -81,15 +69,9 @@ public enum CharAnimation
     Poke,
     Self
 }
-/*public enum AnimationTarget
-{
-    ElementalBall,
-    ElementalArrow
-}*/
 
 public class CharacterRender : MonoBehaviour
 {
-    //public CharacterManager CharManager;
     public Character MyCharacter;
     public Animator MyAnimator;
 
