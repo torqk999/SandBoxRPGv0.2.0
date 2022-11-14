@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum EffectType
 {
@@ -8,162 +7,153 @@ public enum EffectType
     TOGGLE
 }
 
-//[CreateAssetMenu(fileName = "Effect", menuName = "ScriptableObjects/Effects")]
 public class BaseEffect : ScriptableObject
 {
     [Header("Base Properties")]
     public string Name;
     public Sprite Sprite;
 
-    public GameObject Condition;
-    public GameObject Projectile;
-    public GameObject Impact;
-
     public PsystemType ProjectileType;
 
     public float PeriodLength;
     public float DurationLength;
-    public float ProjectileLength;
 
-    [Header("LOGIC - Do Not Touch!")]
-    public EffectType EffectType;
-    public float TetherRange;
-    //public int EffectIndex;
-    public bool Toggle;
+    [Header("NO TOUCHY!")]
+    public EffectLogic Logic;
 
-    public float PeriodTimer;
-    public float DurationTimer;
-    public float ProjectileTimer;
-
-    public CharacterAbility Source;
-    public Character EffectedCharacter;
-    public List<BaseEffect> Clones;
-
+    public GameState GameState() // Because I am le lazy...
+    {
+        try
+        {
+            return Logic.SourceAbility.Logic.SourceCharacter.GameState;
+        }
+        catch
+        {
+            Debug.Log($"Bad GameState reference on effect: {Name}");
+            return null;
+        }
+    }
     public bool PeriodClock(bool reset = false)
     {
         if (reset)
         {
-            PeriodTimer = 0;
+            Logic.PeriodTimer = 0;
             return true;
         }
 
-        if (PeriodTimer != 0)
-            PeriodTimer -= GlobalConstants.TIME_SCALE;
+        if (Logic.PeriodTimer != 0)
+            Logic.PeriodTimer -= GlobalConstants.TIME_SCALE;
 
-        if (PeriodTimer < 0)
-            PeriodTimer = 0;
+        if (Logic.PeriodTimer < 0)
+            Logic.PeriodTimer = 0;
 
-        return PeriodTimer == 0;
+        return Logic.PeriodTimer == 0;
     }
     public bool DurationClock(bool reset = false)
     {
-        if (EffectType != EffectType.PROC)
+        if (Logic.Options.EffectType != EffectType.PROC)
             return false;
 
         if (reset)
         {
-            DurationTimer = DurationLength;
+            Logic.DurationTimer = DurationLength;
             return true;
         }
 
-        if (DurationTimer != 0)
-            DurationTimer -= GlobalConstants.TIME_SCALE;
+        if (Logic.DurationTimer != 0)
+            Logic.DurationTimer -= GlobalConstants.TIME_SCALE;
 
-        if (DurationTimer < 0)
-            DurationTimer = 0;
+        if (Logic.DurationTimer < 0)
+            Logic.DurationTimer = 0;
 
-        return DurationTimer == 0;
+        return Logic.DurationTimer == 0;
     }
-    public bool ProjectileClock(bool reset = false)
+    public bool ProjectileClock(bool reset = false, PsystemType projectile = PsystemType.NONE)
     {
         if (reset)
         {
-            ProjectileTimer = ProjectileLength;
+            Logic.ProjectileTimer = Logic.ProjectileLength;
             return true;
         }
 
-        if (ProjectileTimer != 0)
-            ProjectileTimer -= GlobalConstants.TIME_SCALE;
+        if (Logic.ProjectileTimer != 0)
+            Logic.ProjectileTimer -= GlobalConstants.TIME_SCALE;
 
-        if (ProjectileTimer < 0)
-            ProjectileTimer = 0;
+        if (Logic.ProjectileTimer < 0)
+            Logic.ProjectileTimer = 0;
 
-        return ProjectileTimer == 0;
+        ProjectilePsystem(Logic.ProjectileTimer / Logic.ProjectileLength, projectile);
+
+        return Logic.ProjectileTimer == 0;
     }
-    void ProjectilePsystem()
+    void ProjectilePsystem(float lerp, PsystemType projectile = PsystemType.NONE)
     {
-        Debug.Log("Stepped into Cast system");
+        Debug.Log("Stepped into Projectile system");
 
-        if (Source == null ||
-            Source.SourceCharacter == null)
+        if (projectile == PsystemType.NONE)
             return;
 
-        Debug.Log("Casting...");
+        if (Logic.SourceAbility == null ||
+            Logic.SourceAbility.Logic.SourceCharacter == null ||
+            Logic.EffectedCharacter == null)
+            return;
 
-        if (Projectile != null)
-            Destroy(Projectile);
+        Debug.Log("Firing...");
 
-        Projectile = Instantiate(Source.SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)ProjectileType], Source.SourceCharacter.transform);
-        Projectile.transform.localPosition = Vector3.zero;
-        ProjectileTimer = ProjectileLength;
+        if (lerp == 0)
+        {
+            Destroy(Logic.Projectile);
+            return;
+        }
+        if (Logic.Projectile == null)
+        {
+            if (GameState() == null)
+                return;
+            Logic.Projectile = Instantiate(GameState().SceneMan.PsystemPrefabs[(int)ProjectileType], Logic.SourceAbility.Logic.SourceCharacter.transform);
+            Logic.Projectile.transform.localPosition = Vector3.zero;
+        }
+        //Projectile.transform.rotation = Quaternion.Lerp(EffectedCharacter.Root.rotation, SourceAbility.SourceCharacter.Root.rotation, lerp);
+        Logic.Projectile.transform.LookAt(Logic.EffectedCharacter.Root);
+        Logic.Projectile.transform.position = Vector3.Lerp(Logic.EffectedCharacter.Root.position, Logic.SourceAbility.Logic.SourceCharacter.Root.position, lerp);
     }
-    public virtual void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
+    public virtual void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
     {
         if (cast)
         {
-            Toggle = toggle;
-            if (!Toggle)
-                return;
+            Logic.Options.ToggleActive = options.ToggleActive;
 
-            if (ProjectileLength > 0 ||
+            if (Logic.ProjectileLength > 0 ||
                 DurationLength > 0 ||
-                EffectType == EffectType.PASSIVE ||
-                EffectType == EffectType.TOGGLE)
+                Logic.Options.EffectType == EffectType.PASSIVE ||
+                Logic.Options.EffectType == EffectType.TOGGLE)
             {
-                GenerateRisidualEffect(target);
+                GenerateRisidualEffect(target, ProjectileType);
             }
         }
 
         if (!cast)
         {
-            if (!ProjectileClock())
+            if (!ProjectileClock(false, ProjectileType))
                 return;
 
-            if (Projectile != null)
-                Destroy(Projectile);
+            if (Logic.Projectile != null)
+                Destroy(Logic.Projectile);
 
             if (DurationClock() &&
-                EffectType == EffectType.PROC)
+                Logic.Options.EffectType == EffectType.PROC)
                 RemoveRisidualEffect();
         }
     }
-    /*void EngageRisidual(Character target, bool toggle = true) // Post Projectile
-    {
-        switch (EffectType)
-        {
-            case EffectType.PROC:
-            case EffectType.PASSIVE:
-                GenerateRisidualEffect(target);
-                break;
-
-            case EffectType.TOGGLE:
-                if (toggle)
-                    GenerateRisidualEffect(target);
-                else
-                    RemoveRisidualEffect();
-                break;
-        }
-    }*/
-    public void GenerateRisidualEffect(Character target)
+    public void GenerateRisidualEffect(Character target, PsystemType projectile = PsystemType.NONE)
     {
         foreach (BaseEffect effect in target.Risiduals)
         {
-            if (Clones.Find(x => x == effect) != null)
+            if (Logic.Clones.Find(x => x == effect) != null)
             {
-                switch(EffectType)
+                switch(Logic.Options.EffectType)
                 {
                     case EffectType.TOGGLE:
-                        effect.Toggle = !effect.Toggle;
+                        effect.Logic.Options.ToggleActive = !effect.Logic.Options.ToggleActive;
                         break;
 
                     case EffectType.PROC:
@@ -174,34 +164,28 @@ public class BaseEffect : ScriptableObject
             }
         }
 
-        BaseEffect newEffect = GenerateEffect(target, false);
+        EffectOptions options = new EffectOptions();
+        BaseEffect newEffect = GenerateEffect(options ,target);
 
-        newEffect.ProjectileClock(true);
+        newEffect.Logic.Original = this;
+
+        newEffect.ProjectileClock(true, projectile);
         newEffect.DurationClock(true);
         newEffect.PeriodClock(true);
 
-        Clones.Add(newEffect);
+        Logic.Clones.Add(newEffect);
 
-        switch (EffectType)
-        {
-            case EffectType.PASSIVE:
-            case EffectType.TOGGLE:
-                target.Risiduals.Add(newEffect);
-                break;
-
-            case EffectType.PROC:
-                if (DurationLength > 0) // Timed
-                    target.Risiduals.Add(newEffect);
-                break;
-        }
+        target.Risiduals.Add(newEffect);
     }
     public virtual void RemoveRisidualEffect()
     {
-        if (EffectedCharacter == null)
+        Destroy(this);
+        /*if (EffectedCharacter == null)
             return;
 
         EffectedCharacter.Risiduals.Remove(this);
-        EffectedCharacter = null;
+
+        EffectedCharacter = null;*/
     }
 
     public virtual void Amplify(float amp)
@@ -212,24 +196,23 @@ public class BaseEffect : ScriptableObject
     {
 
     }
-    public virtual void CloneEffect(BaseEffect source, bool inject = false)
+    public virtual void CloneEffect(BaseEffect source, EffectOptions options)
     {
         Name = source.Name;
         Sprite = source.Sprite;
-        Condition = source.Condition;
-        Impact = source.Impact;
-        EffectType = source.EffectType;
-        TetherRange = source.TetherRange;
-        Source = source.Source;
         DurationLength = source.DurationLength;
-        DurationTimer = DurationLength;
-        ProjectileLength = source.ProjectileLength;
+        PeriodLength = source.PeriodLength;
+
+        Logic.Clone(source.Logic, options);
     }
-    public virtual BaseEffect GenerateEffect(Character effected = null, bool inject = true)
+    public virtual BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
         BaseEffect newEffect = (BaseEffect)CreateInstance("BaseEffect");
-        newEffect.CloneEffect(this, inject);
-        newEffect.EffectedCharacter = effected;
+        newEffect.CloneEffect(this, options);
+        
+        newEffect.Logic.EffectedCharacter = effected;
+        newEffect.Logic.Original = options.IsClone ? this : null;
+
         return newEffect;
     }
 }

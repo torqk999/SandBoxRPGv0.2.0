@@ -111,16 +111,16 @@ public class Equipment : ItemObject
             EffectAbility effectAbility = (EffectAbility)equipped;
 
             foreach (BaseEffect effect in effectAbility.Effects)
-                foreach (BaseEffect spawnedEffect in effect.Clones)
+                foreach (BaseEffect spawnedEffect in effect.Logic.Clones)
                 {
-                    if (effect.EffectType == EffectType.PASSIVE ||
-                        effect.EffectType == EffectType.TOGGLE)
+                    if (effect.Logic.Options.EffectType == EffectType.PASSIVE ||
+                        effect.Logic.Options.EffectType == EffectType.TOGGLE)
                         Destroy(spawnedEffect);
                 }
             
-            effectAbility.SourceCharacter.Abilities.Remove(effectAbility);
-            effectAbility.SourceCharacter.UpdateAbilites();
-            effectAbility.SourceCharacter = null;
+            effectAbility.Logic.SourceCharacter.Abilities.Remove(effectAbility);
+            effectAbility.Logic.SourceCharacter.UpdateAbilites();
+            effectAbility.Logic.SourceCharacter = null;
         }
 
         SlotFamily[SlotIndex] = null;

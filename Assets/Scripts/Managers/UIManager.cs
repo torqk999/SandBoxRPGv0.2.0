@@ -710,10 +710,12 @@ public class UIManager : MonoBehaviour
 
                             for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
                             {
-                                //if (effect.ElementPack.Elements[i] == 0)
-                                //    continue;
-
-                                outputBuild.Append($"\n{(Element)i} : {((CurrentStatEffect)effect).AmpedElementPack.Elements[i]}");
+                                if (((CurrentStatEffect)effect).ElementPack.Elements[i] == 0)
+                                    continue;
+          
+                                outputBuild.Append($"\n{(Element)i}\n" +
+                                    $"Base: {((CurrentStatEffect)effect).ElementPack.Elements[i]}\n" +
+                                    $"Current: {((CurrentStatEffect)effect).ElementPack.Amplification[i]}\n");
                             }
                             break;
 
@@ -866,7 +868,7 @@ public class UIManager : MonoBehaviour
 
             //Debug.Log($"Updating slot:{i}");
 
-            slider.value = 1 - (GameState.pController.CurrentCharacter.AbilitySlots[i].CD_Timer /
+            slider.value = 1 - (GameState.pController.CurrentCharacter.AbilitySlots[i].Logic.CD_Timer /
                 GameState.pController.CurrentCharacter.AbilitySlots[i].CD_Duration);
         }
     }

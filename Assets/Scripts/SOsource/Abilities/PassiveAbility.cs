@@ -12,13 +12,16 @@ public class PassiveAbility : EffectAbility
     public float ProcTimer;
     public float ProcDelay;
 
-    /*void ClonePassives(PassiveAbility source, bool inject = false)
+    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
-        Effects = new BaseEffect[source.Effects.Length];
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = source.Effects[i].GenerateEffect(inject);
-    }*/
+        options.EffectType = EffectType.PASSIVE;
+        options.ToggleActive = true;
+        options.IsProjectile = true;
+        options.IsClone = true;
+        options.Inject = false;
 
+        base.UseAbility(target, options);
+    }
     public override void CloneAbility(CharacterAbility source, bool inject = false)
     {
         if (!(source is PassiveAbility))
@@ -53,12 +56,12 @@ public class PassiveAbility : EffectAbility
     }
     void PassiveProc()
     {
-        if (SourceCharacter == null)
+        if (Logic.SourceCharacter == null)
         {
             Debug.Log("No source!");
             return;
         }
 
-        SourceCharacter.AttemptAbility(this);
+        Logic.SourceCharacter.AttemptAbility(this);
     }
 }
