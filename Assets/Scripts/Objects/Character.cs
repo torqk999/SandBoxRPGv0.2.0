@@ -478,7 +478,14 @@ public class Character : Pawn, Interaction
         }
     }
     #endregion
-
+    public CrowdControlEffect RawCrowdControlGeneration(string name, CCstatus status, Sprite sprite = null) // Hard indefinite CC creation (ez death)
+    {
+        CrowdControlEffect newEffect = (CrowdControlEffect)ScriptableObject.CreateInstance("CrowdControlEffect");
+        newEffect.Name = name;
+        newEffect.Sprite = sprite;
+        newEffect.TargetCCstatus = status;
+        return newEffect;
+    }
     #region UPDATES
     public void UpdateAbilites()
     {
@@ -495,7 +502,7 @@ public class Character : Pawn, Interaction
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
             if(Risiduals.Find(x => x is CrowdControlEffect && ((CrowdControlEffect)x).TargetCCstatus == CCstatus.DEAD) == null)
-                Risiduals.Add(new CrowdControlEffect("Death", CCstatus.DEAD));
+                Risiduals.Add(RawCrowdControlGeneration("Death", CCstatus.DEAD));
 
             bAssetUpdate = true;
             DebugState = DebugState.DEAD;

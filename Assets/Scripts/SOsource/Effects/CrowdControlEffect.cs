@@ -34,15 +34,8 @@ public class CrowdControlEffect : BaseEffect
 
     public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
-        CrowdControlEffect newEffect = (CrowdControlEffect)CreateInstance("ImmuneEffect");
+        CrowdControlEffect newEffect = (CrowdControlEffect)CreateInstance("CrowdControlEffect");
         newEffect.CloneEffect(this, options);
         return newEffect;
-    }
-
-    public CrowdControlEffect(string name, CCstatus status, Sprite sprite = null) // Hard indefinite CC creation (ez death)
-    {
-        Name = name;
-        Sprite = sprite;
-        TargetCCstatus = status;
     }
 }
