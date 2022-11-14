@@ -13,6 +13,7 @@ public class EffectAbility : CharacterAbility
 
     public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
+        Debug.Log($"Using ability: {Name}");
         for (int i = 0; i < Effects.Length; i++)
         {
             Effects[i].ApplySingleEffect(target, options); // First or only proc
@@ -38,25 +39,17 @@ public class EffectAbility : CharacterAbility
             effect.InitializeSource();
     }
 
-    public virtual void ProduceOriginalEffects(EffectAbility source, bool inject = false)
+    public virtual void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
     {
-        EffectType type = default(EffectType);
-        switch(this)
-        {
-            case ProcAbility: type = EffectType.PROC; break;
-            case PassiveAbility: type = EffectType.PASSIVE; break;
-            case ToggleAbility: type = EffectType.TOGGLE; break;
-        }
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
             if (source.Effects[i] != null)
             {
-                EffectOptions options = new EffectOptions(type, false, false);
                 Effects[i] = source.Effects[i].GenerateEffect(options);
                 Effects[i].Logic.ProjectileLength = ProjectileLength;
             }    
     }
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is EffectAbility))
             return;
@@ -65,7 +58,7 @@ public class EffectAbility : CharacterAbility
 
         AbilityTarget = targetSource.AbilityTarget;
 
-        ProduceOriginalEffects(targetSource, inject);
-        base.CloneAbility(source, inject);
+        ProduceOriginalEffects(targetSource);
+        base.CloneAbility(source);
     }
 }

@@ -494,10 +494,14 @@ public class Character : Pawn, Interaction
 
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
-            Risiduals.Add(new CrowdControlEffect("Death", CCstatus.DEAD));
+            if(Risiduals.Find(x => x is CrowdControlEffect && ((CrowdControlEffect)x).TargetCCstatus == CCstatus.DEAD) == null)
+                Risiduals.Add(new CrowdControlEffect("Death", CCstatus.DEAD));
+
             bAssetUpdate = true;
             DebugState = DebugState.DEAD;
-            //Source.GetComponent<Collider>().enabled = false;
+
+            IntentForward = 0;
+            IntentRight = 0;
 
             if (RigidBody != null)
             {
@@ -671,7 +675,7 @@ public class Character : Pawn, Interaction
         if (bIsPaused)
             return;
 
-        //UpdateRisidualEffects();
+        UpdateGlobalCooldown();
         UpdateLife();
         UpdatePassives();
         UpdateAbilityCooldowns();

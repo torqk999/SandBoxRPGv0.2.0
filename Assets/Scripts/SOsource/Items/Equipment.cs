@@ -52,7 +52,7 @@ public class Equipment : ItemObject
         for (int i = 0; i < Abilities.Length; i++)
         {
             if (source.Abilities[i] != null)
-                Abilities[i] = source.Abilities[i].GenerateAbility(true);
+                Abilities[i] = source.Abilities[i].GenerateAbility();
             else
                 Debug.Log($"Ability missing from id#{EquipID}:{Name}");
         }

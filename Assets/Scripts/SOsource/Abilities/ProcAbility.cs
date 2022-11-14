@@ -19,12 +19,18 @@ public class ProcAbility : EffectAbility
 
         base.UseAbility(target, options);
     }
-    public override void ProduceOriginalEffects(EffectAbility source, bool inject = false)
+    public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
     {
-        base.ProduceOriginalEffects(source, inject);
+        options.EffectType = EffectType.PROC;
+        options.ToggleActive = true;
+        options.IsProjectile = true;
+        options.IsClone = false;
+        options.Inject = false;
+
+        base.ProduceOriginalEffects(source, options);
     }
 
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is ProcAbility))
             return;
@@ -33,13 +39,13 @@ public class ProcAbility : EffectAbility
 
         Projectile = procSource.Projectile;
 
-        base.CloneAbility(source, inject);
+        base.CloneAbility(source);
     }
 
-    public override CharacterAbility GenerateAbility(bool inject = false)
+    public override CharacterAbility GenerateAbility()
     {
         ProcAbility newAbility = (ProcAbility)CreateInstance("ProcAbility");
-        newAbility.CloneAbility(this, inject);
+        newAbility.CloneAbility(this);
         return newAbility;
     }
 }
