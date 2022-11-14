@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Swing
   Sprite: {fileID: 21300000, guid: e97fbe8f0121aee418c2171b48665218, type: 3}
-  Cast: {fileID: 0}
   CastType: 0
   CastLocation: 0
   AnimationState: 0
@@ -27,11 +26,13 @@ MonoBehaviour:
   AOE_Range: 0
   CD_Duration: 2
   Cast_Duration: 2
-  CD_Timer: 0
-  Cast_Timer: 0
-  SpawnedEffects: []
-  SourceCharacter: {fileID: 0}
+  ProjectileLength: 0
+  Logic:
+    CD_Timer: 0
+    Cast_Timer: 0
+    SourceCharacter: {fileID: 0}
+    CastInstance: {fileID: 0}
   Effects:
   - {fileID: 11400000, guid: fef5323f18c13aa4ca1af08d28e9ec61, type: 2}
-  AbilityTarget: 0
+  AbilityTarget: 3
   Projectile: {fileID: 0}
