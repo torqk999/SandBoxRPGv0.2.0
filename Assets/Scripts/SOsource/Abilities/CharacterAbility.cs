@@ -26,10 +26,10 @@ public class CharacterAbility : ScriptableObject
     public string Name;
 
     public Sprite Sprite;
-    public GameObject Cast;
+    
     public PsystemType CastType;
-
     public CastLocation CastLocation;
+
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
 
@@ -42,18 +42,11 @@ public class CharacterAbility : ScriptableObject
     public float AOE_Range;
     public float CD_Duration;
     public float Cast_Duration;
-    
+    public float ProjectileLength;
 
-    [Header("Ability Logic - Do Not Touch")]
-    //public int AbilityID;
-    //public int EquipID;
-    public float CD_Timer;
-    public float Cast_Timer;
-    public float Projectile_Timer;
-    public List<BaseEffect> SpawnedEffects;
-    public Character SourceCharacter;
+    public AbilityLogic Logic;
 
-    public virtual void UseAbility(Character target)
+    public virtual void UseAbility(Character target, EffectOptions optiions)
     {
         CastPsystem();
     }
@@ -61,17 +54,20 @@ public class CharacterAbility : ScriptableObject
     {
         Debug.Log("Stepped into Cast system");
 
-        if (SourceCharacter == null)
+        if (CastType == PsystemType.NONE)
+            return;
+
+        if (Logic.SourceCharacter == null)
             return;
 
         Debug.Log("Casting...");
 
-        if (Cast != null)
-            Destroy(Cast);
+        if (Logic.CastInstance != null)
+            Destroy(Logic.CastInstance);
 
-        Cast = Instantiate(SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastType], SourceCharacter.transform);
-        Cast.transform.localPosition = Vector3.zero;
-        Cast_Timer = Cast_Duration;
+        Logic.CastInstance = Instantiate(Logic.SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastType], Logic.SourceCharacter.transform);
+        Logic.CastInstance.transform.localPosition = Vector3.zero;
+        Logic.Cast_Timer = Cast_Duration;
     }
     public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
     {
@@ -99,33 +95,32 @@ public class CharacterAbility : ScriptableObject
 
         CD_Duration = source.CD_Duration;
         Cast_Duration = source.Cast_Duration;
-        
+        ProjectileLength = source.ProjectileLength;
 
-        CD_Timer = 0;
-        Cast_Timer = 0;
-        Projectile_Timer = 0;
+        Logic.Clone(source.Logic);
 
-        SpawnedEffects = new List<BaseEffect>();
+        Logic.CD_Timer = 0;
+        Logic.Cast_Timer = 0;
     }
     public void SetCooldown()
     {
-        CD_Timer = CD_Duration;
+        Logic.CD_Timer = CD_Duration;
     }
     public void UpdateCooldowns()
     {
-        if (CD_Timer != 0)
+        if (Logic.CD_Timer != 0)
         {
-            CD_Timer -= GlobalConstants.TIME_SCALE;
-            CD_Timer = (CD_Timer < 0) ? 0 : CD_Timer;
+            Logic.CD_Timer -= GlobalConstants.TIME_SCALE;
+            Logic.CD_Timer = (Logic.CD_Timer < 0) ? 0 : Logic.CD_Timer;
         }
-        if (Cast_Timer != 0)
+        if (Logic.Cast_Timer != 0)
         {
-            Cast_Timer -= GlobalConstants.TIME_SCALE;
-            Cast_Timer = (Cast_Timer < 0) ? 0 : Cast_Timer;
+            Logic.Cast_Timer -= GlobalConstants.TIME_SCALE;
+            Logic.Cast_Timer = (Logic.Cast_Timer < 0) ? 0 : Logic.Cast_Timer;
         }
-        if (Cast_Timer == 0 && Cast != null)
+        if (Logic.Cast_Timer == 0 && Logic.CastInstance != null)
         {
-            Destroy(Cast);
+            Destroy(Logic.CastInstance);
         }
     }
     public void UpdateProjectiles()
@@ -148,7 +143,7 @@ public class CharacterAbility : ScriptableObject
         Amplify(currentCharacter.Sheet, equip);
         currentCharacter.Abilities.Add(this);
         //Debug.Log(this.GetType().ToString());
-        SourceCharacter = currentCharacter;
+        Logic.SourceCharacter = currentCharacter;
 
         /*
         CharacterAbility newAbility = GenerateAbility();

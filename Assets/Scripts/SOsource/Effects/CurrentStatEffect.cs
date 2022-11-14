@@ -7,12 +7,11 @@ public class CurrentStatEffect : StatEffect
 {
     [Header("Damage Values")]
     public RawStat TargetStat;
-    public ElementPackage BaseElementPack;
-    public ElementPackage AmpedElementPack;
+    public ElementPackage ElementPack;
 
-    public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
+    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
     {
-        base.ApplySingleEffect(target, cast, toggle); // Risidual proc
+        base.ApplySingleEffect(target, options, cast); // Risidual proc
 
         if (target.CheckDamageImmune(TargetStat))
             return;
@@ -33,7 +32,7 @@ public class CurrentStatEffect : StatEffect
             //if (CheckElementalImmune((Element)i))
             //continue;
             float res = target.CurrentResistances.Elements[i];
-            float change = (damageModifier * AmpedElementPack.Elements[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
+            float change = (damageModifier * ElementPack.Amplification[i]) * (1 - (res / (res + CharacterMath.RES_PRIME_DENOM)));
             totalDamage += (Element)i == Element.HEALING ? -change : change; // Everything but healing
         }
 
@@ -77,15 +76,15 @@ public class CurrentStatEffect : StatEffect
     }
     public override void Amplify(float amp)
     {
-        AmpedElementPack.Amplify(BaseElementPack, amp);
+        ElementPack.Amplify(amp);
     }
     public override void InitializeSource()
     {
-        BaseElementPack.Initialize();
+        ElementPack.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, bool inject = false)
+    public override void CloneEffect(BaseEffect source, EffectOptions options)
     {
-        base.CloneEffect(source, inject);
+        base.CloneEffect(source, options);
 
         if (!(source is CurrentStatEffect))
             return;
@@ -93,13 +92,12 @@ public class CurrentStatEffect : StatEffect
         CurrentStatEffect currentStatEffectSource = (CurrentStatEffect)source;
         TargetStat = currentStatEffectSource.TargetStat;
 
-        BaseElementPack.Clone(currentStatEffectSource.BaseElementPack);
-        AmpedElementPack.Clone(BaseElementPack);
+        ElementPack.Clone(currentStatEffectSource.ElementPack);
     }
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
         CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
-        newEffect.CloneEffect(this, inject);
+        newEffect.CloneEffect(this, options);
         return newEffect;
     }
     public void FormRegen(RawStat targetStat, float healMagnitude) // Default regen
@@ -107,6 +105,6 @@ public class CurrentStatEffect : StatEffect
         Name = $"{targetStat} REGEN";
         TargetStat = targetStat;
         Value = ValueType.FLAT;
-        BaseElementPack = new ElementPackage(healMagnitude);
+        ElementPack = new ElementPackage(healMagnitude);
     }
 }

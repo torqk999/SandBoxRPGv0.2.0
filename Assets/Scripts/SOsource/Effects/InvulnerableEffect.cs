@@ -8,9 +8,9 @@ public class InvulnerableEffect : BaseEffect
     [Header("Invulnerable Properties")]
     public RawStat TargetStat;
 
-    public override void CloneEffect(BaseEffect source, bool inject = false)
+    public override void CloneEffect(BaseEffect source, EffectOptions options)
     {
-        base.CloneEffect(source, inject);
+        base.CloneEffect(source, options);
 
         if (!(source is InvulnerableEffect))
             return;
@@ -20,10 +20,10 @@ public class InvulnerableEffect : BaseEffect
         TargetStat = invulnerableSource.TargetStat;
     }
 
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
         InvulnerableEffect newEffect = (InvulnerableEffect)CreateInstance("InvulnerableEffect");
-        newEffect.CloneEffect(this, inject);
+        newEffect.CloneEffect(this, options);
         return newEffect;
     }
 }

@@ -772,7 +772,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   PsystemPrefabs:
-  - {fileID: 3753533628294104958, guid: 33fc0e3d044d03c4c8d2dca7aaeb39b7, type: 3}
+  - {fileID: 0}
+  - {fileID: 9166468490631087086, guid: b6bce54f7a050b74bb037848cee79dfc, type: 3}
   - {fileID: 8647462742836620833, guid: cd6f2a9ccff73af41b698d6ab823de84, type: 3}
   - {fileID: 2191088178451580555, guid: 5fce6412be45e9e42a931990844b0320, type: 3}
   - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
@@ -916,6 +917,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  GlobalCDtimer: 0
   AOE_buffer: []
   Abilities:
   - {fileID: 11400000, guid: 85b3d7ef40f064a47b0a4b91c1a73c40, type: 2}
@@ -1302,6 +1304,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  GlobalCDtimer: 0
   AOE_buffer: []
   Abilities: []
   Risiduals: []
@@ -2855,6 +2858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cam: {fileID: 0}
   Character: {fileID: 0}
+  myCanvas: {fileID: 0}
   Offset: {x: 0, y: 2, z: 0}
   LevelText: {fileID: 356928664}
   HealthBar: {fileID: 1413027461}
@@ -5860,6 +5864,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  GlobalCDtimer: 0
   AOE_buffer: []
   Abilities:
   - {fileID: 11400000, guid: 76d1a3c863e5cbe46864486982432ef2, type: 2}

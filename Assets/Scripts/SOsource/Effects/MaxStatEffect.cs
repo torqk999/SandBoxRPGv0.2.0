@@ -6,37 +6,35 @@ using UnityEngine;
 public class MaxStatEffect : StatEffect
 {
     [Header ("Adjust Values")]
-    public RawStatPackage BaseStatAdjustPack;
-    public RawStatPackage AmpedStatAdjustPack;
+    public RawStatPackage StatAdjustPack;
 
-    public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
+    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
     {
-        base.ApplySingleEffect(target, cast, toggle); // Risidual proc
+        base.ApplySingleEffect(target, options, cast); // Risidual proc
     }
     public override void Amplify(float amp)
     {
-        AmpedStatAdjustPack.Amplify(BaseStatAdjustPack, amp);
+        StatAdjustPack.Amplify(amp);
     }
     public override void InitializeSource()
     {
-        BaseStatAdjustPack.Initialize();
+        StatAdjustPack.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, bool inject = false)
+    public override void CloneEffect(BaseEffect source, EffectOptions options)
     {
-        base.CloneEffect(source, inject);
+        base.CloneEffect(source, options);
 
         if (!(source is MaxStatEffect))
             return;
 
         MaxStatEffect maxSource = (MaxStatEffect)source;
 
-        BaseStatAdjustPack.Clone(maxSource.BaseStatAdjustPack);
-        AmpedStatAdjustPack.Clone(BaseStatAdjustPack);
+        StatAdjustPack.Clone(maxSource.StatAdjustPack);
     }
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, inject);
+        newEffect.CloneEffect(this, options);
         return newEffect;
     }
 }

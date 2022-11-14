@@ -20,9 +20,9 @@ public class CrowdControlEffect : BaseEffect
 
         target.Risiduals.Add(G)
     }*/
-    public override void CloneEffect(BaseEffect source, bool inject = false)
+    public override void CloneEffect(BaseEffect source, EffectOptions options)
     {
-        base.CloneEffect(source, inject);
+        base.CloneEffect(source, options);
 
         if (!(source is CrowdControlEffect))
             return;
@@ -32,10 +32,10 @@ public class CrowdControlEffect : BaseEffect
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
 
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
         CrowdControlEffect newEffect = (CrowdControlEffect)CreateInstance("ImmuneEffect");
-        newEffect.CloneEffect(this, inject);
+        newEffect.CloneEffect(this, options);
         return newEffect;
     }
 
