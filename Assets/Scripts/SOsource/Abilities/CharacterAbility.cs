@@ -77,7 +77,7 @@ public class CharacterAbility : ScriptableObject
     {
 
     }
-    public virtual void CloneAbility(CharacterAbility source, bool inject = false)
+    public virtual void CloneAbility(CharacterAbility source)
     {
         Name = source.Name;
         Sprite = source.Sprite;
@@ -131,10 +131,10 @@ public class CharacterAbility : ScriptableObject
     {
 
     }
-    public virtual CharacterAbility GenerateAbility(bool inject = true)
+    public virtual CharacterAbility GenerateAbility()
     {
         CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
-        newAbility.CloneAbility(this, inject);
+        newAbility.CloneAbility(this);
         newAbility.InitializeSource();
         return newAbility;
     }

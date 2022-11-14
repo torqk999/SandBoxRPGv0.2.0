@@ -146,6 +146,8 @@ public class BaseEffect : ScriptableObject
     }
     public void GenerateRisidualEffect(Character target, PsystemType projectile = PsystemType.NONE)
     {
+        Debug.Log("Generating risidual!");
+
         foreach (BaseEffect effect in target.Risiduals)
         {
             if (Logic.Clones.Find(x => x == effect) != null)

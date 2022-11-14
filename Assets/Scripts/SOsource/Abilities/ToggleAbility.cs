@@ -23,12 +23,18 @@ public class ToggleAbility : EffectAbility
         base.UseAbility(target, options);
     }
 
-    public override void ProduceOriginalEffects(EffectAbility source, bool inject = false)
+    public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
     {
-        base.ProduceOriginalEffects(source, inject);
+        options.EffectType = EffectType.TOGGLE;
+        options.ToggleActive = false;
+        options.IsProjectile = false;
+        options.IsClone = false;
+        options.Inject = false;
+
+        base.ProduceOriginalEffects(source, options);
     }
 
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is ToggleAbility))
             return;
@@ -38,13 +44,13 @@ public class ToggleAbility : EffectAbility
         Aura = passiveSource.Aura;
         Active = false;
 
-        base.CloneAbility(source, inject);
+        base.CloneAbility(source);
     }
 
-    public override CharacterAbility GenerateAbility(bool inject = false)
+    public override CharacterAbility GenerateAbility()
     {
         ToggleAbility newAbility = (ToggleAbility)CreateInstance("PassiveAbility");
-        newAbility.CloneAbility(this, inject);
+        newAbility.CloneAbility(this);
         return newAbility;
     }
 }
