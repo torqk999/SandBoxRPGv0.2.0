@@ -22,7 +22,7 @@ public class PassiveAbility : EffectAbility
 
         base.UseAbility(target, options);
     }
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is PassiveAbility))
             return;
@@ -37,13 +37,23 @@ public class PassiveAbility : EffectAbility
         ProcDelay = passiveSource.ProcDelay;
         ProcTimer = ProcDelay;
 
-        base.CloneAbility(source, inject);
+        base.CloneAbility(source);
     }
-    public override CharacterAbility GenerateAbility(bool inject = false)
+    public override CharacterAbility GenerateAbility()
     {
         PassiveAbility newAbility = (PassiveAbility)CreateInstance("PassiveAbility");
-        newAbility.CloneAbility(this, inject);
+        newAbility.CloneAbility(this);
         return newAbility;
+    }
+    public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
+    {
+        options.EffectType = EffectType.PASSIVE;
+        options.ToggleActive = true;
+        options.IsProjectile = false;
+        options.IsClone = false;
+        options.Inject = false;
+
+        base.ProduceOriginalEffects(source, options);
     }
     public override void UpdatePassiveTimer()
     {
