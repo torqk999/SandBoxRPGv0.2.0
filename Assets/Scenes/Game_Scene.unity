@@ -1799,7 +1799,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -32.1, y: 7.3}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 10.05, y: 20.11}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &356928664
 MonoBehaviour:
@@ -2053,8 +2053,8 @@ RectTransform:
   m_Father: {fileID: 991372050}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2350,7 +2350,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &559339744
 Transform:
   m_ObjectHideFlags: 0
@@ -2726,7 +2726,7 @@ MonoBehaviour:
   UIMan: {fileID: 0}
   oldPosMouse: {x: 0, y: 0}
   oldPosButton: {x: 0, y: 0}
-  currentDelta: {x: 0, y: 0}
+  currentDelta: {x: 386.45, y: 312}
   ButtonBounds: {x: 15, y: 15}
   Following: 0
   MyRect: {fileID: 587463931}
@@ -3163,7 +3163,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3515,7 +3515,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &940888820
 Transform:
   m_ObjectHideFlags: 0

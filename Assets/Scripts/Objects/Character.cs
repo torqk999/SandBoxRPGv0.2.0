@@ -345,6 +345,7 @@ public class Character : Pawn, Interaction
         if (!CheckCanCastAbility(call, costModifier))
             return false;
         bool chk = false;
+
         switch (call)
         {
             case EffectAbility:
@@ -424,9 +425,13 @@ public class Character : Pawn, Interaction
                         return false;
                     break;
             }
-            SpendResource(call, costModifier);
-            call.UseAbility(CurrentTargetCharacter);
-            return true;
+            if (Vector3.Distance(CurrentTargetCharacter.Root.position, Root.position) <= Math.Abs(call.CastRange))
+            {
+                SpendResource(call, costModifier);
+                call.UseAbility(CurrentTargetCharacter);
+                return true;
+            }
+            return false;
         }
         if (call.AOE_Range != 0)
         {

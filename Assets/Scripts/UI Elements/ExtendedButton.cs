@@ -13,19 +13,21 @@ public class TestBOOTONeditor : Editor
 {
     public override void OnInspectorGUI()
     {
+        // Show default inspector property editor
+        DrawDefaultInspector();
+
         ExtendedButton button = (ExtendedButton)target;
 
-        button.Type = (ButtonType)EditorGUILayout.EnumPopup("Type", button.Type);
+        //   : |       >: | 
+
+        /*button.Type = (ButtonType)EditorGUILayout.EnumPopup("Type", button.Type);
         button.Index = EditorGUILayout.IntField("Index", button.Index);
         button.UIMan = (UIManager)EditorGUILayout.ObjectField("UIMan", button.UIMan, typeof(UIManager), true);
         button.oldPosMouse = EditorGUILayout.Vector2Field("oldPosMouse", button.oldPosMouse);
         button.oldPosButton = EditorGUILayout.Vector2Field("oldPosButton", button.oldPosButton);
         button.currentDelta = EditorGUILayout.Vector2Field("currentDelta", button.currentDelta);
         button.ButtonBounds = EditorGUILayout.Vector2Field("ButtonBounds", button.ButtonBounds);
-        button.Following = EditorGUILayout.Toggle("Following", button.Following);
-
-        // Show default inspector property editor
-        DrawDefaultInspector();
+        button.Following = EditorGUILayout.Toggle("Following", button.Following); */
     }
 }
 
@@ -42,6 +44,7 @@ public enum ButtonType
 
 public class ExtendedButton : Button
 {
+    [Header ("Custom Booton elements BILL!")]
     public ButtonType Type;
     public int Index;
     public UIManager UIMan;
@@ -68,14 +71,21 @@ public class ExtendedButton : Button
         Following = false;
 
         if (MyRect == null ||
-            UIMan == null ||
+            //UIMan == null ||
             (Math.Abs(currentDelta.x) < ButtonBounds.x && Math.Abs(currentDelta.y) < ButtonBounds.y))
         {
             this.transform.position = oldPosButton;
             return;
         }
+    }
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+        base.OnPointerEnter(eventData);
+    }
 
-
+    public override void OnPointerExit(PointerEventData eventData)
+    {
+        base.OnPointerExit(eventData);
     }
     void FollowMouse()
     {
