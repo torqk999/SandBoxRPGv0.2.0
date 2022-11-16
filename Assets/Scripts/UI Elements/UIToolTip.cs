@@ -23,11 +23,15 @@ public class UIToolTip : MonoBehaviour
         Active = true;
         Title.text = title.ToString();
 
-        if(stats != null)
+        if (stats != null)
             Stats.text = stats.ToString();
+        else
+            Stats.text = string.Empty;
 
         if(flavour != null)
             Flavour.text = flavour.ToString();
+        else
+            Flavour.text = string.Empty;
 
         return true;
     }
