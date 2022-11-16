@@ -58,6 +58,7 @@ public class UIManager : MonoBehaviour
 
     [Header("===LOGIC===")]
     public GameState GameState;
+    public UIToolTip ToolTip;
     public bool GameStateLinked = false;
     public bool UIinitialized = false;
 
@@ -68,20 +69,22 @@ public class UIManager : MonoBehaviour
     public CharPage OldPage;
 
     [Header("Prefabs")]
-    public GameObject InventoryButtonPrefab;
-    public GameObject SkillListButtonPrefab;
-    public GameObject SkillSlotButtonPrefab;
+    //public GameObject InventoryButtonPrefab;
+    //public GameObject SkillListButtonPrefab;
+    //public GameObject SkillSlotButtonPrefab;
+    public GameObject DraggableButtonPrefab;
     public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
 
-
     [Header("Folders")]
+    public Transform PartyMembers;
     public Transform InventoryButtonContent;
     public Transform ContainerButtonContent;
     public Transform SkillButtonContent;
     public Transform EffectStatsContent;
+
     public Transform HotBarButtonContent;
-    public Transform PartyMembers;
+    public Transform HotBarPlaceHolderContent;
 
     [Header("HUD")]
     public GameObject Interaction;
@@ -127,9 +130,17 @@ public class UIManager : MonoBehaviour
     public int SelectedRingSlot;
     public int SelectedAbilitySlot;
 
-    public Button[] EquipButtons;
-    public Button[] RingButtons;
+    public List<SelectableButton> SkillListButtons;
+    public List<SelectableButton> InventoryButtons;
 
+    public SelectableButton[] EquipButtons;
+    public SelectableButton[] EquipPlaceHolers;
+
+    public SelectableButton[] RingButtons;
+    public SelectableButton[] RingPlaceHolders;
+
+    public SelectableButton[] HotBarButtons;
+    public SelectableButton[] AbilityPlaceHolders;
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;
@@ -161,66 +172,9 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region BUTTONS
-    void CreateCallBackIdentity(Button button, int index, ButtonType type)
+    void CreateRemapCallBack(Button button, int index)
     {
-        switch (type)
-        {
-            case ButtonType.INVENTORY:
-                button.onClick.AddListener(() => UpdateSelections(ButtonType.INVENTORY, index));
-                break;
-
-            case ButtonType.CONTAINER:
-                button.onClick.AddListener(() => UpdateSelections(ButtonType.CONTAINER, index));
-                break;
-
-            case ButtonType.LIST_SKILL:
-                button.onClick.AddListener(() => UpdateSelections(ButtonType.LIST_SKILL, index));
-                break;
-
-            case ButtonType.SLOT_SKILL:
-                button.onClick.AddListener(() => UpdateSelections(ButtonType.SLOT_SKILL, index));
-                break;
-
-            case ButtonType.SLOT_EQUIP:
-                button.onClick.AddListener(() => UpdateSelections(ButtonType.SLOT_EQUIP, index));
-                break;
-
-            case ButtonType.SLOT_RING:
-                button.onClick.AddListener(() => UpdateSelections(ButtonType.SLOT_RING, index));
-                break;
-
-            case ButtonType.KEY_MAP:
-                button.onClick.AddListener(() => Remap(index, button));
-                break;
-        }
-    }
-    void CreateHoverIdentity(EventTrigger trigger, int index, ButtonType type)
-    {
-        EventTrigger.Entry enter = new EventTrigger.Entry();
-        EventTrigger.Entry exit = new EventTrigger.Entry();
-
-        enter.eventID = EventTriggerType.PointerEnter;
-        exit.eventID = EventTriggerType.PointerExit;
-
-        switch (type)
-        {
-            case ButtonType.INVENTORY:
-                enter.callback.AddListener((enter) => InventoryItemHover(index));
-                exit.callback.AddListener((exit) => InventoryItemHover(index, false));
-                break;
-
-            case ButtonType.CONTAINER:
-                break;
-
-            case ButtonType.LIST_SKILL:
-                break;
-
-            case ButtonType.KEY_MAP:
-                break;
-        }
-
-        trigger.triggers.Add(enter);
-        trigger.triggers.Add(exit);
+        button.onClick.AddListener(() => Remap(index, button));
     }
     void PopulateKeyMaps()
     {
@@ -245,8 +199,8 @@ public class UIManager : MonoBehaviour
             action0.transform.GetChild(0).GetComponent<Text>().text = GameState.KeyMap.Map[i].Keys[0].ToString();
             action1.transform.GetChild(0).GetComponent<Text>().text = GameState.KeyMap.Map[i].Keys[1].ToString();
 
-            CreateCallBackIdentity(action0, 2 * i, ButtonType.KEY_MAP);
-            CreateCallBackIdentity(action1, 2 * i + 1, ButtonType.KEY_MAP);
+            CreateRemapCallBack(action0, 2 * i);
+            CreateRemapCallBack(action1, 2 * i + 1);
         }
     }
     void Remap(int index, Button self)
@@ -331,6 +285,51 @@ public class UIManager : MonoBehaviour
 
         PauseMenuRefresh();
     }
+    public void UnselectPool(List<SelectableButton> buttons)
+    {
+        UnselectPool(buttons.ToArray());
+    }
+    public void UnselectPool(SelectableButton[] buttons)
+    {
+        if (buttons != null)
+            foreach (SelectableButton button in buttons)
+                if (button != null)
+                    button.UnSelect();
+    }
+    public void CharacterPageSelection(SelectableButton selection)
+    {
+        if (selection == null)
+            return;
+
+        UnselectPool(InventoryButtons);
+        UnselectPool(EquipButtons);
+        UnselectPool(RingButtons);
+        //UnselectPool(HotBarButtons);
+    }
+    public void StrategyPageSelection(SelectableButton selection)
+    {
+        if (selection == null)
+            return;
+
+        UnselectPool(HotBarButtons);
+        UnselectPool(SkillListButtons);
+    }
+    public bool ButtonRelocation(ref Vector2 location, List<SelectableButton> buttons)
+    {
+        return false;
+    }
+    public bool ItemRelease(ref Vector2 location, SelectableButton button)
+    {
+        if (button == null)
+        {
+            location = Vector2.zero;
+            return false;
+        }
+
+        
+        location = Vector2.one;
+        return true;
+    }
     public void EquipSelection()
     {
         if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(SelectedEquipSlot, SelectedRingSlot, InventoryListSelection))
@@ -394,12 +393,6 @@ public class UIManager : MonoBehaviour
 
         for (int i = 0; i < InventoryButtonContent.childCount; i++)
             InventoryButtonContent.GetChild(i).GetComponent<Button>().image.color = (i == index) ? Selected : Unselected;
-    }
-    public void InventoryItemHover(int index, bool hovering = true)
-    {
-        InventoryListSelection = index;
-        string @event = hovering ? "Entered" : "Exited";
-        //Debug.Log($"Mouse has {@event} Inv Item {index}");
     }
     public void SkillListClick(int index)
     {
@@ -618,9 +611,9 @@ public class UIManager : MonoBehaviour
     void PopulateInventoryButtons(Inventory inventory, ButtonType type)
     {
         // Clear old buttons
-        Transform targetContent = (type == ButtonType.CONTAINER) ? ContainerButtonContent : InventoryButtonContent;
-        for (int i = targetContent.childCount - 1; i > -1; i--)
-            Destroy(targetContent.GetChild(i).gameObject);
+        Transform targetContainer = (type == ButtonType.CONTAINER) ? ContainerButtonContent : InventoryButtonContent;
+        for (int i = targetContainer.childCount - 1; i > -1; i--)
+            Destroy(targetContainer.GetChild(i).gameObject);
 
         // Populate new buttons
         int index = 0;
@@ -629,9 +622,10 @@ public class UIManager : MonoBehaviour
             if (item == null)
                 continue;
 
-            GameObject newButtonObject = Instantiate(InventoryButtonPrefab, targetContent);
+            GameObject newButtonObject = Instantiate(DraggableButtonPrefab, targetContainer);
             newButtonObject.SetActive(true);
-            CreateCallBackIdentity(newButtonObject.GetComponent<Button>(), index, type);
+            InventoryButton invButton = newButtonObject.GetComponent<InventoryButton>();
+            //invButton.CreateCallBackIdentity(() => )
             index++;
 
             newButtonObject.transform.GetChild(0).GetComponent<Text>().text = (item is Stackable) ? ((Stackable)item).CurrentQuantity.ToString() : string.Empty;
@@ -654,7 +648,7 @@ public class UIManager : MonoBehaviour
             if (ability == null)
                 continue;
 
-            GameObject newButtonObject = Instantiate(SkillListButtonPrefab, SkillButtonContent);
+            GameObject newButtonObject = Instantiate(DraggableButtonPrefab, SkillButtonContent);
 
             newButtonObject.transform.GetChild(0).GetComponent<Text>().text = ability.Name;
             if (ability.Sprite != null)
@@ -662,19 +656,17 @@ public class UIManager : MonoBehaviour
 
 
             newButtonObject.SetActive(true);
-            CreateCallBackIdentity(newButtonObject.GetComponent<Button>(), index, ButtonType.LIST_SKILL);
+            //CreateRemapCallBack(newButtonObject.GetComponent<Button>(), index, ButtonType.LIST_SKILL);
             index++;
-
-            
         }
     }
-    void PopulateSkillSlotButtons()
+    void PopulateAbilitySlotButtons()
     {
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
         {
-            GameObject newButtonObject = Instantiate(SkillSlotButtonPrefab, HotBarButtonContent);
+            GameObject newButtonObject = Instantiate(DraggableButtonPrefab, HotBarButtonContent);
             newButtonObject.SetActive(true);
-            CreateCallBackIdentity(newButtonObject.GetComponent<Button>(), i, ButtonType.SLOT_SKILL);
+            //CreateRemapCallBack(newButtonObject.GetComponent<Button>(), i, ButtonType.SLOT_SKILL);
         }
     }
     void PopulateEffectPanels()
@@ -748,7 +740,7 @@ public class UIManager : MonoBehaviour
             if (EquipButtons[i] != null)
             {
                 //Debug.Log($"GearCallback: {i}");
-                CreateCallBackIdentity(EquipButtons[i], i, ButtonType.SLOT_EQUIP);
+                //CreateRemapCallBack(EquipButtons[i], i, ButtonType.SLOT_EQUIP);
             }
         }
 
@@ -757,7 +749,27 @@ public class UIManager : MonoBehaviour
             if (RingButtons[i] != null)
             {
                 //Debug.Log($"RingCallbacks: {i}");
-                CreateCallBackIdentity(RingButtons[i], i, ButtonType.SLOT_RING);
+                //CreateRemapCallBack(RingButtons[i], i, ButtonType.SLOT_RING);
+            }
+        }
+    }
+    void PopulateEquipAndRingPlaceHolderButtons()
+    {
+        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
+        {
+            if (EquipButtons[i] != null)
+            {
+                //Debug.Log($"GearCallback: {i}");
+                //CreateRemapCallBack(EquipButtons[i], i, ButtonType.SLOT_EQUIP);
+            }
+        }
+
+        for (int i = 0; i < CharacterMath.RING_SLOT_COUNT && i < RingButtons.Length; i++)
+        {
+            if (RingButtons[i] != null)
+            {
+                //Debug.Log($"RingCallbacks: {i}");
+                //CreateRemapCallBack(RingButtons[i], i, ButtonType.SLOT_RING);
             }
         }
     }
@@ -980,8 +992,10 @@ public class UIManager : MonoBehaviour
     }
     void UIinitializer()
     {
+        InventoryButtons = new List<SelectableButton>();
+
         PopulateEquipAndRingSlotButtons();
-        PopulateSkillSlotButtons();
+        PopulateAbilitySlotButtons();
         UpdateActionBar();
 
         CurrentMenu = GameMenu.NONE;

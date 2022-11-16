@@ -6,6 +6,7 @@ using UnityEngine;
 [System.Serializable]
 public class Inventory
 {
+    public GameState GameState;
     public List<ItemObject> Items;
     public int MaxCount;
 

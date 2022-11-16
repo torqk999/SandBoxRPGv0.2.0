@@ -9,6 +9,7 @@ public class ItemObject : ScriptableObject
     [Header("Item Properties")]
     public int itemID;
     public string Name;
+    public string Flavour;
     public Sprite Sprite;
 
     [Header("Fluff")]
