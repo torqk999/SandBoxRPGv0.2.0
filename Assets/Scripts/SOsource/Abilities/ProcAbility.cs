@@ -33,12 +33,12 @@ public class ProcAbility : EffectAbility
     {
         options.ClassID = "ProcAbility";
         ProcAbility newAbility = (ProcAbility)GenerateRootObject(options);
-        newAbility.Clone(this, options);
+        newAbility.Copy(this, options);
         return newAbility;
     }
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is ProcAbility))
             return;

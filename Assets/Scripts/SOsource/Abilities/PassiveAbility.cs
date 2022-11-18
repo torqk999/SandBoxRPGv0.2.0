@@ -57,12 +57,12 @@ public class PassiveAbility : EffectAbility
     {
         options.ClassID = "PassiveAbility";
         PassiveAbility newAbility = (PassiveAbility)GenerateRootObject(options);
-        newAbility.Clone(this, options);
+        newAbility.Copy(this, options);
         return newAbility;
     }
-    public override void Clone(RootScriptObject source, RootOptions options = default)
+    public override void Copy(RootScriptObject source, RootOptions options = default)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is PassiveAbility))
             return;

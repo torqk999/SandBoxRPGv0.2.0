@@ -14,12 +14,12 @@ public class Wearable : Equipment
     {
         options.ClassID = options.ClassID == "" ? "Wearable" : options.ClassID;
         Wearable newRoot = (Wearable)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is Wearable))
             return;

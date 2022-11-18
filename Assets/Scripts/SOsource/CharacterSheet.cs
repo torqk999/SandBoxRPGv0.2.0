@@ -49,7 +49,7 @@ public class CharacterSheet : RootScriptObject
     public CharacterAbility[] InnateAbilities;
     //public BaseEffect[] InnatePassives;
 
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
         if (!(source is CharacterSheet))
             return;

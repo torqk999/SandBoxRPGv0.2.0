@@ -13,11 +13,17 @@ public class Equipment : ItemObject
     public int EquipLevel;
     public Character EquippedTo;
 
+    public override DraggableButton GenerateMyButton(ButtonOptions options)
+    {
+        options.Type = ButtonType.INVENTORY;
+        GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
+        return buttonObject.AddComponent<InventoryButton>();
+    }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         options.ClassID = options.ClassID == "" ? "Equipment" : options.ClassID;
         Equipment newRoot = (Equipment)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
     public override void InitializeRoot(GameState state)
@@ -26,9 +32,9 @@ public class Equipment : ItemObject
         foreach (CharacterAbility ability in Abilities)
             ability.InitializeRoot(state);
     }
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is Equipment))
             return;

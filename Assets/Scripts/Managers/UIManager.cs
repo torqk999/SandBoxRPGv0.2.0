@@ -76,14 +76,15 @@ public class UIManager : MonoBehaviour
     //public GameObject SkillSlotButtonPrefab;
     public Sprite PlaceHolderSprite;
 
+    public GameObject HotBarButtonPrefab;
     public GameObject DraggableButtonPrefab;
     public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
 
     [Header("Folders")]
     public Transform PartyMembers;
-    public Transform InventoryButtonContent;
-    public Transform ContainerButtonContent;
+    //public Transform InventoryButtonContent;
+    //public Transform ContainerButtonContent;
     public Transform SkillButtonContent;
     public Transform EffectStatsContent;
     public Transform HotBarButtonContent;
@@ -125,16 +126,10 @@ public class UIManager : MonoBehaviour
     ////////////////////////////////////////////////////////
 
     [Header("Menu Logic")]
-    //public int InventoryListSelection;
-    //public int ContainerListSelection;
-    //public int SkillListSelection;
-
-    //public int SelectedEquipSlot;
-    //public int SelectedRingSlot;
-    //public int SelectedAbilitySlot;
+    public Inventory CurrentlyViewedInventory;
+    public Inventory CurrentlyViewedContainer;
 
     public List<SelectableButton> SkillListButtons;
-    //public List<PlaceHolderButton> SkillPlaceHolder;
 
     public SelectableButton[] EquipButtons;
     public PlaceHolderButton[] EquipPlaceHolders;
@@ -143,7 +138,6 @@ public class UIManager : MonoBehaviour
     public PlaceHolderButton[] RingPlaceHolders;
 
     public SelectableButton[] HotBarButtons;
-    //public PlaceHolderButton[] AbilityPlaceHolders;
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;
@@ -180,6 +174,33 @@ public class UIManager : MonoBehaviour
     {
 
     }*/
+    public PlaceHolderButton GeneratePlaceHolder(ButtonOptions options)
+    {
+        options.PlaceHolder = true;
+        GameObject placeObject = GenerateButtonObject(options);
+        return placeObject.AddComponent<PlaceHolderButton>();
+    }
+    public GameObject GenerateButtonObject(ButtonOptions options)
+    {
+        GameObject prefab = null;
+        switch(options.Type)
+        {
+            case ButtonType.EQUIP:
+            case ButtonType.INVENTORY:
+            case ButtonType.LIST_SKILL:
+                prefab = DraggableButtonPrefab;
+                break;
+
+            case ButtonType.SLOT_SKILL:
+                prefab = HotBarButtonPrefab;
+                break;
+        }
+
+        if (options.Home == null)
+            return Instantiate(prefab);
+        return Instantiate(prefab, options.Home);
+    }
+
     void CreateRemapCallBack(Button button, int index)
     {
         button.onClick.AddListener(() => Remap(index, button));
@@ -616,25 +637,9 @@ public class UIManager : MonoBehaviour
             //catch { RingButtons[i].GetComponent<Image>().sprite = EmptyButtonSprite; }
         }
     }
-    void UpdateInventoryButtons(Inventory inventory, ButtonType type)
+    void UpdateInventoryButtons(Inventory inventory)
     {
-        // Clear old buttons
-        Transform targetContainer = (type == ButtonType.CONTAINER) ? ContainerButtonContent : InventoryButtonContent;
-        for (int i = targetContainer.childCount - 1; i > -1; i--)
-            Destroy(targetContainer.GetChild(i).gameObject);
 
-        // Populate new buttons
-        //int index = 0;
-        foreach (ItemObject item in inventory.Items)
-        {
-            if (item == null)
-                continue;
-
-            GameObject newButtonObject = Instantiate(DraggableButtonPrefab, targetContainer);
-            newButtonObject.SetActive(true);
-            InventoryButton invButton = newButtonObject.AddComponent<InventoryButton>();
-            invButton.Assign(item);
-        }
     }
     void UpdateSkillListButtons()
     {

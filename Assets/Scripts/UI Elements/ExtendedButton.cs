@@ -21,27 +21,35 @@ public class ExtendedButtonEditor : Editor
 
 public enum ButtonType
 {
+    DEFAULT,
+    EQUIP,
     INVENTORY,
-    CONTAINER,
     LIST_SKILL,
     SLOT_SKILL,
-    SLOT_EQUIP,
-    SLOT_RING,
-    KEY_MAP
+    //CONTAINER,
+    //SLOT_RING,
+    //KEY_MAP
 }
 
 [Serializable]
 public struct ButtonOptions
 {
-    public string ClassID;
+    //public string ClassID;
+    public ButtonType Type;
+    public bool PlaceHolder;
+    public int Count;
     public GameObject Body;
     public Transform Home;
-
-    public ButtonOptions(string classID, GameObject body, Transform home)
+    public ExtendedButton[] Folder;
+    
+    public ButtonOptions(GameObject body, ExtendedButton[] folder, Transform home = null, bool placeHolder = false, int count = 1)
     {
-        ClassID = classID;
+        Count = count;
+        Type = default;
         Body = body;
         Home = home;
+        Folder = folder;
+        PlaceHolder = placeHolder;
     }
 }
 
@@ -64,14 +72,11 @@ public class ExtendedButton : Button
 
         MyImage.sprite = root.Sprite;
     }
-    public GameObject GenerateButtonObject(GameObject prefab, Transform folder)
-    {
-        return Instantiate(prefab, folder);
-    }
+    
 
-    public virtual ExtendedButton GenerateButton(GameObject prefab, Transform folder)
+    public virtual ExtendedButton GenerateButton(ButtonOptions options)
     {
-        GameObject buttonObject = GenerateButtonObject(prefab, folder);
+        GameObject buttonObject = UIMan.GenerateButtonObject(options);
         ExtendedButton newButton = buttonObject.AddComponent<ExtendedButton>();
         return newButton;
     }

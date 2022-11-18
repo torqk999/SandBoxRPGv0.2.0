@@ -34,9 +34,9 @@ public class ToggleAbility : EffectAbility
         base.ProduceOriginalEffects(source, options);
     }
 
-    public override void Clone(RootScriptObject source, RootOptions options = default)
+    public override void Copy(RootScriptObject source, RootOptions options = default)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is ToggleAbility))
             return;
@@ -50,7 +50,7 @@ public class ToggleAbility : EffectAbility
     {
         options.ClassID = "ToggleAbility";
         ToggleAbility newAbility = (ToggleAbility)GenerateRootObject(options);
-        newAbility.Clone(this, options);
+        newAbility.Copy(this, options);
         return newAbility;
     }
 }

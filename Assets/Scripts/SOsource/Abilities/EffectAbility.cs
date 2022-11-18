@@ -72,12 +72,12 @@ public class EffectAbility : CharacterAbility
     {
         options.ClassID = options.ClassID == "" ? "EffectAbility" : options.ClassID;
         EffectAbility newAbility = (EffectAbility)GenerateRootObject(options);
-        newAbility.Clone(this, options);
+        newAbility.Copy(this, options);
         return newAbility;
     }
-    public override void Clone(RootScriptObject source, RootOptions options = default)
+    public override void Copy(RootScriptObject source, RootOptions options = default)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is EffectAbility))
             return;

@@ -16,13 +16,13 @@ public class Hand : Equipment
     {
         options.ClassID = options.ClassID == "" ? "Hand" : options.ClassID;
         Hand newRoot = (Hand)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
 
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is Hand))
             return;

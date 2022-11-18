@@ -20,17 +20,17 @@ public class Shield : Hand
     {
         options.ClassID = options.ClassID == "" ? "Shield" : options.ClassID;
         Shield newRoot = (Shield)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
         if (!(source is Shield))
             return;
 
         Shield shieldSource = (Shield)source;
 
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         Type = shieldSource.Type;
     }

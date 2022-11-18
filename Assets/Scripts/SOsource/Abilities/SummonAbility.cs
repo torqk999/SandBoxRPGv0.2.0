@@ -14,12 +14,12 @@ public class SummonAbility : CharacterAbility
     {
         options.ClassID = "SummonAbility";
         SummonAbility newAbility = (SummonAbility)GenerateRootObject(options);
-        newAbility.Clone(this, options);
+        newAbility.Copy(this, options);
         return newAbility;
     }
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is SummonAbility))
             return;

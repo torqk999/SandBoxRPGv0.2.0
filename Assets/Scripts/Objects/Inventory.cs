@@ -7,16 +7,17 @@ using UnityEngine;
 public class Inventory
 {
     public GameState GameState;
+    public UI_SlotPanel Panel;
     public ItemObject[] Items;
     //public int CurrentQuantity;
     //public int MaxCount;
 
-    public SelectableButton[] InventoryButtons;
-    public PlaceHolderButton[] InventoryPlaceHolder;
+    //public SelectableButton[] InventoryButtons;
+    //public PlaceHolderButton[] InventoryPlaceHolders;
 
     public Inventory(int count = CharacterMath.PARTY_INVENTORY_MAX)
     {
-        Items = new ItemObject[count];
+        
     }
     #region LOOTING
     public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
@@ -39,6 +40,21 @@ public class Inventory
     #endregion
 
     #region INVENTORY
+    public void SetupInventory(int count, ButtonOptions options = default)
+    {
+        Items = new ItemObject[count];
+        Panel = new UI_SlotPanel(count, );
+        //InventoryButtons = new SelectableButton[count];
+        //InventoryPlaceHolders = new PlaceHolderButton[count];
+
+        options.Type = ButtonType.INVENTORY;
+        options.PlaceHolder = true; 
+        //options.Folder
+
+        for (int i = 0; i < Panel.Places.Length; i++)
+            Panel.Places[i] = GameState.UIman.GeneratePlaceHolder(options);
+
+    }
     public int CurrentQuantity()
     {
         int output = 0;

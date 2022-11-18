@@ -15,11 +15,17 @@ public class ItemObject : RootScriptObject
     public int SlotIndex;
     public Equipment[] SlotFamily;
 
+    public override DraggableButton GenerateMyButton(ButtonOptions options)
+    {
+        options.Type = ButtonType.INVENTORY;
+        GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
+        return buttonObject.AddComponent<InventoryButton>();
+    }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         options.ClassID = options.ClassID == "" ? "ItemObject" : options.ClassID;
         ItemObject newRoot = (ItemObject)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
     public virtual void InitializeRoot()
@@ -27,9 +33,9 @@ public class ItemObject : RootScriptObject
 
     }
 
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is ItemObject))
             return;

@@ -20,10 +20,10 @@ public class InventoryButtonEditor : Editor
 
 public class InventoryButton : DraggableButton
 {
-    public override ExtendedButton GenerateButton(GameObject prefab, Transform folder)
+    public override ExtendedButton GenerateButton(ButtonOptions options)
     {
         //GameObject buttonObject = GenerateButtonObject(prefab, folder);
-        InventoryButton newButton = (InventoryButton)base.GenerateButton(prefab, folder);
+        InventoryButton newButton = (InventoryButton)base.GenerateButton(options);
         return newButton;
     }
     public override bool Drop()

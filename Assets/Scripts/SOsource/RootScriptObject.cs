@@ -14,7 +14,7 @@ public class RootScriptObject : ScriptableObject
     [Header("Root Logic - NO TOUCHY!")]
     public RootLogic RootLogic;
     public DraggableButton Button;
-    public virtual void Clone(RootScriptObject source, RootOptions options)
+    public virtual void Copy(RootScriptObject source, RootOptions options)
     {
         ID = options.ID;
 
@@ -23,9 +23,11 @@ public class RootScriptObject : ScriptableObject
         Sprite = source.Sprite;
     }
 
-    public virtual void GenerateMyButton()
+    public virtual DraggableButton GenerateMyButton(ButtonOptions options)
     {
-
+        options.Type = ButtonType.DEFAULT; // test point, shouldn't proc
+        GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
+        return buttonObject.AddComponent<DraggableButton>();
     }
     public virtual RootScriptObject GenerateRootObject(RootOptions options)
     {
@@ -35,7 +37,7 @@ public class RootScriptObject : ScriptableObject
 
         RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.ClassID);
         newRootObject.GameState = GameState;
-        newRootObject.Clone(this, options);
+        newRootObject.Copy(this, options);
         return newRootObject;
     }
 

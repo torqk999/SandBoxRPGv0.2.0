@@ -14,11 +14,11 @@ public class Stackable : ItemObject
     {
         options.ClassID = options.ClassID == "" ? "Stackable" : options.ClassID;
         Stackable newRoot = (Stackable)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
 
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
         if (!(source is Stackable))
             return;

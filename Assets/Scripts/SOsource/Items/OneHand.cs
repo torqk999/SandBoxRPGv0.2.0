@@ -22,12 +22,12 @@ public class OneHand : Hand
     {
         options.ClassID = options.ClassID == "" ? "OneHand" : options.ClassID;
         OneHand newRoot = (OneHand)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is OneHand))
             return;

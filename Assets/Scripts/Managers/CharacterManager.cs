@@ -296,7 +296,7 @@ public class CharacterManager : MonoBehaviour
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
         RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
-        character.Sheet.Clone(source.Sheet, options);
+        character.Sheet.Copy(source.Sheet, options);
         if (fresh)
             character.Sheet.Initialize();
         

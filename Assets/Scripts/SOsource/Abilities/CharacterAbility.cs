@@ -159,12 +159,12 @@ public class CharacterAbility : RootScriptObject
     {
         options.ClassID = options.ClassID == "" ? "CharacterAbility" : options.ClassID;
         CharacterAbility newAbility = (CharacterAbility)GenerateRootObject(options);
-        newAbility.Clone(this, options);
+        newAbility.Copy(this, options);
         return newAbility;
     }
-    public override void Clone(RootScriptObject source, RootOptions options = default)
+    public override void Copy(RootScriptObject source, RootOptions options = default)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is CharacterAbility))
             return;

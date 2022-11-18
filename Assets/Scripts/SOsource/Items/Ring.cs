@@ -13,12 +13,12 @@ public class Ring : Equipment
     {
         options.ClassID = options.ClassID == "" ? "Ring" : options.ClassID;
         Ring newRoot = (Ring)base.GenerateRootObject(options);
-        newRoot.Clone(this, options);
+        newRoot.Copy(this, options);
         return newRoot;
     }
-    public override void Clone(RootScriptObject source, RootOptions options)
+    public override void Copy(RootScriptObject source, RootOptions options)
     {
-        base.Clone(source, options);
+        base.Copy(source, options);
 
         if (!(source is Ring))
             return;
