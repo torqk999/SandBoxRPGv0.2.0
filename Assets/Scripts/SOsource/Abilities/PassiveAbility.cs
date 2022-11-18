@@ -17,41 +17,19 @@ public class PassiveAbility : EffectAbility
         options.EffectType = EffectType.PASSIVE;
         options.ToggleActive = true;
         options.IsProjectile = true;
-        options.IsClone = true;
-        options.Inject = false;
+        //options.IsClone = true;
+        //options.Inject = false;
 
         base.UseAbility(target, options);
     }
-    public override void CloneAbility(CharacterAbility source)
-    {
-        if (!(source is PassiveAbility))
-            return;
 
-        PassiveAbility passiveSource = (PassiveAbility)source;
-
-        AuraSelf = passiveSource.AuraSelf;
-        AuraAOE = passiveSource.AuraAOE;
-
-        //ClonePassives(passiveSource, inject);
-
-        ProcDelay = passiveSource.ProcDelay;
-        ProcTimer = ProcDelay;
-
-        base.CloneAbility(source);
-    }
-    public override CharacterAbility GenerateAbility()
-    {
-        PassiveAbility newAbility = (PassiveAbility)CreateInstance("PassiveAbility");
-        newAbility.CloneAbility(this);
-        return newAbility;
-    }
     public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
     {
         options.EffectType = EffectType.PASSIVE;
         options.ToggleActive = true;
         options.IsProjectile = false;
-        options.IsClone = false;
-        options.Inject = false;
+        //options.IsClone = false;
+        //options.Inject = false;
 
         base.ProduceOriginalEffects(source, options);
     }
@@ -73,5 +51,30 @@ public class PassiveAbility : EffectAbility
         }
 
         Logic.SourceCharacter.AttemptAbility(this);
+    }
+
+    public override CharacterAbility GenerateAbility(RootOptions options)
+    {
+        options.ClassID = "PassiveAbility";
+        PassiveAbility newAbility = (PassiveAbility)GenerateRootObject(options);
+        newAbility.Clone(this, options);
+        return newAbility;
+    }
+    public override void Clone(RootScriptObject source, RootOptions options = default)
+    {
+        base.Clone(source, options);
+
+        if (!(source is PassiveAbility))
+            return;
+
+        PassiveAbility passiveSource = (PassiveAbility)source;
+
+        AuraSelf = passiveSource.AuraSelf;
+        AuraAOE = passiveSource.AuraAOE;
+
+        //ClonePassives(passiveSource, inject);
+
+        ProcDelay = passiveSource.ProcDelay;
+        ProcTimer = ProcDelay;
     }
 }

@@ -21,18 +21,19 @@ public class EquipmentButtonEditor : Editor
 public class EquipmentButton : InventoryButton
 {
     [Header("Equipment")]
-    public Equipment Equip;
     public Character EquippedTo;
 
-    public override void Assign(ItemObject item)
+    public override void Assign(RootScriptObject root)
     {
-        Equip = (Equipment)item;
-        base.Assign(item);
+        base.Assign(root);
+        if (!(root is Equipment))
+            return;
+        Equipment equip = (Equipment)root;
+        Stats.Append($"Equip Level: {equip.EquipLevel}");
     }
     public override void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
-        Stats.Append($"GearLevel: {Item.GoldValue}");
     }
 
     // Start is called before the first frame update

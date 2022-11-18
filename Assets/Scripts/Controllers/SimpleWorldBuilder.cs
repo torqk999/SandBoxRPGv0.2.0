@@ -22,17 +22,15 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        foreach (ItemObject item in SampleItems)
+        for(int i = 0; i < SampleItems.Count && i < inventory.Items.Length; i++)
         {
-            if (item == null)
+            if (SampleItems[i] == null)
                 continue;
 
-            item.InitializeSource();
+            SampleItems[i].InitializeRoot(GameState);
 
-            inventory.Items.Add(item.GenerateItem(GameState.EQUIPMENT_INDEX, true));
-
-            if (item is Equipment)
-                GameState.EQUIPMENT_INDEX++;
+            RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
+            inventory.Items[i] = (ItemObject)SampleItems[i].GenerateRootObject(options);
         }
     }
     

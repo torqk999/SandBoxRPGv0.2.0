@@ -27,9 +27,7 @@ public class RuntimeItemGenerator : MonoBehaviour
         if (Character == null || Item == null)
             return;
 
-        Character.Inventory.PushItemIntoInventory(Item.GenerateItem(GameState.EQUIPMENT_INDEX, true));
-
-        if (Item is Equipment)
-            GameState.EQUIPMENT_INDEX++;
+        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
+        Character.Inventory.PushItemIntoInventory((ItemObject)Item.GenerateRootObject(options));
     }
 }

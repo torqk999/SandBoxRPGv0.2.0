@@ -10,25 +10,24 @@ public class SummonAbility : CharacterAbility
     public int Quantity;
     public float LifeSpan;
 
-    public override void CloneAbility(CharacterAbility source)
+    public override CharacterAbility GenerateAbility(RootOptions options)
     {
-        base.CloneAbility(source);
+        options.ClassID = "SummonAbility";
+        SummonAbility newAbility = (SummonAbility)GenerateRootObject(options);
+        newAbility.Clone(this, options);
+        return newAbility;
+    }
+    public override void Clone(RootScriptObject source, RootOptions options)
+    {
+        base.Clone(source, options);
 
         if (!(source is SummonAbility))
             return;
 
         SummonAbility summonSource = (SummonAbility)source;
 
-        
         SummonPrefab = summonSource.SummonPrefab;
         Quantity = summonSource.Quantity;
         LifeSpan = summonSource.LifeSpan;
-    }
-
-    public override CharacterAbility GenerateAbility()
-    {
-        SummonAbility newAbility = (SummonAbility)CreateInstance("SummonAbility");
-        newAbility.CloneAbility(this);
-        return newAbility;
     }
 }

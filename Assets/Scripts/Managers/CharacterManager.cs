@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using RPGconstants;
 
 [Serializable]
 public class MaterialProfile
@@ -206,7 +207,7 @@ public class CharacterManager : MonoBehaviour
 
         Party newParty = partyObject.AddComponent<Party>();
 
-        newParty.PartyLoot.MaxCount = CharacterMath.PARTY_INVENTORY_MAX;
+        newParty.PartyLoot = new Inventory();
         newParty.Faction = faction;
         newParty.CurrentMemberIndex = startIndex;
 
@@ -294,7 +295,8 @@ public class CharacterManager : MonoBehaviour
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
-        character.Sheet.Clone(source.Sheet);
+        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
+        character.Sheet.Clone(source.Sheet, options);
         if (fresh)
             character.Sheet.Initialize();
         

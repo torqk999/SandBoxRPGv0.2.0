@@ -10,14 +10,15 @@ public class Stackable : ItemObject
     public int MaxQuantity;
     public int CurrentQuantity;
 
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        Stackable newItemObject = (Stackable)CreateInstance("Stackable");
-        newItemObject.CloneItem(this);
-        return newItemObject;
+        options.ClassID = options.ClassID == "" ? "Stackable" : options.ClassID;
+        Stackable newRoot = (Stackable)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
 
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
         if (!(source is Stackable))
             return;
@@ -25,8 +26,7 @@ public class Stackable : ItemObject
         Stackable stackSource = (Stackable)source;
 
         MaxQuantity = stackSource.MaxQuantity;
-        quantity = Math.Abs(quantity);
-        quantity = quantity > MaxQuantity ? MaxQuantity : quantity;
-        CurrentQuantity = quantity;
+        CurrentQuantity = Math.Abs(options.Quantity);
+        CurrentQuantity = CurrentQuantity > MaxQuantity ? MaxQuantity : CurrentQuantity;
     }
 }

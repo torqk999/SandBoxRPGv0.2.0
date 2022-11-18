@@ -24,7 +24,7 @@ public class Wardrobe : ScriptableObject
     public Ring Slot1;
     public Ring Slot2;
 
-    public int CloneAndEquipWardrobe(Character character, int equipId)
+    public int CloneAndEquipWardrobe(Character character,ref int equipId)
     {
         AttemptCloneAndEquipWear(character, Head, EquipSlot.HEAD, ref equipId);
         AttemptCloneAndEquipWear(character, Neck, EquipSlot.NECK, ref equipId);
@@ -52,38 +52,40 @@ public class Wardrobe : ScriptableObject
         if (ring == null || slotIndex < 0 || slotIndex >= character.RingSlots.Length)
             return;
 
-        Ring newRing = (Ring)ring.GenerateItem(equipId, true);
+        RootOptions options = new RootOptions(ref equipId);
+        Ring newRing = (Ring)ring.GenerateRootObject(options);
         character.RingSlots[slotIndex] = newRing;
-        equipId++;
+        //equipId++;
     }
     bool AttemptCloneAndEquipHand(Character character, Hand hand, ref int equipId)
     {
         if (hand == null)
             return false;
 
-        switch(hand)
+        RootOptions options = new RootOptions(ref equipId);
+        switch (hand)
         {
             case OneHand:
-                OneHand newMain = (OneHand)hand.GenerateItem(equipId, true);
+                OneHand newMain = (OneHand)hand.GenerateRootObject(options);
                 character.EquipmentSlots[(int)EquipSlot.MAIN] = newMain;
                 equipId++;
                 return true;
 
             case OffHand:
-                OffHand newOff = (OffHand)hand.GenerateItem(equipId, true);
+                OffHand newOff = (OffHand)hand.GenerateRootObject(options);
                 character.EquipmentSlots[(int)EquipSlot.OFF] = newOff;
                 equipId++;
                 return true;
 
             case TwoHand:
-                TwoHand newTwo = (TwoHand)hand.GenerateItem(equipId, true);
+                TwoHand newTwo = (TwoHand)hand.GenerateRootObject(options);
                 character.EquipmentSlots[(int)EquipSlot.MAIN] = newTwo;
                 character.EquipmentSlots[(int)EquipSlot.OFF] = newTwo;
                 equipId++;
                 return true;
 
             case Shield:
-                Shield newShield = (Shield)hand.GenerateItem(equipId, true);
+                Shield newShield = (Shield)hand.GenerateRootObject(options);
                 character.EquipmentSlots[(int)EquipSlot.OFF] = newShield;
                 equipId++;
                 return true;
@@ -102,7 +104,10 @@ public class Wardrobe : ScriptableObject
     Wearable AttemptCloneWear(Wearable wearSource, EquipSlot slot, int equipId)
     {
         if (wearSource != null && wearSource.EquipSlot == slot)
-            return (Wearable)wearSource.GenerateItem(equipId, true);
+        {
+            RootOptions options = new RootOptions(ref equipId);
+            return (Wearable)wearSource.GenerateRootObject(options);
+        }   
         return null;
     }
 }

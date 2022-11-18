@@ -29,6 +29,7 @@ public class TippedButton : ExtendedButton
     public override void OnPointerEnter(PointerEventData eventData)
     {
         UIMan.ToolTip.UpdateText(Title, Stats, Flavour);
+        Stats.Clear();
         base.OnPointerEnter(eventData);
     }
 

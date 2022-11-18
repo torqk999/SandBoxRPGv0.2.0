@@ -9,14 +9,17 @@ public class Ring : Equipment
     //[Header("OneHand Properties")]
     //public int CurrentSlotIndex;
 
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        Ring newOneHand = (Ring)CreateInstance("Ring");
-        newOneHand.CloneItem(this, equipId, inject);
-        return newOneHand;
+        options.ClassID = options.ClassID == "" ? "Ring" : options.ClassID;
+        Ring newRoot = (Ring)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
+        base.Clone(source, options);
+
         if (!(source is Ring))
             return;
 
@@ -24,7 +27,7 @@ public class Ring : Equipment
 
         //CurrentSlotIndex = -1;
 
-        base.CloneItem(source, equipId, inject);
+        
     }
     public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
     {

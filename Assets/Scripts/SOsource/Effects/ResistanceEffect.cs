@@ -27,13 +27,13 @@ public class ResistanceEffect : StatEffect
     {
         ResAdjustments.Amplify(amp);
     }
-    public override void InitializeSource()
+    public override void InitializeRoot(GameState state)
     {
         ResAdjustments.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, EffectOptions options)
+    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
     {
-        base.CloneEffect(source, options);
+        base.CloneEffect(source, effectOptions, effected);
 
         if (!(source is ResistanceEffect))
             return;
@@ -42,10 +42,15 @@ public class ResistanceEffect : StatEffect
 
         ResAdjustments.Clone(currentStatEffect.ResAdjustments);
     }
-    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
+    {
+        options.ClassID = "ResistanceEffect";
+        return (ResistanceEffect)base.GenerateRootObject(options);
+    }
+    public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
     {
         ResistanceEffect newEffect = (ResistanceEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, options);
+        newEffect.CloneEffect(this, effectOptions);
         return newEffect;
     }
 }

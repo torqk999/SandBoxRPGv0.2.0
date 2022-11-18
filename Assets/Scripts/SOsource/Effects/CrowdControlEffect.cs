@@ -20,9 +20,9 @@ public class CrowdControlEffect : BaseEffect
 
         target.Risiduals.Add(G)
     }*/
-    public override void CloneEffect(BaseEffect source, EffectOptions options)
+    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
     {
-        base.CloneEffect(source, options);
+        base.CloneEffect(source, effectOptions);
 
         if (!(source is CrowdControlEffect))
             return;
@@ -31,11 +31,16 @@ public class CrowdControlEffect : BaseEffect
 
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
-
-    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        CrowdControlEffect newEffect = (CrowdControlEffect)CreateInstance("CrowdControlEffect");
-        newEffect.CloneEffect(this, options);
+        options.ClassID = "CrowdControlEffect";
+        return (CrowdControlEffect)base.GenerateRootObject(options);
+    }
+
+    public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
+    {
+        CrowdControlEffect newEffect = (CrowdControlEffect)base.GenerateEffect(rootOptions, effectOptions, effected);
+        newEffect.CloneEffect(this, effectOptions);
         return newEffect;
     }
 }

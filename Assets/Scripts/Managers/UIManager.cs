@@ -59,6 +59,8 @@ public class UIManager : MonoBehaviour
     [Header("===LOGIC===")]
     public GameState GameState;
     public UIToolTip ToolTip;
+    public DraggableButton Dragging;
+
     public bool GameStateLinked = false;
     public bool UIinitialized = false;
 
@@ -72,6 +74,8 @@ public class UIManager : MonoBehaviour
     //public GameObject InventoryButtonPrefab;
     //public GameObject SkillListButtonPrefab;
     //public GameObject SkillSlotButtonPrefab;
+    public Sprite PlaceHolderSprite;
+
     public GameObject DraggableButtonPrefab;
     public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
@@ -82,9 +86,8 @@ public class UIManager : MonoBehaviour
     public Transform ContainerButtonContent;
     public Transform SkillButtonContent;
     public Transform EffectStatsContent;
-
     public Transform HotBarButtonContent;
-    public Transform HotBarPlaceHolderContent;
+    //public Transform HotBarPlaceHolderContent;
 
     [Header("HUD")]
     public GameObject Interaction;
@@ -122,25 +125,25 @@ public class UIManager : MonoBehaviour
     ////////////////////////////////////////////////////////
 
     [Header("Menu Logic")]
-    public int InventoryListSelection;
-    public int ContainerListSelection;
-    public int SkillListSelection;
+    //public int InventoryListSelection;
+    //public int ContainerListSelection;
+    //public int SkillListSelection;
 
-    public int SelectedEquipSlot;
-    public int SelectedRingSlot;
-    public int SelectedAbilitySlot;
+    //public int SelectedEquipSlot;
+    //public int SelectedRingSlot;
+    //public int SelectedAbilitySlot;
 
     public List<SelectableButton> SkillListButtons;
-    public List<SelectableButton> InventoryButtons;
+    //public List<PlaceHolderButton> SkillPlaceHolder;
 
     public SelectableButton[] EquipButtons;
-    public SelectableButton[] EquipPlaceHolers;
+    public PlaceHolderButton[] EquipPlaceHolders;
 
     public SelectableButton[] RingButtons;
-    public SelectableButton[] RingPlaceHolders;
+    public PlaceHolderButton[] RingPlaceHolders;
 
     public SelectableButton[] HotBarButtons;
-    public SelectableButton[] AbilityPlaceHolders;
+    //public PlaceHolderButton[] AbilityPlaceHolders;
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;
@@ -172,6 +175,11 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region BUTTONS
+
+    /*public SelectableButton ReturnSelectableTarget(SelectableButton drag, List<SelectableButton> candidates)
+    {
+
+    }*/
     void CreateRemapCallBack(Button button, int index)
     {
         button.onClick.AddListener(() => Remap(index, button));
@@ -257,7 +265,7 @@ public class UIManager : MonoBehaviour
     {
         GameState.KeyMap.CloseMap(code);
         CurrentRemap.transform.GetChild(0).GetComponent<Text>().text = Event.current.keyCode.ToString();
-        UpdateActionBar();
+        //UpdateActionBar();
     }
     #endregion
 
@@ -301,7 +309,7 @@ public class UIManager : MonoBehaviour
         if (selection == null)
             return;
 
-        UnselectPool(InventoryButtons);
+        UnselectPool(GameState.pController.CurrentCharacter.Inventory.InventoryButtons);
         UnselectPool(EquipButtons);
         UnselectPool(RingButtons);
         //UnselectPool(HotBarButtons);
@@ -326,39 +334,39 @@ public class UIManager : MonoBehaviour
             return false;
         }
 
-        
+
         location = Vector2.one;
         return true;
     }
-    public void EquipSelection()
+    /*public bool EquipSelection(int equipIndex, int inventoryIndex, bool ringIndex = false)
     {
-        if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(SelectedEquipSlot, SelectedRingSlot, InventoryListSelection))
-            return;
+        if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(equipIndex, inventoryIndex, ringIndex))
+            return false;
 
         //GameState.pController.CurrentCharacter.UpdateAbilites();
         RefreshGameMenuCanvas();
-        UpdateActionBar(); // may have lost equipped abillities
-    }
-    public void AbilitySelection(bool bEquip)
+        return true;
+    }*/
+    public void HotBarSelection(int slotIndex)
     {
-        if (SelectedAbilitySlot < 0)
+        if (slotIndex < 0 ||
+            slotIndex >= CharacterMath.ABILITY_SLOTS)
             return;
 
-        GameState.pController.CurrentCharacter.AbilitySlots[SelectedAbilitySlot] = (bEquip) ?
-            GameState.pController.CurrentCharacter.Abilities[SkillListSelection] : null;
-        UpdateActionBar();
+        GameState.pController.CurrentCharacter.CurrentAction = 
+            GameState.pController.CurrentCharacter.Abilities[slotIndex];
     }
-    public void DropSelectedInventoryItem()
+    public void DropSelectedInventoryItem(int inventoryIndex)
     {
-        GameState.SceneMan.PushIntoContainer(GameState.pController.CurrentCharacter, InventoryListSelection);
+        GameState.SceneMan.PushIntoContainer(GameState.pController.CurrentCharacter, inventoryIndex);
         Debug.Log("Completed LootBag Action");
     }
-    public void LootSelectedContainerItem()
+    public void LootSelectedContainerItem(int containerIndex, int inventoryIndex)
     {
-        GameState.pController.CurrentCharacter.Inventory.LootContainer(GameState.pController.targetContainer, ContainerListSelection, InventoryListSelection);
+        GameState.pController.CurrentCharacter.Inventory.LootContainer(GameState.pController.targetContainer, containerIndex, inventoryIndex);
         UpdateGameMenuCanvasState(CharPage.Looting);
     }
-    public void EquipmentSlotClick(int index)
+    /*public void EquipmentSlotClick(int index)
     {
         //if (index >= CharacterMath.EQUIP_SLOTS_COUNT)
         //    return;
@@ -409,7 +417,7 @@ public class UIManager : MonoBehaviour
             return;
         SelectedAbilitySlot = index;
         UpdateActionBar();
-    }
+    }*/
     #endregion
 
     #region MENUS
@@ -435,30 +443,30 @@ public class UIManager : MonoBehaviour
                 break;
 
             case CharPage.Character:
-                SelectedAbilitySlot = -1;
-
+                //SelectedAbilitySlot = -1;
+                UnselectPool(HotBarButtons);
                 CharSheet.SetActive(true);
                 Equipment.SetActive(true);
                 Inventory.SetActive(true);
                 break;
 
             case CharPage.Looting:
-                SelectedAbilitySlot = -1;
-
+                //SelectedAbilitySlot = -1;
+                UnselectPool(HotBarButtons);
                 Inventory.SetActive(true);
                 Container.SetActive(true);
                 break;
 
             case CharPage.Skills:
-                SelectedEquipSlot = -1;
-
+                //SelectedEquipSlot = -1;
+                UnselectPool(HotBarButtons);
                 Strategy.SetActive(true);
                 Skills.SetActive(true);
                 break;
         }
 
-        RefreshGameMenuCanvas();
-        UpdateActionBar();
+        //RefreshGameMenuCanvas();
+        //UpdateActionBar();
         UpdatePartyPanel();
     }
     void PauseMenuRefresh()
@@ -489,12 +497,12 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    void RefreshGameMenuCanvas()
+    /*void RefreshGameMenuCanvas()
     {
         switch (CurrentPage)
         {
             case CharPage.None:
-                SkillListClick(-1);
+                //SkillListClick(-1);
                 break;
 
             case CharPage.Character:
@@ -510,7 +518,7 @@ public class UIManager : MonoBehaviour
 
             case CharPage.Skills:
                 PopulateSkillListButtons();
-                PopulateEffectPanels();
+                //PopulateEffectPanels();
                 break;
         }
     }
@@ -556,7 +564,7 @@ public class UIManager : MonoBehaviour
                 SkillListClick(index);
                 break;
         }
-    }
+    }*/
     void UpdateEquipAndRingSlots()
     {
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
@@ -616,7 +624,7 @@ public class UIManager : MonoBehaviour
             Destroy(targetContainer.GetChild(i).gameObject);
 
         // Populate new buttons
-        int index = 0;
+        //int index = 0;
         foreach (ItemObject item in inventory.Items)
         {
             if (item == null)
@@ -624,15 +632,8 @@ public class UIManager : MonoBehaviour
 
             GameObject newButtonObject = Instantiate(DraggableButtonPrefab, targetContainer);
             newButtonObject.SetActive(true);
-            InventoryButton invButton = newButtonObject.GetComponent<InventoryButton>();
-            //invButton.CreateCallBackIdentity(() => )
-            index++;
-
-            newButtonObject.transform.GetChild(0).GetComponent<Text>().text = (item is Stackable) ? ((Stackable)item).CurrentQuantity.ToString() : string.Empty;
-
-            Image newImage = newButtonObject.GetComponent<Image>();
-            try { newImage.sprite = item.Sprite; }
-            catch { Debug.Log("missing button sprite"); }
+            InventoryButton invButton = newButtonObject.AddComponent<InventoryButton>();
+            invButton.Assign(item);
         }
     }
     void PopulateSkillListButtons()
@@ -666,24 +667,25 @@ public class UIManager : MonoBehaviour
         {
             GameObject newButtonObject = Instantiate(DraggableButtonPrefab, HotBarButtonContent);
             newButtonObject.SetActive(true);
+            PlaceHolderButton newPlace = newButtonObject.AddComponent<PlaceHolderButton>();
             //CreateRemapCallBack(newButtonObject.GetComponent<Button>(), i, ButtonType.SLOT_SKILL);
         }
     }
-    void PopulateEffectPanels()
+    public void PopulateEffectPanels(CharacterAbility selection)
     {
         // Clear old effectPanels
         for (int i = EffectStatsContent.childCount - 1; i > -1; i--)
             Destroy(EffectStatsContent.GetChild(i).gameObject);
 
-        if (SkillListSelection < 0 || SkillListSelection >= GameState.pController.CurrentCharacter.Abilities.Count)
-            return;
+        //if (SkillListSelection < 0 || SkillListSelection >= GameState.pController.CurrentCharacter.Abilities.Count)
+        //    return;
 
-        if (GameState.pController.CurrentCharacter.Abilities[SkillListSelection] == null)
-            return;
+        //if (GameState.pController.CurrentCharacter.Abilities[SkillListSelection] == null)
+        //    return;
 
-        CharacterAbility selection = GameState.pController.CurrentCharacter.Abilities[SkillListSelection];
+        //CharacterAbility selection = GameState.pController.CurrentCharacter.Abilities[SkillListSelection];
 
-        switch(selection)
+        switch (selection)
         {
             case EffectAbility:
                 foreach (BaseEffect effect in ((EffectAbility)selection).Effects)
@@ -691,7 +693,7 @@ public class UIManager : MonoBehaviour
                     GameObject newEffectPanel = Instantiate(EffectPanelPrefab, EffectStatsContent);
                     StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);
                     outputBuild.Append($"Effect: {effect.Name}\n");
-                    outputBuild.Append($"Duration: {effect.DurationLength}\n");
+                    outputBuild.Append($"Duration: {effect.RisidualDuration}\n");
 
                     switch (effect)
                     {
@@ -704,7 +706,7 @@ public class UIManager : MonoBehaviour
                             {
                                 if (((CurrentStatEffect)effect).ElementPack.Elements[i] == 0)
                                     continue;
-          
+
                                 outputBuild.Append($"\n{(Element)i}\n" +
                                     $"Base: {((CurrentStatEffect)effect).ElementPack.Elements[i]}\n" +
                                     $"Current: {((CurrentStatEffect)effect).ElementPack.Amplification[i]}\n");
@@ -723,7 +725,7 @@ public class UIManager : MonoBehaviour
                     if (effect.Sprite != null)
                         newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.Sprite;
 
-                    
+
 
                     newEffectPanel.transform.SetParent(EffectStatsContent);
                     newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
@@ -733,7 +735,7 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    void PopulateEquipAndRingSlotButtons()
+    void PopulateEquipAndRingSlots()
     {
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
         {
@@ -753,10 +755,10 @@ public class UIManager : MonoBehaviour
             }
         }
     }
-    void PopulateEquipAndRingPlaceHolderButtons()
+    /*void PopulateEquipAndRingPlaceHolderButtons()
     {
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
-        {
+        { 
             if (EquipButtons[i] != null)
             {
                 //Debug.Log($"GearCallback: {i}");
@@ -772,7 +774,7 @@ public class UIManager : MonoBehaviour
                 //CreateRemapCallBack(RingButtons[i], i, ButtonType.SLOT_RING);
             }
         }
-    }
+    }*/
     void UpdateToolTipState()
     {
 
@@ -851,8 +853,8 @@ public class UIManager : MonoBehaviour
     {
         GameObject newMemberPanel = Instantiate(PartyMemberPanelPrefab, PartyMembers);
 
-        if (character.Sheet.Portrait != null)
-            newMemberPanel.transform.GetChild(0).GetComponent<Image>().sprite = character.Sheet.Portrait;
+        if (character.Sheet.Sprite != null)
+            newMemberPanel.transform.GetChild(0).GetComponent<Image>().sprite = character.Sheet.Sprite;
     }
     void UpdateCooldownBars()
     {
@@ -884,7 +886,7 @@ public class UIManager : MonoBehaviour
                 GameState.pController.CurrentCharacter.AbilitySlots[i].CD_Duration);
         }
     }
-    public void UpdateActionBar()
+    /*public void UpdateActionBar()
     {
         if (HotBarButtonContent == null)
             return;
@@ -895,6 +897,7 @@ public class UIManager : MonoBehaviour
 
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS && i < HotBarButtonContent.transform.childCount; i++)
         {
+            //HotBarButtons[i].Select();
             //Slider mySlider = ActionButtons.transform.GetChild(i).GetChild(0).GetComponent<Slider>();
             //Debug.Log($"ContainerName: {HotBarButtonContent.transform.GetChild(i).GetChild(1).name}");
 
@@ -916,7 +919,7 @@ public class UIManager : MonoBehaviour
                                                                                                   //$"{GameState.KeyMap.Map[GameState.KeyMap.Default.Length + i].Keys[1]}";
             image.color = (SelectedAbilitySlot == i) ? Selected : Unselected;
         }
-    }
+    }*/
     void UpdateInteractionHUD()
     {
         if (GameState.pController == null ||
@@ -982,21 +985,21 @@ public class UIManager : MonoBehaviour
 
     #endregion
 
-    void UIselectionRefresh()
+    /*void UIselectionRefresh()
     {
         SelectedAbilitySlot = -1;
         SelectedEquipSlot = -1;
         InventoryListSelection = -1;
         ContainerListSelection = -1;
         SkillListSelection = -1;
-    }
+    }*/
     void UIinitializer()
     {
-        InventoryButtons = new List<SelectableButton>();
+        //InventoryButtons = new List<SelectableButton>();
 
-        PopulateEquipAndRingSlotButtons();
+        PopulateEquipAndRingSlots();
         PopulateAbilitySlotButtons();
-        UpdateActionBar();
+        //UpdateActionBar();
 
         CurrentMenu = GameMenu.NONE;
 
@@ -1025,7 +1028,7 @@ public class UIManager : MonoBehaviour
             GameState = (GameState)GameObject.FindGameObjectWithTag("GAME").GetComponent("GameState");
             UIinitializer();
             PauseMenuRefresh();
-            UIselectionRefresh();
+            //UIselectionRefresh();
             UIinitialized = true;
         }
 

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+//using RPGconstants;
 
 //Interactions
 public interface Interaction
@@ -177,7 +178,7 @@ public struct CharStatPackage
             float stat = CharacterMath.STAT_BASE[i] +
                 (CharacterMath.STAT_GROWTH[i] *
                 CharacterMath.STAT_MUL_RACE[(int)sheet.Race, i] *
-                sheet.Level);
+                sheet.CharacterLevel);
 
             Stats[i] = (int)stat;
         }
@@ -274,7 +275,7 @@ public struct RawStatPackage
             float stat = CharacterMath.STAT_BASE[i] +
                 (CharacterMath.STAT_GROWTH[i] *
                 CharacterMath.STAT_MUL_RACE[(int)sheet.Race, i] *
-                sheet.Level);
+                sheet.CharacterLevel);
 
             Stats[i] = stat;
         }
@@ -382,7 +383,7 @@ public struct ElementPackage
         for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
         {
             Elements[i] = CharacterMath.RES_MUL_RACE[(int)sheet.Race, i] * (CharacterMath.RES_BASE[i] +
-                (CharacterMath.RES_GROWTH[i] * sheet.Level));
+                (CharacterMath.RES_GROWTH[i] * sheet.CharacterLevel));
         }
         Reflection = new ElementReflection();
         Reflection.Reflect(ref Elements, false);
@@ -595,11 +596,14 @@ public struct AbilityLogic
     public float CD_Timer;
     public float Cast_Timer;
     public Character SourceCharacter;
-    public GameObject CastInstance;
+    public GameObject CastLocationInstance;
+    public GameObject CastTargetInstance;
+    public List<Character> TargetBuffer;
 
     public void Clone(AbilityLogic source)
     {
         SourceCharacter = source.SourceCharacter;
+        TargetBuffer = new List<Character>();
 
         CD_Timer = 0;
         Cast_Timer = 0;
@@ -610,9 +614,7 @@ public struct EffectLogic
 {
     // Sourced from ability
     public EffectOptions Options;
-    public float TetherRange;
-    public float ProjectileLength;
-
+    
     // Timers
     public float ProjectileTimer;
     public float PeriodTimer;
@@ -621,8 +623,8 @@ public struct EffectLogic
     // Active object references
     public CharacterAbility SourceAbility;
     public Character EffectedCharacter;
-    public BaseEffect Original;
-    public List<BaseEffect> Clones;
+    public List<Character> TargetBuffer;
+    
 
     // Psystem Instantiations
     public GameObject Condition;
@@ -633,8 +635,8 @@ public struct EffectLogic
     {
         Options = options;
 
-        TetherRange = source.TetherRange;
-        ProjectileLength = source.ProjectileLength;
+        //TetherRange = source.TetherRange;
+        //ProjectileDuration = source.ProjectileDuration;
 
         ProjectileTimer = 0;
         PeriodTimer = 0;
@@ -643,10 +645,10 @@ public struct EffectLogic
         SourceAbility = source.SourceAbility;
         EffectedCharacter = source.EffectedCharacter;
 
-        if (options.IsClone)
-            Original = source.Original;
-        else
-            Clones = new List<BaseEffect>();
+        TargetBuffer = new List<Character>();
+
+        //Original = source.Original;
+        //Clones = new List<BaseEffect>();
 
         Condition = null;
         Projectile = null;
@@ -656,17 +658,13 @@ public struct EffectLogic
 [Serializable]
 public struct EffectOptions
 {
-    public bool Inject;
-    public bool ToggleActive;
-
-    public EffectType EffectType;
-    public bool IsClone;
     public bool IsProjectile;
-
-    public EffectOptions(EffectType type, bool toggled, bool clone, bool projectile = false, bool inject = false)
+    public bool ToggleActive;
+    public EffectType EffectType;
+    
+    public EffectOptions(EffectType type, bool toggled, bool projectile = false)
     {
-        Inject = inject;
-        IsClone = clone;
+        //IsClone = clone;
         EffectType = type;
         ToggleActive = toggled;
         IsProjectile = projectile;
@@ -675,10 +673,73 @@ public struct EffectOptions
 [Serializable]
 public struct InventoryOptions
 {
-
 }
 [Serializable]
 public struct ItemOptions
 {
+    public Quality Quality;
+    public int Quantity;
+    public int GoldValue;
+}
+[Serializable]
+public struct RootLogic
+{
+    public RootOptions Options;
+    public RootScriptObject Original;
+    public List<RootScriptObject> Clones;
 
+    public void Copy(RootOptions options, RootScriptObject source = null)
+    {
+        Options = options;
+        if (Options.IsClone)
+            Original = source;
+        else
+            Clones = new List<RootScriptObject>();
+    }
+}
+[Serializable] 
+public struct RootOptions
+{
+    public string ClassID;
+    public bool IsClone;
+    public int ID;
+    public int Quantity; // Migrate to ItemOptions
+    
+    public RootOptions(ref int index, int quantity = 1)
+    {
+        try
+        {
+            ID = index;
+            index++;
+        }
+        catch
+        {
+            ID = -1;
+        }
+        ClassID = string.Empty; //source.name;
+        Quantity = quantity;
+        IsClone = false;
+    }
+
+    public RootOptions(RootScriptObject source, int quantity = 1)
+    {
+        ID = source.ID;
+        ClassID = source.name;
+        Quantity = quantity;
+        IsClone = true;
+    }
+}
+[Serializable] 
+public struct ButtonOptions
+{
+    public string ClassID;
+    public GameObject Body;
+    public Transform Home;
+
+    public ButtonOptions(string classID, GameObject body, Transform home)
+    {
+        ClassID = classID;
+        Body = body;
+        Home = home;
+    }
 }

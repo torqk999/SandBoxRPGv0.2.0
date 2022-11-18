@@ -14,8 +14,8 @@ public class ProcAbility : EffectAbility
         options.EffectType = EffectType.PROC;
         options.ToggleActive = true;
         options.IsProjectile = true;
-        options.IsClone = true;
-        options.Inject = false;
+        //options.IsClone = true;
+        //options.Inject = false;
 
         base.UseAbility(target, options);
     }
@@ -24,28 +24,27 @@ public class ProcAbility : EffectAbility
         options.EffectType = EffectType.PROC;
         options.ToggleActive = true;
         options.IsProjectile = true;
-        options.IsClone = false;
-        options.Inject = false;
+        //options.IsClone = false;
+        //options.Inject = false;
 
         base.ProduceOriginalEffects(source, options);
     }
-
-    public override void CloneAbility(CharacterAbility source)
+    public override CharacterAbility GenerateAbility(RootOptions options)
     {
+        options.ClassID = "ProcAbility";
+        ProcAbility newAbility = (ProcAbility)GenerateRootObject(options);
+        newAbility.Clone(this, options);
+        return newAbility;
+    }
+    public override void Clone(RootScriptObject source, RootOptions options)
+    {
+        base.Clone(source, options);
+
         if (!(source is ProcAbility))
             return;
 
         ProcAbility procSource = (ProcAbility)source;
-
         Projectile = procSource.Projectile;
-
-        base.CloneAbility(source);
     }
 
-    public override CharacterAbility GenerateAbility()
-    {
-        ProcAbility newAbility = (ProcAbility)CreateInstance("ProcAbility");
-        newAbility.CloneAbility(this);
-        return newAbility;
-    }
 }

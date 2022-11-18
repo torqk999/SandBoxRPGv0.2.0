@@ -78,13 +78,13 @@ public class CurrentStatEffect : StatEffect
     {
         ElementPack.Amplify(amp);
     }
-    public override void InitializeSource()
+    public override void InitializeRoot(GameState state)
     {
         ElementPack.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, EffectOptions options)
+    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
     {
-        base.CloneEffect(source, options);
+        base.CloneEffect(source, effectOptions);
 
         if (!(source is CurrentStatEffect))
             return;
@@ -94,10 +94,15 @@ public class CurrentStatEffect : StatEffect
 
         ElementPack.Clone(currentStatEffectSource.ElementPack);
     }
-    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        CurrentStatEffect newEffect = (CurrentStatEffect)CreateInstance("CurrentStatEffect");
-        newEffect.CloneEffect(this, options);
+        options.ClassID = "CurrentStatEffect";
+        return (CurrentStatEffect)base.GenerateRootObject(options);
+    }
+    public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
+    {
+        CurrentStatEffect newEffect = (CurrentStatEffect)base.GenerateEffect(rootOptions, effectOptions, effected);
+        newEffect.CloneEffect(this, effectOptions);
         return newEffect;
     }
     public void FormRegen(RawStat targetStat, float healMagnitude) // Default regen

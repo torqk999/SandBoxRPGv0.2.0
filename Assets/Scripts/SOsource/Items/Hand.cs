@@ -12,15 +12,18 @@ public class Hand : Equipment
     //public List<MaterialType> Details;
     public GameObject Instantiation;   // Used by equipping only
 
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        Hand hand = (Hand)CreateInstance("Hand");
-        hand.CloneItem(this, equipId, inject);
-        return hand;
+        options.ClassID = options.ClassID == "" ? "Hand" : options.ClassID;
+        Hand newRoot = (Hand)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
 
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
+        base.Clone(source, options);
+
         if (!(source is Hand))
             return;
 
@@ -34,8 +37,6 @@ public class Hand : Equipment
         //Details = new List<MaterialType>();
         //Details.AddRange(Details);
         Instantiation = null;
-
-        base.CloneItem(source);
     }
     public override bool UpdateCharacterRender(Character character, bool putOn = true)
     {

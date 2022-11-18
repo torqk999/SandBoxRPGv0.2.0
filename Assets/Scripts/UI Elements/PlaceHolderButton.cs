@@ -21,12 +21,28 @@ public class PlaceHolderButtonEditor : Editor
 public class PlaceHolderButton : SelectableButton
 {
     [Header("PlaceHolder")]
-    public Image PlaceHolder;
+    public DraggableButton Occupant;
+
+    public override bool Vacate()
+    {
+        if (Occupant == null)
+            return true;
+        return Occupant.Vacate();
+    }
+
+    public void ResetImage()
+    {
+        if (Root == null || Root.Sprite == null)
+            MyImage.sprite = UIMan.PlaceHolderSprite;
+        else
+            MyImage.sprite = Root.Sprite;
+    }
 
     // Start is called before the first frame update
     protected override void Start()
     {
-        
+        base.Start();
+        ResetImage();
     }
 
     // Update is called once per frame

@@ -72,7 +72,7 @@ public class CharacterCanvas : MonoBehaviour
                 return;
 
             if (Character.Sheet != null)
-                LevelText.text = $"{Character.Sheet.Name}\n Lvl: {Character.Sheet.Level}";
+                LevelText.text = $"{Character.Sheet.Name}\n Lvl: {Character.Sheet.CharacterLevel}";
 
             if (Character.CurrentStats.Stats != null && Character.MaximumStatValues.Stats != null)
                 HealthBar.value = Character.CurrentStats.Stats[(int)RawStat.HEALTH] / Character.MaximumStatValues.Stats[(int)RawStat.HEALTH];

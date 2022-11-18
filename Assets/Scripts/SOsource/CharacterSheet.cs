@@ -31,14 +31,11 @@ public enum Faction
 }
 
 [CreateAssetMenu(fileName = "CharacterSheet", menuName = "ScriptableObjects/CharacterSheet")]
-public class CharacterSheet : ScriptableObject
+public class CharacterSheet : RootScriptObject
 {
-    // Random Gen
-    public Sprite Portrait;
-    public string Name;
-
+    public Character Posession;
     // Persistent
-    public int Level;
+    public int CharacterLevel;
     public float CurrentEXP;
     public float NextLevelEXP;
 
@@ -52,26 +49,28 @@ public class CharacterSheet : ScriptableObject
     public CharacterAbility[] InnateAbilities;
     //public BaseEffect[] InnatePassives;
 
-    public void Clone(CharacterSheet source)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
-        Name = source.Name;
-        Portrait = source.Portrait;
-        Race = source.Race;
-        Faction = source.Faction;
+        if (!(source is CharacterSheet))
+            return;
+        CharacterSheet sheet = (CharacterSheet)source;
 
-        Level = source.Level;
-        CurrentEXP = source.CurrentEXP;
-        NextLevelEXP = source.NextLevelEXP;
+        Race = sheet.Race;
+        Faction = sheet.Faction;
 
-        CurrentSkillEXP.Clone(source.CurrentSkillEXP);
-        NextLevelSkillEXP.Clone(source.NextLevelSkillEXP);
-        SkillsLevels.Clone(source.SkillsLevels);
+        CharacterLevel = sheet.CharacterLevel;
+        CurrentEXP = sheet.CurrentEXP;
+        NextLevelEXP = sheet.NextLevelEXP;
 
-        if (source.InnateAbilities != null)
+        CurrentSkillEXP.Clone(sheet.CurrentSkillEXP);
+        NextLevelSkillEXP.Clone(sheet.NextLevelSkillEXP);
+        SkillsLevels.Clone(sheet.SkillsLevels);
+
+        if (sheet.InnateAbilities != null)
         {
-            InnateAbilities = new CharacterAbility[source.InnateAbilities.Length];
-            for (int i = 0; i < source.InnateAbilities.Length; i++)
-                InnateAbilities[i] = source.InnateAbilities[i];
+            InnateAbilities = new CharacterAbility[sheet.InnateAbilities.Length];
+            for (int i = 0; i < sheet.InnateAbilities.Length; i++)
+                InnateAbilities[i] = sheet.InnateAbilities[i];
         }
     }
 
@@ -79,7 +78,7 @@ public class CharacterSheet : ScriptableObject
     {
         if (fresh)
         {
-            Level = 0;
+            CharacterLevel = 0;
             CurrentEXP = 0;
             NextLevelEXP = 0;
         }

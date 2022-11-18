@@ -23,22 +23,25 @@ public class ImmuneEffect : BaseEffect
                 Destroy(ccEffect);
     }
 
-    public override void CloneEffect(BaseEffect source, EffectOptions options)
+    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
     {
-        base.CloneEffect(source, options);
+        base.CloneEffect(source, effectOptions);
 
         if (!(source is ImmuneEffect))
             return;
 
         ImmuneEffect immuneSource = (ImmuneEffect)source;
-
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
-
-    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        ImmuneEffect newEffect = (ImmuneEffect)CreateInstance("ImmuneEffect");
-        newEffect.CloneEffect(this, options);
+        options.ClassID = "ImmuneEffect";
+        return (ImmuneEffect)base.GenerateRootObject(options);
+    }
+    public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
+    {
+        ImmuneEffect newEffect = (ImmuneEffect)base.GenerateEffect(rootOptions, effectOptions, effected);
+        newEffect.CloneEffect(this, effectOptions);
         return newEffect;
     }
 }

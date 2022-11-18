@@ -16,13 +16,13 @@ public class MaxStatEffect : StatEffect
     {
         StatAdjustPack.Amplify(amp);
     }
-    public override void InitializeSource()
+    public override void InitializeRoot(GameState state)
     {
         StatAdjustPack.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, EffectOptions options)
+    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
     {
-        base.CloneEffect(source, options);
+        base.CloneEffect(source, effectOptions, effected);
 
         if (!(source is MaxStatEffect))
             return;
@@ -31,10 +31,15 @@ public class MaxStatEffect : StatEffect
 
         StatAdjustPack.Clone(maxSource.StatAdjustPack);
     }
-    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
+    {
+        options.ClassID = "MaxStatEffect";
+        return (MaxStatEffect)base.GenerateRootObject(options);
+    }
+    public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
     {
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
-        newEffect.CloneEffect(this, options);
+        newEffect.CloneEffect(this, effectOptions);
         return newEffect;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -177,7 +178,11 @@ public class SceneManager : MonoBehaviour
                     BUFFER[i] = Materials[(int)hand.HandleMaterial];
                 if (BUFFER[i].name.Contains("Base") ||
                     BUFFER[i].name.Contains("Metal"))
+                {
                     BUFFER[i] = Materials[(int)hand.BaseMaterial];
+                    BUFFER[i].SetFloat("_Bloody", (int)hand.Quality / Enum.GetNames(typeof(Quality)).Length);
+                }
+                    
                 if (BUFFER[i].name.Contains("Trim") ||
                     BUFFER[i].name.Contains("Detail"))
                     BUFFER[i] = Materials[(int)hand.TrimMaterial];

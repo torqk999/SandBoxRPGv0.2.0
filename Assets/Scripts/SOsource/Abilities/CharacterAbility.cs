@@ -18,43 +18,84 @@ public enum TargetType
     ENEMY
 }
 
+public enum CastTarget
+{
+    CHAR,
+    MOUSE,
+    RANDOM
+}
 
 //[CreateAssetMenu(fileName = "CharacterAbility", menuName = "ScriptableObjects/CharacterAbility")]
-public class CharacterAbility : ScriptableObject
+public class CharacterAbility : RootScriptObject
 {
     [Header("Ability Properties")]
-    public string Name;
-
-    public Sprite Sprite;
-    
-    public PsystemType CastType;
-    public CastLocation CastLocation;
-
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
+
+    public PsystemType CastLocationType;
+    public CastLocation CastLocation;
+
+    public PsystemType CastTargetType;
+    public CastTarget CastTarget;
+    public TargetType TargetType;
 
     public School School; // CC prevention for now, damage scaling later
     public ValueType CostType;
     public RawStat CostTarget;
 
     public float CostValue;
-    public float CastRange;
-    public float AOE_Range;
     public float CD_Duration;
     public float Cast_Duration;
-    public float ProjectileLength;
+    public float CastRange;
 
     public AbilityLogic Logic;
 
-    public virtual void UseAbility(Character target, EffectOptions optiions)
+    public virtual bool HasEligableTarget()
+    {
+        switch (CastTarget)
+        {
+            case CastTarget.CHAR:
+                if (TargetType == TargetType.SELF)
+                    return true;
+                if (CastRange <= 0 &&
+                    Logic.SourceCharacter.CurrentTargetCharacter != Logic.SourceCharacter) // awkward corner case is awkward
+                {
+                    Debug.Log("Ability has no range to target ");
+                    return false;
+                }
+
+                if (Vector3.Distance(Logic.SourceCharacter.Root.position, Logic.SourceCharacter.CurrentTargetCharacter.Root.position) > CastRange)
+                    return false; // Range Check
+                if (TargetType == TargetType.ALLY)
+                        return Logic.SourceCharacter.CheckAllegiance(Logic.SourceCharacter.CurrentTargetCharacter);
+                if (TargetType == TargetType.ENEMY)
+                    return !Logic.SourceCharacter.CheckAllegiance(Logic.SourceCharacter.CurrentTargetCharacter);
+                return true; // All check
+
+            case CastTarget.MOUSE:
+                return false;
+
+            case CastTarget.RANDOM:
+                return false;
+
+        }
+        return false;
+    }
+    public virtual void UseAbility(Character target, EffectOptions options)
     {
         CastPsystem();
+    }
+    public virtual void EquipAbility(Character currentCharacter, Equipment equip = null)
+    {
+        Amplify(currentCharacter.Sheet, equip);
+        currentCharacter.Abilities.Add(this);
+        Logic.SourceCharacter = currentCharacter;
     }
     void CastPsystem()
     {
         Debug.Log("Stepped into Cast system");
 
-        if (CastType == PsystemType.NONE)
+        if (CastLocationType == PsystemType.NONE)
             return;
 
         if (Logic.SourceCharacter == null)
@@ -62,46 +103,18 @@ public class CharacterAbility : ScriptableObject
 
         Debug.Log("Casting...");
 
-        if (Logic.CastInstance != null)
-            Destroy(Logic.CastInstance);
+        if (Logic.CastLocationInstance != null)
+            Destroy(Logic.CastLocationInstance);
 
-        Logic.CastInstance = Instantiate(Logic.SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastType], Logic.SourceCharacter.transform);
-        Logic.CastInstance.transform.localPosition = Vector3.zero;
+        Logic.CastLocationInstance = Instantiate(Logic.SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastLocationType], Logic.SourceCharacter.transform);
+        Logic.CastLocationInstance.transform.localPosition = Vector3.zero;
         Logic.Cast_Timer = Cast_Duration;
     }
     public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
     {
 
     }
-    public virtual void InitializeSource()
-    {
 
-    }
-    public virtual void CloneAbility(CharacterAbility source)
-    {
-        Name = source.Name;
-        Sprite = source.Sprite;
-
-        AnimationState = source.AnimationState;
-        CharAnimation = source.CharAnimation;
-
-        CostValue = source.CostValue;
-        CostTarget = source.CostTarget;
-        CostType = source.CostType;
-
-        School = source.School;
-        CastRange = source.CastRange;
-        AOE_Range = source.AOE_Range;
-
-        CD_Duration = source.CD_Duration;
-        Cast_Duration = source.Cast_Duration;
-        ProjectileLength = source.ProjectileLength;
-
-        Logic.Clone(source.Logic);
-
-        Logic.CD_Timer = 0;
-        Logic.Cast_Timer = 0;
-    }
     public void SetCooldown()
     {
         Logic.CD_Timer = CD_Duration;
@@ -118,9 +131,9 @@ public class CharacterAbility : ScriptableObject
             Logic.Cast_Timer -= GlobalConstants.TIME_SCALE;
             Logic.Cast_Timer = (Logic.Cast_Timer < 0) ? 0 : Logic.Cast_Timer;
         }
-        if (Logic.Cast_Timer == 0 && Logic.CastInstance != null)
+        if (Logic.Cast_Timer == 0 && Logic.CastLocationInstance != null)
         {
-            Destroy(Logic.CastInstance);
+            Destroy(Logic.CastLocationInstance);
         }
     }
     public void UpdateProjectiles()
@@ -131,28 +144,48 @@ public class CharacterAbility : ScriptableObject
     {
 
     }
-    public virtual CharacterAbility GenerateAbility()
+    public override void InitializeRoot(GameState state)
     {
-        CharacterAbility newAbility = (CharacterAbility)CreateInstance("CharacterAbility");
-        newAbility.CloneAbility(this);
-        newAbility.InitializeSource();
+        base.InitializeRoot(state);
+    }
+    /*public override RootScriptObject GenerateRootObject(RootOptions options)
+    {
+        options.ClassID = "CharacterAbility";
+        CharacterAbility newRootObject = (CharacterAbility)CreateInstance(options.ClassID);
+        newRootObject.Clone(this, options);
+        return newRootObject;
+    }*/
+    public virtual CharacterAbility GenerateAbility(RootOptions options)
+    {
+        options.ClassID = options.ClassID == "" ? "CharacterAbility" : options.ClassID;
+        CharacterAbility newAbility = (CharacterAbility)GenerateRootObject(options);
+        newAbility.Clone(this, options);
         return newAbility;
     }
-    public virtual void EquipAbility(Character currentCharacter, Equipment equip = null)
+    public override void Clone(RootScriptObject source, RootOptions options = default)
     {
-        Amplify(currentCharacter.Sheet, equip);
-        currentCharacter.Abilities.Add(this);
-        //Debug.Log(this.GetType().ToString());
-        Logic.SourceCharacter = currentCharacter;
+        base.Clone(source, options);
 
-        /*
-        CharacterAbility newAbility = GenerateAbility();
-        newAbility.Amplify(currentCharacter.Sheet, equip);
-        newAbility.Source = currentCharacter;
-        newAbility.AbilityID = abilityID;
-        newAbility.EquipID = equip == null ? -1 : equip.EquipID;
-        currentCharacter.Abilities.Add(newAbility);
-        return newAbility;
-        */
+        if (!(source is CharacterAbility))
+            return;
+        CharacterAbility ability = (CharacterAbility)source;
+
+        AnimationState = ability.AnimationState;
+        CharAnimation = ability.CharAnimation;
+
+        CostValue = ability.CostValue;
+        CostTarget = ability.CostTarget;
+        CostType = ability.CostType;
+
+        School = ability.School;
+
+        CD_Duration = ability.CD_Duration;
+        Cast_Duration = ability.Cast_Duration;
+
+        Logic.Clone(ability.Logic);
+
+        Logic.CD_Timer = 0;
+        Logic.Cast_Timer = 0;
     }
+    
 }

@@ -42,8 +42,9 @@ public class GameState : MonoBehaviour
     public bool bGameMenuOpen;
 
     [Header("Generated Indices")]
-    public int ABILITY_INDEX;
-    public int EQUIPMENT_INDEX;
+    public int ROOT_SO_INDEX;
+    //public int ABILITY_INDEX;
+    //public int EQUIPMENT_INDEX;
 
     [Header("Dynamic References")]
     public List<Pawn> RigidBodyPawns;
@@ -100,7 +101,7 @@ public class GameState : MonoBehaviour
     {
         try
         {
-            EQUIPMENT_INDEX = 1; // reserve zero for universal passive index
+            //EQUIPMENT_INDEX = 1; // reserve zero for universal passive index
             UIman = (UIManager)GameObject.FindGameObjectWithTag("UI_MAN").GetComponent("UIManager");
             UIman.GameStateLinked = true;
             KeyMap.GenerateKeyMap();// Key-Sensitive action. Migrate later maybe?

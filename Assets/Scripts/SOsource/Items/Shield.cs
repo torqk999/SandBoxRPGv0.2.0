@@ -16,20 +16,21 @@ public class Shield : Hand
     [Header("Equipment Properties")]
     public ShieldType Type;
 
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        Shield newOneHand = (Shield)CreateInstance("Shield");
-        newOneHand.CloneItem(this, equipId, inject);
-        return newOneHand;
+        options.ClassID = options.ClassID == "" ? "Shield" : options.ClassID;
+        Shield newRoot = (Shield)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
         if (!(source is Shield))
             return;
 
         Shield shieldSource = (Shield)source;
 
-        base.CloneItem(source, equipId, inject);
+        base.Clone(source, options);
 
         Type = shieldSource.Type;
     }

@@ -20,23 +20,38 @@ public class InventoryButtonEditor : Editor
 
 public class InventoryButton : DraggableButton
 {
-    [Header("Item")]
-    public ItemObject Item;
-
-    public virtual void Assign(ItemObject item)
+    public override ExtendedButton GenerateButton(GameObject prefab, Transform folder)
     {
-        Item = item;
+        GameObject buttonObject = GenerateButtonObject(prefab, folder);
+        InventoryButton newButton = buttonObject.AddComponent<InventoryButton>();
+        return newButton;
+    }
+    public override void Assign(RootScriptObject root)
+    {
+        base.Assign(root);
+        if (!(root is ItemObject))
+            return;
+
+        ItemObject item = (ItemObject)root;
+
+        Stats.Append($"GoldValue: {item.GoldValue}\n" +
+            $"Quality: {item.Quality}\n" +
+            $"Weight: {item.Weight}");
+        ButtonText.text = (item is Stackable) ? ((Stackable)item).CurrentQuantity.ToString() : string.Empty;
+    }
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        base.OnPointerDown(eventData);
+        UIMan.CharacterPageSelection(this);
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
         base.OnPointerUp(eventData);
         SnapButton(UIMan.ItemRelease(ref NewPosButton, this));
     }
-
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        Stats.Clear();
-        Stats.Append($"GoldValue: {Item.GoldValue}");
+        
         base.OnPointerEnter(eventData);
     }
 
@@ -44,8 +59,7 @@ public class InventoryButton : DraggableButton
     protected override void Start()
     {
         base.Start();
-        Title.Append(Item.Name);
-        Flavour.Append(Item.Flavour);
+        MyImage.sprite = Root.Sprite;
     }
 
     // Update is called once per frame

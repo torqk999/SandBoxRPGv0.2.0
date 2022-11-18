@@ -185,17 +185,18 @@ public class Character : Pawn, Interaction
     #endregion
 
     #region EQUIPPING
-    public bool InventoryEquipSelection(int equipIndex, int ringIndex, int inventoryIndex)
+    public bool InventoryEquipSelection(int equipIndex, int inventoryIndex, bool ringIndex = false)
     {
         if (equipIndex != -1)
-            return AttemptEquipRemoval(EquipmentSlots, equipIndex);
-
-        if (ringIndex != -1)
-            return AttemptEquipRemoval(RingSlots, ringIndex);
-
+        {
+            if (ringIndex)
+                return AttemptEquipRemoval(EquipmentSlots, equipIndex);
+            return AttemptEquipRemoval(RingSlots, equipIndex);
+        }
+            
         if (inventoryIndex != -1)
         {
-            if (inventoryIndex >= Inventory.Items.Count ||
+            if (inventoryIndex >= Inventory.Items.Length ||
                 inventoryIndex < 0)
                 return false;
 
@@ -232,7 +233,7 @@ public class Character : Pawn, Interaction
         if (input is Hand &&
             ((Hand)input).Instantiation != null)
             Destroy(((Hand)input).Instantiation);
-        return (Equipment)Inventory.SwapItemSlots(input, inventoryIndex);
+        return (Equipment)Inventory.SwapItems(input, inventoryIndex);
     }
     #endregion
 
@@ -344,18 +345,14 @@ public class Character : Pawn, Interaction
 
         if (!CheckCanCastAbility(call, costModifier))
             return false;
-        bool chk = false;
 
-        switch (call)
-        {
-            case EffectAbility:
-                chk = UseTargettedAbility((EffectAbility)call, costModifier);
-                break;
+        if (!call.HasEligableTarget())
+            return false;
 
-            case SummonAbility:
-                chk = UseSummonAbility((SummonAbility)call, costModifier);
-                break;
-        }
+        EffectOptions options = new EffectOptions(default, true);
+
+        call.UseAbility(CurrentTargetCharacter, options);
+        SpendResource(call, costModifier);
 
         GlobalCDtimer = CharacterMath.GLOBAL_COOLDOWN;
         return true;
@@ -399,59 +396,10 @@ public class Character : Pawn, Interaction
         if (call.CostValue * costModifier > CurrentStats.Stats[(int)call.CostTarget])
             return false; // Check Cost
 
-        if (call.CastRange > Vector3.Distance(Root.position, CurrentTargetCharacter.Root.position))
-            return false; // Check Cast Range
+        //if (call.CastRange > Vector3.Distance(Root.position, CurrentTargetCharacter.Root.position))
+        //    return false; // Check Cast Range
 
         return true; // Good to do things Sam!
-    }
-    bool UseTargettedAbility(EffectAbility call, float costModifier)
-    {
-        if (call.AOE_Range == 0)
-        {
-            switch (call.AbilityTarget)
-            {
-                case TargetType.SELF:
-                    SpendResource(call, costModifier);
-                    call.UseAbility(this);
-                    return true;
-
-                case TargetType.ALLY:
-                    if (!CheckAllegiance(CurrentTargetCharacter))
-                        return false;
-                    break;
-
-                case TargetType.ENEMY:
-                    if (CheckAllegiance(CurrentTargetCharacter))
-                        return false;
-                    break;
-            }
-            if (Vector3.Distance(CurrentTargetCharacter.Root.position, Root.position) <= Math.Abs(call.CastRange))
-            {
-                SpendResource(call, costModifier);
-                call.UseAbility(CurrentTargetCharacter);
-                return true;
-            }
-            return false;
-        }
-        if (call.AOE_Range != 0)
-        {
-            AOEtargetting(ref AOE_buffer, call, GameState.CharacterMan.CharacterPool);
-            if (AOE_buffer.Count < 1)
-                return false;
-            foreach (Character target in AOE_buffer)
-                call.UseAbility(target);
-        }
-        /*if (call.AOE_Range < 0)
-        {
-            Debug.Log("Negative AOE range!   >:| ");
-            return false;
-        }*/
-
-        return true;
-    }
-    bool UseSummonAbility(SummonAbility call, float modifier)
-    {
-        return false;
     }
     void SpendResource(CharacterAbility call, float costModifier)
     {
@@ -462,25 +410,6 @@ public class Character : Pawn, Interaction
 
         else
             call.SetCooldown();
-    }
-    void AOEtargetting(ref List<Character> AOEcandidates, EffectAbility call, List<Character> pool)
-    {
-        AOEcandidates.Clear();
-
-        if (pool == null)
-            return;
-
-        foreach (Character target in pool)
-        {
-            if (call.AbilityTarget == TargetType.ALLY && !CheckAllegiance(target))
-                continue;
-
-            if (call.AbilityTarget == TargetType.ENEMY && CheckAllegiance(target))
-                continue;
-
-            if (Vector3.Distance(target.Root.position, Root.position) <= Math.Abs(call.AOE_Range))
-                AOEcandidates.Add(target);
-        }
     }
     #endregion
     public CrowdControlEffect RawCrowdControlGeneration(string name, CCstatus status, Sprite sprite = null) // Hard indefinite CC creation (ez death)
@@ -687,7 +616,6 @@ public class Character : Pawn, Interaction
         if (bIsPaused)
             return;
 
-        
         UpdateLife();
         UpdatePassiveAbilities();
         UpdateRisidualEffects();

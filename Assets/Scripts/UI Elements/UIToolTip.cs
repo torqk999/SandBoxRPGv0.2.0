@@ -12,6 +12,8 @@ public class UIToolTip : MonoBehaviour
     public TextMeshProUGUI Stats;
     public TextMeshProUGUI Flavour;
 
+    //public DraggableButton Dragging;
+
     public bool Active;
     public Vector2 offset;
 
@@ -43,13 +45,13 @@ public class UIToolTip : MonoBehaviour
 
     void FollowMouse(Vector2 mousePos)
     {
-        if (Active && !gameObject.activeSelf)
-            gameObject.SetActive(true);
+        if (Active && !MyRect.gameObject.activeSelf)
+            MyRect.gameObject.SetActive(true);
 
         if (!Active)
         {
-            if (gameObject.activeSelf)
-                gameObject.SetActive(false);
+            if (MyRect.gameObject.activeSelf)
+                MyRect.gameObject.SetActive(false);
             return;
         }
 

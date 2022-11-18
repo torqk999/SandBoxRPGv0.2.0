@@ -16,21 +16,21 @@ public class OffHand : Hand
     [Header("OffHand Properties")]
     public OffHandType Type;
 
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        OffHand newOffHand = (OffHand)CreateInstance("OffHand");
-        newOffHand.CloneItem(this, equipId, inject);
-        return newOffHand;
+        options.ClassID = options.ClassID == "" ? "OffHand" : options.ClassID;
+        OffHand newRoot = (OffHand)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
+        base.Clone(source, options);
+
         if (!(source is OffHand))
             return;
 
         OffHand offSource = (OffHand)source;
-
-        base.CloneItem(source, equipId, inject);
-        //EquipSkill = SkillType.HAND_OFF;
         Type = offSource.Type;
     }
 

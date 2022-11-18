@@ -4,39 +4,41 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "ItemObject", menuName = "ScriptableObjects/RawItem")]
-public class ItemObject : ScriptableObject
+public class ItemObject : RootScriptObject
 {
     [Header("Item Properties")]
-    public int itemID;
-    public string Name;
-    public string Flavour;
-    public Sprite Sprite;
-
-    [Header("Fluff")]
     public Quality Quality;
     public int GoldValue;
     public float Weight;
 
-    public virtual ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    [Header("Item Logic")]
+    public int SlotIndex;
+    public Equipment[] SlotFamily;
+
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        ItemObject newItemObject = (ItemObject)CreateInstance("ItemObject");
-        newItemObject.CloneItem(this);
-        newItemObject.InitializeSource();
-        return newItemObject;
+        options.ClassID = options.ClassID == "" ? "ItemObject" : options.ClassID;
+        ItemObject newRoot = (ItemObject)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
-    public virtual void InitializeSource()
+    public virtual void InitializeRoot()
     {
 
     }
 
-    public virtual void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
-        itemID = source.itemID;
-        Name = source.Name;
-        Sprite = source.Sprite;
-        Quality = source.Quality;
-        GoldValue = source.GoldValue;
-        Weight = source.Weight;
+        base.Clone(source, options);
+
+        if (!(source is ItemObject))
+            return;
+
+        ItemObject item = (ItemObject)source;
+
+        Quality = item.Quality;
+        GoldValue = item.GoldValue;
+        Weight = item.Weight;
     }
 }
 

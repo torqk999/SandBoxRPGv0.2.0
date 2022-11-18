@@ -10,21 +10,21 @@ public class Wearable : Equipment
     public MaterialType BaseMaterial;
     public MaterialType TrimMaterial;
 
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        Wearable newOneHand = (Wearable)CreateInstance("Wearable");
-        newOneHand.CloneItem(this, equipId, inject);
-        return newOneHand;
+        options.ClassID = options.ClassID == "" ? "Wearable" : options.ClassID;
+        Wearable newRoot = (Wearable)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
+        base.Clone(source, options);
+
         if (!(source is Wearable))
             return;
 
         Wearable wearSource = (Wearable)source;
-
-        base.CloneItem(source, equipId, inject);
-        //EquipSkill = SkillType.MEDIUM;
         EquipSlot = wearSource.EquipSlot;
     }
     public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)

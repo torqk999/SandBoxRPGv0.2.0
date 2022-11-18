@@ -15,6 +15,8 @@ TagManager:
   - DROPFLOOR
   - GAME
   - UI_MAN
+  - BUTTON
+  - UI_PANEL
   layers:
   - Default
   - TransparentFX

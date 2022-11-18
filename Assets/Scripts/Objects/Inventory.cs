@@ -7,12 +7,16 @@ using UnityEngine;
 public class Inventory
 {
     public GameState GameState;
-    public List<ItemObject> Items;
-    public int MaxCount;
+    public ItemObject[] Items;
+    //public int CurrentQuantity;
+    //public int MaxCount;
+
+    public SelectableButton[] InventoryButtons;
+    public PlaceHolderButton[] InventoryPlaceHolder;
 
     public Inventory(int count = CharacterMath.PARTY_INVENTORY_MAX)
     {
-        Items = new List<ItemObject>();
+        Items = new ItemObject[count];
     }
     #region LOOTING
     public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
@@ -35,42 +39,103 @@ public class Inventory
     #endregion
 
     #region INVENTORY
+    public int CurrentQuantity()
+    {
+        int output = 0;
+        for (int i = 0; i < Items.Length; i++)
+            if (Items[i] != null)
+                output++;
+        return output;
+    }
     public bool PushItemIntoStack(Stackable stackItem)
     {
-        int stackIndex = Items.FindIndex(x =>
-        x is Stackable &&
-        x.Name == stackItem.Name);
+        int empty = -1;
 
-        if (stackIndex == -1) // Not Found
+        for(int i = 0; i < Items.Length; i++)
+        {
+            if (stackItem.CurrentQuantity <= 0)
+                return true;
+
+            if (Items[i] == null &&
+                empty == -1)
+                empty = i;
+
+            if (!(Items[i] is Stackable))
+                continue;
+
+            Stackable stackTarget = (Stackable)Items[i];
+
+            if (stackTarget.Name != stackItem.Name)
+                continue;
+
+            int desiredQuantity = stackTarget.MaxQuantity - stackItem.CurrentQuantity;
+            int movedQuantity = stackItem.CurrentQuantity < desiredQuantity ? stackItem.CurrentQuantity : desiredQuantity;
+            stackTarget.CurrentQuantity += movedQuantity;
+            stackItem.CurrentQuantity -= movedQuantity;
+        }
+
+        if (empty == -1)
             return false;
 
-        Stackable stackTarget = (Stackable)Items[stackIndex];
-        if (stackTarget.MaxQuantity - stackTarget.CurrentQuantity > stackItem.CurrentQuantity)
-        {
-
-        } // Move Whole Stack
-
+        Items[empty] = stackItem;
         return true;
     }
     public bool PushItemIntoInventory(ItemObject input, int inventoryIndex = 0)
     {
-        if (Items.Count >= MaxCount)
-            return false;
+        if (input is Stackable)
+            return PushItemIntoStack((Stackable)input);
 
-        Items.Insert(inventoryIndex, input);
-        return true;
+        if (Items[inventoryIndex] == null)
+        {
+            Items[inventoryIndex] = input;
+            return true;
+        }
+
+        int newIndex = FindClosestEmptyIndex(inventoryIndex);
+        if (newIndex != -1)
+        {
+            Items[newIndex] = input;
+            return true;
+        }
+
+        return false;
     }
     public ItemObject RemoveIndexFromInventory(int inventoryIndex)
     {
-        ItemObject output = Items[inventoryIndex];
-        Items.RemoveAt(inventoryIndex);
-        return output;
+        try
+        {
+            ItemObject output = Items[inventoryIndex];
+            Items[inventoryIndex] = null;
+            return output;
+        }
+        catch
+        {
+            return null;
+        }
     }
-    public ItemObject SwapItemSlots(ItemObject input, int InventoryIndex)
+    public ItemObject SwapItems(ItemObject input, int InventoryIndex)
     {
         ItemObject output = Items[InventoryIndex];
         Items[InventoryIndex] = input;
         return output;
+    }
+    public int FindClosestEmptyIndex(int startIndex)
+    {
+        for (int i = 0; i < Math.Abs(startIndex); i++)
+        {
+            int sup = startIndex + i;
+            int sub = startIndex - i;
+
+            if (sup < Items.Length &&
+                Items[sup] == null)
+                return sup;
+
+
+            if (sub > 0 &&
+                Items[sub] == null)
+                return sub;
+        }
+        return -1;
     }
     public bool TransferItem(Inventory targetInventory, int inventoryIndex, int targetIndex = 0)
     {

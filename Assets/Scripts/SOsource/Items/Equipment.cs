@@ -10,27 +10,26 @@ public class Equipment : ItemObject
     public CharacterAbility[] Abilities;
 
     [Header("Equip Logic - Do not touch")]
-    //public CharacterAbility[] Equipped;
     public int EquipLevel;
-    public int EquipID;
+    public Character EquippedTo;
 
-    public int SlotIndex;
-    public Equipment[] SlotFamily;
-
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        Equipment newEquip = (Equipment)CreateInstance("Equipment");
-        newEquip.CloneItem(this, equipId, inject);
-        newEquip.InitializeSource();
-        return newEquip;
+        options.ClassID = options.ClassID == "" ? "Equipment" : options.ClassID;
+        Equipment newRoot = (Equipment)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
-    public override void InitializeSource()
+    public override void InitializeRoot(GameState state)
     {
+        base.InitializeRoot(state);
         foreach (CharacterAbility ability in Abilities)
-            ability.InitializeSource();
+            ability.InitializeRoot(state);
     }
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
+        base.Clone(source, options);
+
         if (!(source is Equipment))
             return;
 
@@ -39,22 +38,22 @@ public class Equipment : ItemObject
         EquipSchool = equipSource.EquipSchool;
         ClassType = equipSource.ClassType;
         EquipLevel = equipSource.EquipLevel;
-        EquipID = equipId;
 
-        CloneAbilities(equipSource);
-
-        base.CloneItem(source);
+        options.ID++; // MAYBE???
+        CloneAbilities(equipSource, options);
     }
-    void CloneAbilities(Equipment source)
+    void CloneAbilities(Equipment source, RootOptions options)
     {
         Abilities = new CharacterAbility[source.Abilities.Length];
 
         for (int i = 0; i < Abilities.Length; i++)
         {
             if (source.Abilities[i] != null)
-                Abilities[i] = source.Abilities[i].GenerateAbility();
+            {
+                Abilities[i] = source.Abilities[i].GenerateAbility(options);
+            }
             else
-                Debug.Log($"Ability missing from id#{EquipID}:{Name}");
+                Debug.Log($"Ability missing from id#{ID}:{Name}");
         }
     }
     public virtual bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
@@ -66,15 +65,16 @@ public class Equipment : ItemObject
 
         if (character.Inventory == null ||
             inventorySlot < 0 ||
-            inventorySlot >= character.Inventory.Items.Count)
+            inventorySlot >= character.Inventory.Items.Length)
             return false;
 
-        if (character.Abilities == null)
-            return false;
-
+        EquippedTo = character;
         SlotFamily = character.EquipmentSlots;
         SlotIndex = slotIndex;
         SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+
+        if (character.Abilities == null)
+            return false;
 
         foreach (CharacterAbility ability in Abilities)
             ability.EquipAbility(character, this);
@@ -111,7 +111,7 @@ public class Equipment : ItemObject
             EffectAbility effectAbility = (EffectAbility)equipped;
 
             foreach (BaseEffect effect in effectAbility.Effects)
-                foreach (BaseEffect spawnedEffect in effect.Logic.Clones)
+                foreach (BaseEffect spawnedEffect in effect.RootLogic.Clones)
                 {
                     if (effect.Logic.Options.EffectType == EffectType.PASSIVE ||
                         effect.Logic.Options.EffectType == EffectType.TOGGLE)
@@ -126,6 +126,7 @@ public class Equipment : ItemObject
         SlotFamily[SlotIndex] = null;
         SlotFamily = null;
 
+        EquippedTo = null;
         UpdateCharacterRender(character, false);
         return true;
     }

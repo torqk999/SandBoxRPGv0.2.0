@@ -8,9 +8,9 @@ public class InvulnerableEffect : BaseEffect
     [Header("Invulnerable Properties")]
     public RawStat TargetStat;
 
-    public override void CloneEffect(BaseEffect source, EffectOptions options)
+    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
     {
-        base.CloneEffect(source, options);
+        base.CloneEffect(source, effectOptions, effected);
 
         if (!(source is InvulnerableEffect))
             return;
@@ -19,11 +19,15 @@ public class InvulnerableEffect : BaseEffect
 
         TargetStat = invulnerableSource.TargetStat;
     }
-
-    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
+    {
+        options.ClassID = "InvulnerableEffect";
+        return (InvulnerableEffect)base.GenerateRootObject(options);
+    }
+    public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
     {
         InvulnerableEffect newEffect = (InvulnerableEffect)CreateInstance("InvulnerableEffect");
-        newEffect.CloneEffect(this, options);
+        newEffect.CloneEffect(this, effectOptions);
         return newEffect;
     }
 }

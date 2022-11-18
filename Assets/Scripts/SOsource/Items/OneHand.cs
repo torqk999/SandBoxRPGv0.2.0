@@ -18,21 +18,21 @@ public class OneHand : Hand
     [Header("OneHand Properties")]
     public OneHandType Type;
 
-    public override ItemObject GenerateItem(int equipId = -1, bool inject = false)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        OneHand newOneHand = (OneHand)CreateInstance("OneHand");
-        newOneHand.CloneItem(this, equipId, inject);
-        return newOneHand;
+        options.ClassID = options.ClassID == "" ? "OneHand" : options.ClassID;
+        OneHand newRoot = (OneHand)base.GenerateRootObject(options);
+        newRoot.Clone(this, options);
+        return newRoot;
     }
-    public override void CloneItem(ItemObject source, int equipId = -1, bool inject = false, int quantity = 1)
+    public override void Clone(RootScriptObject source, RootOptions options)
     {
+        base.Clone(source, options);
+
         if (!(source is OneHand))
             return;
 
         OneHand oneSource = (OneHand)source;
-
-        base.CloneItem(source, equipId, inject);
-
         Type = oneSource.Type;
     }
     public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)

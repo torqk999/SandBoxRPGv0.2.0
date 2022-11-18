@@ -24,7 +24,7 @@ public class MyRootClass
     public MyRootClass derp;
     public StringBuilder builder;
 
-    void TestFunc()
+    /*void TestFunc()
     {
         int x = 5;
         int[] y = new int[5];
@@ -34,7 +34,7 @@ public class MyRootClass
 
         builder.Clear();
         builder.Append("hello world!");
-    }
+    }*/
 
     public MyRootClass()
     {

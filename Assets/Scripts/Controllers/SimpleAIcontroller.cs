@@ -161,9 +161,15 @@ public class SimpleAIcontroller : CharacterController
 
         EffectAbility currentTargettedAction = (EffectAbility)CurrentCharacter.CurrentAction;
 
-        return (/*State == AIstate.AGGRO
-    && */CurrentCharacter.CurrentTargetCharacter != null
-    && Vector3.Distance(CurrentCharacter.Root.position, CurrentCharacter.CurrentTargetCharacter.Root.position) <= (currentTargettedAction.AOE_Range)); //* AbilityRangeScalar));
+        foreach (BaseEffect effect in currentTargettedAction.Effects)
+            if (effect.HasEligableTarget())
+                return true;
+
+        return false;
+
+        //return (/*State == AIstate.AGGRO
+    //&& CurrentCharacter.CurrentTargetCharacter != null
+    //&& Vector3.Distance(CurrentCharacter.Root.position, CurrentCharacter.CurrentTargetCharacter.Root.position) <= (currentTargettedAction.AOE_Range)); //* AbilityRangeScalar));
     }
     /*void MoveAggro()
     {
