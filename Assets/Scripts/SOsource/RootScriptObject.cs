@@ -13,6 +13,7 @@ public class RootScriptObject : ScriptableObject
 
     [Header("Root Logic - NO TOUCHY!")]
     public RootLogic RootLogic;
+    public DraggableButton Button;
     public virtual void Clone(RootScriptObject source, RootOptions options)
     {
         ID = options.ID;
@@ -22,6 +23,10 @@ public class RootScriptObject : ScriptableObject
         Sprite = source.Sprite;
     }
 
+    public virtual void GenerateMyButton()
+    {
+
+    }
     public virtual RootScriptObject GenerateRootObject(RootOptions options)
     {
         options.ClassID = options.ClassID == string.Empty ? "RootScriptObject" : options.ClassID;

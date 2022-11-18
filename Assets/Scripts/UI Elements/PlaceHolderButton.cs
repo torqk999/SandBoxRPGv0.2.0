@@ -18,18 +18,44 @@ public class PlaceHolderButtonEditor : Editor
     }
 }
 
+public enum PlaceHolderType
+{
+    NONE,
+    INVENTORY,
+    EQUIP,
+    SKILL
+}
+
 public class PlaceHolderButton : SelectableButton
 {
     [Header("PlaceHolder")]
     public DraggableButton Occupant;
 
-    public override bool Vacate()
+    public override bool Vacate(DraggableButton drag)
     {
         if (Occupant == null)
             return true;
-        return Occupant.Vacate();
-    }
 
+        switch(PlaceType)
+        {
+            case PlaceHolderType.INVENTORY:
+                if (!(drag is InventoryButton))
+                    return false;
+                break;
+
+            case PlaceHolderType.EQUIP:
+                if (!(drag is EquipmentButton))
+                    return false;
+                break;
+
+            case PlaceHolderType.SKILL:
+                if (!(drag is SkillButton))
+                    return false;
+                break;
+        }
+
+        return Occupant.Vacate(drag);
+    }
     public void ResetImage()
     {
         if (Root == null || Root.Sprite == null)
@@ -37,6 +63,7 @@ public class PlaceHolderButton : SelectableButton
         else
             MyImage.sprite = Root.Sprite;
     }
+    
 
     // Start is called before the first frame update
     protected override void Start()

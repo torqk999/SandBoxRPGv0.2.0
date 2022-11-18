@@ -5547,6 +5547,7 @@ MonoBehaviour:
   Root: {fileID: 0}
   Selected: 0
   SlotIndex: 0
+  PlaceType: 0
   SlotFamily: []
   DefaultColor: {r: 1, g: 1, b: 1, a: 1}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
@@ -5560,7 +5561,6 @@ MonoBehaviour:
   Following: 0
   Place: {fileID: 0}
   ButtonTarget: {fileID: 0}
-  PanelTarget: {fileID: 0}
   MyRayCaster: {fileID: 0}
 --- !u!1 &592536065
 GameObject:

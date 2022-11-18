@@ -322,7 +322,7 @@ public class UIManager : MonoBehaviour
         UnselectPool(HotBarButtons);
         UnselectPool(SkillListButtons);
     }
-    public bool ButtonRelocation(ref Vector2 location, List<SelectableButton> buttons)
+    /*public bool ButtonRelocation(ref Vector2 location, List<SelectableButton> buttons)
     {
         return false;
     }
@@ -337,7 +337,7 @@ public class UIManager : MonoBehaviour
 
         location = Vector2.one;
         return true;
-    }
+    }*/
     /*public bool EquipSelection(int equipIndex, int inventoryIndex, bool ringIndex = false)
     {
         if (!GameState.pController.CurrentCharacter.InventoryEquipSelection(equipIndex, inventoryIndex, ringIndex))
@@ -356,11 +356,11 @@ public class UIManager : MonoBehaviour
         GameState.pController.CurrentCharacter.CurrentAction = 
             GameState.pController.CurrentCharacter.Abilities[slotIndex];
     }
-    public void DropSelectedInventoryItem(int inventoryIndex)
+    /*public void DropSelectedInventoryItem(int inventoryIndex)
     {
         GameState.SceneMan.PushIntoContainer(GameState.pController.CurrentCharacter, inventoryIndex);
         Debug.Log("Completed LootBag Action");
-    }
+    }*/
     public void LootSelectedContainerItem(int containerIndex, int inventoryIndex)
     {
         GameState.pController.CurrentCharacter.Inventory.LootContainer(GameState.pController.targetContainer, containerIndex, inventoryIndex);
@@ -616,7 +616,7 @@ public class UIManager : MonoBehaviour
             //catch { RingButtons[i].GetComponent<Image>().sprite = EmptyButtonSprite; }
         }
     }
-    void PopulateInventoryButtons(Inventory inventory, ButtonType type)
+    void UpdateInventoryButtons(Inventory inventory, ButtonType type)
     {
         // Clear old buttons
         Transform targetContainer = (type == ButtonType.CONTAINER) ? ContainerButtonContent : InventoryButtonContent;
@@ -636,7 +636,7 @@ public class UIManager : MonoBehaviour
             invButton.Assign(item);
         }
     }
-    void PopulateSkillListButtons()
+    void UpdateSkillListButtons()
     {
         // Clear old buttons
         for (int i = SkillButtonContent.childCount - 1; i > -1; i--)
@@ -661,7 +661,7 @@ public class UIManager : MonoBehaviour
             index++;
         }
     }
-    void PopulateAbilitySlotButtons()
+    void UpdateHotBarButtons()
     {
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
         {
@@ -998,7 +998,7 @@ public class UIManager : MonoBehaviour
         //InventoryButtons = new List<SelectableButton>();
 
         PopulateEquipAndRingSlots();
-        PopulateAbilitySlotButtons();
+        UpdateHotBarButtons();
         //UpdateActionBar();
 
         CurrentMenu = GameMenu.NONE;

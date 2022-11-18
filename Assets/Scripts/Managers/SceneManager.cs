@@ -46,12 +46,13 @@ public class SceneManager : MonoBehaviour
         // Meeeeeeeeeeeeeeeer -_________-
         return false;
     }
-    public bool PushIntoContainer(Character character, int inventoryIndex)
+    public bool PushIntoContainer(Character character, int inventoryIndex = 0)
     {
         // 1. Check for container
         // 2. Check for lootBag
         // 3. Create lootbag
-        if (GameState.UIman.CurrentPage == CharPage.Looting && GameState.pController.targetContainer != null &&
+        if (/*GameState.UIman.CurrentPage == CharPage.Looting &&*/
+            GameState.pController.targetContainer != null &&
             GameState.pController.CurrentCharacter.Inventory.TransferItem(GameState.pController.targetContainer.Inventory, inventoryIndex))
             return true;
 

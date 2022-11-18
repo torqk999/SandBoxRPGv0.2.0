@@ -38,7 +38,14 @@ public class TippedButton : ExtendedButton
         UIMan.ToolTip.DisableTip();
         base.OnPointerExit(eventData);
     }
+    public override void Assign(RootScriptObject root)
+    {
+        base.Assign(root);
 
+        Title.Clear();
+        Stats.Clear();
+        Flavour.Clear();
+    }
     // Start is called before the first frame update
     protected override void Start()
     {

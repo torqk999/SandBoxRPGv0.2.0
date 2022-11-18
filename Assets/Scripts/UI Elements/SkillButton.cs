@@ -40,16 +40,17 @@ public class SkillButton : DraggableButton
     {
 
     }
+
+    public override bool Drop()
+    {
+        return base.Drop();
+    }
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
         UIMan.CharacterPageSelection(this);
     }
-    public override void OnPointerUp(PointerEventData eventData)
-    {
-        base.OnPointerUp(eventData);
-        SnapButton(UIMan.ItemRelease(ref NewPosButton, this));
-    }
+
     // Start is called before the first frame update
     protected override void Start()
     {

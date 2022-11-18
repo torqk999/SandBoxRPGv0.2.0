@@ -729,17 +729,3 @@ public struct RootOptions
         IsClone = true;
     }
 }
-[Serializable] 
-public struct ButtonOptions
-{
-    public string ClassID;
-    public GameObject Body;
-    public Transform Home;
-
-    public ButtonOptions(string classID, GameObject body, Transform home)
-    {
-        ClassID = classID;
-        Body = body;
-        Home = home;
-    }
-}

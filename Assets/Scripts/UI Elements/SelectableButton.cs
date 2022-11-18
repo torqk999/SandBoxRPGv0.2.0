@@ -24,7 +24,8 @@ public class SelectableButton : TippedButton
     public RootScriptObject Root;
     public bool Selected;
     public int SlotIndex;
-    public List<DraggableButton> SlotFamily;
+    public PlaceHolderType PlaceType;
+    public DraggableButton[] SlotFamily;
 
     [Header("Debugging")]
     
@@ -32,12 +33,28 @@ public class SelectableButton : TippedButton
     public Color HoverColor;
     public Color SelectionColor;
 
-    public virtual bool Vacate()
+    public PlaceHolderType ReturnPlaceHolder(DraggableButton source)
+    {
+        switch (source)
+        {
+            case EquipmentButton:
+                return PlaceHolderType.EQUIP;
+
+            case InventoryButton:
+                return PlaceHolderType.INVENTORY;
+
+            case SkillButton:
+                return PlaceHolderType.SKILL;
+        }
+        return default;
+    }
+    public virtual bool Vacate(DraggableButton drag)
     {
         return true;
     }
-    public virtual void Assign(RootScriptObject root)
+    public override void Assign(RootScriptObject root)
     {
+        base.Assign(root);
         Root = root;
 
         if (Root == null)
@@ -46,11 +63,8 @@ public class SelectableButton : TippedButton
         if (Root.Sprite != null)
             MyImage.sprite = Root.Sprite;
 
-        Title.Clear();
         Title.Append(Root.Name);
-        Stats.Clear();
         Stats.Append("===Stats===\n");
-        Flavour.Clear();
         Flavour.Append(Root.Flavour);
 
         //ButtonText.text = (root is Stackable) ? ((Stackable)root).CurrentQuantity.ToString() : string.Empty;
@@ -58,8 +72,6 @@ public class SelectableButton : TippedButton
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
-        //UIMan.CharacterPageSelection(this);
-        //UIMan.StrategyPageSelection(this);
         Selected = true;
         MyImage.color = SelectionColor;
     }
@@ -78,8 +90,6 @@ public class SelectableButton : TippedButton
         Selected = false;
         MyImage.color = DefaultColor;
     }
-
-    
 
     // Start is called before the first frame update
     protected override void Start()

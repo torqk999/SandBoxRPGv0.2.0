@@ -33,14 +33,15 @@ public class DraggableButton : SelectableButton
     [Header("Location Meta")]
     public PlaceHolderButton Place;
     public PlaceHolderButton ButtonTarget;
-    public GameObject PanelTarget;
+    //public GameObject PanelTarget;
     public GraphicRaycaster MyRayCaster;
     public List<RaycastResult> HitBuffer;
     
-    public void CheckOverLap(PointerEventData eventData)
+    public bool CheckOverLap(PointerEventData eventData)
     {
         HitBuffer.Clear();
         MyRayCaster.Raycast(eventData, HitBuffer);
+        bool OnMenu = false;
         foreach(RaycastResult result in HitBuffer)
         {
             switch(result.gameObject.tag)
@@ -48,39 +49,47 @@ public class DraggableButton : SelectableButton
                 case GlobalConstants.TAG_BUTTON:
 
                     PlaceHolderButton place = result.gameObject.GetComponent<PlaceHolderButton>();
+                    
+                    if (place != null &&
+                        place.PlaceType == ReturnPlaceHolder(this))
+                        ButtonTarget = place;
 
-                    if (place == null)
-                        continue;
-
-                    ButtonTarget = place;
-                    return;
+                    break;
 
                 case GlobalConstants.TAG_PANEL:
+                    OnMenu = true;
                     break;
             }
         }
         ButtonTarget = null;
-        return;
+        return OnMenu;
     }
-    public override bool Vacate()
+    public virtual bool Drop()
+    {
+        return false;
+    }
+    public override bool Vacate(DraggableButton drag)
     {
         if (Place == null ||
             SlotFamily == null ||
-            SlotIndex < 0)
+            SlotIndex < 0 ||
+            SlotIndex >= SlotFamily.Length )
             return false;
 
         Place = null;
         SlotFamily[SlotIndex] = null;
+        SlotFamily = null;
         SlotIndex = -1;
-        return true;
+        return base.Vacate(drag);
     }
     public virtual bool Occupy(PlaceHolderButton place)
     {
         SlotFamily = place.SlotFamily;
         SlotIndex = place.SlotIndex;
+        SlotFamily[SlotIndex] = this;
         return true;
     }
-    public void SnapButton(bool success = true)
+    public void SnapButton(bool panel = true, bool success = true)
     {
         if (success)
         {
@@ -111,9 +120,10 @@ public class DraggableButton : SelectableButton
     {
         base.OnPointerUp(eventData);
         Following = false;
-        CheckOverLap(eventData);
-        if(ButtonTarget != null)
-            SnapButton(ButtonTarget.Vacate() && Occupy(ButtonTarget));
+        SnapButton(CheckOverLap(eventData),
+            ButtonTarget != null &&
+            ButtonTarget.Vacate(this) &&
+            Occupy(ButtonTarget));
     }
     protected override void Start()
     {

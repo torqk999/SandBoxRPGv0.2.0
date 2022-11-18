@@ -30,10 +30,24 @@ public enum ButtonType
     KEY_MAP
 }
 
+[Serializable]
+public struct ButtonOptions
+{
+    public string ClassID;
+    public GameObject Body;
+    public Transform Home;
+
+    public ButtonOptions(string classID, GameObject body, Transform home)
+    {
+        ClassID = classID;
+        Body = body;
+        Home = home;
+    }
+}
+
 public class ExtendedButton : Button
 {
     [Header ("ExtendedButton")]
-    //public ButtonType Type;
     public UIManager UIMan;
     public RectTransform MyRect;
     public Image MyImage;
@@ -43,6 +57,13 @@ public class ExtendedButton : Button
 
     //[DllImport("user32.dll")]
     //public static extern bool SetCursorPos(int X, int Y);
+    public virtual void Assign(RootScriptObject root)
+    {
+        if (root != null &&
+            root.Sprite != null)
+
+        MyImage.sprite = root.Sprite;
+    }
     public GameObject GenerateButtonObject(GameObject prefab, Transform folder)
     {
         return Instantiate(prefab, folder);

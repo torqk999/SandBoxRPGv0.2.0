@@ -22,13 +22,25 @@ public class InventoryButton : DraggableButton
 {
     public override ExtendedButton GenerateButton(GameObject prefab, Transform folder)
     {
-        GameObject buttonObject = GenerateButtonObject(prefab, folder);
-        InventoryButton newButton = buttonObject.AddComponent<InventoryButton>();
+        //GameObject buttonObject = GenerateButtonObject(prefab, folder);
+        InventoryButton newButton = (InventoryButton)base.GenerateButton(prefab, folder);
         return newButton;
+    }
+    public override bool Drop()
+    {
+        return UIMan.GameState.SceneMan.PushIntoContainer(UIMan.GameState.pController.CurrentCharacter);
+    }
+    public override bool Vacate(DraggableButton drag)
+    {
+        if (!UIMan.GameState.pController.CurrentCharacter.Inventory.PushItemIntoInventory((ItemObject)Root) &&
+            !Drop())
+            return false;
+        return base.Vacate(drag);
     }
     public override void Assign(RootScriptObject root)
     {
         base.Assign(root);
+
         if (!(root is ItemObject))
             return;
 
@@ -44,11 +56,11 @@ public class InventoryButton : DraggableButton
         base.OnPointerDown(eventData);
         UIMan.CharacterPageSelection(this);
     }
-    public override void OnPointerUp(PointerEventData eventData)
+    /*public override void OnPointerUp(PointerEventData eventData)
     {
-        base.OnPointerUp(eventData);
-        SnapButton(UIMan.ItemRelease(ref NewPosButton, this));
-    }
+        //base.OnPointerUp(eventData);
+        //SnapButton(Drop());
+    }*/
     public override void OnPointerEnter(PointerEventData eventData)
     {
         
