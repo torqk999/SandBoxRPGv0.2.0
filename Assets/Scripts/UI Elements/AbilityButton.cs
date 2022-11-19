@@ -21,7 +21,10 @@ public class AbilityButtonEditor : Editor
 public class AbilityButton : SelectableButton
 {
 
-
+    public override void Init()
+    {
+        base.Init();
+    }
     protected override void Start()
     {
         base.Start();

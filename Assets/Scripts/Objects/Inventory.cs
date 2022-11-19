@@ -7,6 +7,7 @@ using UnityEngine;
 public class Inventory
 {
     public GameState GameState;
+    public GameObject PanelObject;
     public UI_SlotPanel Panel;
     public ItemObject[] Items;
     //public int CurrentQuantity;
@@ -15,9 +16,11 @@ public class Inventory
     //public SelectableButton[] InventoryButtons;
     //public PlaceHolderButton[] InventoryPlaceHolders;
 
-    public Inventory(int count = CharacterMath.PARTY_INVENTORY_MAX)
+    public Inventory(GameState state, string name, int count = CharacterMath.PARTY_INVENTORY_MAX)
     {
-        
+        GameState = state;
+        if (GameState != null)
+            SetupInventory(count, name);
     }
     #region LOOTING
     public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
@@ -40,21 +43,52 @@ public class Inventory
     #endregion
 
     #region INVENTORY
-    public void SetupInventory(int count, ButtonOptions options = default)
+    public void GenerateItem(ItemObject sample, int index)
     {
-        Items = new ItemObject[count];
-        Panel = new UI_SlotPanel(count, );
-        //InventoryButtons = new SelectableButton[count];
-        //InventoryPlaceHolders = new PlaceHolderButton[count];
+        if (Items == null ||
+            index < 0 ||
+            index >= Items.Length)
+            return;
 
-        options.Type = ButtonType.INVENTORY;
-        options.PlaceHolder = true; 
-        //options.Folder
+        if (sample == null)
+            return;
+
+        RootOptions rootOptions = new RootOptions(ref GameState.ROOT_SO_INDEX);
+        Items[index] = (ItemObject)sample.GenerateRootObject(rootOptions);
+
+        ButtonOptions buttonOptions = new ButtonOptions(Panel.Occupants, Panel.OccupantContent, Items[index], index, Panel.Places[index]);
+
+        buttonOptions.Type = ButtonType.DRAG;
+        buttonOptions.Folder = Panel.Occupants;
+        buttonOptions.Home = Panel.OccupantContent;
+        buttonOptions.Index = index;
+
+        Panel.Occupants[index] = GameState.UIman.GenerateInventoryButton(buttonOptions);
+    }
+    public void SetupInventory(int count, string inventoryName, ButtonOptions options = default)
+    {
+        PanelObject = GameState.UIman.GenerateInventoryPanel();
+
+        Items = new ItemObject[count];
+        Panel = PanelObject.GetComponent<UI_SlotPanel>();
+        Panel.Resize(count);
+
+        Debug.Log
+            ($"placeHolders: {Panel.PlaceContent != null}\n" +
+             $"occupants: {Panel.OccupantContent != null}\n" +
+             $"content: {Panel.MainContent != null}");
+
+        options.Type = ButtonType.DRAG;
+        options.Folder = Panel.Places;
+        options.Home = Panel.PlaceContent;
 
         for (int i = 0; i < Panel.Places.Length; i++)
+        {
+            options.Index = i;
             Panel.Places[i] = GameState.UIman.GeneratePlaceHolder(options);
-
+        }   
     }
+    
     public int CurrentQuantity()
     {
         int output = 0;

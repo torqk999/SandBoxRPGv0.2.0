@@ -167,6 +167,7 @@ public class CharacterManager : MonoBehaviour
             literalParty.Members.Add(newCharacter);
         }
 
+        GameState.UIman.CurrentlyViewedInventory = literalParty.PartyLoot; // <<-- Temporary hack
         Parties.Add(literalParty);
         return true;
     }
@@ -195,10 +196,11 @@ public class CharacterManager : MonoBehaviour
             spawnPointFolder.GetChild(i).gameObject.SetActive(false);
         }
 
+        cloneParty.PartyLoot.PanelObject.SetActive(false); // <<-- Temporary hack
         Parties.Add(cloneParty);
         return true;
     }
-    Party GenerateParty(Faction faction, Formation formation = null, int startIndex = 0)
+    Party GenerateParty(Faction faction, Formation formation = null, string name = "newParty" ,int startIndex = 0) // add custom party names...
     {
         GameObject partyObject = new GameObject();
 
@@ -206,8 +208,9 @@ public class CharacterManager : MonoBehaviour
         partyObject.transform.parent = CharacterPartyFolder;
 
         Party newParty = partyObject.AddComponent<Party>();
+        newParty.SetupParty(GameState, faction, name, formation);
 
-        newParty.PartyLoot = new Inventory();
+        //newParty.PartyLoot = new Inventory($"PARTY-INVENTORY: {newParty.name}");
         newParty.Faction = faction;
         newParty.CurrentMemberIndex = startIndex;
 

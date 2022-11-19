@@ -76,6 +76,7 @@ public class UIManager : MonoBehaviour
     //public GameObject SkillSlotButtonPrefab;
     public Sprite PlaceHolderSprite;
 
+    public GameObject InventoryPrefab;
     public GameObject HotBarButtonPrefab;
     public GameObject DraggableButtonPrefab;
     public GameObject EffectPanelPrefab;
@@ -83,7 +84,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Folders")]
     public Transform PartyMembers;
-    //public Transform InventoryButtonContent;
+    public Transform InventoriesContent;
     //public Transform ContainerButtonContent;
     public Transform SkillButtonContent;
     public Transform EffectStatsContent;
@@ -129,6 +130,7 @@ public class UIManager : MonoBehaviour
     public Inventory CurrentlyViewedInventory;
     public Inventory CurrentlyViewedContainer;
 
+    public List<Inventory> Inventories;
     public List<SelectableButton> SkillListButtons;
 
     public SelectableButton[] EquipButtons;
@@ -174,31 +176,67 @@ public class UIManager : MonoBehaviour
     {
 
     }*/
+    public GameObject GenerateInventoryPanel(string name = "New Inventory")
+    {
+        GameObject newInventory = Instantiate(InventoryPrefab, InventoriesContent);
+        newInventory.name = name;
+        return newInventory;
+    }
     public PlaceHolderButton GeneratePlaceHolder(ButtonOptions options)
     {
-        options.PlaceHolder = true;
         GameObject placeObject = GenerateButtonObject(options);
-        return placeObject.AddComponent<PlaceHolderButton>();
+        PlaceHolderButton placeButton = placeObject.AddComponent<PlaceHolderButton>();
+        SetupSelectableButtonOptions(placeButton, options);
+        return placeButton;
+    }
+    public EquipmentButton GenerateEquipButton(ButtonOptions options)
+    {
+        GameObject equipObject = GenerateButtonObject(options);
+        EquipmentButton equipButton = equipObject.AddComponent<EquipmentButton>();
+        SetupSelectableButtonOptions(equipButton, options);
+        return equipButton;
+    }
+    public InventoryButton GenerateInventoryButton(ButtonOptions options)
+    {
+        GameObject inventoryObject = GenerateButtonObject(options);
+        InventoryButton inventoryButton = inventoryObject.AddComponent<InventoryButton>();
+        SetupSelectableButtonOptions(inventoryButton, options);
+        inventoryButton.Place = options.PlaceHolder;
+        return inventoryButton;
+    }
+
+    void SetupSelectableButtonOptions(SelectableButton button, ButtonOptions options)
+    {
+        button.Init();
+        button.Assign(options.Root);
+
+        button.SlotFamily = (SelectableButton[])options.Folder;
+        button.SlotIndex = options.Index;
+        button.SlotFamily[button.SlotIndex] = button;
+
+        button.transform.SetParent(options.Home);
+        button.transform.localScale = Vector3.one;
     }
     public GameObject GenerateButtonObject(ButtonOptions options)
     {
         GameObject prefab = null;
         switch(options.Type)
         {
-            case ButtonType.EQUIP:
-            case ButtonType.INVENTORY:
-            case ButtonType.LIST_SKILL:
+            case ButtonType.DRAG:
                 prefab = DraggableButtonPrefab;
                 break;
 
-            case ButtonType.SLOT_SKILL:
+            case ButtonType.HOT_BAR:
                 prefab = HotBarButtonPrefab;
                 break;
         }
-
+        GameObject newButton = null;
         if (options.Home == null)
-            return Instantiate(prefab);
-        return Instantiate(prefab, options.Home);
+            newButton = Instantiate(prefab);
+        else
+            newButton = Instantiate(prefab, options.Home);
+
+        return newButton;
     }
 
     void CreateRemapCallBack(Button button, int index)
@@ -330,7 +368,7 @@ public class UIManager : MonoBehaviour
         if (selection == null)
             return;
 
-        UnselectPool(GameState.pController.CurrentCharacter.Inventory.InventoryButtons);
+        UnselectPool(GameState.pController.CurrentCharacter.Inventory.Panel.Occupants);
         UnselectPool(EquipButtons);
         UnselectPool(RingButtons);
         //UnselectPool(HotBarButtons);
@@ -596,9 +634,9 @@ public class UIManager : MonoBehaviour
             if (buttonImage == null)
                 continue;
             if (GameState.pController.CurrentCharacter.EquipmentSlots[i] != null &&
-                GameState.pController.CurrentCharacter.EquipmentSlots[i].Sprite != null)
+                GameState.pController.CurrentCharacter.EquipmentSlots[i].sprite != null)
             {
-                buttonImage.sprite = GameState.pController.CurrentCharacter.EquipmentSlots[i].Sprite;
+                buttonImage.sprite = GameState.pController.CurrentCharacter.EquipmentSlots[i].sprite;
                 continue;
             }
             if (i < EmptyGearSprites.Length && i > -1 && EmptyGearSprites[i] != null)
@@ -621,9 +659,9 @@ public class UIManager : MonoBehaviour
             if (buttonImage == null)
                 continue;
             if (GameState.pController.CurrentCharacter.RingSlots[i] != null &&
-                GameState.pController.CurrentCharacter.RingSlots[i].Sprite != null)
+                GameState.pController.CurrentCharacter.RingSlots[i].sprite != null)
             {
-                buttonImage.sprite = GameState.pController.CurrentCharacter.RingSlots[i].Sprite;
+                buttonImage.sprite = GameState.pController.CurrentCharacter.RingSlots[i].sprite;
                 continue;
             }
             if (EmptyRingSprite != null)
@@ -657,8 +695,8 @@ public class UIManager : MonoBehaviour
             GameObject newButtonObject = Instantiate(DraggableButtonPrefab, SkillButtonContent);
 
             newButtonObject.transform.GetChild(0).GetComponent<Text>().text = ability.Name;
-            if (ability.Sprite != null)
-                newButtonObject.transform.GetChild(1).GetComponent<Image>().sprite = ability.Sprite;
+            if (ability.sprite != null)
+                newButtonObject.transform.GetChild(1).GetComponent<Image>().sprite = ability.sprite;
 
 
             newButtonObject.SetActive(true);
@@ -666,11 +704,11 @@ public class UIManager : MonoBehaviour
             index++;
         }
     }
-    void UpdateHotBarButtons()
+    void BuildHotBarButtons()
     {
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
         {
-            GameObject newButtonObject = Instantiate(DraggableButtonPrefab, HotBarButtonContent);
+            GameObject newButtonObject = Instantiate(HotBarButtonPrefab, HotBarButtonContent);
             newButtonObject.SetActive(true);
             PlaceHolderButton newPlace = newButtonObject.AddComponent<PlaceHolderButton>();
             //CreateRemapCallBack(newButtonObject.GetComponent<Button>(), i, ButtonType.SLOT_SKILL);
@@ -727,8 +765,8 @@ public class UIManager : MonoBehaviour
                     //CanvasRenderer render = newEffectPanel.GetComponent<CanvasRenderer>();
                     effectText.text = outputBuild.ToString();
 
-                    if (effect.Sprite != null)
-                        newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.Sprite;
+                    if (effect.sprite != null)
+                        newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.sprite;
 
 
 
@@ -858,10 +896,10 @@ public class UIManager : MonoBehaviour
     {
         GameObject newMemberPanel = Instantiate(PartyMemberPanelPrefab, PartyMembers);
 
-        if (character.Sheet.Sprite != null)
-            newMemberPanel.transform.GetChild(0).GetComponent<Image>().sprite = character.Sheet.Sprite;
+        if (character.Sheet.sprite != null)
+            newMemberPanel.transform.GetChild(0).GetComponent<Image>().sprite = character.Sheet.sprite;
     }
-    void UpdateCooldownBars()
+    /*void UpdateCooldownBars()
     {
         if (HotBarButtonContent == null ||
             HotBarButtonContent.transform.childCount == 0 ||
@@ -870,7 +908,7 @@ public class UIManager : MonoBehaviour
 
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
         {
-            Slider slider = HotBarButtonContent.GetChild(i).GetChild(0).GetComponent<Slider>();
+            Slider slider = HotBarButtonContent.GetChild(i).GetChild(1).GetComponent<Slider>();
             //Text myText = ActionButtons.transform.GetChild(i).GetChild(1).GetComponent<Text>();
 
             if (slider == null)
@@ -890,7 +928,7 @@ public class UIManager : MonoBehaviour
             slider.value = 1 - (GameState.pController.CurrentCharacter.AbilitySlots[i].Logic.CD_Timer /
                 GameState.pController.CurrentCharacter.AbilitySlots[i].CD_Duration);
         }
-    }
+    }*/
     /*public void UpdateActionBar()
     {
         if (HotBarButtonContent == null)
@@ -990,20 +1028,12 @@ public class UIManager : MonoBehaviour
 
     #endregion
 
-    /*void UIselectionRefresh()
-    {
-        SelectedAbilitySlot = -1;
-        SelectedEquipSlot = -1;
-        InventoryListSelection = -1;
-        ContainerListSelection = -1;
-        SkillListSelection = -1;
-    }*/
     void UIinitializer()
     {
         //InventoryButtons = new List<SelectableButton>();
 
         PopulateEquipAndRingSlots();
-        UpdateHotBarButtons();
+        BuildHotBarButtons();
         //UpdateActionBar();
 
         CurrentMenu = GameMenu.NONE;
@@ -1053,7 +1083,7 @@ public class UIManager : MonoBehaviour
         RepopulateMemberPanels();
         UpdatePartyPanel();
         UpdateInteractionHUD();
-        UpdateCooldownBars();
+        //UpdateCooldownBars();
         //CheckMap();
     }
 }

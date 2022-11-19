@@ -25,7 +25,7 @@ public class SelectableButton : TippedButton
     public bool Selected;
     public int SlotIndex;
     public PlaceHolderType PlaceType;
-    public DraggableButton[] SlotFamily;
+    public SelectableButton[] SlotFamily;
 
     [Header("Debugging")]
     
@@ -60,8 +60,19 @@ public class SelectableButton : TippedButton
         if (Root == null)
             return;
 
-        if (Root.Sprite != null)
-            MyImage.sprite = Root.Sprite;
+        if (Root.sprite != null)
+        {
+            MyImage.sprite = Root.sprite;
+
+            SpriteState ss = new SpriteState();
+
+            ss.highlightedSprite = Root.sprite;
+            ss.selectedSprite = Root.sprite;
+            ss.pressedSprite = Root.sprite;
+            ss.disabledSprite = Root.sprite;
+
+            spriteState = ss;
+        }
 
         Title.Append(Root.Name);
         Stats.Append("===Stats===\n");
@@ -78,12 +89,12 @@ public class SelectableButton : TippedButton
     public override void OnPointerEnter(PointerEventData eventData)
     {
         base.OnPointerEnter(eventData);
-        MyImage.color = HoverColor;
+        //MyImage.color = HoverColor;
     }
     public override void OnPointerExit(PointerEventData eventData)
     {
         base.OnPointerExit(eventData);
-        MyImage.color = DefaultColor;
+        //MyImage.color = DefaultColor;
     }
     public void UnSelect()
     {
@@ -91,16 +102,21 @@ public class SelectableButton : TippedButton
         MyImage.color = DefaultColor;
     }
 
+    public override void Init()
+    {
+        base.Init();
+
+    }
+
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-        DefaultColor = MyImage.color;
     }
 
     // Update is called once per frame
     public override void Update()
     {
-        
+        base.Update();
     }
 }

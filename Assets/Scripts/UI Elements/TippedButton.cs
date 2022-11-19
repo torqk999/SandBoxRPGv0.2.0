@@ -29,7 +29,7 @@ public class TippedButton : ExtendedButton
     public override void OnPointerEnter(PointerEventData eventData)
     {
         UIMan.ToolTip.UpdateText(Title, Stats, Flavour);
-        Stats.Clear();
+        //Stats.Clear();
         base.OnPointerEnter(eventData);
     }
 
@@ -46,18 +46,23 @@ public class TippedButton : ExtendedButton
         Stats.Clear();
         Flavour.Clear();
     }
-    // Start is called before the first frame update
-    protected override void Start()
+    public override void Init()
     {
-        base.Start();
+        base.Init();
         Title = new StringBuilder();
         Stats = new StringBuilder();
         Flavour = new StringBuilder();
     }
 
+    // Start is called before the first frame update
+    protected override void Start()
+    {
+        base.Start(); 
+    }
+
     // Update is called once per frame
     public override void Update()
     {
-        
+        base.Update();
     }
 }

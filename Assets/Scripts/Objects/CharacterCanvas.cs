@@ -43,7 +43,7 @@ public class CharacterCanvas : MonoBehaviour
             GameObject newEffectIcon = Instantiate(EffectImagePrefab, EffectContainer);
             newEffectIcon.SetActive(true);
             Image newEffectImage = newEffectIcon.GetComponent<Image>();
-            newEffectImage.sprite = effect.Sprite != null ? effect.Sprite : MissingSprite;
+            newEffectImage.sprite = effect.sprite != null ? effect.sprite : MissingSprite;
         }
     }
 

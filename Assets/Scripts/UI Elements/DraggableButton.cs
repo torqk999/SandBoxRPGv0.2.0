@@ -89,13 +89,31 @@ public class DraggableButton : SelectableButton
         SlotFamily[SlotIndex] = this;
         return true;
     }
+    public void SnapButton(PlaceHolderButton button)
+    {
+        if (button == null)
+            return;
+
+        ButtonTarget = button;
+        SnapButton();
+    }
     public void SnapButton(bool panel = true, bool success = true)
     {
+        if (!panel)
+        {
+            Drop();
+            return;
+        }
         if (success)
         {
             Place = ButtonTarget;
         }
-        MyRect.position = Place.MyRect.position;
+        Debug.Log($"Place Stuff:\n" +
+            $"anchoredPositiion: {Place.MyRect.anchoredPosition}\n" +
+            $"localPosition: {Place.MyRect.localPosition}\n" +
+            $"position: {MyRect.position}");
+
+        MyRect.anchoredPosition = Place.MyRect.anchoredPosition;
     }
     void FollowMouse(Vector2 mousePos)
     {
@@ -125,16 +143,37 @@ public class DraggableButton : SelectableButton
             ButtonTarget.Vacate(this) &&
             Occupy(ButtonTarget));
     }
-    protected override void Start()
+    void CheckSnapping()
     {
-        base.Start();
+        if (Place != null && !Following &&
+            MyRect.anchoredPosition != Place.MyRect.anchoredPosition)
+            SnapButton(Place);
+    }
+    public override void Init()
+    {
+        base.Init();
+        if (UIMan == null)
+        {
+            Debug.Log("No UIMan found");
+            return;
+        }
+
+        HitBuffer = new List<RaycastResult>();
         MyRayCaster = UIMan.GameMenuCanvas.GetComponent<GraphicRaycaster>();
         ButtonBounds.x = MyRect.rect.width / 2;
         ButtonBounds.y = MyRect.rect.height / 2;
     }
+    protected override void Start()
+    {
+        base.Start();
+        
+    }
+    
     public override void Update()
     {
+        base.Update();
         CurrentPosMouse = Input.mousePosition;
         FollowMouse(CurrentPosMouse);
+        CheckSnapping();
     }
 }

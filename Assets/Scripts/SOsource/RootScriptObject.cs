@@ -9,7 +9,7 @@ public class RootScriptObject : ScriptableObject
     public int ID;
     public string Name;
     public string Flavour;
-    public Sprite Sprite;
+    public Sprite sprite;
 
     [Header("Root Logic - NO TOUCHY!")]
     public RootLogic RootLogic;
@@ -20,14 +20,14 @@ public class RootScriptObject : ScriptableObject
 
         Name = source.Name;
         Flavour = source.Flavour;
-        Sprite = source.Sprite;
+        sprite = source.sprite;
     }
 
     public virtual DraggableButton GenerateMyButton(ButtonOptions options)
     {
         options.Type = ButtonType.DEFAULT; // test point, shouldn't proc
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
-        return buttonObject.AddComponent<DraggableButton>();
+        return buttonObject.GetComponent<DraggableButton>();
     }
     public virtual RootScriptObject GenerateRootObject(RootOptions options)
     {

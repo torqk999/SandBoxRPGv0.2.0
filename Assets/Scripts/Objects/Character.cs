@@ -416,7 +416,7 @@ public class Character : Pawn, Interaction
     {
         CrowdControlEffect newEffect = (CrowdControlEffect)ScriptableObject.CreateInstance("CrowdControlEffect");
         newEffect.Name = name;
-        newEffect.Sprite = sprite;
+        newEffect.sprite = sprite;
         newEffect.TargetCCstatus = status;
         return newEffect;
     }

@@ -29,8 +29,7 @@ public class SimpleWorldBuilder : MonoBehaviour
 
             SampleItems[i].InitializeRoot(GameState);
 
-            RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
-            inventory.Items[i] = (ItemObject)SampleItems[i].GenerateRootObject(options);
+            inventory.GenerateItem(SampleItems[i], i);
         }
     }
     

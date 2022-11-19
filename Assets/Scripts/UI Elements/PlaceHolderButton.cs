@@ -58,18 +58,24 @@ public class PlaceHolderButton : SelectableButton
     }
     public void ResetImage()
     {
-        if (Root == null || Root.Sprite == null)
+        if (Root == null || Root.sprite == null)
             MyImage.sprite = UIMan.PlaceHolderSprite;
         else
-            MyImage.sprite = Root.Sprite;
+            MyImage.sprite = Root.sprite;
     }
-    
 
+    public override void Init()
+    {
+        base.Init();
+        if (UIMan == null)
+            return;
+        MyImage.sprite = UIMan.PlaceHolderSprite;
+    }
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-        ResetImage();
+        
     }
 
     // Update is called once per frame

@@ -15,9 +15,9 @@ public class Equipment : ItemObject
 
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {
-        options.Type = ButtonType.INVENTORY;
+        options.Type = ButtonType.DRAG;
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
-        return buttonObject.AddComponent<InventoryButton>();
+        return buttonObject.AddComponent<EquipmentButton>();
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {

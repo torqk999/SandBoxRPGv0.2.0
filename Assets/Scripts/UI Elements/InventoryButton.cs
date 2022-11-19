@@ -37,6 +37,22 @@ public class InventoryButton : DraggableButton
             return false;
         return base.Vacate(drag);
     }
+    
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        base.OnPointerDown(eventData);
+        UIMan.CharacterPageSelection(this);
+    }
+    public override void OnPointerUp(PointerEventData eventData)
+    {
+        //base.OnPointerUp(eventData);
+        //SnapButton(Drop());
+    }
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+        
+        base.OnPointerEnter(eventData);
+    }
     public override void Assign(RootScriptObject root)
     {
         base.Assign(root);
@@ -51,32 +67,20 @@ public class InventoryButton : DraggableButton
             $"Weight: {item.Weight}");
         ButtonText.text = (item is Stackable) ? ((Stackable)item).CurrentQuantity.ToString() : string.Empty;
     }
-    public override void OnPointerDown(PointerEventData eventData)
+    public override void Init()
     {
-        base.OnPointerDown(eventData);
-        UIMan.CharacterPageSelection(this);
+        base.Init();
     }
-    /*public override void OnPointerUp(PointerEventData eventData)
-    {
-        //base.OnPointerUp(eventData);
-        //SnapButton(Drop());
-    }*/
-    public override void OnPointerEnter(PointerEventData eventData)
-    {
-        
-        base.OnPointerEnter(eventData);
-    }
-
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-        MyImage.sprite = Root.Sprite;
+        
     }
 
     // Update is called once per frame
     public override void Update()
     {
-        
+        base.Update();
     }
 }

@@ -29,7 +29,7 @@ public class SkillButton : DraggableButton
         CharacterAbility skill = (CharacterAbility)root;
 
         Skill = skill;
-        try { MyImage.sprite = skill.Sprite; }
+        try { MyImage.sprite = skill.sprite; }
         catch { Debug.Log("missing button sprite"); }
         Title.Append(skill.Name);
         BuildSkillString();

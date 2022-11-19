@@ -35,7 +35,10 @@ public class EquipmentButton : InventoryButton
     {
         base.OnPointerEnter(eventData);
     }
-
+    public override void Init()
+    {
+        base.Init();
+    }
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -45,6 +48,6 @@ public class EquipmentButton : InventoryButton
     // Update is called once per frame
     public override void Update()
     {
-        
+        base.Update();
     }
 }

@@ -22,10 +22,11 @@ public class ExtendedButtonEditor : Editor
 public enum ButtonType
 {
     DEFAULT,
-    EQUIP,
-    INVENTORY,
-    LIST_SKILL,
-    SLOT_SKILL,
+    DRAG,
+    //EQUIP,
+    //INVENTORY,
+    //LIST_SKILL,
+    HOT_BAR,
     //CONTAINER,
     //SLOT_RING,
     //KEY_MAP
@@ -36,17 +37,17 @@ public struct ButtonOptions
 {
     //public string ClassID;
     public ButtonType Type;
-    public bool PlaceHolder;
-    public int Count;
-    public GameObject Body;
+    public int Index;
+    public RootScriptObject Root;
     public Transform Home;
     public ExtendedButton[] Folder;
-    
-    public ButtonOptions(GameObject body, ExtendedButton[] folder, Transform home = null, bool placeHolder = false, int count = 1)
+    public PlaceHolderButton PlaceHolder;
+
+    public ButtonOptions(ExtendedButton[] folder, Transform home = null, RootScriptObject root = null, int index = 0, PlaceHolderButton placeHolder = null)
     {
-        Count = count;
+        Index = index;
         Type = default;
-        Body = body;
+        Root = root;
         Home = home;
         Folder = folder;
         PlaceHolder = placeHolder;
@@ -63,14 +64,15 @@ public class ExtendedButton : Button
     public Slider CD_Bar;
     public Text ButtonText;
 
+    //public ButtonOptions Options;
     //[DllImport("user32.dll")]
     //public static extern bool SetCursorPos(int X, int Y);
     public virtual void Assign(RootScriptObject root)
     {
         if (root != null &&
-            root.Sprite != null)
+            root.sprite != null)
 
-        MyImage.sprite = root.Sprite;
+        MyImage.sprite = root.sprite;
     }
     
 
@@ -96,17 +98,48 @@ public class ExtendedButton : Button
         base.OnPointerExit(eventData);
     }
 
-    protected override void Start()
+    bool GetUIMan()
     {
-        base.Start();
+        Transform parent = transform.parent;
+        UIManager uiMan = null;
+        int seatBelt = 0; //  >: |  //
+        do
+        {
+            if (parent != null)
+                uiMan = parent.GetComponent<UIManager>();
+
+            if (uiMan != null)
+            {
+                UIMan = uiMan;
+                return true;
+            }
+
+            parent = parent.parent;
+            seatBelt++;
+        }
+        while (parent != null && seatBelt < 50);
+        return false;
+    }
+
+    public virtual void Init()
+    {
+        GetUIMan();
         gameObject.tag = GlobalConstants.TAG_BUTTON;
         MyRect = gameObject.GetComponent<RectTransform>();
         MyImage = gameObject.GetComponent<Image>();
+
         try { ButtonText = MyRect.transform.GetChild(0).GetComponent<Text>(); }
         catch { Debug.Log($"Button Text failed to be found!"); }
         try { CD_Bar = MyRect.transform.GetChild(1).GetComponent<Slider>(); }
-        catch { Debug.Log($"Cooldown Slider failed to be found!"); }
+        catch
+        {
+            Debug.Log($"Cooldown Slider failed to be found!");
+        }
+    }
 
+    protected override void Start()
+    {
+        base.Start();
     }
     // Update is called once per frame
     public virtual void Update()

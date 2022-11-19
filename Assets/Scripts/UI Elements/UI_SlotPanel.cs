@@ -5,19 +5,26 @@ using UnityEngine;
 public class UI_SlotPanel : MonoBehaviour
 {
     public DraggableButton[] Occupants;
-    public Transform OccupantContent;
+    public RectTransform OccupantContent;
 
     public PlaceHolderButton[] Places;
-    public Transform PlaceContent;
-    
-    public UI_SlotPanel(int size, Transform[] content)
-    {
-        Resize(size);
-    }
+    public RectTransform PlaceContent;
 
+    public RectTransform MainContent;
     public void Resize(int size)
     {
         Occupants = new DraggableButton[size];
         Places = new PlaceHolderButton[size];
+    }
+    public void RefreshContentSize()
+    {
+        Vector2 newDelta = PlaceContent.sizeDelta;
+        MainContent.sizeDelta = newDelta;
+        OccupantContent.sizeDelta = newDelta;
+    }
+
+    public void Update()
+    {
+        RefreshContentSize();
     }
 }
