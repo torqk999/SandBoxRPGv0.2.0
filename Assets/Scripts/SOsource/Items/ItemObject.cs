@@ -18,6 +18,7 @@ public class ItemObject : RootScriptObject
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {
         options.ButtonType = ButtonType.DRAG;
+        options.PlaceType = PlaceHolderType.INVENTORY;
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
         InventoryButton myButton = buttonObject.AddComponent<InventoryButton>();
         myButton.Init(options, this);

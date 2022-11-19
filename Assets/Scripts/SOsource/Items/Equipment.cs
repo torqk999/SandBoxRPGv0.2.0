@@ -16,6 +16,7 @@ public class Equipment : ItemObject
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {
         options.ButtonType = ButtonType.DRAG;
+        options.PlaceType = PlaceHolderType.EQUIP;
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
         EquipmentButton myButton = buttonObject.AddComponent<EquipmentButton>();
         myButton.Init(options, this);

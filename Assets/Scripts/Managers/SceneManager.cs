@@ -67,6 +67,8 @@ public class SceneManager : MonoBehaviour
 
         Debug.Log("new bag");
         Inventory newLootBag = CreateLootBag(character);
+        if (GameState.pController.CurrentCharacter.Inventory.TransferItem(newLootBag, inventoryIndex))
+            return true;
 
         return false;
     }
@@ -80,22 +82,32 @@ public class SceneManager : MonoBehaviour
             return null;
 
         GameObject newLootBag = Instantiate(LootBagPrefab, character.Root.position, character.Root.rotation, LootBagFolder);
-        newLootBag.name = newLootBag.name.Replace("(Clone)", ":" + CurrentLootBagIndex);
+        GameObject newLootPanel = GameState.UIman.GenerateInventoryPanel(GameState.UIman.ContainersContent, "newLootBag");
+
+        //newLootBag.name = newLootBag.name.Replace("(Clone)", ":" + CurrentLootBagIndex);
 
         GameObject newTriggerVolume = Instantiate(LootTriggerVolumePrefab,
             newLootBag.transform.position,
             newLootBag.transform.rotation,
             newLootBag.transform);
+
         newTriggerVolume.SetActive(true);
         newTriggerVolume.name = "TRIGGER VOLUME:" + newLootBag.name;
 
         newLootBag.SetActive(true);
+
         LootTriggerVolume trigger = newTriggerVolume.GetComponent<LootTriggerVolume>();
         GenericContainer container = newLootBag.GetComponent<GenericContainer>();
+        Inventory newInventory = newLootPanel.GetComponent<Inventory>();
+
+        newInventory.SetupInventory(GameState, CharacterMath.LOOT_BAG_MAX, "New Loot Drop");
+
         container.GameState = GameState;
         container.TriggerTag = GlobalConstants.TAG_CHARACTER;
+        container.Inventory = newInventory;
         trigger.parent = container;
-        return container.Inventory;
+        
+        return newInventory;
     }
     public void RemoveFromLootBag(int index)
     {

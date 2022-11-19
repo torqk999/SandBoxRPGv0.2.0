@@ -16,6 +16,7 @@ public class UI_SlotPanel : MonoBehaviour
         Occupants = new DraggableButton[size];
         Places = new PlaceHolderButton[size];
     }
+
     public void RefreshContentSize()
     {
         Vector2 newDelta = PlaceContent.sizeDelta;

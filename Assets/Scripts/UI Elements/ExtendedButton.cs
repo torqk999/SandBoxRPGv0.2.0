@@ -36,53 +36,41 @@ public enum ButtonType
 [Serializable]
 public struct ButtonOptions
 {
-    //public string ClassID;
     public ButtonType ButtonType;
     public PlaceHolderType PlaceType;
     public int Index;
     public RootScriptObject Root;
-    public RectTransform Home;
-    public ExtendedButton[] OccupantFolder;
-    public ExtendedButton[] PlaceFolder;
-    public PlaceHolderButton PlaceHolder;
+    public UI_SlotPanel Panel;
 
     /// <summary>
     /// For building a new root directly into the target folder
     /// </summary>
-    /// <param name="occupantFolder"> Where the root buttons go </param>
     /// <param name="root"> The root object that is tied to this button </param>
-    /// <param name="placeHolder"> The current placeHolder button tied to this button  </param>
-    /// <param name="home"> The parent transform of the button </param>
+    /// <param name="panel"> The panel component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(ExtendedButton[] occupantFolder, RootScriptObject root = null, PlaceHolderButton placeHolder = null, RectTransform home = null, int index = 0)
+    public ButtonOptions(RootScriptObject root , UI_SlotPanel panel, int index = 0)
     {
         Index = index;
+        Root = root;
+        Panel = panel;
+
         PlaceType = default;
         ButtonType = default;
-        Root = root;
-        Home = home;
-        OccupantFolder = occupantFolder;
-        PlaceFolder = null;
-        PlaceHolder = placeHolder;
     }
 
     /// <summary>
     /// For build a new placeHolder directly into the target folder
     /// </summary>
-    /// <param name="placeFolder"> Where the placeHolder buttons go </param>
-    /// <param name="occupantFolder"> Where the root buttons go </param>
-    /// <param name="home"> The parent transform of the button </param>
-    /// <param name="index"> The index of this button and it's occupant </param>
-    public ButtonOptions(ExtendedButton[] placeFolder , ExtendedButton[] occupantFolder , RectTransform home = null, int index = 0) // Place Holder
+    /// <param name="panel"> The panel component that currently houses this button </param>
+    /// <param name="index"> The index of this placHolder and it's button </param>
+    public ButtonOptions(UI_SlotPanel panel, int index = 0)
     {
         Index = index;
+        Root = null;
+        Panel = panel;
+
         PlaceType = default;
         ButtonType = default;
-        Root = null;
-        Home = home;
-        OccupantFolder = occupantFolder;
-        PlaceFolder = placeFolder;
-        PlaceHolder = null;
     }
 }
 
@@ -96,9 +84,6 @@ public class ExtendedButton : Button
     public Slider CD_Bar;
     public Text ButtonText;
 
-    //public ButtonOptions Options;
-    //[DllImport("user32.dll")]
-    //public static extern bool SetCursorPos(int X, int Y);
     public virtual void Assign(RootScriptObject root)
     {
         if (root != null &&
@@ -107,13 +92,6 @@ public class ExtendedButton : Button
         MyImage.sprite = root.sprite;
     }
     
-
-    public virtual ExtendedButton GenerateButton(ButtonOptions options)
-    {
-        GameObject buttonObject = UIMan.GenerateButtonObject(options);
-        ExtendedButton newButton = buttonObject.AddComponent<ExtendedButton>();
-        return newButton;
-    }
     public virtual void CreateCallBackIdentity() { }
 
     public virtual void UpdateContent()

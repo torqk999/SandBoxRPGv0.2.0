@@ -6,7 +6,6 @@ public class RootScriptObject : ScriptableObject
 {
     [Header("Root Properties")]
     public GameState GameState;
-    //public int ID;
     public string Name;
     public string Flavour;
     public Sprite sprite;
@@ -27,16 +26,13 @@ public class RootScriptObject : ScriptableObject
     {
         options.ButtonType = ButtonType.DEFAULT; // test point, shouldn't proc
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
-        DraggableButton myButton = buttonObject.GetComponent<DraggableButton>();
+        DraggableButton myButton = buttonObject.AddComponent<DraggableButton>();
         myButton.Init(options, this);
         return myButton;
     }
     public virtual RootScriptObject GenerateRootObject(RootOptions options)
     {
         options.ClassID = options.ClassID == string.Empty ? "RootScriptObject" : options.ClassID;
-
-        //Debug.Log($"Generating Root Object: {options.ClassID}");
-
         RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.ClassID);
         newRootObject.GameState = GameState;
         newRootObject.Copy(this, options);

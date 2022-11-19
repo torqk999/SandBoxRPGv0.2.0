@@ -2,6 +2,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
@@ -13,10 +14,12 @@ public class UIToolTip : MonoBehaviour
     public TextMeshProUGUI Flavour;
 
     //public DraggableButton Dragging;
-
+    public bool NeedsRefresh;
     public bool Active;
-    public Vector2 offset;
-    public Vector2 CurrentMousePos;
+    //public Vector2 ClickOffset;
+    public Vector2 PlaceOffset;
+    public Vector2 CurrentPosMouse;
+    public Vector2 SizeOfRect;
 
     public bool UpdateText(StringBuilder title, StringBuilder stats = null, StringBuilder flavour = null)
     {
@@ -36,7 +39,8 @@ public class UIToolTip : MonoBehaviour
         else
             Flavour.text = string.Empty;
 
-        //Canvas.ForceUpdateCanvases();
+
+        NeedsRefresh = true;
         return true;
     }
 
@@ -45,10 +49,13 @@ public class UIToolTip : MonoBehaviour
         Active = false;
     }
 
-    void FollowMouse(Vector2 mousePos)
+    void FollowMouse()
     {
+
         if (Active && !MyRect.gameObject.activeSelf)
             MyRect.gameObject.SetActive(true);
+        
+            
 
         if (!Active)
         {
@@ -57,20 +64,28 @@ public class UIToolTip : MonoBehaviour
             return;
         }
 
-        MyRect.position = mousePos + offset;
+        SizeOfRect = MyRect.sizeDelta;
+        PlaceOffset = MyRect.sizeDelta / 1.9f;
 
-        Canvas.ForceUpdateCanvases();
+        if (CurrentPosMouse.x + SizeOfRect.x > Screen.width)
+            PlaceOffset.x = -PlaceOffset.x;
+
+        if (CurrentPosMouse.y + SizeOfRect.y > Screen.height)
+            PlaceOffset.y = -PlaceOffset.y;
+
+        MyRect.position = CurrentPosMouse + PlaceOffset;
     }
 
-    void Offset(Vector2 mousePos)
+    void Refresh()
     {
-        offset = MyRect.sizeDelta / 2;
+        if (!NeedsRefresh)
+            return;
 
-        if (mousePos.x + offset.x > Screen.width)
-            offset.x = -offset.x;
+        Canvas.ForceUpdateCanvases();
+        MyRect.GetComponent<VerticalLayoutGroup>().enabled = false;
+        MyRect.GetComponent<VerticalLayoutGroup>().enabled = true;
 
-        if (mousePos.y + offset.y > Screen.height)
-            offset.y = -offset.y;
+        NeedsRefresh = false;
     }
 
     // Start is called before the first frame update
@@ -82,8 +97,8 @@ public class UIToolTip : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CurrentMousePos = (Vector2)Input.mousePosition;
-        FollowMouse(CurrentMousePos);
-        Offset(CurrentMousePos);
+        CurrentPosMouse = (Vector2)Input.mousePosition;
+        FollowMouse();
+        Refresh();
     }
 }

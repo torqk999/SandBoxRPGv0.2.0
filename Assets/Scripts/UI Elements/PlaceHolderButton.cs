@@ -29,18 +29,17 @@ public enum PlaceHolderType
 public class PlaceHolderButton : SelectableButton
 {
     [Header("PlaceHolder")]
-    public DraggableButton[] OccupantSlots;
-    public DraggableButton Occupant;
+    public PlaceHolderType PlaceType;
+    //public DraggableButton[] OccupantSlots;
+    //public DraggableButton Occupant;
 
-    public override bool Vacate(DraggableButton drag)
+    public bool CheckCanOccupy(DraggableButton drag)
     {
-        if (Occupant == null)
-            return true;
-
-        switch(PlaceType)
+        switch (PlaceType)
         {
             case PlaceHolderType.INVENTORY:
-                if (!(drag is InventoryButton))
+                if (!(drag is InventoryButton) ||
+                    !(drag is EquipmentButton))
                     return false;
                 break;
 
@@ -53,9 +52,19 @@ public class PlaceHolderButton : SelectableButton
                 if (!(drag is SkillButton))
                     return false;
                 break;
-        }
 
-        return Occupant.Vacate(drag);
+            case PlaceHolderType.NONE:
+                return false;
+        }
+        return true;
+    }
+
+    public override bool Vacate()
+    {
+        if (Panel.Occupants[SlotIndex] == null)
+            return true;
+
+        return Panel.Occupants[SlotIndex].Vacate();
     }
     public void ResetImage()
     {
@@ -71,7 +80,7 @@ public class PlaceHolderButton : SelectableButton
         if (UIMan == null)
             return;
 
-        SlotFamily = (SelectableButton[])options.PlaceFolder;
+        PlaceType = options.PlaceType;
         MyImage.sprite = UIMan.PlaceHolderSprite;
 
         SpriteState ss = new SpriteState();

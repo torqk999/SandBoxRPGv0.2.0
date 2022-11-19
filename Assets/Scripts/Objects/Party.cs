@@ -24,8 +24,8 @@ public class Party : MonoBehaviour
         Name = name == "" ? Faction.ToString() : name;
         Members = new List<Character>();
         Foes = new List<Character>();
-        GameObject lootObject = state.UIman.GenerateInventoryPanel($"LootBag: {Name}");
-        PartyLoot = lootObject.AddComponent<Inventory>();
+        GameObject lootObject = state.UIman.GenerateInventoryPanel(state.UIman.InventoriesContent, $"LootBag: {Name}");
+        PartyLoot = lootObject.GetComponent<Inventory>();
         PartyLoot.SetupInventory(state, CharacterMath.PARTY_INVENTORY_MAX, Name);
 
          //= new Inventory(state, $"LootBag: {Name}");

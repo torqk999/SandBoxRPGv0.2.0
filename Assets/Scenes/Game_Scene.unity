@@ -403,13 +403,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78bb026ee17908844a81ecb3aa10bd1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameState: {fileID: 0}
+  GameState: {fileID: 559339747}
   InteractData:
     Type: 3
     Name: 
-  Inventory:
-    Items: []
-    MaxCount: 10
+  Inventory: {fileID: 0}
   bIsLocked: 0
   TriggerTag: 
   bRequestViewing: 0
@@ -932,10 +930,7 @@ MonoBehaviour:
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
   CurrentAction: {fileID: 0}
-  Inventory:
-    Items: []
-    MaxCount: 40
-  CharacterCanvas: {fileID: 0}
+  Inventory: {fileID: 0}
   AbilitySlots: []
   EquipmentSlots: []
   RingSlots: []
@@ -1324,10 +1319,7 @@ MonoBehaviour:
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
   CurrentAction: {fileID: 0}
-  Inventory:
-    Items: []
-    MaxCount: 0
-  CharacterCanvas: {fileID: 0}
+  Inventory: {fileID: 0}
   AbilitySlots: []
   EquipmentSlots: []
   RingSlots: []
@@ -2512,8 +2504,7 @@ MonoBehaviour:
   bPauseMenuOpen: 0
   bHUDactive: 1
   bGameMenuOpen: 0
-  ABILITY_INDEX: 0
-  EQUIPMENT_INDEX: 0
+  ROOT_SO_INDEX: 0
   RigidBodyPawns: []
 --- !u!1 &586143228
 GameObject:
@@ -5628,10 +5619,7 @@ MonoBehaviour:
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
   CurrentAction: {fileID: 0}
-  Inventory:
-    Items: []
-    MaxCount: 40
-  CharacterCanvas: {fileID: 0}
+  Inventory: {fileID: 0}
   AbilitySlots:
   - {fileID: 0}
   - {fileID: 0}

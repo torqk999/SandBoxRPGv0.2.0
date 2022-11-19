@@ -20,27 +20,23 @@ public class InventoryButtonEditor : Editor
 
 public class InventoryButton : DraggableButton
 {
-    public override ExtendedButton GenerateButton(ButtonOptions options)
-    {
-        //GameObject buttonObject = GenerateButtonObject(prefab, folder);
-        InventoryButton newButton = (InventoryButton)base.GenerateButton(options);
-        return newButton;
-    }
+
     public override bool Drop()
     {
-        return UIMan.GameState.SceneMan.PushIntoContainer(UIMan.GameState.pController.CurrentCharacter);
+        return (UIMan.GameState.SceneMan.PushIntoContainer(UIMan.GameState.pController.CurrentCharacter, SlotIndex)) ;
     }
-    public override bool Vacate(DraggableButton drag)
+    public override bool Vacate()
     {
         if (!UIMan.GameState.pController.CurrentCharacter.Inventory.PushItemIntoInventory((ItemObject)Root) &&
             !Drop())
             return false;
-        return base.Vacate(drag);
+        return base.Vacate();
     }
     
     public override void OnPointerDown(PointerEventData eventData)
     {
-        UIMan.CharacterPageSelection(this);
+        if (!Following)
+            UIMan.CharacterPageSelection(this);
         base.OnPointerDown(eventData);
     }
     public override void OnPointerUp(PointerEventData eventData)

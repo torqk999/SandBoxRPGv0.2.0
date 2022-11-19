@@ -31,7 +31,7 @@ public class DraggableButton : SelectableButton
     public bool Following;
 
     [Header("Location Meta")]
-    public PlaceHolderButton PlaceHolder;
+    //public PlaceHolderButton PlaceHolder;
     public PlaceHolderButton ButtonTarget;
     //public GameObject PanelTarget;
     public GraphicRaycaster MyRayCaster;
@@ -60,7 +60,7 @@ public class DraggableButton : SelectableButton
                         Debug.Log($"index: {place.SlotIndex}");
                     }
                     if (place != null &&
-                        place.PlaceType == PlaceType)
+                        place.CheckCanOccupy(this))
                     {
                         Debug.Log("PlaceHolderFound!");
                         ButtonTarget = place;
@@ -78,11 +78,11 @@ public class DraggableButton : SelectableButton
     }
     void CheckSnapping()
     {
-        if (PlaceHolder != null && !Following &&
-            MyRect.anchoredPosition != PlaceHolder.MyRect.anchoredPosition)
-            SnapButton(PlaceHolder);
+        if (Panel.Places[SlotIndex] != null && !Following &&
+            MyRect.anchoredPosition != Panel.Places[SlotIndex].MyRect.anchoredPosition)
+            SnapButton(Panel.Places[SlotIndex]);
     }
-    void FollowMouse(Vector2 mousePos)
+    void FollowMouse()
     {
         if (!Following)
             return;
@@ -96,26 +96,35 @@ public class DraggableButton : SelectableButton
     {
         return false;
     }
-    public override bool Vacate(DraggableButton drag)
+    public override bool Vacate()
     {
-        if (PlaceHolder == null ||
-            SlotFamily == null ||
+        if (Panel == null ||
+            Panel.Occupants == null ||
+            Panel.OccupantContent == null ||
             SlotIndex < 0 ||
-            SlotIndex >= SlotFamily.Length )
+            SlotIndex >= Panel.Occupants.Length )
             return false;
 
-        PlaceHolder = null;
-        SlotFamily[SlotIndex] = null;
-        SlotFamily = null;
+        Panel.Occupants[SlotIndex] = null;
+        Panel = null;
         SlotIndex = -1;
-        return base.Vacate(drag);
+
+        // Un parent? Should be re-parenting anyway...
+        return base.Vacate();
     }
-    public virtual bool Occupy(PlaceHolderButton place)
+    public bool Occupy(PlaceHolderButton place)
     {
-        //if ()
-        SlotFamily = place.OccupantSlots;
+        if (place == null)
+            return false;
+
+        if (!place.Vacate())
+            return false;
+
+        Vacate();
+        Panel = place.Panel;
         SlotIndex = place.SlotIndex;
-        SlotFamily[SlotIndex] = this;
+        Panel.Occupants[SlotIndex] = this;
+        
         return true;
     }
     public void SnapButton(PlaceHolderButton button)
@@ -131,45 +140,59 @@ public class DraggableButton : SelectableButton
         if (!panel)
         {
             Drop();
-            return;
         }
         if (success)
         {
-            PlaceHolder = ButtonTarget;
+            Panel = ButtonTarget.Panel;
         }
         /*Debug.Log($"Place Stuff:\n" +
             $"anchoredPositiion: {Place.MyRect.anchoredPosition}\n" +
             $"localPosition: {Place.MyRect.localPosition}\n" +
             $"position: {MyRect.position}");*/
-
-        MyRect.anchoredPosition = PlaceHolder.MyRect.anchoredPosition;
+        MyRect.SetParent(Panel.OccupantContent);
+        MyRect.anchoredPosition = Panel.Places[SlotIndex].MyRect.anchoredPosition;
     }
     #endregion 
 
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
-
-        if (Following || UIMan.Dragging != null)
+        SetFollow(eventData);
+        /*if (Following || UIMan.Dragging != null)
             return;
 
         Following = true;
         OldPosButton = MyRect.position;
         Offset = OldPosButton - CurrentPosMouse;
-        UIMan.Dragging = this;
+        UIMan.Dragging = this;*/
     }
     public override void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("Button release!");
+        //Debug.Log("Button release!");
 
         base.OnPointerUp(eventData);
-        Following = false;
+       /* Following = false;
         SnapButton(CheckOverLap(eventData),
             ButtonTarget != null &&
             ButtonTarget.Vacate(this) &&
-            Occupy(ButtonTarget));
+            Occupy(ButtonTarget));*/
     }
-    
+    void SetFollow(PointerEventData eventData)
+    {
+        Following = !Following;
+
+        if (Following)
+        {
+            transform.SetParent(UIMan.HUDcanvas.transform);
+            Offset = (Vector2)MyRect.position - CurrentPosMouse;
+            UIMan.Dragging = this;
+        }
+        else
+        {
+            transform.SetParent(Panel.OccupantContent);
+            SnapButton(CheckOverLap(eventData), Occupy(ButtonTarget));
+        }
+    }
     public override void Init(ButtonOptions options, RootScriptObject root = null)
     {
         base.Init(options, root);
@@ -179,12 +202,18 @@ public class DraggableButton : SelectableButton
             return;
         }
 
-        PlaceHolder = options.PlaceHolder;
-        SlotFamily = (SelectableButton[])options.OccupantFolder;
+        if(Root != null)
+            Root.RootLogic.Button = this;
+
+        if (Panel.Occupants != null)
+            Panel.Occupants[SlotIndex] = this;
+
+        transform.SetParent(Panel.OccupantContent);
+        transform.localScale = Vector3.one;
+
+        //SlotFamily = options.Panel.Occupants;
         HitBuffer = new List<RaycastResult>();
         MyRayCaster = UIMan.GameMenuCanvas.GetComponent<GraphicRaycaster>();
-        //ButtonBounds.x = MyRect.rect.width / 2;
-        //ButtonBounds.y = MyRect.rect.height / 2;
     }
     protected override void Start()
     {
@@ -196,7 +225,7 @@ public class DraggableButton : SelectableButton
     {
         base.Update();
         CurrentPosMouse = Input.mousePosition;
-        FollowMouse(CurrentPosMouse);
+        FollowMouse();
         CheckSnapping();
     }
 }

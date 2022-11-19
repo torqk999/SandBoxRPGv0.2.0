@@ -21,11 +21,12 @@ public class SelectableButtonEditor : Editor
 public class SelectableButton : TippedButton
 {
     [Header("SelectableButton")]
+    public UI_SlotPanel Panel;
     public RootScriptObject Root;
     public bool Selected;
     public int SlotIndex;
-    public PlaceHolderType PlaceType;
-    public SelectableButton[] SlotFamily;
+    //public Transform SlotHome;
+    //public SelectableButton[] SlotFamily;
 
     [Header("Debugging")]
     
@@ -48,7 +49,7 @@ public class SelectableButton : TippedButton
         }
         return default;
     }*/
-    public virtual bool Vacate(DraggableButton drag)
+    public virtual bool Vacate()
     {
         return true;
     }
@@ -77,15 +78,9 @@ public class SelectableButton : TippedButton
     public override void Init(ButtonOptions options, RootScriptObject root = null)
     {
         base.Init(options, root);
-        PlaceType = options.PlaceType;
+
+        Panel = options.Panel;
         SlotIndex = options.Index;
-
-        if (SlotFamily != null)
-            SlotFamily[SlotIndex] = this;
-
-        transform.SetParent(options.Home);
-        transform.localScale = Vector3.one;
-
         Root = root;
 
         if (Root != null)
@@ -106,6 +101,7 @@ public class SelectableButton : TippedButton
                 spriteState = ss;
             }
 
+            
             Title.Append(Root.Name);
             Stats.Append("===Stats===\n");
             Flavour.Append(Root.Flavour);

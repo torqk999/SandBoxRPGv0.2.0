@@ -200,7 +200,7 @@ public class CharacterManager : MonoBehaviour
         Parties.Add(cloneParty);
         return true;
     }
-    Party GenerateParty(Faction faction, Formation formation = null, string name = "newParty" ,int startIndex = 0) // add custom party names...
+    Party GenerateParty(Faction faction, Formation formation = null, string name = "", int startIndex = 0) // add custom party names...
     {
         GameObject partyObject = new GameObject();
 
@@ -208,10 +208,8 @@ public class CharacterManager : MonoBehaviour
         partyObject.transform.parent = CharacterPartyFolder;
 
         Party newParty = partyObject.AddComponent<Party>();
-        newParty.SetupParty(GameState, faction, name, formation);
 
-        //newParty.PartyLoot = new Inventory($"PARTY-INVENTORY: {newParty.name}");
-        newParty.Faction = faction;
+        newParty.SetupParty(GameState, faction, name, formation);
         newParty.CurrentMemberIndex = startIndex;
 
         newParty.Formation = formation;

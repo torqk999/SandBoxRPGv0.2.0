@@ -45,10 +45,10 @@ public class Inventory : MonoBehaviour
         RootOptions rootOptions = new RootOptions(ref GameState.ROOT_SO_INDEX);
         Items[index] = (ItemObject)sample.GenerateRootObject(rootOptions);
 
-        ButtonOptions buttonOptions = new ButtonOptions(Panel.Occupants, Items[index], Panel.Places[index], Panel.OccupantContent, index);
+        ButtonOptions buttonOptions = new ButtonOptions(Items[index], Panel, index);
 
-        buttonOptions.ButtonType = ButtonType.DRAG;
-        buttonOptions.PlaceType = PlaceHolderType.INVENTORY;
+        //buttonOptions.ButtonType = ButtonType.DRAG;
+        //buttonOptions.PlaceType = PlaceHolderType.INVENTORY;
 
         Items[index].GenerateMyButton(buttonOptions);
     }
@@ -58,9 +58,9 @@ public class Inventory : MonoBehaviour
         Items = new ItemObject[count];
         Panel.Resize(count);
 
-        ButtonOptions options = new ButtonOptions(Panel.Places, Panel.Occupants, Panel.PlaceContent);
+        ButtonOptions options = new ButtonOptions(Panel);
 
-        options.ButtonType = ButtonType.PLACE;
+        //options.ButtonType = ButtonType.PLACE;
         options.PlaceType = PlaceHolderType.INVENTORY;
 
         for (int i = 0; i < Panel.Places.Length; i++)
@@ -113,12 +113,18 @@ public class Inventory : MonoBehaviour
     }
     public bool PushItemIntoInventory(ItemObject input, int inventoryIndex = 0)
     {
+        Debug.Log($"input: {input != null}");
+
+        Debug.Log("Pushing into inventory...");
         if (input is Stackable)
             return PushItemIntoStack((Stackable)input);
 
         if (Items[inventoryIndex] == null)
         {
+            Debug.Log("Slot empty! Pushing!");
             Items[inventoryIndex] = input;
+            Debug.Log($"button: {input.RootLogic.Button != null}\n place: {Panel.Places[inventoryIndex] != null}");
+            input.RootLogic.Button.Occupy(Panel.Places[inventoryIndex]);
             return true;
         }
 
@@ -126,6 +132,7 @@ public class Inventory : MonoBehaviour
         if (newIndex != -1)
         {
             Items[newIndex] = input;
+            input.RootLogic.Button.Occupy(Panel.Places[newIndex]);
             return true;
         }
 
@@ -170,9 +177,11 @@ public class Inventory : MonoBehaviour
     }
     public bool TransferItem(Inventory targetInventory, int inventoryIndex, int targetIndex = 0)
     {
+        Debug.Log("Transfering Item...");
         if (targetInventory.PushItemIntoInventory(Items[inventoryIndex], targetIndex))
         {
             Items[inventoryIndex] = null;
+            Items[inventoryIndex].RootLogic.Button.Occupy(Panel.Places[targetIndex]);
             return true;
         }
         return false;
