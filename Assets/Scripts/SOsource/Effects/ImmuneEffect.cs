@@ -8,9 +8,9 @@ public class ImmuneEffect : BaseEffect
     [Header("ImmuneProperties")]
     public CCstatus TargetCCstatus;
 
-    public override void ApplySingleEffect(Character target, bool cast = false, bool toggle = true)
+    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
     {
-        base.ApplySingleEffect(target, cast, toggle); // Risidual proc
+        base.ApplySingleEffect(target, options, cast); // Risidual proc
 
         if (cast)
             Cleanse(target);
@@ -23,9 +23,9 @@ public class ImmuneEffect : BaseEffect
                 Destroy(ccEffect);
     }
 
-    public override void CloneEffect(BaseEffect source, bool inject = false)
+    public override void CloneEffect(BaseEffect source, EffectOptions options)
     {
-        base.CloneEffect(source, inject);
+        base.CloneEffect(source, options);
 
         if (!(source is ImmuneEffect))
             return;
@@ -35,10 +35,10 @@ public class ImmuneEffect : BaseEffect
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
 
-    public override BaseEffect GenerateEffect(bool inject = true)
+    public override BaseEffect GenerateEffect(EffectOptions options, Character effected = null)
     {
         ImmuneEffect newEffect = (ImmuneEffect)CreateInstance("ImmuneEffect");
-        newEffect.CloneEffect(this, inject);
+        newEffect.CloneEffect(this, options);
         return newEffect;
     }
 }

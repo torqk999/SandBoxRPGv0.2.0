@@ -10,7 +10,19 @@ public class EffectAbility : CharacterAbility
     [Header("Target Properties")]
     public BaseEffect[] Effects;
     public TargetType AbilityTarget;
-    
+
+    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
+    {
+        Debug.Log($"Using ability: {Name}");
+        for (int i = 0; i < Effects.Length; i++)
+        {
+            Effects[i].ApplySingleEffect(target, options); // First or only proc
+            if (i == 0)
+                options.IsProjectile = false; // make sure to set projectile to false
+        }
+
+        base.UseAbility(target, options);
+    }
     public override void Amplify(CharacterSheet sheet = null, Equipment equip = null)
     {
         StringBuilder debug = new StringBuilder();
@@ -27,14 +39,17 @@ public class EffectAbility : CharacterAbility
             effect.InitializeSource();
     }
 
-    public virtual void CloneEffects(EffectAbility source, bool inject = false)
+    public virtual void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
     {
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
             if (source.Effects[i] != null)
-                Effects[i] = source.Effects[i].GenerateEffect(inject);
+            {
+                Effects[i] = source.Effects[i].GenerateEffect(options);
+                Effects[i].Logic.ProjectileLength = ProjectileLength;
+            }    
     }
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is EffectAbility))
             return;
@@ -43,7 +58,7 @@ public class EffectAbility : CharacterAbility
 
         AbilityTarget = targetSource.AbilityTarget;
 
-        CloneEffects(targetSource, inject);
-        base.CloneAbility(source, inject);
+        ProduceOriginalEffects(targetSource);
+        base.CloneAbility(source);
     }
 }

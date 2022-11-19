@@ -9,19 +9,28 @@ public class ProcAbility : EffectAbility
     [Header("Proc Properties")]
     public ParticleSystem Projectile;
 
-    public override void UseAbility(Character target)
+    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i].ApplySingleEffect(target, true, false); // First or only proc
+        options.EffectType = EffectType.PROC;
+        options.ToggleActive = true;
+        options.IsProjectile = true;
+        options.IsClone = true;
+        options.Inject = false;
 
-        base.UseAbility(target);
+        base.UseAbility(target, options);
     }
-    public override void CloneEffects(EffectAbility source, bool inject = false)
+    public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
     {
-        base.CloneEffects(source, inject);
+        options.EffectType = EffectType.PROC;
+        options.ToggleActive = true;
+        options.IsProjectile = true;
+        options.IsClone = false;
+        options.Inject = false;
+
+        base.ProduceOriginalEffects(source, options);
     }
 
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is ProcAbility))
             return;
@@ -30,13 +39,13 @@ public class ProcAbility : EffectAbility
 
         Projectile = procSource.Projectile;
 
-        base.CloneAbility(source, inject);
+        base.CloneAbility(source);
     }
 
-    public override CharacterAbility GenerateAbility(bool inject = false)
+    public override CharacterAbility GenerateAbility()
     {
         ProcAbility newAbility = (ProcAbility)CreateInstance("ProcAbility");
-        newAbility.CloneAbility(this, inject);
+        newAbility.CloneAbility(this);
         return newAbility;
     }
 }

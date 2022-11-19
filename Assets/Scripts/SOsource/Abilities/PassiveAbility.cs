@@ -12,14 +12,17 @@ public class PassiveAbility : EffectAbility
     public float ProcTimer;
     public float ProcDelay;
 
-    /*void ClonePassives(PassiveAbility source, bool inject = false)
+    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
-        Effects = new BaseEffect[source.Effects.Length];
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i] = source.Effects[i].GenerateEffect(inject);
-    }*/
+        options.EffectType = EffectType.PASSIVE;
+        options.ToggleActive = true;
+        options.IsProjectile = true;
+        options.IsClone = true;
+        options.Inject = false;
 
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+        base.UseAbility(target, options);
+    }
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is PassiveAbility))
             return;
@@ -34,13 +37,23 @@ public class PassiveAbility : EffectAbility
         ProcDelay = passiveSource.ProcDelay;
         ProcTimer = ProcDelay;
 
-        base.CloneAbility(source, inject);
+        base.CloneAbility(source);
     }
-    public override CharacterAbility GenerateAbility(bool inject = false)
+    public override CharacterAbility GenerateAbility()
     {
         PassiveAbility newAbility = (PassiveAbility)CreateInstance("PassiveAbility");
-        newAbility.CloneAbility(this, inject);
+        newAbility.CloneAbility(this);
         return newAbility;
+    }
+    public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
+    {
+        options.EffectType = EffectType.PASSIVE;
+        options.ToggleActive = true;
+        options.IsProjectile = false;
+        options.IsClone = false;
+        options.Inject = false;
+
+        base.ProduceOriginalEffects(source, options);
     }
     public override void UpdatePassiveTimer()
     {
@@ -53,12 +66,12 @@ public class PassiveAbility : EffectAbility
     }
     void PassiveProc()
     {
-        if (SourceCharacter == null)
+        if (Logic.SourceCharacter == null)
         {
             Debug.Log("No source!");
             return;
         }
 
-        SourceCharacter.AttemptAbility(this);
+        Logic.SourceCharacter.AttemptAbility(this);
     }
 }

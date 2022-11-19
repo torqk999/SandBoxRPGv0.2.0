@@ -49,12 +49,10 @@ public class Equipment : ItemObject
     {
         Abilities = new CharacterAbility[source.Abilities.Length];
 
-
-        //Equipped = new CharacterAbility[Abilities.Length];
         for (int i = 0; i < Abilities.Length; i++)
         {
             if (source.Abilities[i] != null)
-                Abilities[i] = source.Abilities[i].GenerateAbility(true);
+                Abilities[i] = source.Abilities[i].GenerateAbility();
             else
                 Debug.Log($"Ability missing from id#{EquipID}:{Name}");
         }
@@ -107,15 +105,22 @@ public class Equipment : ItemObject
 
         foreach (CharacterAbility equipped in Abilities)
         {
-            foreach (BaseEffect effect in equipped.SpawnedEffects)
-            {
-                if (effect.EffectType == EffectType.PASSIVE ||
-                    effect.EffectType == EffectType.TOGGLE)
-                    Destroy(effect);
-            }
-            equipped.SourceCharacter.Abilities.Remove(equipped);
-            equipped.SourceCharacter.UpdateAbilites();
-            equipped.SourceCharacter = null;
+            if (!(equipped is EffectAbility))
+                continue;
+
+            EffectAbility effectAbility = (EffectAbility)equipped;
+
+            foreach (BaseEffect effect in effectAbility.Effects)
+                foreach (BaseEffect spawnedEffect in effect.Logic.Clones)
+                {
+                    if (effect.Logic.Options.EffectType == EffectType.PASSIVE ||
+                        effect.Logic.Options.EffectType == EffectType.TOGGLE)
+                        Destroy(spawnedEffect);
+                }
+            
+            effectAbility.Logic.SourceCharacter.Abilities.Remove(effectAbility);
+            effectAbility.Logic.SourceCharacter.UpdateAbilites();
+            effectAbility.Logic.SourceCharacter = null;
         }
 
         SlotFamily[SlotIndex] = null;

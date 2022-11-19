@@ -15,6 +15,7 @@ public enum MaterialType
 }
 public enum PsystemType
 {
+    NONE,
     BALL_FIRE,
     CONE_FIRE,
     CONE_FROST,

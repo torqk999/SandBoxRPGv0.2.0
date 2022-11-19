@@ -10,20 +10,31 @@ public class ToggleAbility : EffectAbility
     public ParticleSystem Aura;
     public bool Active;
 
-    public override void UseAbility(Character target)
+    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
         Active = !Active;
 
-        for (int i = 0; i < Effects.Length; i++)
-            Effects[i].ApplySingleEffect(target, true, Active);
+        options.EffectType = EffectType.TOGGLE;
+        options.ToggleActive = Active;
+        options.IsProjectile = true;
+        options.IsClone = true;
+        options.Inject = false;
+
+        base.UseAbility(target, options);
     }
 
-    public override void CloneEffects(EffectAbility source, bool inject = false)
+    public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
     {
-        base.CloneEffects(source, inject);
+        options.EffectType = EffectType.TOGGLE;
+        options.ToggleActive = false;
+        options.IsProjectile = false;
+        options.IsClone = false;
+        options.Inject = false;
+
+        base.ProduceOriginalEffects(source, options);
     }
 
-    public override void CloneAbility(CharacterAbility source, bool inject = false)
+    public override void CloneAbility(CharacterAbility source)
     {
         if (!(source is ToggleAbility))
             return;
@@ -33,13 +44,13 @@ public class ToggleAbility : EffectAbility
         Aura = passiveSource.Aura;
         Active = false;
 
-        base.CloneAbility(source, inject);
+        base.CloneAbility(source);
     }
 
-    public override CharacterAbility GenerateAbility(bool inject = false)
+    public override CharacterAbility GenerateAbility()
     {
         ToggleAbility newAbility = (ToggleAbility)CreateInstance("PassiveAbility");
-        newAbility.CloneAbility(this, inject);
+        newAbility.CloneAbility(this);
         return newAbility;
     }
 }
