@@ -776,6 +776,22 @@ MonoBehaviour:
   - {fileID: 8647462742836620833, guid: cd6f2a9ccff73af41b698d6ab823de84, type: 3}
   - {fileID: 2191088178451580555, guid: 5fce6412be45e9e42a931990844b0320, type: 3}
   - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
+  - {fileID: 5305615782478954960, guid: 063e871357ab75940a25c35c74f95a50, type: 3}
   Materials:
   - {fileID: 2100000, guid: 3cb0c1b1aa4fe044a87932179e4d476f, type: 2}
   - {fileID: 2100000, guid: ac518b1795f8c1849a37296065ec527e, type: 2}
@@ -916,6 +932,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  GlobalCDtimer: 0
   AOE_buffer: []
   Abilities:
   - {fileID: 11400000, guid: 85b3d7ef40f064a47b0a4b91c1a73c40, type: 2}
@@ -1302,6 +1319,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  GlobalCDtimer: 0
   AOE_buffer: []
   Abilities: []
   Risiduals: []
@@ -3743,7 +3761,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 10, z: -50}
+  m_LocalPosition: {x: 4.06, y: 10, z: -50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3767,14 +3785,14 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -4014,9 +4032,10 @@ MonoBehaviour:
   myAIpool: []
   SampleItems:
   - {fileID: 11400000, guid: 177682e4dd18b4c4e8ed8b22c5d142a2, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: e617c868ba3aef043b8f6f735b1be954, type: 2}
+  - {fileID: 11400000, guid: d8ece38acb205664b93d1473ba8e9e2a, type: 2}
+  - {fileID: 11400000, guid: 02232b0215f0c5f4a9cf196907bd4ae9, type: 2}
+  - {fileID: 11400000, guid: e6dc9e15c5c76b44dac54391173776d7, type: 2}
 --- !u!114 &1010888937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5861,6 +5880,7 @@ MonoBehaviour:
   CountBuffer: 0
   SpawnTimer: 0
   ChannelTimer: 0
+  GlobalCDtimer: 0
   AOE_buffer: []
   Abilities:
   - {fileID: 11400000, guid: 76d1a3c863e5cbe46864486982432ef2, type: 2}

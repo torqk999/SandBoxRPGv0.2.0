@@ -18,9 +18,16 @@ MonoBehaviour:
   Quality: 0
   GoldValue: 10
   Weight: 5
-  EquipSkill: 3
-  EquipLevel: 1
-  AbilityID: 0
-  EquipAbilites:
-  - {fileID: 11400000, guid: 358636cff03cd164491d5979df1c8062, type: 2}
+  EquipSchool: 0
+  ClassType: 0
+  Abilities: []
+  EquipLevel: 0
+  EquipID: 0
+  SlotIndex: 0
+  SlotFamily: []
+  HandPosition: 0
+  BaseMaterial: 0
+  HandleMaterial: 0
+  TrimMaterial: 0
+  Instantiation: {fileID: 0}
   Type: 2

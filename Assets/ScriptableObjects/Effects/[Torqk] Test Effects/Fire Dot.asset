@@ -15,16 +15,36 @@ MonoBehaviour:
   Name: Burn!
   Sprite: {fileID: 0}
   Condition: {fileID: 0}
+  Projectile: {fileID: 0}
   Impact: {fileID: 0}
-  EquipID: 0
+  ProjectileType: 0
+  PeriodLength: 0
   DurationLength: 15
-  Timer: 0
+  ProjectileLength: 0
+  EffectType: 0
+  TetherRange: 0
+  EffectIndex: 0
+  PeriodTimer: 0
+  DurationTimer: 0
+  ProjectileTimer: 0
+  Source: {fileID: 0}
+  EffectedCharacter: {fileID: 0}
   Value: 4
-  TargetStat: 0
-  ElementPack:
+  TargetStat: 1
+  BaseElementPack:
     Reflection:
       PHYSICAL: 0
-      FIRE: 0.003
+      FIRE: 0
+      WATER: 0
+      EARTH: 0
+      AIR: 0
+      POISON: 0
+      HEALING: 0
+    Elements: []
+  AmpedElementPack:
+    Reflection:
+      PHYSICAL: 0
+      FIRE: 0
       WATER: 0
       EARTH: 0
       AIR: 0
