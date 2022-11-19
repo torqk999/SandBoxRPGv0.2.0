@@ -40,8 +40,8 @@ public class InventoryButton : DraggableButton
     
     public override void OnPointerDown(PointerEventData eventData)
     {
-        base.OnPointerDown(eventData);
         UIMan.CharacterPageSelection(this);
+        base.OnPointerDown(eventData);
     }
     public override void OnPointerUp(PointerEventData eventData)
     {

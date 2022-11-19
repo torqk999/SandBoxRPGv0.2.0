@@ -12,12 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3490a226c815f34ebb8907035947f6b, type: 3}
   m_Name: HumanNPC
   m_EditorClassIdentifier: 
+  GameState: {fileID: 0}
+  ID: 0
   Name: Bob
-  Level: 0
-  Portrait: {fileID: 21300000, guid: 1e04016e24ed88542878ce8d17ce8747, type: 3}
+  Flavour: '"The most basic bob"'
+  sprite: {fileID: 21300000, guid: 1e04016e24ed88542878ce8d17ce8747, type: 3}
+  RootLogic:
+    Options:
+      ClassID: 
+      IsClone: 0
+      ID: 0
+      Quantity: 0
+    Original: {fileID: 0}
+    Clones: []
+  Button: {fileID: 0}
+  Posession: {fileID: 0}
+  CharacterLevel: 0
+  CurrentEXP: 0
+  NextLevelEXP: 0
   Race: 0
   Faction: 1
-  CurrentEXP:
+  CurrentSkillEXP:
+    Reflection:
+      BERZERKER: 0
+      WARRIOR: 0
+      MONK: 0
+      RANGER: 0
+      ROGUE: 0
+      PYROMANCER: 0
+      GEOMANCER: 0
+      NECROMANCER: 0
+      AEROTHURGE: 0
+      HYDROSOPHIST: 0
     Experience:
     - 0
     - 0
@@ -28,7 +54,19 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  NextLevelEXP:
+    - 0
+  NextLevelSkillEXP:
+    Reflection:
+      BERZERKER: 0
+      WARRIOR: 0
+      MONK: 0
+      RANGER: 0
+      ROGUE: 0
+      PYROMANCER: 0
+      GEOMANCER: 0
+      NECROMANCER: 0
+      AEROTHURGE: 0
+      HYDROSOPHIST: 0
     Experience:
     - 0
     - 0
@@ -39,5 +77,7 @@ MonoBehaviour:
     - 0
     - 0
     - 0
-  Skills:
-    Levels: 000000000000000000000000000000000000000000000000000000000000000000000000
+    - 0
+  SkillsLevels:
+    Levels: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  InnateAbilities: []

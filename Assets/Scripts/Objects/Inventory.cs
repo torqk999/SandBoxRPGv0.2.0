@@ -58,6 +58,7 @@ public class Inventory
 
         ButtonOptions buttonOptions = new ButtonOptions(Panel.Occupants, Panel.OccupantContent, Items[index], index, Panel.Places[index]);
 
+        buttonOptions.Root = Items[index];
         buttonOptions.Type = ButtonType.DRAG;
         buttonOptions.Folder = Panel.Occupants;
         buttonOptions.Home = Panel.OccupantContent;
@@ -73,10 +74,10 @@ public class Inventory
         Panel = PanelObject.GetComponent<UI_SlotPanel>();
         Panel.Resize(count);
 
-        Debug.Log
+        /*Debug.Log
             ($"placeHolders: {Panel.PlaceContent != null}\n" +
              $"occupants: {Panel.OccupantContent != null}\n" +
-             $"content: {Panel.MainContent != null}");
+             $"content: {Panel.MainContent != null}");*/
 
         options.Type = ButtonType.DRAG;
         options.Folder = Panel.Places;

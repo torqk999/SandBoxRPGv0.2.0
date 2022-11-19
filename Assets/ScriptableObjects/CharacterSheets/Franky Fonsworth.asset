@@ -12,37 +12,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3490a226c815f34ebb8907035947f6b, type: 3}
   m_Name: Franky Fonsworth
   m_EditorClassIdentifier: 
+  GameState: {fileID: 0}
+  ID: 0
   Name: Franky Fonsworth
-  Portrait: {fileID: 21300000, guid: 8288ea5d26567e046ac88ffa29b10fa0, type: 3}
-  CurrentEXP:
-    LIGHT: 0
-    MEDIUM: 0
-    HEAVY: 0
-    ONE_HAND: 0
-    TWO_HAND: 0
-    SHIELD: 0
-    RANGED: 0
-    MAGIC: 0
-    LEVEL: 0
-  NextLevelEXP:
-    LIGHT: 0
-    MEDIUM: 0
-    HEAVY: 0
-    ONE_HAND: 0
-    TWO_HAND: 0
-    SHIELD: 0
-    RANGED: 0
-    MAGIC: 0
-    LEVEL: 0
-  Level:
-    LIGHT: 0
-    MEDIUM: 0
-    HEAVY: 0
-    ONE_HAND: 0
-    TWO_HAND: 0
-    SHIELD: 0
-    RANGED: 0
-    MAGIC: 0
-    CHARACTER: 3
+  Flavour: '"The first hombre"'
+  sprite: {fileID: 21300000, guid: 8288ea5d26567e046ac88ffa29b10fa0, type: 3}
+  RootLogic:
+    Options:
+      ClassID: 
+      IsClone: 0
+      ID: 0
+      Quantity: 0
+    Original: {fileID: 0}
+    Clones: []
+  Button: {fileID: 0}
+  Posession: {fileID: 0}
+  CharacterLevel: 0
+  CurrentEXP: 0
+  NextLevelEXP: 0
   Race: 0
   Faction: 0
+  CurrentSkillEXP:
+    Reflection:
+      BERZERKER: 0
+      WARRIOR: 0
+      MONK: 0
+      RANGER: 0
+      ROGUE: 0
+      PYROMANCER: 0
+      GEOMANCER: 0
+      NECROMANCER: 0
+      AEROTHURGE: 0
+      HYDROSOPHIST: 0
+    Experience:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  NextLevelSkillEXP:
+    Reflection:
+      BERZERKER: 0
+      WARRIOR: 0
+      MONK: 0
+      RANGER: 0
+      ROGUE: 0
+      PYROMANCER: 0
+      GEOMANCER: 0
+      NECROMANCER: 0
+      AEROTHURGE: 0
+      HYDROSOPHIST: 0
+    Experience:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+  SkillsLevels:
+    Levels: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+  InnateAbilities: []

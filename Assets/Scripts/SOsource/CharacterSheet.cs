@@ -51,6 +51,8 @@ public class CharacterSheet : RootScriptObject
 
     public override void Copy(RootScriptObject source, RootOptions options)
     {
+        base.Copy(source, options);
+
         if (!(source is CharacterSheet))
             return;
         CharacterSheet sheet = (CharacterSheet)source;

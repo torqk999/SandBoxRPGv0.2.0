@@ -16,6 +16,7 @@ public class UIToolTip : MonoBehaviour
 
     public bool Active;
     public Vector2 offset;
+    public Vector2 CurrentMousePos;
 
     public bool UpdateText(StringBuilder title, StringBuilder stats = null, StringBuilder flavour = null)
     {
@@ -78,8 +79,8 @@ public class UIToolTip : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 mousePos = (Vector2)Input.mousePosition;
-        FollowMouse(mousePos);
-        Offset(mousePos);
+        CurrentMousePos = (Vector2)Input.mousePosition;
+        FollowMouse(CurrentMousePos);
+        Offset(CurrentMousePos);
     }
 }

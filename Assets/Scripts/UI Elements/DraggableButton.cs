@@ -108,10 +108,10 @@ public class DraggableButton : SelectableButton
         {
             Place = ButtonTarget;
         }
-        Debug.Log($"Place Stuff:\n" +
+        /*Debug.Log($"Place Stuff:\n" +
             $"anchoredPositiion: {Place.MyRect.anchoredPosition}\n" +
             $"localPosition: {Place.MyRect.localPosition}\n" +
-            $"position: {MyRect.position}");
+            $"position: {MyRect.position}");*/
 
         MyRect.anchoredPosition = Place.MyRect.anchoredPosition;
     }

@@ -204,7 +204,6 @@ public class UIManager : MonoBehaviour
         inventoryButton.Place = options.PlaceHolder;
         return inventoryButton;
     }
-
     void SetupSelectableButtonOptions(SelectableButton button, ButtonOptions options)
     {
         button.Init();

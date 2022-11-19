@@ -62,6 +62,8 @@ public class SelectableButton : TippedButton
 
         if (Root.sprite != null)
         {
+            Debug.Log($"sprite name: {Root.sprite.name}");
+
             MyImage.sprite = Root.sprite;
 
             SpriteState ss = new SpriteState();

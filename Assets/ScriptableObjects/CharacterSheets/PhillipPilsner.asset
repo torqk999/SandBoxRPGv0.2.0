@@ -12,9 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3490a226c815f34ebb8907035947f6b, type: 3}
   m_Name: PhillipPilsner
   m_EditorClassIdentifier: 
-  Portrait: {fileID: 21300000, guid: 74c0d4a718504ad4ca63680ace2a315d, type: 3}
+  GameState: {fileID: 0}
+  ID: 0
   Name: Philip Pilsner
-  Level: 3
+  Flavour: '"The Genuine Article"'
+  sprite: {fileID: 21300000, guid: 74c0d4a718504ad4ca63680ace2a315d, type: 3}
+  RootLogic:
+    Options:
+      ClassID: 
+      IsClone: 0
+      ID: 0
+      Quantity: 0
+    Original: {fileID: 0}
+    Clones: []
+  Button: {fileID: 0}
+  Posession: {fileID: 0}
+  CharacterLevel: 0
   CurrentEXP: 0
   NextLevelEXP: 0
   Race: 0
@@ -31,7 +44,17 @@ MonoBehaviour:
       NECROMANCER: 0
       AEROTHURGE: 0
       HYDROSOPHIST: 0
-    Experience: []
+    Experience:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
   NextLevelSkillEXP:
     Reflection:
       BERZERKER: 0
@@ -44,7 +67,17 @@ MonoBehaviour:
       NECROMANCER: 0
       AEROTHURGE: 0
       HYDROSOPHIST: 0
-    Experience: []
+    Experience:
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
   SkillsLevels:
-    Levels: 
+    Levels: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
   InnateAbilities: []

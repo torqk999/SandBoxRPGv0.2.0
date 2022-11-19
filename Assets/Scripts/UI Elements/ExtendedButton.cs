@@ -133,7 +133,7 @@ public class ExtendedButton : Button
         try { CD_Bar = MyRect.transform.GetChild(1).GetComponent<Slider>(); }
         catch
         {
-            Debug.Log($"Cooldown Slider failed to be found!");
+            //Debug.Log($"Cooldown Slider failed to be found!");
         }
     }
 

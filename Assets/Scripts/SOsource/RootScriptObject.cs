@@ -33,7 +33,7 @@ public class RootScriptObject : ScriptableObject
     {
         options.ClassID = options.ClassID == string.Empty ? "RootScriptObject" : options.ClassID;
 
-        Debug.Log($"Generating Root Object: {options.ClassID}");
+        //Debug.Log($"Generating Root Object: {options.ClassID}");
 
         RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.ClassID);
         newRootObject.GameState = GameState;

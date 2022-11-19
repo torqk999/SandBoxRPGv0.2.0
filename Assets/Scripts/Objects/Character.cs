@@ -65,7 +65,7 @@ public class Character : Pawn, Interaction
     public Character CurrentTargetCharacter;
     public CharacterAbility CurrentAction;
     public Inventory Inventory;
-    public GameObject CharacterCanvas;
+    //public GameObject CharacterCanvas;
 
     [Header("Slots")]
     public CharacterAbility[] AbilitySlots;
