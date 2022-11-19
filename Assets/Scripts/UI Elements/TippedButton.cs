@@ -46,9 +46,9 @@ public class TippedButton : ExtendedButton
         Stats.Clear();
         Flavour.Clear();
     }
-    public override void Init()
+    public override void Init(ButtonOptions options, RootScriptObject root = null)
     {
-        base.Init();
+        base.Init(options, root);
         Title = new StringBuilder();
         Stats = new StringBuilder();
         Flavour = new StringBuilder();

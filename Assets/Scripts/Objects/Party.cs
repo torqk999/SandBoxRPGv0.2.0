@@ -14,10 +14,20 @@ public class Party : MonoBehaviour
 
     public void SetupParty(GameState state, Faction faction, string name = "", Formation formation = null)
     {
+        if (state == null)
+        {
+            Debug.Log("SetupParty failed!");
+            return;
+        }
+
         Faction = faction;
         Name = name == "" ? Faction.ToString() : name;
         Members = new List<Character>();
         Foes = new List<Character>();
-        PartyLoot = new Inventory(state, $"LootBag: {Name}");
+        GameObject lootObject = state.UIman.GenerateInventoryPanel($"LootBag: {Name}");
+        PartyLoot = lootObject.AddComponent<Inventory>();
+        PartyLoot.SetupInventory(state, CharacterMath.PARTY_INVENTORY_MAX, Name);
+
+         //= new Inventory(state, $"LootBag: {Name}");
     }
 }

@@ -196,7 +196,7 @@ public class CharacterManager : MonoBehaviour
             spawnPointFolder.GetChild(i).gameObject.SetActive(false);
         }
 
-        cloneParty.PartyLoot.PanelObject.SetActive(false); // <<-- Temporary hack
+        cloneParty.PartyLoot.gameObject.SetActive(false); // <<-- Temporary hack
         Parties.Add(cloneParty);
         return true;
     }

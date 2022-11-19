@@ -13,13 +13,15 @@ public class ItemObject : RootScriptObject
 
     [Header("Item Logic")]
     public int SlotIndex;
-    public Equipment[] SlotFamily;
+    public ItemObject[] SlotFamily;
 
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {
-        options.Type = ButtonType.DRAG;
+        options.ButtonType = ButtonType.DRAG;
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
-        return buttonObject.AddComponent<InventoryButton>();
+        InventoryButton myButton = buttonObject.AddComponent<InventoryButton>();
+        myButton.Init(options, this);
+        return myButton;
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {

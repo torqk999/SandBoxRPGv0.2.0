@@ -15,9 +15,11 @@ public class Equipment : ItemObject
 
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {
-        options.Type = ButtonType.DRAG;
+        options.ButtonType = ButtonType.DRAG;
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
-        return buttonObject.AddComponent<EquipmentButton>();
+        EquipmentButton myButton = buttonObject.AddComponent<EquipmentButton>();
+        myButton.Init(options, this);
+        return myButton;
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
@@ -59,7 +61,7 @@ public class Equipment : ItemObject
                 Abilities[i] = source.Abilities[i].GenerateAbility(options);
             }
             else
-                Debug.Log($"Ability missing from id#{ID}:{Name}");
+                Debug.Log($"Ability missing from id#{RootLogic.Options.ID}:{Name}");
         }
     }
     public virtual bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)

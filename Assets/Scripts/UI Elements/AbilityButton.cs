@@ -21,9 +21,9 @@ public class AbilityButtonEditor : Editor
 public class AbilityButton : SelectableButton
 {
 
-    public override void Init()
+    public override void Init(ButtonOptions options, RootScriptObject root = null)
     {
-        base.Init();
+        base.Init(options, root);
     }
     protected override void Start()
     {

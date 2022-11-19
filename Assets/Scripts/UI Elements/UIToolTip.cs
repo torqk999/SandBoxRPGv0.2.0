@@ -36,6 +36,7 @@ public class UIToolTip : MonoBehaviour
         else
             Flavour.text = string.Empty;
 
+        //Canvas.ForceUpdateCanvases();
         return true;
     }
 
@@ -57,6 +58,8 @@ public class UIToolTip : MonoBehaviour
         }
 
         MyRect.position = mousePos + offset;
+
+        Canvas.ForceUpdateCanvases();
     }
 
     void Offset(Vector2 mousePos)

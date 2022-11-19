@@ -3349,7 +3349,7 @@ MonoBehaviour:
   CharSheet: {fileID: 967329283}
   Container: {fileID: 698293321}
   Strategy: {fileID: 342570671}
-  Equipment: {fileID: 502628669}
+  EquipmentPanel: {fileID: 502628669}
   Inventory: {fileID: 1649320554}
   Skills: {fileID: 1441937447}
   PauseMenuCanvas: {fileID: 1510554439}
@@ -3358,16 +3358,8 @@ MonoBehaviour:
   KeyMapContent: {fileID: 1618563412}
   KeyMapSample: {fileID: 69519250}
   CurrentRemap: {fileID: 0}
-  CurrentlyViewedInventory:
-    GameState: {fileID: 0}
-    PanelObject: {fileID: 0}
-    Panel: {fileID: 0}
-    Items: []
-  CurrentlyViewedContainer:
-    GameState: {fileID: 0}
-    PanelObject: {fileID: 0}
-    Panel: {fileID: 0}
-    Items: []
+  CurrentlyViewedInventory: {fileID: 0}
+  CurrentlyViewedContainer: {fileID: 0}
   Inventories: []
   SkillListButtons: []
   EquipButtons:
@@ -3429,7 +3421,7 @@ MonoBehaviour:
   Title: {fileID: 1242161792}
   Stats: {fileID: 1531139883}
   Flavour: {fileID: 639130465}
-  Active: 1
+  Active: 0
   offset: {x: 0, y: 0}
   CurrentMousePos: {x: 0, y: 0}
 --- !u!1 &363597560
@@ -5186,7 +5178,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 50, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 68, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &541777576
@@ -5634,10 +5626,9 @@ MonoBehaviour:
   OldPosButton: {x: 0, y: 0}
   NewPosButton: {x: 0, y: 0}
   Offset: {x: 0, y: 0}
-  ButtonBounds: {x: 15, y: 15}
   Buffer: {x: 0, y: 0}
   Following: 0
-  Place: {fileID: 0}
+  PlaceHolder: {fileID: 0}
   ButtonTarget: {fileID: 0}
   MyRayCaster: {fileID: 0}
 --- !u!1 &592304767
@@ -16449,6 +16440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1837610073}
   - component: {fileID: 1837610076}
+  - component: {fileID: 1837610077}
   - component: {fileID: 1837610074}
   m_Layer: 0
   m_Name: INV_Mask
@@ -16509,6 +16501,21 @@ MonoBehaviour:
   Places: []
   PlaceContent: {fileID: 898997867}
   MainContent: {fileID: 49260452}
+--- !u!114 &1837610077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1837610072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c09e684794fd814e9a859ee1684b33c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GameState: {fileID: 0}
+  Panel: {fileID: 1837610076}
+  Items: []
 --- !u!1 &1848762253
 GameObject:
   m_ObjectHideFlags: 0

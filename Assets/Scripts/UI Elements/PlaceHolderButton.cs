@@ -29,6 +29,7 @@ public enum PlaceHolderType
 public class PlaceHolderButton : SelectableButton
 {
     [Header("PlaceHolder")]
+    public DraggableButton[] OccupantSlots;
     public DraggableButton Occupant;
 
     public override bool Vacate(DraggableButton drag)
@@ -64,12 +65,23 @@ public class PlaceHolderButton : SelectableButton
             MyImage.sprite = Root.sprite;
     }
 
-    public override void Init()
+    public override void Init(ButtonOptions options, RootScriptObject root = null)
     {
-        base.Init();
+        base.Init(options, root);
         if (UIMan == null)
             return;
+
+        SlotFamily = (SelectableButton[])options.PlaceFolder;
         MyImage.sprite = UIMan.PlaceHolderSprite;
+
+        SpriteState ss = new SpriteState();
+
+        ss.highlightedSprite = MyImage.sprite;
+        ss.selectedSprite = MyImage.sprite;
+        ss.pressedSprite = MyImage.sprite;
+        ss.disabledSprite = MyImage.sprite;
+
+        spriteState = ss;
     }
     // Start is called before the first frame update
     protected override void Start()

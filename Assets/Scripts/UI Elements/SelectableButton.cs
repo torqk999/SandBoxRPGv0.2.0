@@ -33,7 +33,7 @@ public class SelectableButton : TippedButton
     public Color HoverColor;
     public Color SelectionColor;
 
-    public PlaceHolderType ReturnPlaceHolder(DraggableButton source)
+    /*public PlaceHolderType ReturnPlaceHolder(DraggableButton source)
     {
         switch (source)
         {
@@ -47,46 +47,17 @@ public class SelectableButton : TippedButton
                 return PlaceHolderType.SKILL;
         }
         return default;
-    }
+    }*/
     public virtual bool Vacate(DraggableButton drag)
     {
         return true;
     }
-    public override void Assign(RootScriptObject root)
-    {
-        base.Assign(root);
-        Root = root;
-
-        if (Root == null)
-            return;
-
-        if (Root.sprite != null)
-        {
-            Debug.Log($"sprite name: {Root.sprite.name}");
-
-            MyImage.sprite = Root.sprite;
-
-            SpriteState ss = new SpriteState();
-
-            ss.highlightedSprite = Root.sprite;
-            ss.selectedSprite = Root.sprite;
-            ss.pressedSprite = Root.sprite;
-            ss.disabledSprite = Root.sprite;
-
-            spriteState = ss;
-        }
-
-        Title.Append(Root.Name);
-        Stats.Append("===Stats===\n");
-        Flavour.Append(Root.Flavour);
-
-        //ButtonText.text = (root is Stackable) ? ((Stackable)root).CurrentQuantity.ToString() : string.Empty;
-    }
+    
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
         Selected = true;
-        MyImage.color = SelectionColor;
+        //MyImage.color = SelectionColor;
     }
     public override void OnPointerEnter(PointerEventData eventData)
     {
@@ -101,12 +72,44 @@ public class SelectableButton : TippedButton
     public void UnSelect()
     {
         Selected = false;
-        MyImage.color = DefaultColor;
+        //MyImage.color = DefaultColor;
     }
-
-    public override void Init()
+    public override void Init(ButtonOptions options, RootScriptObject root = null)
     {
-        base.Init();
+        base.Init(options, root);
+        PlaceType = options.PlaceType;
+        SlotIndex = options.Index;
+
+        if (SlotFamily != null)
+            SlotFamily[SlotIndex] = this;
+
+        transform.SetParent(options.Home);
+        transform.localScale = Vector3.one;
+
+        Root = root;
+
+        if (Root != null)
+        {
+            if (Root.sprite != null)
+            {
+                //Debug.Log($"sprite name: {Root.sprite.name}");
+
+                MyImage.sprite = Root.sprite;
+
+                SpriteState ss = new SpriteState();
+
+                ss.highlightedSprite = MyImage.sprite;
+                ss.selectedSprite = MyImage.sprite;
+                ss.pressedSprite = MyImage.sprite;
+                ss.disabledSprite = MyImage.sprite;
+
+                spriteState = ss;
+            }
+
+            Title.Append(Root.Name);
+            Stats.Append("===Stats===\n");
+            Flavour.Append(Root.Flavour);
+        }
 
     }
 

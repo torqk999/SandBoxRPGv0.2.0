@@ -687,6 +687,7 @@ public struct RootLogic
     public RootOptions Options;
     public RootScriptObject Original;
     public List<RootScriptObject> Clones;
+    public DraggableButton Button;
 
     public void Copy(RootOptions options, RootScriptObject source = null)
     {
@@ -723,7 +724,7 @@ public struct RootOptions
 
     public RootOptions(RootScriptObject source, int quantity = 1)
     {
-        ID = source.ID;
+        ID = source.RootLogic.Options.ID;
         ClassID = source.name;
         Quantity = quantity;
         IsClone = true;

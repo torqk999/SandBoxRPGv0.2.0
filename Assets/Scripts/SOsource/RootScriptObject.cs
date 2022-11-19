@@ -6,17 +6,17 @@ public class RootScriptObject : ScriptableObject
 {
     [Header("Root Properties")]
     public GameState GameState;
-    public int ID;
+    //public int ID;
     public string Name;
     public string Flavour;
     public Sprite sprite;
 
     [Header("Root Logic - NO TOUCHY!")]
     public RootLogic RootLogic;
-    public DraggableButton Button;
+    
     public virtual void Copy(RootScriptObject source, RootOptions options)
     {
-        ID = options.ID;
+        RootLogic.Options = options;
 
         Name = source.Name;
         Flavour = source.Flavour;
@@ -25,9 +25,11 @@ public class RootScriptObject : ScriptableObject
 
     public virtual DraggableButton GenerateMyButton(ButtonOptions options)
     {
-        options.Type = ButtonType.DEFAULT; // test point, shouldn't proc
+        options.ButtonType = ButtonType.DEFAULT; // test point, shouldn't proc
         GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
-        return buttonObject.GetComponent<DraggableButton>();
+        DraggableButton myButton = buttonObject.GetComponent<DraggableButton>();
+        myButton.Init(options, this);
+        return myButton;
     }
     public virtual RootScriptObject GenerateRootObject(RootOptions options)
     {

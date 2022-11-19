@@ -23,6 +23,7 @@ public enum ButtonType
 {
     DEFAULT,
     DRAG,
+    PLACE,  // implement later...
     //EQUIP,
     //INVENTORY,
     //LIST_SKILL,
@@ -36,21 +37,52 @@ public enum ButtonType
 public struct ButtonOptions
 {
     //public string ClassID;
-    public ButtonType Type;
+    public ButtonType ButtonType;
+    public PlaceHolderType PlaceType;
     public int Index;
     public RootScriptObject Root;
-    public Transform Home;
-    public ExtendedButton[] Folder;
+    public RectTransform Home;
+    public ExtendedButton[] OccupantFolder;
+    public ExtendedButton[] PlaceFolder;
     public PlaceHolderButton PlaceHolder;
 
-    public ButtonOptions(ExtendedButton[] folder, Transform home = null, RootScriptObject root = null, int index = 0, PlaceHolderButton placeHolder = null)
+    /// <summary>
+    /// For building a new root directly into the target folder
+    /// </summary>
+    /// <param name="occupantFolder"> Where the root buttons go </param>
+    /// <param name="root"> The root object that is tied to this button </param>
+    /// <param name="placeHolder"> The current placeHolder button tied to this button  </param>
+    /// <param name="home"> The parent transform of the button </param>
+    /// <param name="index"> The index of this button and it's placeHolder </param>
+    public ButtonOptions(ExtendedButton[] occupantFolder, RootScriptObject root = null, PlaceHolderButton placeHolder = null, RectTransform home = null, int index = 0)
     {
         Index = index;
-        Type = default;
+        PlaceType = default;
+        ButtonType = default;
         Root = root;
         Home = home;
-        Folder = folder;
+        OccupantFolder = occupantFolder;
+        PlaceFolder = null;
         PlaceHolder = placeHolder;
+    }
+
+    /// <summary>
+    /// For build a new placeHolder directly into the target folder
+    /// </summary>
+    /// <param name="placeFolder"> Where the placeHolder buttons go </param>
+    /// <param name="occupantFolder"> Where the root buttons go </param>
+    /// <param name="home"> The parent transform of the button </param>
+    /// <param name="index"> The index of this button and it's occupant </param>
+    public ButtonOptions(ExtendedButton[] placeFolder , ExtendedButton[] occupantFolder , RectTransform home = null, int index = 0) // Place Holder
+    {
+        Index = index;
+        PlaceType = default;
+        ButtonType = default;
+        Root = null;
+        Home = home;
+        OccupantFolder = occupantFolder;
+        PlaceFolder = placeFolder;
+        PlaceHolder = null;
     }
 }
 
@@ -121,13 +153,12 @@ public class ExtendedButton : Button
         return false;
     }
 
-    public virtual void Init()
+    public virtual void Init(ButtonOptions options, RootScriptObject root = null)
     {
         GetUIMan();
         gameObject.tag = GlobalConstants.TAG_BUTTON;
         MyRect = gameObject.GetComponent<RectTransform>();
         MyImage = gameObject.GetComponent<Image>();
-
         try { ButtonText = MyRect.transform.GetChild(0).GetComponent<Text>(); }
         catch { Debug.Log($"Button Text failed to be found!"); }
         try { CD_Bar = MyRect.transform.GetChild(1).GetComponent<Slider>(); }
