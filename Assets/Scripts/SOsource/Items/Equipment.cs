@@ -13,6 +13,25 @@ public class Equipment : ItemObject
     public int EquipLevel;
     public Character EquippedTo;
 
+    public WearSlot GetMySlot()
+    {
+        switch(this)
+        {
+            case OneHand:
+                return WearSlot.MAIN;
+
+            case Shield:
+            case OffHand:
+                return WearSlot.OFF;
+
+            case Ring:
+                return WearSlot.RING;
+
+            case Wearable:
+                return ((Wearable)this).WearSlot;
+        }
+        return default;
+    }
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {
         options.ButtonType = ButtonType.DRAG;
@@ -65,36 +84,21 @@ public class Equipment : ItemObject
                 Debug.Log($"Ability missing from id#{RootLogic.Options.ID}:{Name}");
         }
     }
-    public virtual bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
+
+    public virtual bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        if (character == null ||
-            slotBin == null ||
-            slotIndex == -1)
-            return false;
-
-        if (character.Inventory == null ||
-            inventorySlot < 0 ||
-            inventorySlot >= character.Slots.Equips.Roots.Length)
-            return false;
-
-        EquippedTo = character;
-        SlotPanel = character.Slots.Equips;
-        SlotIndex = slotIndex;
-        SlotPanel.Roots[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
-
-        if (character.Abilities == null)
-            return false;
+        UpdateCharacterRender(character);
 
         foreach (CharacterAbility ability in Abilities)
             ability.EquipAbility(character, this);
 
         return true;
     }
-    public virtual bool UnEquipFromCharacter(Character character)
+    public virtual bool UnEquipFromCharacter()
     {
-        if (SlotPanel == null ||
+        if (SlotPage == null ||
             SlotIndex < 0 ||
-            SlotIndex >= SlotPanel.Occupants.Length)
+            SlotIndex >= SlotPage.Occupants.Length)
         {
             Debug.Log("Not equipped!");
             return false;
@@ -127,13 +131,13 @@ public class Equipment : ItemObject
                         Destroy(spawnedEffect);
                 }
             
-            effectAbility.Logic.SourceCharacter.Abilities.Remove(effectAbility);
+            effectAbility.Logic.SourceCharacter.Slots.Skill.Places.Remove(effectAbility.RootLogic.Button);
             effectAbility.Logic.SourceCharacter.UpdateAbilites();
             effectAbility.Logic.SourceCharacter = null;
         }
 
-        SlotPanel.Occupants[SlotIndex] = null;
-        SlotPanel = null;
+        SlotPage.Occupants[SlotIndex] = null;
+        SlotPage = null;
 
         EquippedTo = null;
         UpdateCharacterRender(character, false);

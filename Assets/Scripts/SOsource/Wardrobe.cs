@@ -23,17 +23,17 @@ public class Wardrobe : ScriptableObject
     [Header("Rings")]
     public Ring Slot1;
     public Ring Slot2;
-
+    /*
     public int CloneAndEquipWardrobe(Character character,ref int equipId)
     {
-        AttemptCloneAndEquipWear(character, Head, EquipSlot.HEAD, ref equipId);
-        AttemptCloneAndEquipWear(character, Neck, EquipSlot.NECK, ref equipId);
-        AttemptCloneAndEquipWear(character, Pauldrons, EquipSlot.PAULDRON, ref equipId);
-        AttemptCloneAndEquipWear(character, Chest, EquipSlot.CHEST, ref equipId);
-        AttemptCloneAndEquipWear(character, Gloves, EquipSlot.GLOVES, ref equipId);
-        AttemptCloneAndEquipWear(character, Belt, EquipSlot.BELT, ref equipId);
-        AttemptCloneAndEquipWear(character, Legs, EquipSlot.LEGS, ref equipId);
-        AttemptCloneAndEquipWear(character, Boots, EquipSlot.BOOTS, ref equipId);
+        AttemptCloneAndEquipWear(character, Head, WearSlot.HEAD, ref equipId);
+        AttemptCloneAndEquipWear(character, Neck, WearSlot.NECK, ref equipId);
+        AttemptCloneAndEquipWear(character, Pauldrons, WearSlot.PAULDRON, ref equipId);
+        AttemptCloneAndEquipWear(character, Chest, WearSlot.CHEST, ref equipId);
+        AttemptCloneAndEquipWear(character, Gloves, WearSlot.GLOVES, ref equipId);
+        AttemptCloneAndEquipWear(character, Belt, WearSlot.BELT, ref equipId);
+        AttemptCloneAndEquipWear(character, Legs, WearSlot.LEGS, ref equipId);
+        AttemptCloneAndEquipWear(character, Boots, WearSlot.BOOTS, ref equipId);
 
         AttemptCloneAndEquipRing(character, Slot1, 0, ref equipId);
         AttemptCloneAndEquipRing(character, Slot2, 1, ref equipId);
@@ -67,32 +67,32 @@ public class Wardrobe : ScriptableObject
         {
             case OneHand:
                 OneHand newMain = (OneHand)hand.GenerateRootObject(options);
-                character.EquipmentSlots[(int)EquipSlot.MAIN] = newMain;
+                character.EquipmentSlots[(int)WearSlot.MAIN] = newMain;
                 equipId++;
                 return true;
 
             case OffHand:
                 OffHand newOff = (OffHand)hand.GenerateRootObject(options);
-                character.EquipmentSlots[(int)EquipSlot.OFF] = newOff;
+                character.EquipmentSlots[(int)WearSlot.OFF] = newOff;
                 equipId++;
                 return true;
 
             case TwoHand:
                 TwoHand newTwo = (TwoHand)hand.GenerateRootObject(options);
-                character.EquipmentSlots[(int)EquipSlot.MAIN] = newTwo;
-                character.EquipmentSlots[(int)EquipSlot.OFF] = newTwo;
+                character.EquipmentSlots[(int)WearSlot.MAIN] = newTwo;
+                character.EquipmentSlots[(int)WearSlot.OFF] = newTwo;
                 equipId++;
                 return true;
 
             case Shield:
                 Shield newShield = (Shield)hand.GenerateRootObject(options);
-                character.EquipmentSlots[(int)EquipSlot.OFF] = newShield;
+                character.EquipmentSlots[(int)WearSlot.OFF] = newShield;
                 equipId++;
                 return true;
         }
         return false;
     }
-    void AttemptCloneAndEquipWear(Character character, Wearable wear, EquipSlot slot, ref int equipId)
+    void AttemptCloneAndEquipWear(Character character, Wearable wear, WearSlot slot, ref int equipId)
     {
         Wearable newWear = AttemptCloneWear(wear, slot, equipId);
         if (newWear != null)
@@ -101,13 +101,14 @@ public class Wardrobe : ScriptableObject
             equipId++;
         }
     }
-    Wearable AttemptCloneWear(Wearable wearSource, EquipSlot slot, int equipId)
+    Wearable AttemptCloneWear(Wearable wearSource, WearSlot slot, int equipId)
     {
-        if (wearSource != null && wearSource.EquipSlot == slot)
+        if (wearSource != null && wearSource.WearSlot == slot)
         {
             RootOptions options = new RootOptions(ref equipId);
             return (Wearable)wearSource.GenerateRootObject(options);
         }   
         return null;
     }
+    */
 }

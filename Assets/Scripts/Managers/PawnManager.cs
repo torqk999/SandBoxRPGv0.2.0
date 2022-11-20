@@ -144,33 +144,6 @@ public class PawnManager : MonoBehaviour
     }
     #endregion
 
-    #region EXPERIMENTAL
-
-    void AutoEquipAbilities(Character character)
-    {
-        int index = 0;
-        foreach (ProcAbility ability in character.Abilities)
-        {
-            character.Slots.Abilities.Roots[index] = ability;
-            index++;
-            if (index >= CharacterMath.HOT_BAR_SLOTS)
-                return;
-        }
-    }
-    GameObject AttatchCharacterBillboard(Transform containerTransform)
-    {
-        GameObject output = null;
-
-        if (CharacterCanvasPrefab == null || containerTransform == null)
-            return output;
-
-        output = Instantiate(CharacterCanvasPrefab, containerTransform);
-
-        return output;
-    }
-
-    #endregion
-
     // Start is called before the first frame update
     void Start()
     {

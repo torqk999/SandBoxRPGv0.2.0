@@ -9,7 +9,8 @@ public class CharacterSlots : MonoBehaviour
     public SlotPage Inventory;
     public SlotPage Equips;
     public SlotPage Rings;
-    public SlotPage Abilities;
+    public SlotPage HotBar;
+    public ListPanel Skill;
 
     public CharacterSlots(GameState state, GameObject invPrefab, GameObject equipPrefab, GameObject ringPrefab, GameObject abPrefab)
     {
@@ -19,6 +20,8 @@ public class CharacterSlots : MonoBehaviour
         //Rings = new SlotPage(CharacterMath.EQUIP_SLOTS_COUNT, parentContent, occupantContent);
         //Abilities = new SlotPage(CharacterMath.EQUIP_SLOTS_COUNT, parentContent, occupantContent);
     }
+
+    
 
     void Start()
     {

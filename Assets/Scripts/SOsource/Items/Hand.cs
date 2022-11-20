@@ -5,6 +5,7 @@ using UnityEngine;
 public class Hand : Equipment
 {
     [Header("Hand Properties")]
+    //public HandSlot HandSlot;
     public HandPosition HandPosition;
     public MaterialType BaseMaterial;
     public MaterialType HandleMaterial;
@@ -48,12 +49,9 @@ public class Hand : Equipment
         return true;
     }
 
-    /*public override bool EquipCharacter(Character character, int inventorySlot, int destinationIndex = 0)
+    public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        if (!base.EquipCharacter(character, inventorySlot))
-            return false;
-
-        return true;
-    }*/
+        return base.EquipToCharacter(character, slotIndex);
+    }
 
 }

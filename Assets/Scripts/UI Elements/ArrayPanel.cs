@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class SlotPanel
+public class ArrayPanel : SlotPanel
 {
     public SelectableButton[] Places;
-    public RectTransform PlaceContent;
 
-    public SlotPanel(int size, RectTransform content)
+    public ArrayPanel(int size, RectTransform content)
     {
         Resize(size);
         PlaceContent = content;
     }
-    public void Resize(int size)
+    public override void Resize(int size)
     {
         Places = new SelectableButton[size];
     }

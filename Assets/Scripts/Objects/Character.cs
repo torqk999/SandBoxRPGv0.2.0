@@ -11,7 +11,7 @@ public enum AnimatorType
     BIRD,
     FISH
 }
-public enum EquipSlot
+public enum WearSlot
 {
     HEAD,
     NECK,
@@ -19,10 +19,15 @@ public enum EquipSlot
     CHEST,
     BELT,
     GLOVES,
-    MAIN,
-    OFF,
     LEGS,
     BOOTS,
+}
+
+public enum HandSlot
+{
+    MAIN,
+    OFF,
+    RING,
 }
 
 public class Character : Pawn, Interaction
@@ -59,14 +64,11 @@ public class Character : Pawn, Interaction
     [Header("References")]
     public CharacterSlots Slots;
     public List<Character> AOE_buffer;
-    public List<CharacterAbility> Abilities;
     public List<BaseEffect> Risiduals;
     public Party CurrentParty;
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
     public CharacterAbility CurrentAction;
-    public Inventory Inventory;
-    //public GameObject CharacterCanvas;
 
     [Header("Interaction")]
     public Interaction CurrentTargetInteraction;
@@ -151,9 +153,9 @@ public class Character : Pawn, Interaction
         RebuildAbilityList();
         //UpdateAbilites();
     }
-    void RebuildAbilityList()
+    /*void RebuildAbilityList()
     {
-        Abilities.Clear();
+        Slots.Abilities.Occupants.Places.Clear();
 
         if (Sheet.InnateAbilities != null)
         foreach (CharacterAbility innate in Sheet.InnateAbilities)
@@ -162,7 +164,7 @@ public class Character : Pawn, Interaction
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
         {
-            if (Slots.Equips.Roots[i] == null)
+            if (Slots.Equips.Occupants.Places[i] == null)
                 continue;
 
             for (int j = 0; j < ((Equipment)Slots.Equips.Roots[i]).Abilities.Length; j++)
@@ -177,7 +179,7 @@ public class Character : Pawn, Interaction
             for (int j = 0; j < ((Equipment)Slots.Rings.Roots[i]).Abilities.Length; j++)
                 ((Equipment)Slots.Rings.Roots[i]).Abilities[j].EquipAbility(this);
         }
-    }
+    }*/
     #endregion
 
     #region EQUIPPING
@@ -186,28 +188,25 @@ public class Character : Pawn, Interaction
         if (equipIndex != -1)
         {
             if (ringIndex)
-                return AttemptEquipRemoval((Equipment[])Slots.Equips.Roots, equipIndex);
-            return AttemptEquipRemoval((Equipment[])Slots.Rings.Roots, equipIndex);
+                return AttemptEquipRemoval((EquipmentButton[])Slots.Rings.Occupants.Places, equipIndex);
+            return AttemptEquipRemoval((EquipmentButton[])Slots.Equips.Occupants.Places, equipIndex);
         }
             
         if (inventoryIndex != -1)
         {
-            if (inventoryIndex >= Inventory.Panel.Roots.Length ||
+            if (inventoryIndex >= Slots.Inventory.Occupants.Places.Length ||
                 inventoryIndex < 0)
                 return false;
 
-            if (Inventory.Panel.Roots[inventoryIndex] == null ||
-                !(Inventory.Panel.Roots[inventoryIndex] is Equipment))
+            if (Slots.Inventory.Occupants.Places[inventoryIndex] == null ||
+                !(Slots.Inventory.Occupants.Places[inventoryIndex] is EquipmentButton))
                 return false;
         }
 
-        Equipment equip = (Equipment)Inventory.Panel.Roots[inventoryIndex];
-        if (equip is Ring)
-            return equip.EquipToCharacter(this, (Equipment[])Slots.Rings.Roots, inventoryIndex);
-
-        return equip.EquipToCharacter(this, (Equipment[])Slots.Equips.Roots, inventoryIndex);
+        Equipment equip = (Equipment)((EquipmentButton)Slots.Inventory.Occupants.Places[inventoryIndex]).Root;
+        return equip.EquipToCharacter(this);
     }
-    public bool AttemptEquipRemoval(Equipment[] slotList, int equipIndex)
+    public bool AttemptEquipRemoval(EquipmentButton[] slotList, int equipIndex)
     {
         if (slotList == null ||
             slotList.Length == 0)
@@ -328,7 +327,7 @@ public class Character : Pawn, Interaction
     }
     public bool AttemptAbility(int abilityIndex)
     {
-        CharacterAbility call = (CharacterAbility)Slots.Abilities.Roots[abilityIndex];
+        CharacterAbility call = (CharacterAbility)((SkillButton)Slots.HotBar.Occupants.Places[abilityIndex]).Root;
         if (call == null) // Am I a joke to you?
             return false;
 
@@ -479,14 +478,14 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.HOT_BAR_SLOTS - 1; i > -1; i--)
-            if (Slots.Abilities.Roots[i] != null && Abilities.Find(x => x == Slots.Abilities.Roots[i]) == null)
-                Slots.Abilities.Roots[i] = null;
+            if (Slots.HotBar.Roots[i] != null && Abilities.Find(x => x == Slots.HotBar.Roots[i]) == null)
+                Slots.HotBar.Roots[i] = null;
     }
     void UpdateAbilityCooldowns()
     {
-        for (int i = 0; i < Slots.Abilities.Roots.Length; i++)
-            if (Slots.Abilities.Roots[i] != null)
-                ((CharacterAbility)Slots.Abilities.Roots[i]).UpdateCooldowns();
+        for (int i = 0; i < Slots.HotBar.Roots.Length; i++)
+            if (Slots.HotBar.Roots[i] != null)
+                ((CharacterAbility)Slots.HotBar.Roots[i]).UpdateCooldowns();
     }
     void UpdatePassiveAbilities()
     {

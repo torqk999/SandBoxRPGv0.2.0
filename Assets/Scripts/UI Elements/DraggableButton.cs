@@ -31,9 +31,8 @@ public class DraggableButton : SelectableButton
     public bool Following;
 
     [Header("Location Meta")]
-    //public PlaceHolderButton PlaceHolder;
     public PlaceHolderButton ButtonTarget;
-    //public GameObject PanelTarget;
+    public RootScriptObject Root;
     public GraphicRaycaster MyRayCaster;
     public List<RaycastResult> HitBuffer;
 
@@ -78,9 +77,9 @@ public class DraggableButton : SelectableButton
     }
     void CheckSnapping()
     {
-        if (Panel.Places[SlotIndex] != null && !Following &&
-            MyRect.anchoredPosition != Panel.Places[SlotIndex].MyRect.anchoredPosition)
-            MyRect.anchoredPosition = Panel.Places[SlotIndex].MyRect.anchoredPosition;
+        if (SlotPage.Occupants.Places[SlotIndex] != null && !Following &&
+            MyRect.anchoredPosition != SlotPage.Occupants.Places[SlotIndex].MyRect.anchoredPosition)
+            MyRect.anchoredPosition = SlotPage.Occupants.Places[SlotIndex].MyRect.anchoredPosition;
             //SnapButton(Panel.Places[SlotIndex]);
     }
     void FollowMouse()
@@ -99,15 +98,15 @@ public class DraggableButton : SelectableButton
     }
     public override bool Vacate()
     {
-        if (Panel == null ||
-            Panel.Occupants == null ||
-            Panel.OccupantContent == null ||
+        if (SlotPage == null ||
+            SlotPage.Occupants == null ||
+            SlotPage.Occupants.Places == null ||
             SlotIndex < 0 ||
-            SlotIndex >= Panel.Occupants.Length )
+            SlotIndex >= SlotPage.Occupants.Places.Length )
             return false;
 
-        Panel.Occupants[SlotIndex] = null;
-        Panel = null;
+        SlotPage.Occupants.Places[SlotIndex] = null;
+        SlotPage = null;
         SlotIndex = -1;
 
         // Un parent? Should be re-parenting anyway...
@@ -130,9 +129,9 @@ public class DraggableButton : SelectableButton
         Vacate();
 
         return false;
-        Panel = place.Panel;
+        SlotPage = place.SlotPage;
         SlotIndex = place.SlotIndex;
-        Panel.Occupants[SlotIndex] = this;
+        SlotPage.Occupants[SlotIndex] = this;
         
         return true;
     }
@@ -155,14 +154,14 @@ public class DraggableButton : SelectableButton
         }
         if (success)
         {
-            Panel = ButtonTarget.Panel;
+            SlotPage = ButtonTarget.SlotPage;
         }
         /*Debug.Log($"Place Stuff:\n" +
             $"anchoredPositiion: {Place.MyRect.anchoredPosition}\n" +
             $"localPosition: {Place.MyRect.localPosition}\n" +
             $"position: {MyRect.position}");*/
-        MyRect.SetParent(Panel.OccupantContent);
-        MyRect.anchoredPosition = Panel.Places[SlotIndex].MyRect.anchoredPosition;
+        MyRect.SetParent(SlotPage.Occupants.PlaceContent);
+        MyRect.anchoredPosition = SlotPage.Occupants.Places[SlotIndex].MyRect.anchoredPosition;
     }
     #endregion 
 
@@ -214,12 +213,37 @@ public class DraggableButton : SelectableButton
             return;
         }
 
+        Root = root;
+
+        if (Root != null)
+        {
+            if (Root.sprite != null)
+            {
+                //Debug.Log($"sprite name: {Root.sprite.name}");
+
+                MyImage.sprite = Root.sprite;
+
+                SpriteState ss = new SpriteState();
+
+                ss.highlightedSprite = MyImage.sprite;
+                ss.selectedSprite = MyImage.sprite;
+                ss.pressedSprite = MyImage.sprite;
+                ss.disabledSprite = MyImage.sprite;
+
+                spriteState = ss;
+            }
+
+
+            Title.Append(Root.Name);
+            Stats.Append("===Stats===\n");
+            Flavour.Append(Root.Flavour);
+        }
+
         Root.RootLogic.Button = this;
 
-        if (Panel.Occupants != null)
-            Panel.Occupants[SlotIndex] = this;
+        
 
-        transform.SetParent(Panel.OccupantContent);
+        transform.SetParent(SlotPage.Occupants.PlaceContent);
         transform.localScale = Vector3.one;
 
         //SlotFamily = options.Panel.Occupants;

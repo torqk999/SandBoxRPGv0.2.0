@@ -40,19 +40,19 @@ public struct ButtonOptions
     public PlaceHolderType PlaceType;
     public int Index;
     public RootScriptObject Root;
-    public SlotPage Panel;
+    public SlotPage Page;
 
     /// <summary>
     /// For building a new root directly into the target folder
     /// </summary>
     /// <param name="root"> The root object that is tied to this button </param>
-    /// <param name="panel"> The panel component that currently houses this button </param>
+    /// <param name="page"> The page component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(RootScriptObject root , SlotPage panel, int index = 0)
+    public ButtonOptions(RootScriptObject root , SlotPage page, int index = 0)
     {
         Index = index;
         Root = root;
-        Panel = panel;
+        Page = page;
 
         PlaceType = default;
         ButtonType = default;
@@ -67,7 +67,7 @@ public struct ButtonOptions
     {
         Index = index;
         Root = null;
-        Panel = panel;
+        Page = panel;
 
         PlaceType = default;
         ButtonType = default;

@@ -21,10 +21,11 @@ public class SelectableButtonEditor : Editor
 public class SelectableButton : TippedButton
 {
     [Header("SelectableButton")]
-    public SlotPage Panel;
-    public RootScriptObject Root;
-    public bool Selected;
+    public SlotPage SlotPage;
     public int SlotIndex;
+    public bool Selected;
+    
+    //public RootScriptObject Root;
     //public Transform SlotHome;
     //public SelectableButton[] SlotFamily;
 
@@ -79,34 +80,11 @@ public class SelectableButton : TippedButton
     {
         base.Init(options, root);
 
-        Panel = options.Panel;
+        SlotPage = options.Page;
         SlotIndex = options.Index;
-        Root = root;
 
-        if (Root != null)
-        {
-            if (Root.sprite != null)
-            {
-                //Debug.Log($"sprite name: {Root.sprite.name}");
-
-                MyImage.sprite = Root.sprite;
-
-                SpriteState ss = new SpriteState();
-
-                ss.highlightedSprite = MyImage.sprite;
-                ss.selectedSprite = MyImage.sprite;
-                ss.pressedSprite = MyImage.sprite;
-                ss.disabledSprite = MyImage.sprite;
-
-                spriteState = ss;
-            }
-
-            
-            Title.Append(Root.Name);
-            Stats.Append("===Stats===\n");
-            Flavour.Append(Root.Flavour);
-        }
-
+        if (SlotPage.Occupants.Places != null)
+            SlotPage.Occupants.Places[SlotIndex] = this;
     }
 
     // Start is called before the first frame update

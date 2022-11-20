@@ -680,6 +680,26 @@ public struct ItemOptions
     public Quality Quality;
     public int Quantity;
     public int GoldValue;
+    public int InventoryIndex;
+    public int SlotIndex;
+
+    public ItemOptions(Quality quality = default, int quantity = 0, int goldValue = 0, int inventoryIndex = -1, int slotIndex = -1)
+    {
+        Quality = quality;
+        Quantity = quantity;
+        GoldValue = goldValue;
+        InventoryIndex = inventoryIndex;
+        SlotIndex = slotIndex;
+    }
+
+    public ItemOptions(int inventoryIndex, int slotIndex)
+    {
+        Quality = default;
+        Quantity = 1;
+        GoldValue = 0;
+        InventoryIndex = inventoryIndex;
+        SlotIndex = slotIndex;
+    }
 }
 [Serializable]
 public struct RootLogic

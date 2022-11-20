@@ -80,7 +80,7 @@ public static class CharacterMath
     public static readonly int STATS_CHAR_COUNT = Enum.GetNames(typeof(CharStat)).Length;
     public static readonly int STATS_ELEMENT_COUNT = Enum.GetNames(typeof(Element)).Length;
     public static readonly int STATS_SKILLS_COUNT = Enum.GetNames(typeof(School)).Length;
-    public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(EquipSlot)).Length;
+    public static readonly int EQUIP_SLOTS_COUNT = Enum.GetNames(typeof(WearSlot)).Length;
 
     public const int RES_PRIME_DENOM = 100;
     public const int RING_SLOT_COUNT = 2;

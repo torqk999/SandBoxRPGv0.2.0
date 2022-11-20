@@ -14,7 +14,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<SimpleAIcontroller> myAIpool;
     public List<ItemObject> SampleItems;
 
-    public void SpawnSampleItems(Inventory inventory)
+    public void SpawnSampleItems(SlotPage inventory)
     {
         if (inventory == null)
         {
@@ -22,7 +22,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        for(int i = 0; i < SampleItems.Count && i < inventory.Panel.Roots.Length; i++)
+        for(int i = 0; i < SampleItems.Count && i < inventory.Occupants.Places.Length; i++)
         {
             if (SampleItems[i] == null)
                 continue;

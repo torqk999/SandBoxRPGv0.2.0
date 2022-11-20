@@ -53,21 +53,21 @@ public class SceneManager : MonoBehaviour
         // 3. Create lootbag
         if (/*GameState.UIman.CurrentPage == CharPage.Looting &&*/
             GameState.pController.targetContainer != null &&
-            GameState.pController.CurrentCharacter.Inventory.TransferItem(GameState.pController.targetContainer.Inventory, inventoryIndex))
+            GameState.pController.CurrentCharacter.Slots.Inventory.TransferItem(GameState.pController.targetContainer.Inventory, inventoryIndex))
             return true;
 
         int index = CheckForLootBagInteractionIndex(character);
         if (index > -1)
         {
             Debug.Log("old bag");
-            Inventory oldLootBag = ((GenericContainer)character.CurrentProximityInteractions[index]).Inventory;
-            if (GameState.pController.CurrentCharacter.Inventory.TransferItem(oldLootBag, inventoryIndex))
+            SlotPage oldLootBag = ((GenericContainer)character.CurrentProximityInteractions[index]).Inventory;
+            if (GameState.pController.CurrentCharacter.Slots.Inventory.TransferItem(oldLootBag, inventoryIndex))
                 return true;
         }
 
         Debug.Log("new bag");
-        Inventory newLootBag = CreateLootBag(character);
-        if (GameState.pController.CurrentCharacter.Inventory.TransferItem(newLootBag, inventoryIndex))
+        GenericContainer newLootBagContainer = CreateLootBag(character);
+        if (GameState.pController.CurrentCharacter.Slots.Inventory.TransferItem(newLootBagContainer.Inventory, inventoryIndex))
             return true;
 
         return false;
@@ -76,7 +76,7 @@ public class SceneManager : MonoBehaviour
     {
         return character.CurrentProximityInteractions.FindIndex(x => x.GetInteractData().Type == TriggerType.LOOTBAG);
     }
-    Inventory CreateLootBag(Character character)
+    GenericContainer CreateLootBag(Character character)
     {
         if (LootBagPrefab == null || LootBagPrefab.GetComponent<GenericContainer>() == null)
             return null;
@@ -98,16 +98,15 @@ public class SceneManager : MonoBehaviour
 
         LootTriggerVolume trigger = newTriggerVolume.GetComponent<LootTriggerVolume>();
         GenericContainer container = newLootBag.GetComponent<GenericContainer>();
-        Inventory newInventory = newLootPanel.GetComponent<Inventory>();
+        //SlotPage newInventory = newLootPanel.GetComponent<SlotPage>();
 
-        newInventory.SetupInventory(GameState, CharacterMath.LOOT_BAG_MAX, "New Loot Drop");
+        container.Inventory.SetupPage(GameState, CharacterMath.LOOT_BAG_MAX, "New Loot Drop");
 
         container.GameState = GameState;
         container.TriggerTag = GlobalConstants.TAG_CHARACTER;
-        container.Inventory = newInventory;
         trigger.parent = container;
         
-        return newInventory;
+        return container;
     }
     public void RemoveFromLootBag(int index)
     {

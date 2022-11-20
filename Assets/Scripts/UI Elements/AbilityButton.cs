@@ -18,7 +18,7 @@ public class AbilityButtonEditor : Editor
         AbilityButton button = (AbilityButton)target;
     }
 }
-public class AbilityButton : SelectableButton
+public class AbilityButton : DraggableButton
 {
 
     public override void Init(ButtonOptions options, RootScriptObject root = null)

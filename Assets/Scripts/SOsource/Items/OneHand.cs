@@ -35,20 +35,4 @@ public class OneHand : Hand
         OneHand oneSource = (OneHand)source;
         Type = oneSource.Type;
     }
-    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
-    {
-        slotBin = character.EquipmentSlots;
-
-        if (slotBin[(int)EquipSlot.MAIN] != null &&
-            !slotBin[(int)EquipSlot.MAIN].UnEquipFromCharacter(character))
-        {
-            return false; // failed to remove the piece currently occupying the slot
-        }
-
-        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot.MAIN, subSlotIndex))
-            return false;
-        
-        base.UpdateCharacterRender(character);
-        return true;
-    }
 }

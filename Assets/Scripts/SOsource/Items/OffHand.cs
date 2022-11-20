@@ -34,20 +34,13 @@ public class OffHand : Hand
         Type = offSource.Type;
     }
 
-    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
+    public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        slotBin = character.EquipmentSlots;
-
-        if (slotBin[(int)EquipSlot.OFF] != null &&
-            !slotBin[(int)EquipSlot.OFF].UnEquipFromCharacter(character))
-        {
-            return false; // failed to remove the piece currently occupying the slot
-        }
-
-        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot.OFF, subSlotIndex))
+        slotIndex = (int)HandSlot.OFF;
+        if (character.Slots.Equips.Occupants.Places[slotIndex] != null &&
+            !((EquipmentButton)character.Slots.Equips.Occupants.Places[slotIndex]).UnEquipFromCharacter())
             return false;
 
-        base.UpdateCharacterRender(character);
-        return true;
+        return base.EquipToCharacter(character, slotIndex);
     }
 }

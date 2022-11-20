@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
 [CreateAssetMenu(fileName = "ItemObject", menuName = "ScriptableObjects/RawItem")]
 public class ItemObject : RootScriptObject
 {
@@ -11,9 +13,9 @@ public class ItemObject : RootScriptObject
     public int GoldValue;
     public float Weight;
 
-    [Header("Item Logic")]
-    public int SlotIndex;
-    public SlotPage SlotPanel;
+    //[Header("Item Logic")]
+    //public int SlotIndex;
+    //public SlotPage SlotPage;
 
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Wearable : Equipment
 {
     [Header("Wearable Properties")]
-    public EquipSlot EquipSlot;
+    public WearSlot WearSlot;
     public MaterialType BaseMaterial;
     public MaterialType TrimMaterial;
 
@@ -25,22 +25,16 @@ public class Wearable : Equipment
             return;
 
         Wearable wearSource = (Wearable)source;
-        EquipSlot = wearSource.EquipSlot;
+        WearSlot = wearSource.WearSlot;
     }
-    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
+    public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        slotBin = character.EquipmentSlots;
-
-        if (slotBin[(int)EquipSlot] != null && !slotBin[(int)EquipSlot].UnEquipFromCharacter(character))
-        {
-            return false;
-        }
-
-        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot, subSlotIndex))
+        slotIndex = (int)WearSlot;
+        if (character.Slots.Equips.Occupants.Places[slotIndex] != null &&
+            !((EquipmentButton)character.Slots.Equips.Occupants.Places[slotIndex]).UnEquipFromCharacter())
             return false;
 
-        UpdateCharacterRender(character);
-        return true;
+        return base.EquipToCharacter(character, slotIndex);
     }
     public override bool UpdateCharacterRender(Character character, bool putOn = true)
     {

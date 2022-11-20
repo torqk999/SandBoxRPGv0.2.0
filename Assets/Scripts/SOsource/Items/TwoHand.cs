@@ -37,25 +37,17 @@ public class TwoHand : Hand
         TwoHand twoSource = (TwoHand)source;
         Type = twoSource.Type;
     }
-    public override bool EquipToCharacter(Character character, Equipment[] slotBin = null, int inventorySlot = -1, int slotIndex = -1, int subSlotIndex = -1)
+    public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        slotBin = character.EquipmentSlots;
-
-        if (slotBin[(int)EquipSlot.OFF] != null &&
-            !slotBin[(int)EquipSlot.OFF].UnEquipFromCharacter(character))
-        { return false; }
-
-        if (slotBin[(int)EquipSlot.MAIN] != null &&
-            !slotBin[(int)EquipSlot.MAIN].UnEquipFromCharacter(character))
-        { return false; }
-
-
-        if (!base.EquipToCharacter(character, slotBin, inventorySlot, (int)EquipSlot.MAIN, subSlotIndex))
+        if (character.Slots.Equips.Occupants.Places[(int)HandSlot.MAIN] != null &&
+            !((EquipmentButton)character.Slots.Equips.Occupants.Places[(int)HandSlot.MAIN]).UnEquipFromCharacter())
             return false;
 
-        slotBin[(int)EquipSlot.OFF] = slotBin[(int)EquipSlot.MAIN];
+        if (character.Slots.Equips.Occupants.Places[(int)HandSlot.OFF] != null &&
+            !((EquipmentButton)character.Slots.Equips.Occupants.Places[(int)HandSlot.OFF]).UnEquipFromCharacter())
+            return false;
 
-        base.UpdateCharacterRender(character);
+        UpdateCharacterRender(character);
         return true;
     }
 }

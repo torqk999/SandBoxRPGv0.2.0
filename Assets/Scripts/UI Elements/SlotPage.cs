@@ -1,28 +1,50 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*[System.Serializable]
-public class Inventory : MonoBehaviour
+[System.Serializable]
+public class SlotPage
 {
     public GameState GameState;
-    public SlotPage Panel;
+    public ArrayPanel Occupants;
+    public ArrayPanel PlaceHolders;
+    public RectTransform ParentContent;
+
+    public void ResetContent(ArrayPanel placeHolders, RectTransform parentContent, RectTransform occupantContent)
+    {
+        ParentContent = parentContent;
+        PlaceHolders = placeHolders;
+        int size = PlaceHolders.Places.Length;
+        //Roots = new RootScriptObject[size];
+        Occupants = new ArrayPanel(size, occupantContent);
+    }
+
+    public void RefreshContentSize()
+    {
+        if (PlaceHolders == null)
+            return;
+
+        Vector2 newDelta = PlaceHolders.PlaceContent.sizeDelta;
+        ParentContent.sizeDelta = newDelta;
+        Occupants.PlaceContent.sizeDelta = newDelta;
+    }
 
     #region LOOTING
     public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
     {
-        if (loot.Inventory.Panel.Roots[containerIndex] is Stackable &&
-            PushItemIntoStack((Stackable)loot.Inventory.Panel.Roots[containerIndex]))
+        ItemObject lootItem = (ItemObject)((InventoryButton)loot.Inventory.Occupants.Places[containerIndex]).Root;
+
+        if (lootItem is Stackable &&
+            PushItemIntoStack((Stackable)lootItem))
         {
-            loot.Inventory.RemoveIndexFromInventory(containerIndex);
+            loot.Inventory.RemoveIndexFromOccupants(containerIndex);
             return true;
             //Debug.Log("found stackable!: " + Inventory.Items[containerIndex].Name);
         }
 
-        if (PushItemIntoInventory((ItemObject)loot.Inventory.Panel.Roots[containerIndex]))
+        if (PushItemIntoOccupants(lootItem))
         {
-            loot.Inventory.RemoveIndexFromInventory(containerIndex);
+            loot.Inventory.RemoveIndexFromOccupants(containerIndex);
             return true;
         }
         return false;
@@ -32,25 +54,25 @@ public class Inventory : MonoBehaviour
     #region INVENTORY
     public void GenerateItem(ItemObject sample, int index)
     {
-        if (Panel.Roots == null ||
+        if (Occupants.Places == null ||
             index < 0 ||
-            index >= Panel.Roots.Length)
+            index >= Occupants.Places.Length)
             return;
 
         if (sample == null)
             return;
 
         RootOptions rootOptions = new RootOptions(ref GameState.ROOT_SO_INDEX);
-        Panel.Roots[index] = (ItemObject)sample.GenerateRootObject(rootOptions);
-
-        ButtonOptions buttonOptions = new ButtonOptions(Panel.Roots[index], Panel, index);
-
+        ItemObject newRootObject = (ItemObject)sample.GenerateRootObject(rootOptions);
+        
+        ButtonOptions buttonOptions = new ButtonOptions(newRootObject, this, index);
+        Occupants.Places[index] = newRootObject.GenerateMyButton(buttonOptions);
         //buttonOptions.ButtonType = ButtonType.DRAG;
         //buttonOptions.PlaceType = PlaceHolderType.INVENTORY;
 
-        Panel.Roots[index].GenerateMyButton(buttonOptions);
+        //Panel.Roots[index].GenerateMyButton();
     }
-    public void SetupInventory(GameState state, int count, string inventoryName)
+    public void SetupPage(GameState state, int count, string pageName)
     {
         GameState = state;
         //Items = new ItemObject[count];
@@ -65,9 +87,15 @@ public class Inventory : MonoBehaviour
         {
             options.Index = i;
             Panel.Places[i] = GameState.UIman.GeneratePlaceHolder(options);
-        }   
+        }
     }
-    
+    public int FindEligibleIndex()
+    {
+        for (int i = 0; i < Occupants.Places.Length; i++)
+            if (Occupants.Places[i] == null)
+                return i;
+        return -1;
+    }
     public int CurrentQuantity()
     {
         int output = 0;
@@ -80,7 +108,7 @@ public class Inventory : MonoBehaviour
     {
         int empty = -1;
 
-        for(int i = 0; i < Panel.Roots.Length; i++)
+        for (int i = 0; i < Panel.Roots.Length; i++)
         {
             if (stackItem.CurrentQuantity <= 0)
                 return true;
@@ -109,7 +137,7 @@ public class Inventory : MonoBehaviour
         Panel.Roots[empty] = stackItem;
         return true;
     }
-    public bool PushItemIntoInventory(ItemObject input, int inventoryIndex = 0)
+    public bool PushItemIntoOccupants(ItemObject input, int inventoryIndex = 0)
     {
         Debug.Log($"input: {input != null}");
 
@@ -136,7 +164,7 @@ public class Inventory : MonoBehaviour
 
         return false;
     }
-    public ItemObject RemoveIndexFromInventory(int inventoryIndex)
+    public ItemObject RemoveIndexFromOccupants(int inventoryIndex)
     {
         try
         {
@@ -173,10 +201,10 @@ public class Inventory : MonoBehaviour
         }
         return -1;
     }
-    public bool TransferItem(Inventory targetInventory, int inventoryIndex, int targetIndex = 0)
+    public bool TransferItem(SlotPage targetInventory, int inventoryIndex, int targetIndex = 0)
     {
         Debug.Log("Transfering Item...");
-        if (targetInventory.PushItemIntoInventory((ItemObject)Panel.Roots[inventoryIndex], targetIndex))
+        if (targetInventory.PushItemIntoOccupants((ItemObject)Panel.Roots[inventoryIndex], targetIndex))
         {
 
             //Items[inventoryIndex].RootLogic.Button.Occupy(Panel.Places[targetIndex]);
@@ -187,4 +215,4 @@ public class Inventory : MonoBehaviour
     }
 
     #endregion
-}*/
+}
