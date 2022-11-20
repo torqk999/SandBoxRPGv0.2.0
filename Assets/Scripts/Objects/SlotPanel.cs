@@ -8,7 +8,6 @@ public class SlotPanel
     public SelectableButton[] Places;
     public RectTransform PlaceContent;
 
-
     public SlotPanel(int size, RectTransform content)
     {
         Resize(size);
