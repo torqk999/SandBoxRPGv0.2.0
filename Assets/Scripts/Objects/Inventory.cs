@@ -7,7 +7,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     public GameState GameState;
-    public SlotPanel Panel;
+    public SlotPage Panel;
 
     #region LOOTING
     public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
@@ -32,29 +32,29 @@ public class Inventory : MonoBehaviour
     #region INVENTORY
     public void GenerateItem(ItemObject sample, int index)
     {
-        if (Items == null ||
+        if (Panel.Roots == null ||
             index < 0 ||
-            index >= Items.Length)
+            index >= Panel.Roots.Length)
             return;
 
         if (sample == null)
             return;
 
         RootOptions rootOptions = new RootOptions(ref GameState.ROOT_SO_INDEX);
-        Items[index] = (ItemObject)sample.GenerateRootObject(rootOptions);
+        Panel.Roots[index] = (ItemObject)sample.GenerateRootObject(rootOptions);
 
-        ButtonOptions buttonOptions = new ButtonOptions(Items[index], Panel, index);
+        ButtonOptions buttonOptions = new ButtonOptions(Panel.Roots[index], Panel, index);
 
         //buttonOptions.ButtonType = ButtonType.DRAG;
         //buttonOptions.PlaceType = PlaceHolderType.INVENTORY;
 
-        Items[index].GenerateMyButton(buttonOptions);
+        Panel.Roots[index].GenerateMyButton(buttonOptions);
     }
     public void SetupInventory(GameState state, int count, string inventoryName)
     {
         GameState = state;
         //Items = new ItemObject[count];
-        Panel.Resize(count);
+        Panel.ResetContent(GameState.UIman.InventoryPlaceHolders, true);
 
         ButtonOptions options = new ButtonOptions(Panel);
 
@@ -117,10 +117,10 @@ public class Inventory : MonoBehaviour
         if (input is Stackable)
             return PushItemIntoStack((Stackable)input);
 
-        if (Items[inventoryIndex] == null)
+        if (Panel.Roots[inventoryIndex] == null)
         {
             Debug.Log("Slot empty! Pushing!");
-            Items[inventoryIndex] = input;
+            Panel.Roots[inventoryIndex] = input;
             Debug.Log($"button: {input.RootLogic.Button != null}\n place: {Panel.Places[inventoryIndex] != null}");
             input.RootLogic.Button.Occupy(Panel.Places[inventoryIndex]);
             return true;
@@ -129,7 +129,7 @@ public class Inventory : MonoBehaviour
         int newIndex = FindClosestEmptyIndex(inventoryIndex);
         if (newIndex != -1)
         {
-            Items[newIndex] = input;
+            Panel.Roots[newIndex] = input;
             input.RootLogic.Button.Occupy(Panel.Places[newIndex]);
             return true;
         }
@@ -140,8 +140,8 @@ public class Inventory : MonoBehaviour
     {
         try
         {
-            ItemObject output = Items[inventoryIndex];
-            Items[inventoryIndex] = null;
+            ItemObject output = (ItemObject)Panel.Roots[inventoryIndex];
+            Panel.Roots[inventoryIndex] = null;
             return output;
         }
         catch
@@ -151,8 +151,8 @@ public class Inventory : MonoBehaviour
     }
     public ItemObject SwapItems(ItemObject input, int InventoryIndex)
     {
-        ItemObject output = Items[InventoryIndex];
-        Items[InventoryIndex] = input;
+        ItemObject output = (ItemObject)Panel.Roots[InventoryIndex];
+        Panel.Roots[InventoryIndex] = input;
         return output;
     }
     public int FindClosestEmptyIndex(int startIndex)
@@ -162,13 +162,13 @@ public class Inventory : MonoBehaviour
             int sup = startIndex + i;
             int sub = startIndex - i;
 
-            if (sup < Items.Length &&
-                Items[sup] == null)
+            if (sup < Panel.Roots.Length &&
+                Panel.Roots[sup] == null)
                 return sup;
 
 
             if (sub > 0 &&
-                Items[sub] == null)
+                Panel.Roots[sub] == null)
                 return sub;
         }
         return -1;

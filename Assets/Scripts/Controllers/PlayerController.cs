@@ -332,7 +332,7 @@ public class PlayerController : CharacterController
             CurrentPawn.Root.Rotate(0, x, 0, Space.World);
 
         // Action Bar
-        for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
+        for (int i = 0; i < CharacterMath.HOT_BAR_SLOTS; i++)
             if (CheckAction(KeyAction.HOTBAR, KeyState.DOWN, i))
                 AttemptAction(i);
 

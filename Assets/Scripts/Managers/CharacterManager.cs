@@ -167,7 +167,7 @@ public class CharacterManager : MonoBehaviour
             literalParty.Members.Add(newCharacter);
         }
 
-        GameState.UIman.CurrentlyViewedInventory = literalParty.PartyLoot; // <<-- Temporary hack
+        //GameState.UIman.CurrentlyViewedInventory = literalParty.PartyLoot; // <<-- Temporary hack
         Parties.Add(literalParty);
         return true;
     }
@@ -281,9 +281,10 @@ public class CharacterManager : MonoBehaviour
         character.CurrentProximityInteractions = new List<Interaction>();
 
         // Slots
-        character.AbilitySlots = new ProcAbility[CharacterMath.ABILITY_SLOTS];
-        character.EquipmentSlots = new Equipment[CharacterMath.EQUIP_SLOTS_COUNT];
-        character.RingSlots = new Ring[CharacterMath.RING_SLOT_COUNT];
+        //character.Slots = new CharacterSlots();
+        //character.AbilitySlots = new ProcAbility[CharacterMath.HOT_BAR_SLOTS];
+        //character.EquipmentSlots = new Equipment[CharacterMath.EQUIP_SLOTS_COUNT];
+        //character.RingSlots = new Ring[CharacterMath.RING_SLOT_COUNT];
 
         // Initialize
         character.InitializeCharacterSheet();

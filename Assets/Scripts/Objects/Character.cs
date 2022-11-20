@@ -68,11 +68,6 @@ public class Character : Pawn, Interaction
     public Inventory Inventory;
     //public GameObject CharacterCanvas;
 
-    /*[Header("Slots")]
-    public CharacterAbility[] AbilitySlots;
-    public Equipment[] EquipmentSlots;
-    public Ring[] RingSlots;*/
-
     [Header("Interaction")]
     public Interaction CurrentTargetInteraction;
     public List<Interaction> CurrentProximityInteractions;
@@ -483,7 +478,7 @@ public class Character : Pawn, Interaction
     }
     void UpdateAbilitySlots()
     {
-        for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
+        for (int i = CharacterMath.HOT_BAR_SLOTS - 1; i > -1; i--)
             if (Slots.Abilities.Roots[i] != null && Abilities.Find(x => x == Slots.Abilities.Roots[i]) == null)
                 Slots.Abilities.Roots[i] = null;
     }

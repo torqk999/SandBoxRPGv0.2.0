@@ -21,7 +21,7 @@ public class SelectableButtonEditor : Editor
 public class SelectableButton : TippedButton
 {
     [Header("SelectableButton")]
-    public SlotPanel Panel;
+    public SlotPage Panel;
     public RootScriptObject Root;
     public bool Selected;
     public int SlotIndex;

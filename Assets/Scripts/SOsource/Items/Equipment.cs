@@ -94,7 +94,7 @@ public class Equipment : ItemObject
     {
         if (SlotPanel == null ||
             SlotIndex < 0 ||
-            SlotIndex >= SlotFamily.Length)
+            SlotIndex >= SlotPanel.Occupants.Length)
         {
             Debug.Log("Not equipped!");
             return false;
@@ -132,8 +132,8 @@ public class Equipment : ItemObject
             effectAbility.Logic.SourceCharacter = null;
         }
 
-        SlotFamily[SlotIndex] = null;
-        SlotFamily = null;
+        SlotPanel.Occupants[SlotIndex] = null;
+        SlotPanel = null;
 
         EquippedTo = null;
         UpdateCharacterRender(character, false);

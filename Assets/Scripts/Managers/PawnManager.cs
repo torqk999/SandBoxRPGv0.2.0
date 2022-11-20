@@ -153,7 +153,7 @@ public class PawnManager : MonoBehaviour
         {
             character.Slots.Abilities.Roots[index] = ability;
             index++;
-            if (index >= CharacterMath.ABILITY_SLOTS)
+            if (index >= CharacterMath.HOT_BAR_SLOTS)
                 return;
         }
     }

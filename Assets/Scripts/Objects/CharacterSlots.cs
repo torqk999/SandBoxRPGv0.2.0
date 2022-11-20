@@ -6,9 +6,19 @@ using UnityEngine;
 public class CharacterSlots : MonoBehaviour
 {
     public GameState GameState;
-    public SlotPanel Equips;
-    public SlotPanel Rings;
-    public SlotPanel Abilities;
+    public SlotPage Inventory;
+    public SlotPage Equips;
+    public SlotPage Rings;
+    public SlotPage Abilities;
+
+    public CharacterSlots(GameState state, GameObject invPrefab, GameObject equipPrefab, GameObject ringPrefab, GameObject abPrefab)
+    {
+        GameState = state;
+        //Inventory = new SlotPage(CharacterMath.EQUIP_SLOTS_COUNT, parentContent, occupantContent);
+        //Equips = new SlotPage(CharacterMath.EQUIP_SLOTS_COUNT, parentContent, occupantContent);
+        //Rings = new SlotPage(CharacterMath.EQUIP_SLOTS_COUNT, parentContent, occupantContent);
+        //Abilities = new SlotPage(CharacterMath.EQUIP_SLOTS_COUNT, parentContent, occupantContent);
+    }
 
     void Start()
     {

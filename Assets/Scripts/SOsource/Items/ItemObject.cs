@@ -13,7 +13,7 @@ public class ItemObject : RootScriptObject
 
     [Header("Item Logic")]
     public int SlotIndex;
-    public SlotPanel SlotPanel;//ItemObject[] SlotFamily;
+    public SlotPage SlotPanel;
 
     public override DraggableButton GenerateMyButton(ButtonOptions options)
     {

@@ -86,7 +86,7 @@ public static class CharacterMath
     public const int RING_SLOT_COUNT = 2;
     public const int PARTY_INVENTORY_MAX = 100;
     public const int LOOT_BAG_MAX = 10;
-    public const int ABILITY_SLOTS = 12;
+    public const int HOT_BAR_SLOTS = 12;
     public const int TACTIC_SLOTS = 8;
     public const int LEVEL_CAP = 99;
     public const int BASE_EXP_CAP = 100;

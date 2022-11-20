@@ -2,32 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlotPanel : MonoBehaviour
+[System.Serializable]
+public class SlotPanel
 {
-    public DraggableButton[] Occupants;
-    public RectTransform OccupantContent;
-
-    public PlaceHolderButton[] Places;
+    public SelectableButton[] Places;
     public RectTransform PlaceContent;
 
-    public RectTransform MainContent;
-    public RootScriptObject[] Roots;
+
+    public SlotPanel(int size, RectTransform content)
+    {
+        Resize(size);
+        PlaceContent = content;
+    }
     public void Resize(int size)
     {
-        Roots = new RootScriptObject[size];
-        Occupants = new DraggableButton[size];
-        Places = new PlaceHolderButton[size];
+        Places = new SelectableButton[size];
     }
 
-    public void RefreshContentSize()
+    public void BuildPlaceHolders(int size, RectTransform content)
     {
-        Vector2 newDelta = PlaceContent.sizeDelta;
-        MainContent.sizeDelta = newDelta;
-        OccupantContent.sizeDelta = newDelta;
-    }
-
-    public void Update()
-    {
-        RefreshContentSize();
+        Resize(size);
     }
 }

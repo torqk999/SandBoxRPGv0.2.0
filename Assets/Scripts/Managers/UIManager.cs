@@ -57,8 +57,13 @@ public class UIManager : MonoBehaviour
     public Sprite PlaceHolderSprite;
 
     public GameObject InventoryPrefab;
-    public GameObject HotBarButtonPrefab;
+    public GameObject HotBarPrefab;
+    public GameObject EquipPagePrefab;
+    public GameObject SkillPagePrefab;
+
+    public GameObject SkillButtonPrefab;
     public GameObject DraggableButtonPrefab;
+
     public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
 
@@ -67,11 +72,6 @@ public class UIManager : MonoBehaviour
 
     public RectTransform InventoriesContent;
     public RectTransform ContainersContent;
-
-    //public RectTransform HotBarButtonContent;
-    //public RectTransform HotBarPlaceHolderContent;
-
-    public RectTransform SkillButtonContent;
     public RectTransform EffectStatsContent;
 
     [Header("HUD")]
@@ -91,8 +91,8 @@ public class UIManager : MonoBehaviour
     public GameObject EquipmentPanel;
 
     [Header("==RIGHT==")]
-    public GameObject Inventory;
-    public GameObject Skills;
+    public GameObject InventoryPanel;
+    public GameObject SkillsPanel;
 
     /////////////////////////////////////////////////////////
 
@@ -110,19 +110,15 @@ public class UIManager : MonoBehaviour
     ////////////////////////////////////////////////////////
 
     [Header("Menu Logic")]
-    public Inventory CurrentlyViewedInventory;
-    public Inventory CurrentlyViewedContainer;
+    // Cheat!!
+    //public Inventory CurrentlyViewedInventory;
+    //public Inventory CurrentlyViewedContainer;
 
-    public List<Inventory> Inventories;
-    public List<SelectableButton> SkillListButtons;
-
-    public DraggableButton[] EquipButtons;
-    public PlaceHolderButton[] EquipPlaceHolders;
-
-    public DraggableButton[] RingButtons;
-    public PlaceHolderButton[] RingPlaceHolders;
-
-    public SlotPanel HotBar;
+    public SlotPanel InventoryPlaceHolders;
+    public SlotPanel EquipPlaceHolders;
+    public SlotPanel RingPlaceHolders;
+    public SlotPanel HotBarPlaceHolder;
+    public SlotPanel SkillPlaceHolder;
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;
@@ -155,6 +151,12 @@ public class UIManager : MonoBehaviour
 
     #region BUTTONS
 
+    public CharacterSlots GenerateCharacterSlotsPanel()
+    {
+        CharacterSlots newSlots = null;
+        return newSlots;
+    }
+
     public GameObject GenerateInventoryPanel(Transform contentFolder, string name = "New Inventory")
     {
         GameObject newInventory = Instantiate(InventoryPrefab, contentFolder);
@@ -176,30 +178,25 @@ public class UIManager : MonoBehaviour
     }
     public GameObject GenerateButtonObject(ButtonOptions options)
     {
-        GameObject prefab = null;
+        GameObject prefab = null;// DraggableButtonPrefab;
+        GameObject newButton = null;
         switch(options.ButtonType)
         {
             case ButtonType.PLACE:
+                prefab = DraggableButtonPrefab;
+                newButton = Instantiate(prefab, options.Panel.PlaceHolders.PlaceContent);
+                break;
+
             case ButtonType.DRAG:
                 prefab = DraggableButtonPrefab;
+                newButton = Instantiate(prefab, options.Panel.Occupants.PlaceContent);
                 break;
 
-            case ButtonType.HOT_BAR:
-                prefab = HotBarButtonPrefab;
+            case ButtonType.SKILL:
+                prefab = SkillButtonPrefab;
+                newButton = Instantiate(prefab, options.Panel.Occupants.PlaceContent);
                 break;
         }
-        GameObject newButton = null;
-
-        if (prefab == null)
-            return newButton;
-
-        if (options.Panel.OccupantContent != null &&
-            options.ButtonType == ButtonType.DRAG)
-            newButton = Instantiate(prefab, options.Panel.OccupantContent);
-
-        if (options.Panel.PlaceContent != null &&
-            options.ButtonType == ButtonType.PLACE)
-            newButton = Instantiate(prefab, options.Panel.PlaceContent);
 
         return newButton;
     }
@@ -343,13 +340,13 @@ public class UIManager : MonoBehaviour
         if (selection == null)
             return;
 
-        UnselectPool(HotBar.Occupants);
+        UnselectPool(HotBarPlaceHolder.Occupants);
         UnselectPool(SkillListButtons);
     }
     public void HotBarSelection(int slotIndex)
     {
         if (slotIndex < 0 ||
-            slotIndex >= CharacterMath.ABILITY_SLOTS)
+            slotIndex >= CharacterMath.HOT_BAR_SLOTS)
             return;
 
         GameState.pController.CurrentCharacter.CurrentAction = 
@@ -386,22 +383,22 @@ public class UIManager : MonoBehaviour
                 break;
 
             case CharPage.Character:
-                UnselectPool(HotBar.Occupants);
+                UnselectPool(HotBarPlaceHolder.Occupants);
                 CharSheet.SetActive(true);
                 EquipmentPanel.SetActive(true);
-                Inventory.SetActive(true);
+                InventoryPanel.SetActive(true);
                 break;
 
             case CharPage.Looting:
-                UnselectPool(HotBar.Occupants);
-                Inventory.SetActive(true);
+                UnselectPool(HotBarPlaceHolder.Occupants);
+                InventoryPanel.SetActive(true);
                 Container.SetActive(true);
                 break;
 
             case CharPage.Skills:
-                UnselectPool(HotBar.Occupants);
+                UnselectPool(HotBarPlaceHolder.Occupants);
                 Strategy.SetActive(true);
-                Skills.SetActive(true);
+                SkillsPanel.SetActive(true);
                 break;
         }
 
@@ -460,17 +457,25 @@ public class UIManager : MonoBehaviour
             index++;
         }
     }
-    void BuildHotBarPlaceHolders()
+    void BuildCharacterPlaceHolders()
     {
-        HotBar.Resize(CharacterMath.ABILITY_SLOTS);
-        ButtonOptions options = new ButtonOptions(HotBar);
+        InventoryPlaceHolders.Resize(CharacterMath.PARTY_INVENTORY_MAX);
+        EquipPlaceHolders.Resize(CharacterMath.EQUIP_SLOTS_COUNT);
+        RingPlaceHolders.Resize(CharacterMath.RING_SLOT_COUNT);
+        HotBarPlaceHolder.Resize(CharacterMath.HOT_BAR_SLOTS);
+    //SkillPlaceHolder.Resize(CharacterMath.PARTY_INVENTORY_MAX);
+    }
+    /*void BuildHotBarPlaceHolders()
+    {
+        HotBarPlaceHolder.Resize(CharacterMath.ABILITY_SLOTS);
+        ButtonOptions options = new ButtonOptions(HotBarPlaceHolder);
         options.PlaceType = PlaceHolderType.SKILL;
         for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
         {
             options.Index = i;
             GeneratePlaceHolder(options);
         }
-    }
+    }*/
     public void PopulateEffectPanels(CharacterAbility selection)
     {
         // Clear old effectPanels
@@ -692,10 +697,10 @@ public class UIManager : MonoBehaviour
 
         CurrentMenu = GameMenu.NONE;
 
-        AllSheetElements.Add(Inventory);
+        AllSheetElements.Add(InventoryPanel);
         AllSheetElements.Add(EquipmentPanel);
         AllSheetElements.Add(Container);
-        AllSheetElements.Add(Skills);
+        AllSheetElements.Add(SkillsPanel);
         AllSheetElements.Add(CharSheet);
         AllSheetElements.Add(Strategy);
         AllSheetElements.Add(Party);

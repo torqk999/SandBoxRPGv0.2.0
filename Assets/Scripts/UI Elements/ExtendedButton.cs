@@ -26,8 +26,8 @@ public enum ButtonType
     PLACE,  // implement later...
     //EQUIP,
     //INVENTORY,
-    //LIST_SKILL,
-    HOT_BAR,
+    SKILL,
+    //HOT_BAR,
     //CONTAINER,
     //SLOT_RING,
     //KEY_MAP
@@ -40,7 +40,7 @@ public struct ButtonOptions
     public PlaceHolderType PlaceType;
     public int Index;
     public RootScriptObject Root;
-    public SlotPanel Panel;
+    public SlotPage Panel;
 
     /// <summary>
     /// For building a new root directly into the target folder
@@ -48,7 +48,7 @@ public struct ButtonOptions
     /// <param name="root"> The root object that is tied to this button </param>
     /// <param name="panel"> The panel component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(RootScriptObject root , SlotPanel panel, int index = 0)
+    public ButtonOptions(RootScriptObject root , SlotPage panel, int index = 0)
     {
         Index = index;
         Root = root;
@@ -63,7 +63,7 @@ public struct ButtonOptions
     /// </summary>
     /// <param name="panel"> The panel component that currently houses this button </param>
     /// <param name="index"> The index of this placHolder and it's button </param>
-    public ButtonOptions(SlotPanel panel, int index = 0)
+    public ButtonOptions(SlotPage panel, int index = 0)
     {
         Index = index;
         Root = null;

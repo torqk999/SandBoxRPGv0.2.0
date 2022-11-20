@@ -97,12 +97,12 @@ public class KeyMapper : MonoBehaviour
 
     public void GenerateKeyMap()
     {
-        Map = new KeyMap[Default.Length + CharacterMath.ABILITY_SLOTS];
+        Map = new KeyMap[Default.Length + CharacterMath.HOT_BAR_SLOTS];
 
         for (int i = 0; i < Default.Length; i++)
             Map[i] = new KeyMap(Default[i]);
 
-        for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
+        for (int i = 0; i < CharacterMath.HOT_BAR_SLOTS; i++)
         {
             KeyMap hotMap = new KeyMap(KeyAction.HOTBAR, i);
             if (i < 10)
