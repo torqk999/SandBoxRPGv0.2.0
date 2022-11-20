@@ -685,6 +685,7 @@ public struct ItemOptions
 public struct RootLogic
 {
     public RootOptions Options;
+    public GameState GameState;
     public RootScriptObject Original;
     public List<RootScriptObject> Clones;
     public DraggableButton Button;

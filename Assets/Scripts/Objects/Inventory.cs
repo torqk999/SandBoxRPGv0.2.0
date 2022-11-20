@@ -7,22 +7,20 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     public GameState GameState;
-    public UI_SlotPanel Panel;
-    public ItemObject[] Items;
-
+    public SlotPanel Panel;
 
     #region LOOTING
     public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
     {
-        if (loot.Inventory.Items[containerIndex] is Stackable &&
-            PushItemIntoStack((Stackable)loot.Inventory.Items[containerIndex]))
+        if (loot.Inventory.Panel.Roots[containerIndex] is Stackable &&
+            PushItemIntoStack((Stackable)loot.Inventory.Panel.Roots[containerIndex]))
         {
             loot.Inventory.RemoveIndexFromInventory(containerIndex);
             return true;
             //Debug.Log("found stackable!: " + Inventory.Items[containerIndex].Name);
         }
 
-        if (PushItemIntoInventory(loot.Inventory.Items[containerIndex]))
+        if (PushItemIntoInventory((ItemObject)loot.Inventory.Panel.Roots[containerIndex]))
         {
             loot.Inventory.RemoveIndexFromInventory(containerIndex);
             return true;
@@ -55,7 +53,7 @@ public class Inventory : MonoBehaviour
     public void SetupInventory(GameState state, int count, string inventoryName)
     {
         GameState = state;
-        Items = new ItemObject[count];
+        //Items = new ItemObject[count];
         Panel.Resize(count);
 
         ButtonOptions options = new ButtonOptions(Panel);
@@ -73,8 +71,8 @@ public class Inventory : MonoBehaviour
     public int CurrentQuantity()
     {
         int output = 0;
-        for (int i = 0; i < Items.Length; i++)
-            if (Items[i] != null)
+        for (int i = 0; i < Panel.Roots.Length; i++)
+            if (Panel.Roots[i] != null)
                 output++;
         return output;
     }
@@ -82,19 +80,19 @@ public class Inventory : MonoBehaviour
     {
         int empty = -1;
 
-        for(int i = 0; i < Items.Length; i++)
+        for(int i = 0; i < Panel.Roots.Length; i++)
         {
             if (stackItem.CurrentQuantity <= 0)
                 return true;
 
-            if (Items[i] == null &&
+            if (Panel.Roots[i] == null &&
                 empty == -1)
                 empty = i;
 
-            if (!(Items[i] is Stackable))
+            if (!(Panel.Roots[i] is Stackable))
                 continue;
 
-            Stackable stackTarget = (Stackable)Items[i];
+            Stackable stackTarget = (Stackable)Panel.Roots[i];
 
             if (stackTarget.Name != stackItem.Name)
                 continue;
@@ -108,7 +106,7 @@ public class Inventory : MonoBehaviour
         if (empty == -1)
             return false;
 
-        Items[empty] = stackItem;
+        Panel.Roots[empty] = stackItem;
         return true;
     }
     public bool PushItemIntoInventory(ItemObject input, int inventoryIndex = 0)
@@ -178,10 +176,11 @@ public class Inventory : MonoBehaviour
     public bool TransferItem(Inventory targetInventory, int inventoryIndex, int targetIndex = 0)
     {
         Debug.Log("Transfering Item...");
-        if (targetInventory.PushItemIntoInventory(Items[inventoryIndex], targetIndex))
+        if (targetInventory.PushItemIntoInventory((ItemObject)Panel.Roots[inventoryIndex], targetIndex))
         {
-            Items[inventoryIndex] = null;
-            Items[inventoryIndex].RootLogic.Button.Occupy(Panel.Places[targetIndex]);
+
+            //Items[inventoryIndex].RootLogic.Button.Occupy(Panel.Places[targetIndex]);
+            Panel.Roots[inventoryIndex] = null;
             return true;
         }
         return false;

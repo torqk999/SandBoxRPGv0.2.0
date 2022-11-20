@@ -37,7 +37,7 @@ public class BaseEffect : RootScriptObject
     }
     public bool HasEligableTarget()
     {
-        if (GameState == null)
+        if (RootLogic.GameState == null)
             return false;
 
         if (SourceCharacter() == null)
@@ -49,11 +49,11 @@ public class BaseEffect : RootScriptObject
         if (AOE_Range <= 0)
             return false;
 
-        if (GameState.CharacterMan.CharacterPool == null ||
-            GameState.CharacterMan.CharacterPool.Count < 1)
+        if (RootLogic.GameState.CharacterMan.CharacterPool == null ||
+            RootLogic.GameState.CharacterMan.CharacterPool.Count < 1)
             return false;
 
-        List<Character> pool = GameState.CharacterMan.CharacterPool;
+        List<Character> pool = RootLogic.GameState.CharacterMan.CharacterPool;
 
         foreach(Character character in pool)
         {
@@ -141,10 +141,10 @@ public class BaseEffect : RootScriptObject
         }
         if (Logic.Projectile == null)
         {
-            if (GameState == null)
+            if (RootLogic.GameState == null)
                 return;
 
-            Logic.Projectile = Instantiate(GameState.SceneMan.PsystemPrefabs[(int)ProjectileType], Logic.SourceAbility.Logic.SourceCharacter.transform);
+            Logic.Projectile = Instantiate(RootLogic.GameState.SceneMan.PsystemPrefabs[(int)ProjectileType], Logic.SourceAbility.Logic.SourceCharacter.transform);
             Logic.Projectile.transform.localPosition = Vector3.zero;
         }
         //Projectile.transform.rotation = Quaternion.Lerp(EffectedCharacter.Root.rotation, SourceAbility.SourceCharacter.Root.rotation, lerp);

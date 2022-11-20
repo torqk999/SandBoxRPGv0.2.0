@@ -22,7 +22,7 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        for(int i = 0; i < SampleItems.Count && i < inventory.Items.Length; i++)
+        for(int i = 0; i < SampleItems.Count && i < inventory.Panel.Roots.Length; i++)
         {
             if (SampleItems[i] == null)
                 continue;

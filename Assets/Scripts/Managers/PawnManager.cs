@@ -151,7 +151,7 @@ public class PawnManager : MonoBehaviour
         int index = 0;
         foreach (ProcAbility ability in character.Abilities)
         {
-            character.AbilitySlots[index] = ability;
+            character.Slots.Abilities.Roots[index] = ability;
             index++;
             if (index >= CharacterMath.ABILITY_SLOTS)
                 return;

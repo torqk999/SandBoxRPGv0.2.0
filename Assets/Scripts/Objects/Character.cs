@@ -57,6 +57,7 @@ public class Character : Pawn, Interaction
     public float GlobalCDtimer;
 
     [Header("References")]
+    public CharacterSlots Slots;
     public List<Character> AOE_buffer;
     public List<CharacterAbility> Abilities;
     public List<BaseEffect> Risiduals;
@@ -67,10 +68,10 @@ public class Character : Pawn, Interaction
     public Inventory Inventory;
     //public GameObject CharacterCanvas;
 
-    [Header("Slots")]
+    /*[Header("Slots")]
     public CharacterAbility[] AbilitySlots;
     public Equipment[] EquipmentSlots;
-    public Ring[] RingSlots;
+    public Ring[] RingSlots;*/
 
     [Header("Interaction")]
     public Interaction CurrentTargetInteraction;
@@ -166,20 +167,20 @@ public class Character : Pawn, Interaction
 
         for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT; i++)
         {
-            if (EquipmentSlots[i] == null)
+            if (Slots.Equips.Roots[i] == null)
                 continue;
 
-            for (int j = 0; j < EquipmentSlots[i].Abilities.Length; j++)
-                EquipmentSlots[i].Abilities[j].EquipAbility(this);
+            for (int j = 0; j < ((Equipment)Slots.Equips.Roots[i]).Abilities.Length; j++)
+                ((Equipment)Slots.Equips.Roots[i]).Abilities[j].EquipAbility(this);
         }
 
         for (int i = 0; i < CharacterMath.RING_SLOT_COUNT; i++)
         {
-            if (RingSlots[i] == null)
+            if (Slots.Rings.Roots[i] == null)
                 continue;
 
-            for (int j = 0; j < RingSlots[i].Abilities.Length; j++)
-                RingSlots[i].Abilities[j].EquipAbility(this);
+            for (int j = 0; j < ((Equipment)Slots.Rings.Roots[i]).Abilities.Length; j++)
+                ((Equipment)Slots.Rings.Roots[i]).Abilities[j].EquipAbility(this);
         }
     }
     #endregion
@@ -190,26 +191,26 @@ public class Character : Pawn, Interaction
         if (equipIndex != -1)
         {
             if (ringIndex)
-                return AttemptEquipRemoval(EquipmentSlots, equipIndex);
-            return AttemptEquipRemoval(RingSlots, equipIndex);
+                return AttemptEquipRemoval((Equipment[])Slots.Equips.Roots, equipIndex);
+            return AttemptEquipRemoval((Equipment[])Slots.Rings.Roots, equipIndex);
         }
             
         if (inventoryIndex != -1)
         {
-            if (inventoryIndex >= Inventory.Items.Length ||
+            if (inventoryIndex >= Inventory.Panel.Roots.Length ||
                 inventoryIndex < 0)
                 return false;
 
-            if (Inventory.Items[inventoryIndex] == null ||
-                !(Inventory.Items[inventoryIndex] is Equipment))
+            if (Inventory.Panel.Roots[inventoryIndex] == null ||
+                !(Inventory.Panel.Roots[inventoryIndex] is Equipment))
                 return false;
         }
 
-        Equipment equip = (Equipment)Inventory.Items[inventoryIndex];
+        Equipment equip = (Equipment)Inventory.Panel.Roots[inventoryIndex];
         if (equip is Ring)
-            return equip.EquipToCharacter(this, RingSlots, inventoryIndex);
+            return equip.EquipToCharacter(this, (Equipment[])Slots.Rings.Roots, inventoryIndex);
 
-        return equip.EquipToCharacter(this, EquipmentSlots, inventoryIndex);
+        return equip.EquipToCharacter(this, (Equipment[])Slots.Equips.Roots, inventoryIndex);
     }
     public bool AttemptEquipRemoval(Equipment[] slotList, int equipIndex)
     {
@@ -332,7 +333,7 @@ public class Character : Pawn, Interaction
     }
     public bool AttemptAbility(int abilityIndex)
     {
-        CharacterAbility call = AbilitySlots[abilityIndex];
+        CharacterAbility call = (CharacterAbility)Slots.Abilities.Roots[abilityIndex];
         if (call == null) // Am I a joke to you?
             return false;
 
@@ -483,14 +484,14 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.ABILITY_SLOTS - 1; i > -1; i--)
-            if (AbilitySlots[i] != null && Abilities.Find(x => x == AbilitySlots[i]) == null)
-                AbilitySlots[i] = null;
+            if (Slots.Abilities.Roots[i] != null && Abilities.Find(x => x == Slots.Abilities.Roots[i]) == null)
+                Slots.Abilities.Roots[i] = null;
     }
     void UpdateAbilityCooldowns()
     {
-        for (int i = 0; i < AbilitySlots.Length; i++)
-            if (AbilitySlots[i] != null)
-                AbilitySlots[i].UpdateCooldowns();
+        for (int i = 0; i < Slots.Abilities.Roots.Length; i++)
+            if (Slots.Abilities.Roots[i] != null)
+                ((CharacterAbility)Slots.Abilities.Roots[i]).UpdateCooldowns();
     }
     void UpdatePassiveAbilities()
     {

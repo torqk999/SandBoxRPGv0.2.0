@@ -122,7 +122,7 @@ public class UIManager : MonoBehaviour
     public DraggableButton[] RingButtons;
     public PlaceHolderButton[] RingPlaceHolders;
 
-    public UI_SlotPanel HotBar;
+    public SlotPanel HotBar;
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;

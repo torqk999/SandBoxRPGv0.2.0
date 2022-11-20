@@ -52,7 +52,7 @@ public class EffectAbility : CharacterAbility
     }
     public virtual void ProduceOriginalEffects(EffectAbility source, EffectOptions effectOptions = default(EffectOptions))
     {
-        RootOptions rootOptions = new RootOptions(ref GameState.ROOT_SO_INDEX);
+        RootOptions rootOptions = new RootOptions(ref RootLogic.GameState.ROOT_SO_INDEX);
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
             if (source.Effects[i] != null)

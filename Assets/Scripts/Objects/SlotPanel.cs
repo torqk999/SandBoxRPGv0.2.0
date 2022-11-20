@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_SlotPanel : MonoBehaviour
+public class SlotPanel : MonoBehaviour
 {
     public DraggableButton[] Occupants;
     public RectTransform OccupantContent;
@@ -11,8 +11,10 @@ public class UI_SlotPanel : MonoBehaviour
     public RectTransform PlaceContent;
 
     public RectTransform MainContent;
+    public RootScriptObject[] Roots;
     public void Resize(int size)
     {
+        Roots = new RootScriptObject[size];
         Occupants = new DraggableButton[size];
         Places = new PlaceHolderButton[size];
     }

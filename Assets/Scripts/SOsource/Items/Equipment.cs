@@ -17,7 +17,7 @@ public class Equipment : ItemObject
     {
         options.ButtonType = ButtonType.DRAG;
         options.PlaceType = PlaceHolderType.EQUIP;
-        GameObject buttonObject = GameState.UIman.GenerateButtonObject(options);
+        GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         EquipmentButton myButton = buttonObject.AddComponent<EquipmentButton>();
         myButton.Init(options, this);
         return myButton;
@@ -74,13 +74,13 @@ public class Equipment : ItemObject
 
         if (character.Inventory == null ||
             inventorySlot < 0 ||
-            inventorySlot >= character.Inventory.Items.Length)
+            inventorySlot >= character.Slots.Equips.Roots.Length)
             return false;
 
         EquippedTo = character;
-        SlotFamily = character.EquipmentSlots;
+        SlotPanel = character.Slots.Equips;
         SlotIndex = slotIndex;
-        SlotFamily[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
+        SlotPanel.Roots[SlotIndex] = (Equipment)character.Inventory.RemoveIndexFromInventory(inventorySlot);
 
         if (character.Abilities == null)
             return false;
@@ -92,7 +92,7 @@ public class Equipment : ItemObject
     }
     public virtual bool UnEquipFromCharacter(Character character)
     {
-        if (SlotFamily == null ||
+        if (SlotPanel == null ||
             SlotIndex < 0 ||
             SlotIndex >= SlotFamily.Length)
         {

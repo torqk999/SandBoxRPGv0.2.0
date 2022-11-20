@@ -80,7 +80,8 @@ public class DraggableButton : SelectableButton
     {
         if (Panel.Places[SlotIndex] != null && !Following &&
             MyRect.anchoredPosition != Panel.Places[SlotIndex].MyRect.anchoredPosition)
-            SnapButton(Panel.Places[SlotIndex]);
+            MyRect.anchoredPosition = Panel.Places[SlotIndex].MyRect.anchoredPosition;
+            //SnapButton(Panel.Places[SlotIndex]);
     }
     void FollowMouse()
     {
@@ -114,13 +115,21 @@ public class DraggableButton : SelectableButton
     }
     public bool Occupy(PlaceHolderButton place)
     {
+        //return false;
+
         if (place == null)
             return false;
 
         if (!place.Vacate())
             return false;
 
+        Debug.Log("pain...");
+
+        //return false;
+
         Vacate();
+
+        return false;
         Panel = place.Panel;
         SlotIndex = place.SlotIndex;
         Panel.Occupants[SlotIndex] = this;
@@ -137,6 +146,9 @@ public class DraggableButton : SelectableButton
     }
     public void SnapButton(bool panel = true, bool success = true)
     {
+        Debug.Log($"panel: {panel} || success: {success}");
+        return;
+
         if (!panel)
         {
             Drop();
@@ -183,13 +195,13 @@ public class DraggableButton : SelectableButton
 
         if (Following)
         {
-            transform.SetParent(UIMan.HUDcanvas.transform);
+            MyRect.SetParent(UIMan.HUDcanvas.transform);
             Offset = (Vector2)MyRect.position - CurrentPosMouse;
             UIMan.Dragging = this;
         }
         else
         {
-            transform.SetParent(Panel.OccupantContent);
+            //transform.SetParent(Panel.OccupantContent);
             SnapButton(CheckOverLap(eventData), Occupy(ButtonTarget));
         }
     }
@@ -202,8 +214,7 @@ public class DraggableButton : SelectableButton
             return;
         }
 
-        if(Root != null)
-            Root.RootLogic.Button = this;
+        Root.RootLogic.Button = this;
 
         if (Panel.Occupants != null)
             Panel.Occupants[SlotIndex] = this;

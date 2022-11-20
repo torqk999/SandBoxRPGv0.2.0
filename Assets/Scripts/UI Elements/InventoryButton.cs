@@ -20,15 +20,16 @@ public class InventoryButtonEditor : Editor
 
 public class InventoryButton : DraggableButton
 {
-
+    [Header("Inventory Properties")]
+    public Inventory MyInv;
     public override bool Drop()
     {
         return (UIMan.GameState.SceneMan.PushIntoContainer(UIMan.GameState.pController.CurrentCharacter, SlotIndex)) ;
     }
     public override bool Vacate()
     {
-        if (!UIMan.GameState.pController.CurrentCharacter.Inventory.PushItemIntoInventory((ItemObject)Root) &&
-            !Drop())
+        if (!Root.Inventory.PushItemIntoInventory((ItemObject)Root))
+            //!Drop()
             return false;
         return base.Vacate();
     }
