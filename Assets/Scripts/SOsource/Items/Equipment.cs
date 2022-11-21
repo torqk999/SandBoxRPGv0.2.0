@@ -98,21 +98,21 @@ public class Equipment : ItemObject
         if (slotIndex == -1)
             return false; // Failed slot index
 
-        if (character.Slots.Equips.Occupants.Places[slotIndex] == this)
+        if (character.Slots.Equips.List[slotIndex] == this)
             return false; // Already equipped here
 
-        if (RootLogic.Button.Page.Occupants.Places == null ||
+        if (RootLogic.Button.Panel.List == null ||
             RootLogic.Button.SlotIndex < 0 ||
-            RootLogic.Button.SlotIndex >= character.Slots.Inventory.Occupants.Places.Count ||
-            RootLogic.Button.Page.Occupants.Places[RootLogic.Button.SlotIndex] == null)
+            RootLogic.Button.SlotIndex >= character.Slots.Inventory.List.Count ||
+            RootLogic.Button.Panel.List[RootLogic.Button.SlotIndex] == null)
             return false; // Unable to source or missng
 
-        if (character.Slots.Equips.Occupants.Places == null ||
+        if (character.Slots.Equips.List == null ||
             slotIndex < 0 ||
-            slotIndex >= character.Slots.Equips.Occupants.Places.Count)
+            slotIndex >= character.Slots.Equips.List.Count)
             return false; // Unable to find target
 
-        List<SelectableButton> equipSlots = character.Slots.Equips.Occupants.Places;
+        List<SelectableButton> equipSlots = character.Slots.Equips.List;
         if (equipSlots[slotIndex] != null && !((Equipment)((EquipmentButton)equipSlots[slotIndex]).Root).UnEquipFromCharacter())
             return false; // failed to open up slot
 
@@ -133,11 +133,11 @@ public class Equipment : ItemObject
         switch (page)
         {
             case SlotPageType.INVENTORY:
-                RootLogic.Button.Page = character.Slots.Inventory;
+                RootLogic.Button.Panel = character.Slots.Inventory;
                 break;
 
             case SlotPageType.EQUIPMENT:
-                RootLogic.Button.Page = character.Slots.Equips;
+                RootLogic.Button.Panel = character.Slots.Equips;
                 break;
 
             /*case SlotPageType.RINGS:
@@ -145,21 +145,21 @@ public class Equipment : ItemObject
                 break;*/
 
             case SlotPageType.HOT_BAR:
-                RootLogic.Button.Page = character.Slots.HotBar;
+                RootLogic.Button.Panel = character.Slots.HotBar;
                 break;
 
             case SlotPageType.SKILLS:
-                RootLogic.Button.Page = character.Slots.Skills;
+                RootLogic.Button.Panel = character.Slots.Skills;
                 break;
         }
-        RootLogic.Button.Page.Occupants.Places[RootLogic.Button.SlotIndex] = RootLogic.Button;
+        RootLogic.Button.Panel.List[RootLogic.Button.SlotIndex] = RootLogic.Button;
     }
 
     public virtual bool UnEquipFromCharacter()
     {
-        if (RootLogic.Button.Page == null ||
+        if (RootLogic.Button.Panel == null ||
             RootLogic.Button.SlotIndex < 0 ||
-            RootLogic.Button.SlotIndex >= RootLogic.Button.Page.Occupants.Places.Count)
+            RootLogic.Button.SlotIndex >= RootLogic.Button.Panel.List.Count)
         {
             Debug.Log("Not equipped!");
             return false;
@@ -171,13 +171,13 @@ public class Equipment : ItemObject
             return false;
         }
 
-        if (!EquippedTo.Slots.Inventory.PushItemIntoOccupants(this))
+        if (!EquippedTo.Slots.Inventory.VirtualParent.PushItemIntoOccupants(this))
         {
             Debug.Log("No room in inventory!");
             return false;
         }
-        RootLogic.Button.Page.Occupants.Places[RootLogic.Button.SlotIndex] = null;
-        RootLogic.Button.Page = null;
+        RootLogic.Button.Panel.List[RootLogic.Button.SlotIndex] = null;
+        RootLogic.Button.Panel = null;
 
         foreach (CharacterAbility equipped in Abilities)
         {
@@ -194,7 +194,7 @@ public class Equipment : ItemObject
                         Destroy(spawnedEffect);
                 }
             
-            effectAbility.Logic.SourceCharacter.Slots.Skills.Occupants.Places.Remove(effectAbility.RootLogic.Button);
+            effectAbility.Logic.SourceCharacter.Slots.Skills.List.Remove(effectAbility.RootLogic.Button);
             effectAbility.Logic.SourceCharacter.UpdateAbilites();
             effectAbility.Logic.SourceCharacter = null;
         }

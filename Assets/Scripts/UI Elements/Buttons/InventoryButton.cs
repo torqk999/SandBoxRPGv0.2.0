@@ -28,7 +28,7 @@ public class InventoryButton : DraggableButton
     }
     public override bool Vacate()
     {
-        if (!Page.PushItemIntoOccupants((ItemObject)Root))
+        if (!Panel.VirtualParent.PushItemIntoOccupants((ItemObject)Root))
             //!Drop()
             return false;
         return base.Vacate();

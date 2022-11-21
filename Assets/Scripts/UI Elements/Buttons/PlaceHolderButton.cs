@@ -58,10 +58,10 @@ public class PlaceHolderButton : SelectableButton
     }
     public override bool Vacate()
     {
-        if (Page.Occupants.Places[SlotIndex] == null)
+        if (Panel.List[SlotIndex] == null)
             return true;
 
-        return Page.Occupants.Places[SlotIndex].Vacate();
+        return Panel.List[SlotIndex].Vacate();
     }
     public void ResetImage()
     {

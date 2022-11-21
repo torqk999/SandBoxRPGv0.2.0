@@ -73,10 +73,16 @@ public class PlayerController : CharacterController
         oldRotation = GameState.GameCamera.transform.parent.rotation;
         oldPosition = GameState.GameCamera.transform.parent.position;
         GameState.pController.CurrentPawn = targetPawn;
-        GameState.pController.CurrentCharacter = targetPawn as Character;
         GameState.GameCamera.transform.parent = targetPawn.Socket;
+        Character targetCharacter = targetPawn as Character;
+        GameState.pController.CurrentCharacter = targetCharacter;
+
+        Debug.Log($"maybe?: {targetCharacter.Slots.Inventory != null}");
+
         LerpTimer = 0;
         bIsCamLerping = true;
+
+        GameState.UIman.SelectCharacter(targetCharacter);
 
         return true;
     }

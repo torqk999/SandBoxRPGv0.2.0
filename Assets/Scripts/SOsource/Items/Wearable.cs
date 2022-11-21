@@ -30,8 +30,8 @@ public class Wearable : Equipment
     public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         slotIndex = (int)WearSlot;
-        if (character.Slots.Equips.Occupants.Places[slotIndex] != null &&
-            !((EquipmentButton)character.Slots.Equips.Occupants.Places[slotIndex]).UnEquipFromCharacter())
+        if (character.Slots.Equips.List[slotIndex] != null &&
+            !((EquipmentButton)character.Slots.Equips.List[slotIndex]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

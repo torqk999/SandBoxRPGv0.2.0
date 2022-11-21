@@ -21,7 +21,7 @@ public class SelectableButtonEditor : Editor
 public class SelectableButton : TippedButton
 {
     [Header("SelectableButton")]
-    public Page Page;
+    public ListPanel Panel;
     public int SlotIndex;
     public bool Selected;
     
@@ -80,11 +80,15 @@ public class SelectableButton : TippedButton
     {
         base.Init(options, root);
 
-        Page = options.Page;
-        SlotIndex = options.Index;
+        Debug.Log($"what?: {options.Index_Size}");
 
-        if (Page.Occupants.Places != null)
-            Page.Occupants.Places[SlotIndex] = this;
+        Panel = options.Page;
+        SlotIndex = options.Index_Size;
+
+        
+
+        if (Panel.List != null)
+            Panel.List[SlotIndex] = this;
     }
 
     // Start is called before the first frame update

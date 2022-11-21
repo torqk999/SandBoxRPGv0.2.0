@@ -53,7 +53,7 @@ public class SceneManager : MonoBehaviour
         // 3. Create lootbag
         if (/*GameState.UIman.CurrentPage == CharPage.Looting &&*/
             GameState.pController.targetContainer != null &&
-            GameState.pController.CurrentCharacter.Slots.Inventory.TransferItem(GameState.pController.targetContainer.Inventory, inventoryIndex))
+            GameState.pController.CurrentCharacter.Slots.Inventory.VirtualParent.TransferItem(GameState.pController.targetContainer.Inventory, inventoryIndex))
             return true;
 
         int index = CheckForLootBagInteractionIndex(character);
@@ -61,13 +61,13 @@ public class SceneManager : MonoBehaviour
         {
             Debug.Log("old bag");
             Page oldLootBag = ((GenericContainer)character.CurrentProximityInteractions[index]).Inventory;
-            if (GameState.pController.CurrentCharacter.Slots.Inventory.TransferItem(oldLootBag, inventoryIndex))
+            if (GameState.pController.CurrentCharacter.Slots.Inventory.VirtualParent.TransferItem(oldLootBag, inventoryIndex))
                 return true;
         }
 
         Debug.Log("new bag");
         GenericContainer newLootBagContainer = CreateLootBag(character);
-        if (GameState.pController.CurrentCharacter.Slots.Inventory.TransferItem(newLootBagContainer.Inventory, inventoryIndex))
+        if (GameState.pController.CurrentCharacter.Slots.Inventory.VirtualParent.TransferItem(newLootBagContainer.Inventory, inventoryIndex))
             return true;
 
         return false;

@@ -38,8 +38,8 @@ public class Shield : Hand
     public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         slotIndex = (int)EquipSlot.OFF;
-        if (character.Slots.Equips.Occupants.Places[slotIndex] != null &&
-            !((EquipmentButton)character.Slots.Equips.Occupants.Places[slotIndex]).UnEquipFromCharacter())
+        if (character.Slots.Equips.List[slotIndex] != null &&
+            !((EquipmentButton)character.Slots.Equips.List[slotIndex]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

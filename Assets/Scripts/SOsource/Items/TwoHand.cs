@@ -39,12 +39,12 @@ public class TwoHand : Hand
     }
     public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        if (character.Slots.Equips.Occupants.Places[(int)EquipSlot.MAIN] != null &&
-            !((EquipmentButton)character.Slots.Equips.Occupants.Places[(int)EquipSlot.MAIN]).UnEquipFromCharacter())
+        if (character.Slots.Equips.List[(int)EquipSlot.MAIN] != null &&
+            !((EquipmentButton)character.Slots.Equips.List[(int)EquipSlot.MAIN]).UnEquipFromCharacter())
             return false;
 
-        if (character.Slots.Equips.Occupants.Places[(int)EquipSlot.OFF] != null &&
-            !((EquipmentButton)character.Slots.Equips.Occupants.Places[(int)EquipSlot.OFF]).UnEquipFromCharacter())
+        if (character.Slots.Equips.List[(int)EquipSlot.OFF] != null &&
+            !((EquipmentButton)character.Slots.Equips.List[(int)EquipSlot.OFF]).UnEquipFromCharacter())
             return false;
 
         UpdateCharacterRender(character);

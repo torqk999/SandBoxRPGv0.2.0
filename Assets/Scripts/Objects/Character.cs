@@ -323,7 +323,7 @@ public class Character : Pawn, Interaction
     }
     public bool AttemptAbility(int abilityIndex)
     {
-        CharacterAbility call = (CharacterAbility)((SkillButton)Slots.HotBar.Occupants.Places[abilityIndex]).Root;
+        CharacterAbility call = (CharacterAbility)((SkillButton)Slots.HotBar.List[abilityIndex]).Root;
         if (call == null) // Am I a joke to you?
             return false;
 
@@ -474,18 +474,20 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.HOT_BAR_SLOTS - 1; i > -1; i--)
-            if (Slots.HotBar.Occupants.Places[i] != null && Slots.Skills.Occupants.Places.Find(x => ((AbilityButton)x).Root.RootLogic.Options.ID == ((AbilityButton)Slots.HotBar.Occupants.Places[i]).Root.RootLogic.Options.ID) == null)
-                Slots.HotBar.Occupants.Places[i] = null;
+            if (Slots.HotBar.List[i] != null && Slots.Skills.List.Find(x => ((AbilityButton)x).Root.RootLogic.Options.ID == ((AbilityButton)Slots.HotBar.List[i]).Root.RootLogic.Options.ID) == null)
+                Slots.HotBar.List[i] = null;
     }
     void UpdateAbilityCooldowns()
     {
-        for (int i = 0; i < Slots.HotBar.Occupants.Places.Count; i++)
-            if (Slots.HotBar.Occupants.Places[i] != null)
-                ((CharacterAbility)((AbilityButton)Slots.HotBar.Occupants.Places[i]).Root).UpdateCooldowns();
+        
+        for (int i = 0; i < Slots.HotBar.List.Count; i++)
+            if (Slots.HotBar.List[i] != null)
+                ((CharacterAbility)((AbilityButton)Slots.HotBar.List[i]).Root).UpdateCooldowns();
     }
     void UpdatePassiveAbilities()
     {
-        foreach (AbilityButton ability in Slots.Skills.Occupants.Places)
+        
+        foreach (AbilityButton ability in Slots.Skills.List)
         {
             ((CharacterAbility)ability.Root).UpdatePassiveTimer();
         }
@@ -607,10 +609,10 @@ public class Character : Pawn, Interaction
         if (bIsPaused)
             return;
 
-        UpdateLife();
-        UpdatePassiveAbilities();
-        UpdateRisidualEffects();
-        UpdateAbilityCooldowns();
+        //UpdateLife();
+        //UpdatePassiveAbilities();
+        //UpdateRisidualEffects();
+        //UpdateAbilityCooldowns();
         UpdateGlobalCooldown();
         UpdateAnimation();
         UpdateAssetTimer();

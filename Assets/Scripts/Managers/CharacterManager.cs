@@ -196,7 +196,7 @@ public class CharacterManager : MonoBehaviour
             spawnPointFolder.GetChild(i).gameObject.SetActive(false);
         }
 
-        cloneParty.PartyLoot.Occupants.PlaceContent.gameObject.SetActive(false); // <<-- Temporary hack
+        cloneParty.PartyLoot.PhysicalParent.gameObject.SetActive(false); // <<-- Temporary hack
         Parties.Add(cloneParty);
         return true;
     }
@@ -229,11 +229,15 @@ public class CharacterManager : MonoBehaviour
         if (index != -1)
             newCharacter.Root.name = $"{prefab.name} : {index}";
 
-        SetupSheet(newCharacter, sourceCharacter, index, fresh);
-        SetupAI(newCharacter);
+        newCharacter.GameState = GameState;
+        newCharacter.bDebugMode = GameState.bDebugEffects;
+        newCharacter.CurrentProximityInteractions = new List<Interaction>();
+
+        SetupCharacterSheet(newCharacter, sourceCharacter, index, fresh);
+        SetupCharacterAI(newCharacter);
         SetupCharacterCanvas(newCharacter);
-        SetupCharacter(newCharacter, party);
-        SetupRender(newCharacter);
+        SetupCharacterParty(newCharacter, party);
+        SetupCharacterRender(newCharacter);
 
         //if (wardrobe != null)
         //    GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
@@ -243,7 +247,7 @@ public class CharacterManager : MonoBehaviour
         return newCharacter;
     }
 
-    private void SetupRender(Character newCharacter)
+    private void SetupCharacterRender(Character newCharacter)
     {
         GameObject newRenderObject = Instantiate(CharacterPrefab, newCharacter.transform);
         newRenderObject.SetActive(true);
@@ -270,26 +274,18 @@ public class CharacterManager : MonoBehaviour
         newCanvas.Cam = GameState.GameCamera;
         newCanvas.Character = character;
     }
-    void SetupCharacter(Character character, Party party)
+    void SetupCharacterParty(Character character, Party party)
     {
-        // References
-        character.GameState = GameState;
         character.CurrentParty = party;
-        character.bDebugMode = GameState.bDebugEffects;
         character.Sheet.Faction = party.Faction;
         character.Slots.Inventory = party.PartyLoot;
-        character.CurrentProximityInteractions = new List<Interaction>();
 
-        // Slots
-        //character.Slots = new CharacterSlots();
-        //character.AbilitySlots = new ProcAbility[CharacterMath.HOT_BAR_SLOTS];
-        //character.EquipmentSlots = new Equipment[CharacterMath.EQUIP_SLOTS_COUNT];
-        //character.RingSlots = new Ring[CharacterMath.RING_SLOT_COUNT];
-
+        Debug.Log($"Char Loot Setup: {party.PartyLoot != null} ");
+        
         // Initialize
-        character.InitializeCharacterSheet();
+        
     }
-    void SetupSheet(Character character, Character source, int index, bool fresh)
+    void SetupCharacterSheet(Character character, Character source, int index, bool fresh)
     {
         if (source == null ||
             source.Sheet == null)
@@ -304,8 +300,10 @@ public class CharacterManager : MonoBehaviour
         
         if (index > -1)
             character.Sheet.Name += index.ToString();
+
+        character.InitializeCharacterSheet();
     }
-    void SetupAI(Character newCharacter, bool bAwake = true)
+    void SetupCharacterAI(Character newCharacter, bool bAwake = true)
     {
         if (newCharacter == null)
             return;

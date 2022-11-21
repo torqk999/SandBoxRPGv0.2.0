@@ -14,7 +14,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<SimpleAIcontroller> myAIpool;
     public List<ItemObject> SampleItems;
 
-    public void SpawnSampleItems(Page inventory)
+    public void SpawnSampleItems(ListPanel inventory)
     {
         if (inventory == null)
         {
@@ -22,14 +22,14 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        for(int i = 0; i < SampleItems.Count && i < inventory.Occupants.Places.Count; i++)
+        for(int i = 0; i < SampleItems.Count && i < inventory.List.Count; i++)
         {
             if (SampleItems[i] == null)
                 continue;
 
             SampleItems[i].InitializeRoot(GameState);
 
-            inventory.GenerateItem(SampleItems[i], i);
+            inventory.VirtualParent.GenerateItem(SampleItems[i], i);
         }
     }
     

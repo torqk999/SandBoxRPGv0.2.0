@@ -38,10 +38,10 @@ public struct ButtonOptions
 {
     public ButtonType ButtonType;
     public PlaceHolderType PlaceType;
-    public int Index;
+    public int Index_Size;
     public bool ResetImage;
     public RootScriptObject Root;
-    public Page Page;
+    public ListPanel Page;
 
     /// <summary>
     /// For building a new root directly into the target folder
@@ -49,9 +49,9 @@ public struct ButtonOptions
     /// <param name="root"> The root object that is tied to this button </param>
     /// <param name="page"> The page component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(RootScriptObject root , Page page, int index = 0)
+    public ButtonOptions(RootScriptObject root , ListPanel page, int index = 0)
     {
-        Index = index;
+        Index_Size = index;
         Root = root;
         Page = page;
 
@@ -64,10 +64,10 @@ public struct ButtonOptions
     /// For build a new placeHolder directly into the target folder
     /// </summary>
     /// <param name="panel"> The panel component that currently houses this button </param>
-    /// <param name="index"> The index of this placHolder and it's button </param>
-    public ButtonOptions(Page panel, bool resetImage = false, int index = 0)
+    /// <param name="size"> The index of this placHolder and it's button </param>
+    public ButtonOptions(ListPanel panel, bool resetImage = false, int size = 0)
     {
-        Index = index;
+        Index_Size = size;
         Root = null;
         Page = panel;
 

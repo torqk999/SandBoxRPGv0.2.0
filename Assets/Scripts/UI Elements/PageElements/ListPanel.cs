@@ -3,27 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class ListPanel
+public class ListPanel : MonoBehaviour
 {
-    public RectTransform PlaceContent;
-    public List<SelectableButton> Places;
+    public Page VirtualParent;
+    public RectTransform PhysicalParent;
+    public List<SelectableButton> List;
 
-    public ListPanel(PageOptions options)
+    public void Setup(Page source)
     {
-        Setup(options);
+        VirtualParent = source;
+        PhysicalParent = gameObject.GetComponent<RectTransform>();
+        Resize(VirtualParent.PlaceHolders.List.Count);
     }
-
-    public void Setup(PageOptions options)
-    {
-        PlaceContent = options.TargetContent;
-        Resize(options.Size);
-    }
-
+    
     public void Resize(int size)
     {
         List<SelectableButton> newList = new List<SelectableButton>(size);
-        for (int i = 0; i < newList.Count && i < Places.Count; i++)
-            newList[i] = Places[i];
-        Places = newList;
+        for (int i = 0; i < newList.Count && i < List.Count; i++)
+            newList[i] = List[i];
+        List = newList;
     }
 }

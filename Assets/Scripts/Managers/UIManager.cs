@@ -53,7 +53,8 @@ public class UIManager : MonoBehaviour
 
     [Header("Prefabs")]
     public GameObject CharacterInfoPrefab;
-    public GameObject ButtonPagePrefab;
+    public GameObject ButtonPanelPrefab;
+    //public GameObject ButtonListPrefab;
 
     public GameObject SkillButtonPrefab;
     public GameObject DraggableButtonPrefab;
@@ -155,27 +156,23 @@ public class UIManager : MonoBehaviour
     }
     public GameObject GenerateButtonObject(ButtonOptions options)
     {
-        GameObject prefab = null;// DraggableButtonPrefab;
-        GameObject newButton = null;
-        switch(options.ButtonType)
+        GameObject prefab = null;
+        switch (options.ButtonType)
         {
             case ButtonType.PLACE:
                 prefab = DraggableButtonPrefab;
-                newButton = Instantiate(prefab, options.Page.PlaceHolders.PlaceContent);
                 break;
 
             case ButtonType.ITEM:
                 prefab = DraggableButtonPrefab;
-                newButton = Instantiate(prefab, options.Page.Occupants.PlaceContent);
                 break;
 
             case ButtonType.SKILL:
                 prefab = SkillButtonPrefab;
-                newButton = Instantiate(prefab, options.Page.Occupants.PlaceContent);
                 break;
         }
 
-        return newButton;
+        return Instantiate(prefab, options.Page.PhysicalParent);
     }
 
     #endregion
@@ -279,6 +276,25 @@ public class UIManager : MonoBehaviour
     {
         GameState.GamePause(pause);
     }
+    public void SelectCharacter(Character character)
+    {
+        SwapInPanel(Inventories, character.Slots.Inventory);
+        SwapInPanel(Equipments, character.Slots.Equips);
+        SwapInPanel(HotBars, character.Slots.HotBar);
+        SwapInPanel(SkillLists, character.Slots.Skills);
+    }
+    void SwapInPanel(Page page, ListPanel panel)
+    {
+        if (page == null || panel == null)
+            return;
+
+        if (page.Occupants != null)
+            page.Occupants.gameObject.SetActive(false);
+
+        page.Occupants = panel;
+        panel.gameObject.SetActive(true);
+    }
+
     public void ToggleCharacterPage(CharPage page)
     {
         UpdateGameMenuCanvasState(page);
@@ -296,7 +312,10 @@ public class UIManager : MonoBehaviour
     }
     public void UnselectPool(List<SelectableButton> buttons)
     {
-        UnselectPool(buttons.ToArray());
+        if (buttons != null)
+            foreach (SelectableButton button in buttons)
+                if (button != null)
+                    button.UnSelect();
     }
     public void UnselectPool(SelectableButton[] buttons)
     {
@@ -310,8 +329,8 @@ public class UIManager : MonoBehaviour
         if (selection == null)
             return;
 
-        UnselectPool(CurrentlyViewedCharacter.Slots.Inventory.Occupants.Places);
-        UnselectPool(CurrentlyViewedCharacter.Slots.Equips.Occupants.Places);
+        UnselectPool(CurrentlyViewedCharacter.Slots.Inventory.List);
+        UnselectPool(CurrentlyViewedCharacter.Slots.Equips.List);
         //UnselectPool(CurrentlyViewedCharacter.Rings.Occupants.Places);
         //UnselectPool(HotBarButtons);
     }
@@ -320,8 +339,8 @@ public class UIManager : MonoBehaviour
         if (selection == null)
             return;
 
-        UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
-        UnselectPool(CurrentlyViewedCharacter.Slots.Skills.Occupants.Places);
+        UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.List);
+        UnselectPool(CurrentlyViewedCharacter.Slots.Skills.List);
     }
     public void HotBarSelection(int slotIndex)
     {
@@ -329,12 +348,12 @@ public class UIManager : MonoBehaviour
             slotIndex >= CharacterMath.HOT_BAR_SLOTS)
             return;
 
-        GameState.pController.CurrentCharacter.CurrentAction = 
-            (CharacterAbility)((AbilityButton)GameState.pController.CurrentCharacter.Slots.HotBar.Occupants.Places[slotIndex]).Root;
+        GameState.pController.CurrentCharacter.CurrentAction =
+            (CharacterAbility)((AbilityButton)GameState.pController.CurrentCharacter.Slots.HotBar.List[slotIndex]).Root;
     }
     public void LootSelectedContainerItem(int containerIndex, int inventoryIndex)
     {
-        CurrentlyViewedCharacter.Slots.Inventory.LootContainer(GameState.pController.targetContainer, containerIndex, inventoryIndex);
+        CurrentlyViewedCharacter.Slots.Inventory.VirtualParent.LootContainer(GameState.pController.targetContainer, containerIndex, inventoryIndex);
         UpdateGameMenuCanvasState(CharPage.Looting);
     }
     #endregion
@@ -363,20 +382,20 @@ public class UIManager : MonoBehaviour
                 break;
 
             case CharPage.Character:
-                UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
+                //UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.List);
                 CharSheet.SetActive(true);
                 EquipmentPanel.SetActive(true);
                 InventoryPanel.SetActive(true);
                 break;
 
             case CharPage.Looting:
-                UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
+                //UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.List);
                 InventoryPanel.SetActive(true);
                 Container.SetActive(true);
                 break;
 
             case CharPage.Skills:
-                UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
+                //UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.List);
                 Strategy.SetActive(true);
                 SkillsPanel.SetActive(true);
                 break;
@@ -412,44 +431,28 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    public Page GeneratePage(SlotPageType type)
+    public ListPanel GenerateGridPage(Page source)
     {
-        RectTransform folder = null;
-        switch(type)
-        {
-            case SlotPageType.INVENTORY:
-                folder = Inventories.ParentContent;
-                break;
-
-            case SlotPageType.EQUIPMENT:
-                folder = Equipments.ParentContent;
-                break;
-
-            case SlotPageType.HOT_BAR:
-                folder = HotBars.ParentContent;
-                break;
-
-            case SlotPageType.SKILLS:
-                folder = SkillLists.ParentContent;
-                break;
-        }
-
-        return null;
-        //GameObject newPageObject = Instantiate()
+        GameObject newPanelObject = Instantiate(ButtonPanelPrefab, source.ParentContent);
+        ListPanel newPanel = newPanelObject.GetComponent<ListPanel>();
+        newPanel.Setup(source);
+        Debug.Log("New button panel made!");
+        return newPanel;
     }
     void BuildInventoryPlaceHolders()
     {
-        ButtonOptions buttonOptions = new ButtonOptions(Inventories, true);
-        PageOptions pageOptions = new PageOptions(buttonOptions, CharacterMath.PARTY_INVENTORY_MAX);
-        Inventories.Setup(pageOptions);
+        ButtonOptions buttonOptions = new ButtonOptions(Inventories.PlaceHolders, true, CharacterMath.PARTY_INVENTORY_MAX);
+        Inventories.Setup(buttonOptions);
 
+        buttonOptions = new ButtonOptions(HotBars.PlaceHolders, true, CharacterMath.HOT_BAR_SLOTS);
+        HotBars.Setup(buttonOptions);
     }
 
     /*void BuildPagePlaceHolders(SourceList source)
     {
 
     }*/
-    
+
     public void PopulateEffectPanels(CharacterAbility selection)
     {
         // Clear old effectPanels
@@ -694,15 +697,16 @@ public class UIManager : MonoBehaviour
     {
         //try
         //{
-            GameState = (GameState)GameObject.FindGameObjectWithTag("GAME").GetComponent("GameState");
-            UIinitializer();
-            PauseMenuRefresh();
-            UIinitialized = true;
+        GameState = (GameState)GameObject.FindGameObjectWithTag("GAME").GetComponent("GameState");
+        UIinitializer();
+        BuildInventoryPlaceHolders();
+        PauseMenuRefresh();
+        UIinitialized = true;
         //}
 
         //catch
         //{
-            //Debug.Log("Failed to initialize UI");
+        //Debug.Log("Failed to initialize UI");
         //}
     }
 
