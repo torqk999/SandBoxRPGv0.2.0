@@ -30,9 +30,7 @@ public class PlaceHolderButton : SelectableButton
 {
     [Header("PlaceHolder")]
     public PlaceHolderType PlaceType;
-    //public DraggableButton[] OccupantSlots;
-    //public DraggableButton Occupant;
-
+    
     public bool CheckCanOccupy(DraggableButton drag)
     {
         switch (PlaceType)
@@ -58,20 +56,16 @@ public class PlaceHolderButton : SelectableButton
         }
         return true;
     }
-
     public override bool Vacate()
     {
-        if (SlotPage.Occupants[SlotIndex] == null)
+        if (Page.Occupants.Places[SlotIndex] == null)
             return true;
 
-        return SlotPage.Occupants[SlotIndex].Vacate();
+        return Page.Occupants.Places[SlotIndex].Vacate();
     }
     public void ResetImage()
     {
-        if (Root == null || Root.sprite == null)
-            MyImage.sprite = UIMan.PlaceHolderSprite;
-        else
-            MyImage.sprite = Root.sprite;
+        MyImage.sprite = UIMan.PlaceHolderSprite;
     }
 
     public override void Init(ButtonOptions options, RootScriptObject root = null)

@@ -35,6 +35,7 @@ public class UIManager : MonoBehaviour
     public Sprite[] EmptyGearSprites;
     public Sprite EmptyRingSprite;
     public Sprite EmptyButtonSprite;
+    public Sprite PlaceHolderSprite;
 
     [Header("===LOGIC===")]
     public GameState GameState;
@@ -51,15 +52,8 @@ public class UIManager : MonoBehaviour
     public CharPage OldPage;
 
     [Header("Prefabs")]
-    //public GameObject InventoryButtonPrefab;
-    //public GameObject SkillListButtonPrefab;
-    //public GameObject SkillSlotButtonPrefab;
-    public Sprite PlaceHolderSprite;
-
-    public GameObject InventoryPrefab;
-    public GameObject HotBarPrefab;
-    public GameObject EquipPagePrefab;
-    public GameObject SkillPagePrefab;
+    public GameObject CharacterInfoPrefab;
+    public GameObject ButtonPagePrefab;
 
     public GameObject SkillButtonPrefab;
     public GameObject DraggableButtonPrefab;
@@ -67,17 +61,18 @@ public class UIManager : MonoBehaviour
     public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
 
-    [Header("Folders")]
-    public Transform PartyMembers;
-
-    public RectTransform InventoriesContent;
-    public RectTransform ContainersContent;
+    [Header("Random Folders")]
+    public RectTransform CharacterInfoContent;
     public RectTransform EffectStatsContent;
 
-    [Header("HUD")]
-    public GameObject Interaction;
-    public GameObject Actionbar;
-    public GameObject Party;
+    [Header("Menu Logic")]
+    public Character CurrentlyViewedCharacter;
+
+    public Page Containers;
+    public Page Inventories;
+    public Page Equipments;
+    public Page HotBars;
+    public Page SkillLists;
 
     [Header("CharSheets")]
     public List<GameObject> AllSheetElements = new List<GameObject>();
@@ -97,7 +92,7 @@ public class UIManager : MonoBehaviour
     /////////////////////////////////////////////////////////
 
     [Header("Canvases")]
-    //public Canvas ToolTipCanvas;
+    public Canvas ToolTipCanvas;
     public Canvas PauseMenuCanvas;
     public Canvas GameMenuCanvas;
     public Canvas HUDcanvas;
@@ -109,15 +104,11 @@ public class UIManager : MonoBehaviour
 
     ////////////////////////////////////////////////////////
 
-    [Header("Menu Logic")]
-    // Cheat!!
-    //public Inventory CurrentlyViewedInventory;
-    public CharacterSlots CurrentlyViewedCharacter;
-
-    public ArrayPanel InventoryPlaceHolders;
-    public ArrayPanel EquipPlaceHolders;
-    public ArrayPanel RingPlaceHolders;
-    public ArrayPanel HotBarPlaceHolder;
+    [Header("HUD")]
+    public GameObject Interaction;
+    public GameObject Actionbar;
+    public GameObject Party;
+    public Transform PartyMembers; // ??
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;
@@ -149,19 +140,6 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region BUTTONS
-
-    public CharacterSlots GenerateCharacterSlotsPanel()
-    {
-        CharacterSlots newSlots = null;
-        return newSlots;
-    }
-
-    public GameObject GenerateInventoryPanel(Transform contentFolder, string name = "New Inventory")
-    {
-        GameObject newInventory = Instantiate(InventoryPrefab, contentFolder);
-        newInventory.name = name;
-        return newInventory;
-    }
     public PlaceHolderButton GeneratePlaceHolder(ButtonOptions options)
     {
         options.ButtonType = ButtonType.PLACE;
@@ -186,7 +164,7 @@ public class UIManager : MonoBehaviour
                 newButton = Instantiate(prefab, options.Page.PlaceHolders.PlaceContent);
                 break;
 
-            case ButtonType.DRAG:
+            case ButtonType.ITEM:
                 prefab = DraggableButtonPrefab;
                 newButton = Instantiate(prefab, options.Page.Occupants.PlaceContent);
                 break;
@@ -200,6 +178,9 @@ public class UIManager : MonoBehaviour
         return newButton;
     }
 
+    #endregion
+
+    #region REMAP
     void CreateRemapCallBack(Button button, int index)
     {
         button.onClick.AddListener(() => Remap(index, button));
@@ -329,9 +310,9 @@ public class UIManager : MonoBehaviour
         if (selection == null)
             return;
 
-        UnselectPool(CurrentlyViewedCharacter.Inventory.Occupants.Places);
-        UnselectPool(CurrentlyViewedCharacter.Equips.Occupants.Places);
-        UnselectPool(CurrentlyViewedCharacter.Rings.Occupants.Places);
+        UnselectPool(CurrentlyViewedCharacter.Slots.Inventory.Occupants.Places);
+        UnselectPool(CurrentlyViewedCharacter.Slots.Equips.Occupants.Places);
+        //UnselectPool(CurrentlyViewedCharacter.Rings.Occupants.Places);
         //UnselectPool(HotBarButtons);
     }
     public void StrategyPageSelection(SelectableButton selection)
@@ -339,8 +320,8 @@ public class UIManager : MonoBehaviour
         if (selection == null)
             return;
 
-        UnselectPool(HotBarPlaceHolder.Places);
-        UnselectPool(SkillListButtons);
+        UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
+        UnselectPool(CurrentlyViewedCharacter.Slots.Skills.Occupants.Places);
     }
     public void HotBarSelection(int slotIndex)
     {
@@ -349,11 +330,11 @@ public class UIManager : MonoBehaviour
             return;
 
         GameState.pController.CurrentCharacter.CurrentAction = 
-            ((AbilityButton)GameState.pController.CurrentCharacter.Slots.HotBar.Occupants.Places[slotIndex]).;
+            (CharacterAbility)((AbilityButton)GameState.pController.CurrentCharacter.Slots.HotBar.Occupants.Places[slotIndex]).Root;
     }
     public void LootSelectedContainerItem(int containerIndex, int inventoryIndex)
     {
-        CurrentlyViewedCharacter.Inventory.LootContainer(GameState.pController.targetContainer, containerIndex, inventoryIndex);
+        CurrentlyViewedCharacter.Slots.Inventory.LootContainer(GameState.pController.targetContainer, containerIndex, inventoryIndex);
         UpdateGameMenuCanvasState(CharPage.Looting);
     }
     #endregion
@@ -382,20 +363,20 @@ public class UIManager : MonoBehaviour
                 break;
 
             case CharPage.Character:
-                UnselectPool(CurrentlyViewedCharacter.HotBar.Occupants.Places);
+                UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
                 CharSheet.SetActive(true);
                 EquipmentPanel.SetActive(true);
                 InventoryPanel.SetActive(true);
                 break;
 
             case CharPage.Looting:
-                UnselectPool(CurrentlyViewedCharacter.HotBar.Occupants.Places);
+                UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
                 InventoryPanel.SetActive(true);
                 Container.SetActive(true);
                 break;
 
             case CharPage.Skills:
-                UnselectPool(CurrentlyViewedCharacter.HotBar.Occupants.Places);
+                UnselectPool(CurrentlyViewedCharacter.Slots.HotBar.Occupants.Places);
                 Strategy.SetActive(true);
                 SkillsPanel.SetActive(true);
                 break;
@@ -431,26 +412,44 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-
-    void BuildCharacterPlaceHolders()
+    public Page GeneratePage(SlotPageType type)
     {
-        InventoryPlaceHolders.Resize(CharacterMath.PARTY_INVENTORY_MAX);
-        EquipPlaceHolders.Resize(CharacterMath.EQUIP_SLOTS_COUNT);
-        RingPlaceHolders.Resize(CharacterMath.RING_SLOT_COUNT);
-        HotBarPlaceHolder.Resize(CharacterMath.HOT_BAR_SLOTS);
-    //SkillPlaceHolder.Resize(CharacterMath.PARTY_INVENTORY_MAX);
-    }
-    /*void BuildHotBarPlaceHolders()
-    {
-        HotBarPlaceHolder.Resize(CharacterMath.ABILITY_SLOTS);
-        ButtonOptions options = new ButtonOptions(HotBarPlaceHolder);
-        options.PlaceType = PlaceHolderType.SKILL;
-        for (int i = 0; i < CharacterMath.ABILITY_SLOTS; i++)
+        RectTransform folder = null;
+        switch(type)
         {
-            options.Index = i;
-            GeneratePlaceHolder(options);
+            case SlotPageType.INVENTORY:
+                folder = Inventories.ParentContent;
+                break;
+
+            case SlotPageType.EQUIPMENT:
+                folder = Equipments.ParentContent;
+                break;
+
+            case SlotPageType.HOT_BAR:
+                folder = HotBars.ParentContent;
+                break;
+
+            case SlotPageType.SKILLS:
+                folder = SkillLists.ParentContent;
+                break;
         }
+
+        return null;
+        //GameObject newPageObject = Instantiate()
+    }
+    void BuildInventoryPlaceHolders()
+    {
+        ButtonOptions buttonOptions = new ButtonOptions(Inventories, true);
+        PageOptions pageOptions = new PageOptions(buttonOptions, CharacterMath.PARTY_INVENTORY_MAX);
+        Inventories.Setup(pageOptions);
+
+    }
+
+    /*void BuildPagePlaceHolders(SourceList source)
+    {
+
     }*/
+    
     public void PopulateEffectPanels(CharacterAbility selection)
     {
         // Clear old effectPanels
@@ -507,9 +506,9 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    void PopulateEquipAndRingSlots()
+    /*void PopulateEquipAndRingSlots()
     {
-        for (int i = 0; i < CharacterMath.EQUIP_SLOTS_COUNT && i < EquipButtons.Length; i++)
+        for (int i = 0; i < CharacterMath.WEAR_SLOTS_COUNT && i < EquipButtons.Length; i++)
         {
             if (EquipButtons[i] != null)
             {
@@ -526,7 +525,7 @@ public class UIManager : MonoBehaviour
                 //CreateRemapCallBack(RingButtons[i], i, ButtonType.SLOT_RING);
             }
         }
-    }
+    }*/
     #endregion
 
     #region HUD
@@ -667,8 +666,8 @@ public class UIManager : MonoBehaviour
 
     void UIinitializer()
     {
-        PopulateEquipAndRingSlots();
-        BuildHotBarPlaceHolders();
+        //PopulateEquipAndRingSlots();
+        //BuildHotBarPlaceHolders();
 
         CurrentMenu = GameMenu.NONE;
 

@@ -77,9 +77,9 @@ public class DraggableButton : SelectableButton
     }
     void CheckSnapping()
     {
-        if (SlotPage.Occupants.Places[SlotIndex] != null && !Following &&
-            MyRect.anchoredPosition != SlotPage.Occupants.Places[SlotIndex].MyRect.anchoredPosition)
-            MyRect.anchoredPosition = SlotPage.Occupants.Places[SlotIndex].MyRect.anchoredPosition;
+        if (Page.Occupants.Places[SlotIndex] != null && !Following &&
+            MyRect.anchoredPosition != Page.Occupants.Places[SlotIndex].MyRect.anchoredPosition)
+            MyRect.anchoredPosition = Page.Occupants.Places[SlotIndex].MyRect.anchoredPosition;
             //SnapButton(Panel.Places[SlotIndex]);
     }
     void FollowMouse()
@@ -98,15 +98,14 @@ public class DraggableButton : SelectableButton
     }
     public override bool Vacate()
     {
-        if (SlotPage == null ||
-            SlotPage.Occupants == null ||
-            SlotPage.Occupants.Places == null ||
+        if (Page == null ||
+            Page.Occupants.Places == null ||
             SlotIndex < 0 ||
-            SlotIndex >= SlotPage.Occupants.Places.Length )
+            SlotIndex >= Page.Occupants.Places.Count )
             return false;
 
-        SlotPage.Occupants.Places[SlotIndex] = null;
-        SlotPage = null;
+        Page.Occupants.Places[SlotIndex] = null;
+        Page = null;
         SlotIndex = -1;
 
         // Un parent? Should be re-parenting anyway...
@@ -129,9 +128,9 @@ public class DraggableButton : SelectableButton
         Vacate();
 
         return false;
-        SlotPage = place.SlotPage;
+        Page = place.Page;
         SlotIndex = place.SlotIndex;
-        SlotPage.Occupants[SlotIndex] = this;
+        Page.Occupants.Places[SlotIndex] = this;
         
         return true;
     }
@@ -154,14 +153,14 @@ public class DraggableButton : SelectableButton
         }
         if (success)
         {
-            SlotPage = ButtonTarget.SlotPage;
+            Page = ButtonTarget.Page;
         }
         /*Debug.Log($"Place Stuff:\n" +
             $"anchoredPositiion: {Place.MyRect.anchoredPosition}\n" +
             $"localPosition: {Place.MyRect.localPosition}\n" +
             $"position: {MyRect.position}");*/
-        MyRect.SetParent(SlotPage.Occupants.PlaceContent);
-        MyRect.anchoredPosition = SlotPage.Occupants.Places[SlotIndex].MyRect.anchoredPosition;
+        MyRect.SetParent(Page.Occupants.PlaceContent);
+        MyRect.anchoredPosition = Page.Occupants.Places[SlotIndex].MyRect.anchoredPosition;
     }
     #endregion 
 
@@ -243,7 +242,7 @@ public class DraggableButton : SelectableButton
 
         
 
-        transform.SetParent(SlotPage.Occupants.PlaceContent);
+        transform.SetParent(Page.Occupants.PlaceContent);
         transform.localScale = Vector3.one;
 
         //SlotFamily = options.Panel.Occupants;

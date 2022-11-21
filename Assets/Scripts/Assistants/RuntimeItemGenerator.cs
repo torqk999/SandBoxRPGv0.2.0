@@ -28,6 +28,6 @@ public class RuntimeItemGenerator : MonoBehaviour
             return;
 
         RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
-        Character.Inventory.PushItemIntoInventory((ItemObject)Item.GenerateRootObject(options));
+        //Character.Inventory.PushItemIntoInventory((ItemObject)Item.GenerateRootObject(options));
     }
 }

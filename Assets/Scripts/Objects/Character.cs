@@ -11,7 +11,7 @@ public enum AnimatorType
     BIRD,
     FISH
 }
-public enum WearSlot
+public enum EquipSlot
 {
     HEAD,
     NECK,
@@ -21,13 +21,10 @@ public enum WearSlot
     GLOVES,
     LEGS,
     BOOTS,
-}
-
-public enum HandSlot
-{
     MAIN,
     OFF,
-    RING,
+    RING_0,
+    RING_1
 }
 
 public class Character : Pawn, Interaction
@@ -44,6 +41,7 @@ public class Character : Pawn, Interaction
     public bool bIntent;
 
     [Header("Stats")]
+    public CharacterSlots Slots;
     public RawStatPackage BaseStats;
     public RawStatPackage CurrentStats;
     public RawStatPackage SustainedStatValues;
@@ -52,7 +50,6 @@ public class Character : Pawn, Interaction
     public ElementPackage CurrentResistances;
 
     [Header("Logic")]
-    public int ID;
     public bool bIsPaused;
     public bool bIsSpawn;
     public bool bTimedSpawn;
@@ -62,7 +59,6 @@ public class Character : Pawn, Interaction
     public float GlobalCDtimer;
 
     [Header("References")]
-    public CharacterSlots Slots;
     public List<Character> AOE_buffer;
     public List<BaseEffect> Risiduals;
     public Party CurrentParty;
@@ -150,7 +146,7 @@ public class Character : Pawn, Interaction
         CurrentResistances.Clone(BaseResistances);
 
         Risiduals = new List<BaseEffect>();
-        RebuildAbilityList();
+        //RebuildAbilityList();
         //UpdateAbilites();
     }
     /*void RebuildAbilityList()
@@ -182,13 +178,13 @@ public class Character : Pawn, Interaction
     }*/
     #endregion
 
-    #region EQUIPPING
-    public bool InventoryEquipSelection(int equipIndex, int inventoryIndex, bool ringIndex = false)
+    /*#region EQUIPPING
+    public bool InventoryEquipSelection(int equipIndex, int inventoryIndex)
     {
         if (equipIndex != -1)
         {
-            if (ringIndex)
-                return AttemptEquipRemoval((EquipmentButton[])Slots.Rings.Occupants.Places, equipIndex);
+            //if (ringIndex)
+                //return AttemptEquipRemoval((EquipmentButton[])Slots.Rings.Occupants.Places, equipIndex);
             return AttemptEquipRemoval((EquipmentButton[])Slots.Equips.Occupants.Places, equipIndex);
         }
             
@@ -216,11 +212,11 @@ public class Character : Pawn, Interaction
             equipIndex >= slotList.Length)
             return false;
 
-        Equipment equip = slotList[equipIndex];
+        Equipment equip = (Equipment)slotList[equipIndex].Root;
         if (equip == null)
             return false;
 
-        return equip.UnEquipFromCharacter(this);
+        return equip.UnEquipFromCharacter();
     }
     public Equipment SwapEquipWithInventory(Equipment input, int inventoryIndex)
     {
@@ -228,9 +224,9 @@ public class Character : Pawn, Interaction
         if (input is Hand &&
             ((Hand)input).Instantiation != null)
             Destroy(((Hand)input).Instantiation);
-        return (Equipment)Inventory.SwapItems(input, inventoryIndex);
+        return (Equipment)Slots.Inventory.SwapItems(input, inventoryIndex);
     }
-    #endregion
+    #endregion*/
 
     #region COMBAT
     public float GenerateRawStatValueModifier(ValueType type, RawStat stat)
@@ -478,20 +474,20 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.HOT_BAR_SLOTS - 1; i > -1; i--)
-            if (Slots.HotBar.Roots[i] != null && Abilities.Find(x => x == Slots.HotBar.Roots[i]) == null)
-                Slots.HotBar.Roots[i] = null;
+            if (Slots.HotBar.Occupants.Places[i] != null && Slots.Skills.Occupants.Places.Find(x => ((AbilityButton)x).Root.RootLogic.Options.ID == ((AbilityButton)Slots.HotBar.Occupants.Places[i]).Root.RootLogic.Options.ID) == null)
+                Slots.HotBar.Occupants.Places[i] = null;
     }
     void UpdateAbilityCooldowns()
     {
-        for (int i = 0; i < Slots.HotBar.Roots.Length; i++)
-            if (Slots.HotBar.Roots[i] != null)
-                ((CharacterAbility)Slots.HotBar.Roots[i]).UpdateCooldowns();
+        for (int i = 0; i < Slots.HotBar.Occupants.Places.Count; i++)
+            if (Slots.HotBar.Occupants.Places[i] != null)
+                ((CharacterAbility)((AbilityButton)Slots.HotBar.Occupants.Places[i]).Root).UpdateCooldowns();
     }
     void UpdatePassiveAbilities()
     {
-        foreach (CharacterAbility ability in Abilities)
+        foreach (AbilityButton ability in Slots.Skills.Occupants.Places)
         {
-            ability.UpdatePassiveTimer();
+            ((CharacterAbility)ability.Root).UpdatePassiveTimer();
         }
     }
     void UpdateRisidualEffects()

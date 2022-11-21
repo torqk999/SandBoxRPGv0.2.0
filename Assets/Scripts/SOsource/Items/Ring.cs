@@ -32,9 +32,9 @@ public class Ring : Hand
     
     public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        slotIndex = (int)HandSlot.RING;
-        if (character.Slots.Rings.Occupants.Places[slotIndex] != null &&
-            !((EquipmentButton)character.Slots.Rings.Occupants.Places[slotIndex]).UnEquipFromCharacter())
+        slotIndex = (int)EquipSlot.RING_0;
+        if (character.Slots.Equips.Occupants.Places[slotIndex] != null &&
+            !((EquipmentButton)character.Slots.Equips.Occupants.Places[slotIndex]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

@@ -6,7 +6,7 @@ using UnityEngine;
 public class Wearable : Equipment
 {
     [Header("Wearable Properties")]
-    public WearSlot WearSlot;
+    public EquipSlot WearSlot;
     public MaterialType BaseMaterial;
     public MaterialType TrimMaterial;
 

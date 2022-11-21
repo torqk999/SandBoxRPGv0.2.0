@@ -6,7 +6,7 @@ public class GenericContainer : MonoBehaviour,  Interaction
 {
     public GameState GameState;
     public InteractData InteractData;
-    public SlotPage Inventory;
+    public Page Inventory;
     //public Inventory Inventory;
     public bool bIsLocked;
     public string TriggerTag;

@@ -196,7 +196,7 @@ public class CharacterManager : MonoBehaviour
             spawnPointFolder.GetChild(i).gameObject.SetActive(false);
         }
 
-        cloneParty.PartyLoot.gameObject.SetActive(false); // <<-- Temporary hack
+        cloneParty.PartyLoot.Occupants.PlaceContent.gameObject.SetActive(false); // <<-- Temporary hack
         Parties.Add(cloneParty);
         return true;
     }
@@ -209,7 +209,7 @@ public class CharacterManager : MonoBehaviour
 
         Party newParty = partyObject.AddComponent<Party>();
 
-        newParty.SetupParty(GameState, faction, name, formation);
+        newParty.SetupParty(GameState, faction, name);
         newParty.CurrentMemberIndex = startIndex;
 
         newParty.Formation = formation;
@@ -277,7 +277,7 @@ public class CharacterManager : MonoBehaviour
         character.CurrentParty = party;
         character.bDebugMode = GameState.bDebugEffects;
         character.Sheet.Faction = party.Faction;
-        character.Inventory = party.PartyLoot;
+        character.Slots.Inventory = party.PartyLoot;
         character.CurrentProximityInteractions = new List<Interaction>();
 
         // Slots

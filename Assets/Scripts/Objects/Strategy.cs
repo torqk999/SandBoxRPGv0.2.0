@@ -61,8 +61,10 @@ public class Strategy : MonoBehaviour
     }
     CharacterAbility ReturnComparableAbility(CharacterAbility source)
     {
-        foreach (CharacterAbility ability in Character.Abilities) // Check all abilities
+        foreach (AbilityButton abilityButton in Character.Slots.Skills.Occupants.Places) // Check all abilities
         {
+            CharacterAbility ability = (CharacterAbility)abilityButton.Root;
+
             if (ability.School != source.School)
                 continue;
 

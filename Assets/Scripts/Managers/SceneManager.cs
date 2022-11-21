@@ -60,7 +60,7 @@ public class SceneManager : MonoBehaviour
         if (index > -1)
         {
             Debug.Log("old bag");
-            SlotPage oldLootBag = ((GenericContainer)character.CurrentProximityInteractions[index]).Inventory;
+            Page oldLootBag = ((GenericContainer)character.CurrentProximityInteractions[index]).Inventory;
             if (GameState.pController.CurrentCharacter.Slots.Inventory.TransferItem(oldLootBag, inventoryIndex))
                 return true;
         }
@@ -82,7 +82,7 @@ public class SceneManager : MonoBehaviour
             return null;
 
         GameObject newLootBag = Instantiate(LootBagPrefab, character.Root.position, character.Root.rotation, LootBagFolder);
-        GameObject newLootPanel = GameState.UIman.GenerateInventoryPanel(GameState.UIman.ContainersContent, "newLootBag");
+        //GameObject newLootPanel = GameState.UIman.GenerateInventoryPanel(GameState.UIman.ContainersContent, "newLootBag");
 
         //newLootBag.name = newLootBag.name.Replace("(Clone)", ":" + CurrentLootBagIndex);
 
@@ -100,7 +100,7 @@ public class SceneManager : MonoBehaviour
         GenericContainer container = newLootBag.GetComponent<GenericContainer>();
         //SlotPage newInventory = newLootPanel.GetComponent<SlotPage>();
 
-        container.Inventory.SetupPage(GameState, CharacterMath.LOOT_BAG_MAX, "New Loot Drop");
+        //container.Inventory.SetupPage(GameState, CharacterMath.LOOT_BAG_MAX, "New Loot Drop");
 
         container.GameState = GameState;
         container.TriggerTag = GlobalConstants.TAG_CHARACTER;
