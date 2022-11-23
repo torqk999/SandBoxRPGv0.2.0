@@ -27,7 +27,7 @@ public class RootScriptObject : ScriptableObject
         options.ButtonType = ButtonType.DEFAULT; // test point, shouldn't proc
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         DraggableButton myButton = buttonObject.AddComponent<DraggableButton>();
-        myButton.Init(options, this);
+        myButton.Init(options);
         return myButton;
     }
     public virtual RootScriptObject GenerateRootObject(RootOptions options)

@@ -38,7 +38,7 @@ public class Equipment : ItemObject
         options.PlaceType = PlaceHolderType.EQUIP;
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         EquipmentButton myButton = buttonObject.AddComponent<EquipmentButton>();
-        myButton.Init(options, this);
+        myButton.Init(options);
         return myButton;
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
@@ -92,34 +92,6 @@ public class Equipment : ItemObject
 
     public virtual bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        if (character == null)
-            return false; // No character
-
-        if (slotIndex == -1)
-            return false; // Failed slot index
-
-        if (character.Slots.Equips.List[slotIndex] == this)
-            return false; // Already equipped here
-
-        if (RootLogic.Button.Panel.List == null ||
-            RootLogic.Button.SlotIndex < 0 ||
-            RootLogic.Button.SlotIndex >= character.Slots.Inventory.List.Count ||
-            RootLogic.Button.Panel.List[RootLogic.Button.SlotIndex] == null)
-            return false; // Unable to source or missng
-
-        if (character.Slots.Equips.List == null ||
-            slotIndex < 0 ||
-            slotIndex >= character.Slots.Equips.List.Count)
-            return false; // Unable to find target
-
-        List<SelectableButton> equipSlots = character.Slots.Equips.List;
-        if (equipSlots[slotIndex] != null && !((Equipment)((EquipmentButton)equipSlots[slotIndex]).Root).UnEquipFromCharacter())
-            return false; // failed to open up slot
-
-        
-        
-        
-
         UpdateCharacterRender(character);
 
         foreach (CharacterAbility ability in Abilities)
@@ -157,27 +129,9 @@ public class Equipment : ItemObject
 
     public virtual bool UnEquipFromCharacter()
     {
-        if (RootLogic.Button.Panel == null ||
-            RootLogic.Button.SlotIndex < 0 ||
-            RootLogic.Button.SlotIndex >= RootLogic.Button.Panel.List.Count)
-        {
-            Debug.Log("Not equipped!");
-            return false;
-        }
-
-        if (EquippedTo.Slots.Inventory == null)
-        {
-            Debug.Log("Null inventory!");
-            return false;
-        }
-
-        if (!EquippedTo.Slots.Inventory.VirtualParent.PushItemIntoOccupants(this))
-        {
-            Debug.Log("No room in inventory!");
-            return false;
-        }
-        RootLogic.Button.Panel.List[RootLogic.Button.SlotIndex] = null;
-        RootLogic.Button.Panel = null;
+        if (EquippedTo == null)
+            return true;
+        /////// DONT LOSE THIS ////////////////
 
         foreach (CharacterAbility equipped in Abilities)
         {
@@ -198,6 +152,8 @@ public class Equipment : ItemObject
             effectAbility.Logic.SourceCharacter.UpdateAbilites();
             effectAbility.Logic.SourceCharacter = null;
         }
+
+        //////////////////////////////////////
 
         EquippedTo = null;
         UpdateCharacterRender(EquippedTo, false);

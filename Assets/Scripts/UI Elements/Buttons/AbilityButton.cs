@@ -21,9 +21,9 @@ public class AbilityButtonEditor : Editor
 public class AbilityButton : DraggableButton
 {
 
-    public override void Init(ButtonOptions options, RootScriptObject root = null)
+    public override void Init(ButtonOptions options)
     {
-        base.Init(options, root);
+        base.Init(options);
     }
     protected override void Start()
     {

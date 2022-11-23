@@ -48,7 +48,7 @@ public class SkillButton : DraggableButton
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
-        UIMan.CharacterPageSelection(this);
+        UIMan.CharacterPageSelection();
     }
 
     // Start is called before the first frame update

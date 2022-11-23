@@ -478,7 +478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.0009360871}
+  m_AnchoredPosition: {x: 0, y: 0.00096118153}
   m_SizeDelta: {x: 260, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &49260453
@@ -498,6 +498,7 @@ MonoBehaviour:
   Occupants: {fileID: 0}
   PlaceHolders: {fileID: 898997874}
   MaximumSize: 0
+  Refresh: 0
 --- !u!1 &52793819
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,6 +2209,7 @@ MonoBehaviour:
   Occupants: {fileID: 0}
   PlaceHolders: {fileID: 987754444}
   MaximumSize: 0
+  Refresh: 0
 --- !u!1 &266702716
 GameObject:
   m_ObjectHideFlags: 0
@@ -2883,9 +2885,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -3342,7 +3344,6 @@ MonoBehaviour:
   GameState: {fileID: 0}
   ToolTip: {fileID: 361174408}
   Dragging: {fileID: 0}
-  GameStateLinked: 0
   UIinitialized: 0
   CurrentMenu: 0
   CurrentPage: 0
@@ -3355,7 +3356,6 @@ MonoBehaviour:
   PartyMemberPanelPrefab: {fileID: 266702716}
   CharacterInfoContent: {fileID: 0}
   EffectStatsContent: {fileID: 679625087}
-  CurrentlyViewedCharacter: {fileID: 0}
   Containers: {fileID: 1254299848}
   Inventories: {fileID: 49260453}
   Equipments: {fileID: 1501570645}
@@ -3365,10 +3365,10 @@ MonoBehaviour:
   CharSheet: {fileID: 967329283}
   Container: {fileID: 698293321}
   Strategy: {fileID: 342570671}
-  EquipmentPanel: {fileID: 502628669}
+  EquipmentPanel: {fileID: 1501570643}
   InventoryPanel: {fileID: 1649320554}
   SkillsPanel: {fileID: 1441937447}
-  ToolTipCanvas: {fileID: 0}
+  ToolTipCanvas: {fileID: 340779538}
   PauseMenuCanvas: {fileID: 1510554439}
   GameMenuCanvas: {fileID: 1362225222}
   HUDcanvas: {fileID: 281294512}
@@ -3554,9 +3554,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -4557,98 +4557,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 498645151}
   m_CullTransparentMesh: 1
---- !u!1 &502628669
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 502628670}
-  - component: {fileID: 502628673}
-  - component: {fileID: 502628672}
-  - component: {fileID: 502628674}
-  m_Layer: 0
-  m_Name: EquipPanel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &502628670
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502628669}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1501570644}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 400}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &502628672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502628669}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &502628673
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502628669}
-  m_CullTransparentMesh: 1
---- !u!114 &502628674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 502628669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 352f5e666e73ac0438bc087fca182182, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  VirtualParent: {fileID: 0}
-  PhysicalParent: {fileID: 0}
-  List: []
 --- !u!1 &530834975
 GameObject:
   m_ObjectHideFlags: 0
@@ -5037,9 +4945,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -5400,7 +5308,6 @@ GameObject:
   - component: {fileID: 587463931}
   - component: {fileID: 587463934}
   - component: {fileID: 587463933}
-  - component: {fileID: 587463935}
   m_Layer: 0
   m_Name: Test Button
   m_TagString: Untagged
@@ -5467,18 +5374,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 587463930}
   m_CullTransparentMesh: 1
---- !u!114 &587463935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 587463930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71f0cd05d8863fa4aaa049b3b9fb09cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &592536065
 GameObject:
   m_ObjectHideFlags: 0
@@ -6068,9 +5963,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -7271,9 +7166,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -7690,9 +7585,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -7823,7 +7718,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 898997866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 352f5e666e73ac0438bc087fca182182, type: 3}
+  m_Script: {fileID: 11500000, guid: c1864156f0d962f4baebca7aec1e468a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   VirtualParent: {fileID: 49260453}
@@ -8436,9 +8331,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -8770,11 +8665,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 987754439}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 352f5e666e73ac0438bc087fca182182, type: 3}
+  m_Script: {fileID: 11500000, guid: c1864156f0d962f4baebca7aec1e468a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VirtualParent: {fileID: 0}
-  PhysicalParent: {fileID: 0}
+  VirtualParent: {fileID: 263306831}
+  PhysicalParent: {fileID: 987754440}
   List: []
 --- !u!1 &1032224390
 GameObject:
@@ -8903,9 +8798,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -9141,12 +9036,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1070336090}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 352f5e666e73ac0438bc087fca182182, type: 3}
+  m_Script: {fileID: 11500000, guid: c1864156f0d962f4baebca7aec1e468a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VirtualParent: {fileID: 0}
-  PhysicalParent: {fileID: 0}
-  List: []
+  VirtualParent: {fileID: 1501570645}
+  PhysicalParent: {fileID: 1070336091}
+  List:
+  - {fileID: 891627197}
+  - {fileID: 1269435573}
+  - {fileID: 1695829647}
+  - {fileID: 538943647}
+  - {fileID: 330476264}
+  - {fileID: 971413616}
+  - {fileID: 1434444648}
+  - {fileID: 1032224395}
+  - {fileID: 763975313}
+  - {fileID: 654538495}
+  - {fileID: 1860351087}
+  - {fileID: 363597565}
 --- !u!1 &1077432816
 GameObject:
   m_ObjectHideFlags: 0
@@ -9703,7 +9610,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1201676401}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 352f5e666e73ac0438bc087fca182182, type: 3}
+  m_Script: {fileID: 11500000, guid: c1864156f0d962f4baebca7aec1e468a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   VirtualParent: {fileID: 0}
@@ -10462,6 +10369,7 @@ MonoBehaviour:
   Occupants: {fileID: 0}
   PlaceHolders: {fileID: 1894300250}
   MaximumSize: 0
+  Refresh: 0
 --- !u!1 &1269435568
 GameObject:
   m_ObjectHideFlags: 0
@@ -10589,9 +10497,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -11612,9 +11520,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -12378,8 +12286,9 @@ MonoBehaviour:
   UIman: {fileID: 361174406}
   ParentContent: {fileID: 1485985321}
   Occupants: {fileID: 0}
-  PlaceHolders: {fileID: 0}
+  PlaceHolders: {fileID: 1699857003}
   MaximumSize: 0
+  Refresh: 0
 --- !u!1 &1501570643
 GameObject:
   m_ObjectHideFlags: 0
@@ -12410,7 +12319,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1070336091}
-  - {fileID: 502628670}
   m_Father: {fileID: 1540235479}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12436,6 +12344,7 @@ MonoBehaviour:
   Occupants: {fileID: 0}
   PlaceHolders: {fileID: 1070336093}
   MaximumSize: 0
+  Refresh: 0
 --- !u!1 &1506733733
 GameObject:
   m_ObjectHideFlags: 0
@@ -14770,7 +14679,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2030928935}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999636
+  m_Size: 0.99999624
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15091,9 +15000,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -15257,6 +15166,7 @@ GameObject:
   - component: {fileID: 1699857001}
   - component: {fileID: 1699857000}
   - component: {fileID: 1699856999}
+  - component: {fileID: 1699857003}
   m_Layer: 0
   m_Name: SkillPlaceHolders
   m_TagString: Untagged
@@ -15362,6 +15272,21 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1699857003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699856997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1864156f0d962f4baebca7aec1e468a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VirtualParent: {fileID: 1485985325}
+  PhysicalParent: {fileID: 1699856998}
+  List: []
 --- !u!1 &1701640910
 GameObject:
   m_ObjectHideFlags: 0
@@ -15822,8 +15747,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1744818145}
-  - component: {fileID: 1744818148}
-  - component: {fileID: 1744818147}
   - component: {fileID: 1744818146}
   m_Layer: 0
   m_Name: INV_Mask
@@ -15867,30 +15790,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
---- !u!114 &1744818147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744818144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c09e684794fd814e9a859ee1684b33c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1744818148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744818144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01e09dd45a48b9f40a1a612992383b9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1763100764
 GameObject:
   m_ObjectHideFlags: 0
@@ -16555,8 +16454,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1837610073}
-  - component: {fileID: 1837610076}
-  - component: {fileID: 1837610077}
   - component: {fileID: 1837610074}
   m_Layer: 0
   m_Name: INV_Mask
@@ -16600,30 +16497,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 0}
---- !u!114 &1837610076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1837610072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01e09dd45a48b9f40a1a612992383b9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1837610077
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1837610072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c09e684794fd814e9a859ee1684b33c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1848762253
 GameObject:
   m_ObjectHideFlags: 0
@@ -17157,9 +17030,9 @@ MonoBehaviour:
   MyImage: {fileID: 0}
   CD_Bar: {fileID: 0}
   ButtonText: {fileID: 0}
-  Page: {fileID: 0}
   SlotIndex: 0
   Selected: 0
+  Panel: {fileID: 0}
   DefaultColor: {r: 0, g: 0, b: 0, a: 0}
   HoverColor: {r: 0, g: 0, b: 0, a: 0}
   SelectionColor: {r: 0, g: 0, b: 0, a: 0}
@@ -17570,11 +17443,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1894300244}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 352f5e666e73ac0438bc087fca182182, type: 3}
+  m_Script: {fileID: 11500000, guid: c1864156f0d962f4baebca7aec1e468a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VirtualParent: {fileID: 0}
-  PhysicalParent: {fileID: 0}
+  VirtualParent: {fileID: 1254299848}
+  PhysicalParent: {fileID: 1894300245}
   List: []
 --- !u!1 &1905355101
 GameObject:

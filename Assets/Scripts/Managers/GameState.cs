@@ -31,6 +31,8 @@ public class GameState : MonoBehaviour
     public SimpleWorldBuilder testBuilder;
 
     [Header("Game Logic")]
+    public bool Init;
+    public bool Populated;
     public bool bDebugEffects;
     public bool bGravity;
     public bool bPause;
@@ -99,22 +101,42 @@ public class GameState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    bool InitializeGame()
+    {
         try
         {
-            //EQUIPMENT_INDEX = 1; // reserve zero for universal passive index
             UIman = (UIManager)GameObject.FindGameObjectWithTag("UI_MAN").GetComponent("UIManager");
-            UIman.GameStateLinked = true;
+            if (UIman == null)
+                return false;
+            UIman.Init();
+            Debug.Log("UI Initialized!");
             KeyMap.GenerateKeyMap();// Key-Sensitive action. Migrate later maybe?
+            Debug.Log("KeyMap Generated!");
+            Populated = testBuilder.BuildTestWorld();
+            Debug.Log("Test World Built!");
+
+            return true;
         }
         catch
         {
-            Debug.Log("Failed to initialize UI!");
+            Debug.Log("Failed to initialize!");
+            return false;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!Init)
+        {
+            Init = InitializeGame();
+            return;
+        }
+            
+
         if (bPause)
             return;
 

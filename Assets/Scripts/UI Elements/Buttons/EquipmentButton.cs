@@ -28,6 +28,15 @@ public class EquipmentButton : InventoryButton
         return ((Equipment)Root).EquipToCharacter(character);
     }
 
+
+    public override bool Vacate()
+    {
+        if (!base.Vacate())
+            return false;
+
+        UnEquipFromCharacter();
+        return true;
+    }
     public bool UnEquipFromCharacter()
     {
         return ((Equipment)Root).UnEquipFromCharacter();
@@ -36,12 +45,12 @@ public class EquipmentButton : InventoryButton
     {
         base.OnPointerEnter(eventData);
     }
-    public override void Init(ButtonOptions options, RootScriptObject root = null)
+    public override void Init(ButtonOptions options)
     {
-        base.Init(options, root);
-        if (!(root is Equipment))
+        base.Init(options);
+        if (!(options.Root is Equipment))
             return;
-        Equipment equip = (Equipment)root;
+        Equipment equip = (Equipment)options.Root;
         Stats.Append($"Equip Level: {equip.EquipLevel}");
     }
     // Start is called before the first frame update

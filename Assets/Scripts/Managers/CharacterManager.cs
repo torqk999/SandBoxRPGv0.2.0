@@ -34,6 +34,7 @@ public class CharacterManager : MonoBehaviour
     public List<Party> Parties;
 
     public int CurrentPartyIndex;
+    public bool Generated;
 
     #region POSSESSION
     public void ToggleParty()
@@ -97,6 +98,9 @@ public class CharacterManager : MonoBehaviour
     #region WORLD GENERATION
     public void SpawnPeeps(Transform partyStartLocation, Transform mobSpawnLocationFolder)
     {
+        if (Generated)
+            return;
+
         InitializeCharacterSheets();
 
         /// CHECK THESE FIRST!!! ///
@@ -107,6 +111,8 @@ public class CharacterManager : MonoBehaviour
         CreateCloneParty(mobPrefab, mobSpawnLocationFolder, Faction.BADDIES);
 
         UpdatePartyFoes();
+
+        Generated = true;
     }
     #endregion
 
@@ -234,6 +240,7 @@ public class CharacterManager : MonoBehaviour
         newCharacter.CurrentProximityInteractions = new List<Interaction>();
 
         SetupCharacterSheet(newCharacter, sourceCharacter, index, fresh);
+        SetupCharacterPanels(newCharacter);
         SetupCharacterAI(newCharacter);
         SetupCharacterCanvas(newCharacter);
         SetupCharacterParty(newCharacter, party);
@@ -245,6 +252,18 @@ public class CharacterManager : MonoBehaviour
         CharacterPool.Add(newCharacter);
         
         return newCharacter;
+    }
+
+    private void SetupCharacterPanels(Character newCharacter)
+    {
+        newCharacter.Slots.Equips = GameState.UIman.GenerateButtonPage(GameState.UIman.Equipments);
+        newCharacter.Slots.Equips.PhysicalParent.name = $"EQUIPS: {newCharacter.Sheet.Name}";
+
+        newCharacter.Slots.HotBar = GameState.UIman.GenerateButtonPage(GameState.UIman.HotBars);
+        newCharacter.Slots.HotBar.PhysicalParent.name = $"HOTBAR: {newCharacter.Sheet.Name}";
+
+        newCharacter.Slots.Skills = GameState.UIman.GenerateButtonPage(GameState.UIman.SkillLists); // Will menu skill list placeholders be zero?
+        newCharacter.Slots.Skills.PhysicalParent.name = $"SKILLS: {newCharacter.Sheet.Name}";
     }
 
     private void SetupCharacterRender(Character newCharacter)

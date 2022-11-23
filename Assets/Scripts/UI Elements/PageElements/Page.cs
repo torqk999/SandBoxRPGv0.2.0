@@ -9,7 +9,7 @@ public struct PageOptions
     public bool IsPlaceHolder;
     public int Size;
     public Page PlaceHolder;
-    public ListPanel TargetBin;
+    public Panel TargetBin;
     
     public PageOptions(Page placeHolder)
         // Generic Page Builder
@@ -39,25 +39,26 @@ public class Page : MonoBehaviour
 {
     public UIManager UIman;
     public RectTransform ParentContent;
-    public ListPanel Occupants;
-    public ListPanel PlaceHolders;
+    public Panel Occupants;
+    public Panel PlaceHolders;
     //public bool IsPlaceHolder;
     public int MaximumSize;
+    public bool Refresh;
 
     public void Setup(ButtonOptions options)
     {
+        Debug.Log("Setup Call");
+
         ParentContent = gameObject.GetComponent<RectTransform>();
         Resize(options.Index_Size);
         PopulatePlaceHolders(options);
+        //RefreshContentSize();
     }
 
     void PopulatePlaceHolders(ButtonOptions options)
     {
-        //PlaceHolders.List.
-        Debug.Log($"count: {PlaceHolders.List.Capacity}");
         for (int i = 0; i < PlaceHolders.List.Capacity; i++)
         {
-            Debug.Log($"PlaceHolder: {i + 1}");
             options.Index_Size = i;
             PlaceHolders.List[i] = UIman.GeneratePlaceHolder(options);
         }
@@ -73,23 +74,35 @@ public class Page : MonoBehaviour
         PlaceHolders.Resize(size);
     }
 
-    public virtual void RefreshContentSize()
+    public void RefreshContentSize()
     {
+        Refresh = false;
+
         if (PlaceHolders == null)
             return;
 
         Vector2 newDelta = PlaceHolders.PhysicalParent.sizeDelta;
+        Debug.Log($"SizeDelta: {newDelta}");
         ParentContent.sizeDelta = newDelta;
+        //Occupants.PhysicalParent.anchoredPosition = PlaceHolders.PhysicalParent.anchoredPosition;
         Occupants.PhysicalParent.sizeDelta = newDelta;
+
+        foreach (DraggableButton button in Occupants.List)
+        {
+            if (button == null)
+                return;
+            Debug.Log("Snapping button!");
+            button.SnapButton();
+        }
     }
 
     #region LOOTING
-    public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
+    /*public bool LootContainer(GenericContainer loot, int containerIndex, int inventoryIndex)
     {
         ItemObject lootItem = (ItemObject)((InventoryButton)loot.Inventory.Occupants.List[containerIndex]).Root;
 
         if (lootItem is Stackable &&
-            PushItemIntoStack((Stackable)lootItem))
+            Occupants.PushItemIntoStack((Stackable)lootItem))
         {
             loot.Inventory.RemoveIndexFromOccupants(containerIndex);
             return true;
@@ -102,7 +115,9 @@ public class Page : MonoBehaviour
             return true;
         }
         return false;
-    }
+    }*/
+
+    
     #endregion
 
     #region INVENTORY
@@ -122,7 +137,7 @@ public class Page : MonoBehaviour
         ButtonOptions buttonOptions = new ButtonOptions(newRootObject, Occupants, index);
         Occupants.List[index] = newRootObject.GenerateMyButton(buttonOptions);
     }
-    public int FindEligibleIndex()
+    /*public int FindEligibleIndex()
     {
         for (int i = 0; i < Occupants.List.Count; i++)
             if (Occupants.List[i] == null)
@@ -137,38 +152,7 @@ public class Page : MonoBehaviour
                 output++;
         return output;
     }
-    public bool PushItemIntoStack(Stackable stackItem)
-    {
-        int empty = -1;
-
-        for (int i = 0; i < Occupants.List.Count; i++)
-        {
-            if (Occupants.List[i] == null && empty == -1)
-                empty = i; // found an empty slot in case there were no stacks to push into
-
-            if (stackItem.CurrentQuantity <= 0)
-                return true;
-
-            if (!(((InventoryButton)Occupants.List[i]).Root is Stackable))
-                continue;
-
-            Stackable stackTarget = (Stackable)((InventoryButton)Occupants.List[i]).Root;
-
-            if (stackTarget.Name != stackItem.Name)
-                continue;
-
-            int desiredQuantity = stackTarget.MaxQuantity - stackItem.CurrentQuantity;
-            int movedQuantity = stackItem.CurrentQuantity < desiredQuantity ? stackItem.CurrentQuantity : desiredQuantity;
-            stackTarget.CurrentQuantity += movedQuantity;
-            stackItem.CurrentQuantity -= movedQuantity;
-        }
-
-        if (empty == -1)
-            return false;
-
-        Occupants.List[empty] = stackItem.RootLogic.Button;
-        return true;
-    }
+    
     public bool PushItemIntoOccupants(ItemObject input, int inventoryIndex = 0)
     {
         Debug.Log($"input: {input != null}");
@@ -232,18 +216,25 @@ public class Page : MonoBehaviour
                 return sub;
         }
         return -1;
-    }
-    public bool TransferItem(Page targetInventory, int inventoryIndex, int targetIndex = 0)
+    }*/
+    public bool TransferItem(Page targetInventory, int sourceIndex, int targetIndex = 0)
     {
-        Debug.Log("Transfering Item...");
-        if (targetInventory.PushItemIntoOccupants((ItemObject)((InventoryButton)Occupants.List[inventoryIndex]).Root, targetIndex))
-        {
+        DraggableButton button = (DraggableButton)Occupants.List[sourceIndex];
+        if (button == null)
+            return false;
 
-            //Items[inventoryIndex].RootLogic.Button.Occupy(Panel.Places[targetIndex]);
-            Occupants.List[inventoryIndex] = null;
-            return true;
-        }
-        return false;
+        if (!((PlaceHolderButton)targetInventory.PlaceHolders.List[targetIndex]).Vacate())
+            return false;
+
+        button.Vacate();
+        button.Occupy((PlaceHolderButton)targetInventory.PlaceHolders.List[targetIndex]);
+        return true;
+    }
+
+    public void Update()
+    {
+        if (Refresh)
+            RefreshContentSize();
     }
 
     #endregion

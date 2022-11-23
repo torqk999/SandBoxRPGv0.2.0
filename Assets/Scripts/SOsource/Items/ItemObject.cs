@@ -23,7 +23,7 @@ public class ItemObject : RootScriptObject
         options.PlaceType = PlaceHolderType.INVENTORY;
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         InventoryButton myButton = buttonObject.AddComponent<InventoryButton>();
-        myButton.Init(options, this);
+        myButton.Init(options);
         return myButton;
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)

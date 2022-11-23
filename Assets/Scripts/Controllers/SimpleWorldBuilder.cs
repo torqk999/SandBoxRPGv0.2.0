@@ -14,7 +14,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<SimpleAIcontroller> myAIpool;
     public List<ItemObject> SampleItems;
 
-    public void SpawnSampleItems(ListPanel inventory)
+    public void SpawnSampleItems(Panel inventory)
     {
         if (inventory == null)
         {
@@ -33,20 +33,29 @@ public class SimpleWorldBuilder : MonoBehaviour
         }
     }
     
-    void BuildTestWorld()
+    public bool BuildTestWorld()
     {
-        GameState.NavMesh.GenerateMesh();
+        try
+        {
+            GameState.NavMesh.GenerateMesh();
 
-        GameState.CharacterMan.SpawnPeeps(PartyStartLocation, SpawnLocations);
+            GameState.CharacterMan.SpawnPeeps(PartyStartLocation, SpawnLocations);
 
-        GameState.pController.InitialPawnControl();
+            GameState.pController.InitialPawnControl();
 
-        SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);
+            SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        BuildTestWorld();
+        
     }
 }

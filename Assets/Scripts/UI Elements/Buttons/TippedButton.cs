@@ -46,12 +46,14 @@ public class TippedButton : ExtendedButton
         Stats.Clear();
         Flavour.Clear();
     }
-    public override void Init(ButtonOptions options, RootScriptObject root = null)
+    public override void Init(ButtonOptions options)
     {
-        base.Init(options, root);
+        //Debug.Log("Tipped Init");
+        base.Init(options);
         Title = new StringBuilder();
         Stats = new StringBuilder();
         Flavour = new StringBuilder();
+        //Debug.Log("Tipped done");
     }
 
     // Start is called before the first frame update

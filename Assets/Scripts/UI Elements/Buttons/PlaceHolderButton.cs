@@ -30,6 +30,7 @@ public class PlaceHolderButton : SelectableButton
 {
     [Header("PlaceHolder")]
     public PlaceHolderType PlaceType;
+    //public PlaceHolderPanel Panel;
     
     public bool CheckCanOccupy(DraggableButton drag)
     {
@@ -56,35 +57,45 @@ public class PlaceHolderButton : SelectableButton
         }
         return true;
     }
-    public override bool Vacate()
+    public bool Vacate()
     {
-        if (Panel.List[SlotIndex] == null)
+        if (Panel.VirtualParent.Occupants.List[SlotIndex] == null)
             return true;
 
-        return Panel.List[SlotIndex].Vacate();
+        return ((DraggableButton)Panel.VirtualParent.Occupants.List[SlotIndex]).Relocate();
     }
     public void ResetImage()
     {
         MyImage.sprite = UIMan.PlaceHolderSprite;
     }
 
-    public override void Init(ButtonOptions options, RootScriptObject root = null)
+    public override void Init(ButtonOptions options)
     {
-        base.Init(options, root);
+        //Debug.Log("PlaceHolder Init");
+        base.Init(options);
         if (UIMan == null)
             return;
 
+        //Debug.Log("PlaceHolder found UIMan");
+
         PlaceType = options.PlaceType;
-        MyImage.sprite = UIMan.PlaceHolderSprite;
 
-        SpriteState ss = new SpriteState();
+        if (options.ResetImage)
+        {
+            MyImage.sprite = UIMan.PlaceHolderSprite;
 
-        ss.highlightedSprite = MyImage.sprite;
-        ss.selectedSprite = MyImage.sprite;
-        ss.pressedSprite = MyImage.sprite;
-        ss.disabledSprite = MyImage.sprite;
+            SpriteState ss = new SpriteState();
 
-        spriteState = ss;
+            ss.highlightedSprite = MyImage.sprite;
+            ss.selectedSprite = MyImage.sprite;
+            ss.pressedSprite = MyImage.sprite;
+            ss.disabledSprite = MyImage.sprite;
+
+            spriteState = ss;
+        }
+        
+
+        //Debug.Log("PlaceHolder Init done");
     }
     // Start is called before the first frame update
     protected override void Start()

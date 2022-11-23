@@ -331,6 +331,8 @@ public class Strategy : MonoBehaviour
     }
     private void Update()
     {
+        if (GameState == null)
+            return;
         UpdateCurrentTactic();
     }
 }

@@ -8,7 +8,7 @@ public class Party : MonoBehaviour
     public GameState GameState;
     public List<Character> Members;
     public List<Character> Foes;
-    public ListPanel PartyLoot;
+    public Panel PartyLoot;
     public Formation Formation;
     public Faction Faction;
     public int CurrentMemberIndex;
@@ -26,7 +26,7 @@ public class Party : MonoBehaviour
         Name = name == "" ? Faction.ToString() : name;
         Members = new List<Character>();
         Foes = new List<Character>();
-        PartyLoot = GameState.UIman.GenerateGridPage(GameState.UIman.Inventories);
+        PartyLoot = GameState.UIman.GenerateButtonPage(GameState.UIman.Inventories, true);
 
         /*GameObject lootObject = state.UIman.GenerateInventoryPanel(state.UIman.InventoriesContent, $"LootBag: {Name}");
         PartyLoot = lootObject.GetComponent<SlotPage>();

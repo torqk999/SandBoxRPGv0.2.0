@@ -620,6 +620,9 @@ public class PlayerController : CharacterController
     // Update is called once per frame
     void Update()
     {
+        if (!GameState.Init)
+            return;
+
         UpdatePawnInput();
         UpdateBoomClipping();
         LerpCam();

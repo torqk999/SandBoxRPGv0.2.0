@@ -41,19 +41,23 @@ public struct ButtonOptions
     public int Index_Size;
     public bool ResetImage;
     public RootScriptObject Root;
-    public ListPanel Page;
+    //public Page Page;
+    public Panel Panel;
+    //public OccupantPanel OccupantPanel;
+    //public PlaceHolderPanel PlaceHolderPanel;
+
 
     /// <summary>
     /// For building a new root directly into the target folder
     /// </summary>
     /// <param name="root"> The root object that is tied to this button </param>
-    /// <param name="page"> The page component that currently houses this button </param>
+    /// <param name="panel"> The page component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(RootScriptObject root , ListPanel page, int index = 0)
+    public ButtonOptions(RootScriptObject root , Panel panel, int index = 0)
     {
         Index_Size = index;
         Root = root;
-        Page = page;
+        Panel = panel;
 
         ResetImage = false;
         PlaceType = default;
@@ -65,14 +69,14 @@ public struct ButtonOptions
     /// </summary>
     /// <param name="panel"> The panel component that currently houses this button </param>
     /// <param name="size"> The index of this placHolder and it's button </param>
-    public ButtonOptions(ListPanel panel, bool resetImage = false, int size = 0)
+    public ButtonOptions(Panel panel = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
     {
         Index_Size = size;
         Root = null;
-        Page = panel;
+        Panel = panel;
 
         ResetImage = resetImage;
-        PlaceType = default;
+        PlaceType = type;
         ButtonType = default;
     }
 }
@@ -134,8 +138,9 @@ public class ExtendedButton : Button
         return false;
     }
 
-    public virtual void Init(ButtonOptions options, RootScriptObject root = null)
+    public virtual void Init(ButtonOptions options)
     {
+        //Debug.Log("Extended Init");
         GetUIMan();
         gameObject.tag = GlobalConstants.TAG_BUTTON;
         MyRect = gameObject.GetComponent<RectTransform>();
@@ -147,6 +152,7 @@ public class ExtendedButton : Button
         {
             //Debug.Log($"Cooldown Slider failed to be found!");
         }
+        //Debug.Log("Extended Init done");
     }
 
     protected override void Start()

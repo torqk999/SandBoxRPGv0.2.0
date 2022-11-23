@@ -21,9 +21,9 @@ public class SelectableButtonEditor : Editor
 public class SelectableButton : TippedButton
 {
     [Header("SelectableButton")]
-    public ListPanel Panel;
     public int SlotIndex;
     public bool Selected;
+    public Panel Panel;
     
     //public RootScriptObject Root;
     //public Transform SlotHome;
@@ -50,10 +50,7 @@ public class SelectableButton : TippedButton
         }
         return default;
     }*/
-    public virtual bool Vacate()
-    {
-        return true;
-    }
+
     
     public override void OnPointerDown(PointerEventData eventData)
     {
@@ -76,19 +73,23 @@ public class SelectableButton : TippedButton
         Selected = false;
         //MyImage.color = DefaultColor;
     }
-    public override void Init(ButtonOptions options, RootScriptObject root = null)
+    public override void Init(ButtonOptions options)
     {
-        base.Init(options, root);
+        //Debug.Log("Selectable Init");
+        base.Init(options);
 
-        Debug.Log($"what?: {options.Index_Size}");
+        if (options.Panel == null)
+            return; // Assume no re-parent;
 
-        Panel = options.Page;
         SlotIndex = options.Index_Size;
-
-        
-
-        if (Panel.List != null)
+        Panel = options.Panel;
+        if (Panel != null &&
+            Panel.List != null &&
+            SlotIndex > -1 &&
+            SlotIndex < Panel.List.Capacity)
             Panel.List[SlotIndex] = this;
+
+        //Debug.Log("Selectable Init done");
     }
 
     // Start is called before the first frame update

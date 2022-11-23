@@ -26,18 +26,18 @@ public class InventoryButton : DraggableButton
     {
         return (UIMan.GameState.SceneMan.PushIntoContainer(UIMan.GameState.pController.CurrentCharacter, SlotIndex)) ;
     }
-    public override bool Vacate()
+    /*public override bool Vacate()
     {
-        if (!Panel.VirtualParent.PushItemIntoOccupants((ItemObject)Root))
+        //if (!Panel.VirtualParent.PushItemIntoOccupants((ItemObject)Root))
             //!Drop()
-            return false;
+            //return false;
         return base.Vacate();
-    }
+    }*/
     
     public override void OnPointerDown(PointerEventData eventData)
     {
         if (!Following)
-            UIMan.CharacterPageSelection(this);
+            UIMan.CharacterPageSelection();
         base.OnPointerDown(eventData);
     }
     public override void OnPointerUp(PointerEventData eventData)
@@ -51,14 +51,14 @@ public class InventoryButton : DraggableButton
         base.OnPointerEnter(eventData);
     }
 
-    public override void Init(ButtonOptions options, RootScriptObject root = null)
+    public override void Init(ButtonOptions options)
     {
-        base.Init(options, root);
+        base.Init(options);
 
-        if (!(root is ItemObject))
+        if (!(options.Root is ItemObject))
             return;
 
-        ItemObject item = (ItemObject)root;
+        ItemObject item = (ItemObject)options.Root;
 
         Stats.Append
            ($"GoldValue: {item.GoldValue}\n" +
