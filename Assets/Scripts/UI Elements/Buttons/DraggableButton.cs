@@ -154,12 +154,13 @@ public class DraggableButton : SelectableButton
 
     public void SnapButton()
     {
-        MyRect.SetParent(Panel.PhysicalParent);
-        Debug.Log($"SlotIndex: {SlotIndex}\n");
+        MyRect.parent = Panel.PhysicalParent;
+        //transform.SetParent(Panel.PhysicalParent);
+        /*Debug.Log($"SlotIndex: {SlotIndex}\n");
         Debug.Log($"Panel: {Panel != null}\n");
         Debug.Log($"VirtualParent: {Panel.VirtualParent != null}\n");
         Debug.Log($"PlaceHolders: {Panel.VirtualParent.PlaceHolders != null}\n");
-        Debug.Log($"Button: {Panel.VirtualParent.PlaceHolders.List[SlotIndex] != null}");
+        Debug.Log($"Button: {Panel.VirtualParent.PlaceHolders.List[SlotIndex] != null}");*/
         MyRect.anchoredPosition = Panel.VirtualParent.PlaceHolders.List[SlotIndex].MyRect.anchoredPosition;
     }
     #endregion 
@@ -186,7 +187,10 @@ public class DraggableButton : SelectableButton
 
         if (Following)
         {
-            MyRect.SetParent(UIMan.HUDcanvas.transform);
+            Debug.Log($"pre parent: {MyRect.parent.name}");
+            MyRect.parent = UIMan.HUDcanvas.transform.gameObject.GetComponent<RectTransform>();
+            Debug.Log($"post parent: {MyRect.parent.name}");
+            //transform.SetParent(UIMan.HUDcanvas.transform /*.gameObject.GetComponent<RectTransform>()*/);
             Offset = (Vector2)MyRect.position - CurrentPosMouse;
             UIMan.Dragging = this;
             return;

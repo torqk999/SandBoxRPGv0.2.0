@@ -27,6 +27,11 @@ public class TwoHand : Hand
         newRoot.Copy(this, options);
         return newRoot;
     }
+    public override void InitializeRoot(GameState state)
+    {
+        base.InitializeRoot(state);
+        EquipSlot = EquipSlot.MAIN;
+    }
     public override void Copy(RootScriptObject source, RootOptions options)
     {
         base.Copy(source, options);
@@ -37,17 +42,17 @@ public class TwoHand : Hand
         TwoHand twoSource = (TwoHand)source;
         Type = twoSource.Type;
     }
-    public override bool EquipToCharacter(Character character, int slotIndex = -1)
+    /*public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
-        if (character.Slots.Equips.List[(int)EquipSlot.MAIN] != null &&
-            !((EquipmentButton)character.Slots.Equips.List[(int)EquipSlot.MAIN]).UnEquipFromCharacter())
-            return false;
-
         if (character.Slots.Equips.List[(int)EquipSlot.OFF] != null &&
             !((EquipmentButton)character.Slots.Equips.List[(int)EquipSlot.OFF]).UnEquipFromCharacter())
             return false;
 
+        if (character.Slots.Equips.List[(int)EquipSlot.MAIN] != null &&
+            !((EquipmentButton)character.Slots.Equips.List[(int)EquipSlot.MAIN]).UnEquipFromCharacter())
+            return false;
+
         UpdateCharacterRender(character);
         return true;
-    }
+    }*/
 }

@@ -16,6 +16,12 @@ public class Ring : Hand
         newRoot.Copy(this, options);
         return newRoot;
     }
+    public override void InitializeRoot(GameState state)
+    {
+        base.InitializeRoot(state);
+        EquipSlot = EquipSlot.RING_0;
+    }
+
     public override void Copy(RootScriptObject source, RootOptions options)
     {
         base.Copy(source, options);
@@ -33,8 +39,13 @@ public class Ring : Hand
     public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         slotIndex = (int)EquipSlot.RING_0;
-        if (character.Slots.Equips.List[slotIndex] != null &&
-            !((EquipmentButton)character.Slots.Equips.List[slotIndex]).UnEquipFromCharacter())
+        if (character.Slots.Equips.List[(int)EquipSlot.RING_0] != null &&
+            character.Slots.Equips.List[(int)EquipSlot.RING_1] == null)
+            slotIndex = (int)EquipSlot.RING_1;
+
+        if (character.Slots.Equips.List[(int)EquipSlot.RING_0] != null &&
+            character.Slots.Equips.List[(int)EquipSlot.RING_1] != null &&
+            !((EquipmentButton)character.Slots.Equips.List[(int)EquipSlot.RING_0]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

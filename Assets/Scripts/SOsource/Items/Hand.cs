@@ -49,9 +49,9 @@ public class Hand : Equipment
         return true;
     }
 
-    public override bool EquipToCharacter(Character character, int slotIndex = -1)
+    /*public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         return base.EquipToCharacter(character, slotIndex);
-    }
+    }*/
 
 }

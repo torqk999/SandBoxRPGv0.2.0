@@ -23,6 +23,11 @@ public class OffHand : Hand
         newRoot.Copy(this, options);
         return newRoot;
     }
+    public override void InitializeRoot(GameState state)
+    {
+        base.InitializeRoot(state);
+        EquipSlot = EquipSlot.OFF;
+    }
     public override void Copy(RootScriptObject source, RootOptions options)
     {
         base.Copy(source, options);
@@ -34,7 +39,7 @@ public class OffHand : Hand
         Type = offSource.Type;
     }
 
-    public override bool EquipToCharacter(Character character, int slotIndex = -1)
+    /*public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         slotIndex = (int)EquipSlot.OFF;
         if (character.Slots.Equips.List[slotIndex] != null &&
@@ -42,5 +47,5 @@ public class OffHand : Hand
             return false;
 
         return base.EquipToCharacter(character, slotIndex);
-    }
+    }*/
 }

@@ -11,6 +11,7 @@ public class Equipment : ItemObject
 
     [Header("Equip Logic - Do not touch")]
     public int EquipLevel;
+    public EquipSlot EquipSlot;
     public Character EquippedTo;
 
     /*public WearSlot GetMySlot()
@@ -66,6 +67,7 @@ public class Equipment : ItemObject
         EquipSchool = equipSource.EquipSchool;
         ClassType = equipSource.ClassType;
         EquipLevel = equipSource.EquipLevel;
+        EquipSlot = equipSource.EquipSlot;
 
         options.ID++; // MAYBE???
         CloneAbilities(equipSource, options);
@@ -85,11 +87,6 @@ public class Equipment : ItemObject
         }
     }
 
-    public virtual int MyEquipIndex()
-    {
-        return -1;
-    }
-
     public virtual bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         UpdateCharacterRender(character);
@@ -98,33 +95,6 @@ public class Equipment : ItemObject
             ability.EquipAbility(character, this);
 
         return true;
-    }
-    void RemapToSlot(Character character, int slotIndex, SlotPageType page)
-    {
-        RootLogic.Button.SlotIndex = slotIndex;
-        switch (page)
-        {
-            case SlotPageType.INVENTORY:
-                RootLogic.Button.Panel = character.Slots.Inventory;
-                break;
-
-            case SlotPageType.EQUIPMENT:
-                RootLogic.Button.Panel = character.Slots.Equips;
-                break;
-
-            /*case SlotPageType.RINGS:
-                RootLogic.Button.SlotPage = character.Slots.Rings;
-                break;*/
-
-            case SlotPageType.HOT_BAR:
-                RootLogic.Button.Panel = character.Slots.HotBar;
-                break;
-
-            case SlotPageType.SKILLS:
-                RootLogic.Button.Panel = character.Slots.Skills;
-                break;
-        }
-        RootLogic.Button.Panel.List[RootLogic.Button.SlotIndex] = RootLogic.Button;
     }
 
     public virtual bool UnEquipFromCharacter()

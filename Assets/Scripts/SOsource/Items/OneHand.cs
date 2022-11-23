@@ -18,6 +18,11 @@ public class OneHand : Hand
     [Header("OneHand Properties")]
     public OneHandType Type;
 
+    public override void InitializeRoot(GameState state)
+    {
+        base.InitializeRoot(state);
+        EquipSlot = EquipSlot.MAIN;
+    }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         options.ClassID = options.ClassID == "" ? "OneHand" : options.ClassID;

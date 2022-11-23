@@ -28,7 +28,6 @@ public class EquipmentButton : InventoryButton
         return ((Equipment)Root).EquipToCharacter(character);
     }
 
-
     public override bool Vacate()
     {
         if (!base.Vacate())

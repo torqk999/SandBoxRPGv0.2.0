@@ -16,6 +16,11 @@ public class Shield : Hand
     [Header("Equipment Properties")]
     public ShieldType Type;
 
+    public override void InitializeRoot(GameState state)
+    {
+        base.InitializeRoot(state);
+        EquipSlot = EquipSlot.OFF;
+    }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         options.ClassID = options.ClassID == "" ? "Shield" : options.ClassID;
@@ -35,7 +40,7 @@ public class Shield : Hand
         Type = shieldSource.Type;
     }
 
-    public override bool EquipToCharacter(Character character, int slotIndex = -1)
+    /*public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         slotIndex = (int)EquipSlot.OFF;
         if (character.Slots.Equips.List[slotIndex] != null &&
@@ -43,5 +48,5 @@ public class Shield : Hand
             return false;
 
         return base.EquipToCharacter(character, slotIndex);
-    }
+    }*/
 }
