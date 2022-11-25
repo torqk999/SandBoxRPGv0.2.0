@@ -42,7 +42,7 @@ public struct ButtonOptions
     public bool ResetImage;
     public RootScriptObject Root;
     //public Page Page;
-    public Panel Panel;
+    public ButtonPanel Panel;
     //public OccupantPanel OccupantPanel;
     //public PlaceHolderPanel PlaceHolderPanel;
 
@@ -53,7 +53,7 @@ public struct ButtonOptions
     /// <param name="root"> The root object that is tied to this button </param>
     /// <param name="panel"> The page component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(RootScriptObject root , Panel panel, int index = 0)
+    public ButtonOptions(RootScriptObject root , ButtonPanel panel, int index = 0)
     {
         Index_Size = index;
         Root = root;
@@ -69,7 +69,7 @@ public struct ButtonOptions
     /// </summary>
     /// <param name="panel"> The panel component that currently houses this button </param>
     /// <param name="size"> The index of this placHolder and it's button </param>
-    public ButtonOptions(Panel panel = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
+    public ButtonOptions(ButtonPanel panel = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
     {
         Index_Size = size;
         Root = null;

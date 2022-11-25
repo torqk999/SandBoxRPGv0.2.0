@@ -72,20 +72,19 @@ public class PlayerController : CharacterController
 
         oldRotation = GameState.GameCamera.transform.parent.rotation;
         oldPosition = GameState.GameCamera.transform.parent.position;
-        GameState.pController.CurrentPawn = targetPawn;
+        CurrentPawn = targetPawn;
         GameState.GameCamera.transform.parent = targetPawn.Socket;
-        Character targetCharacter = targetPawn as Character;
-        GameState.pController.CurrentCharacter = targetCharacter;
-
-        Debug.Log($"maybe?: {targetCharacter.Slots.Inventory != null}");
-
+        SnapPawnControlOptions();
         LerpTimer = 0;
         bIsCamLerping = true;
-
+        Character targetCharacter = targetPawn as Character;
+        CurrentCharacter = targetCharacter;
+        //Debug.Log($"maybe?: {targetCharacter.Slots.Inventory != null}");
         GameState.UIman.SelectCharacter(targetCharacter);
 
         return true;
     }
+
     public bool ReturnCameraRay(out Ray ray)
     {
         ray = new Ray();
@@ -118,7 +117,7 @@ public class PlayerController : CharacterController
         if (CurrentPawn == null)
             return;
 
-        SnapPawnOptions();
+        SnapPawnControlOptions();
         Teleport();
     }
     #endregion
@@ -236,9 +235,18 @@ public class PlayerController : CharacterController
 
         if (CheckAction(KeyAction.CYCLE_TARGETS))
             CycleCharacterTargets();
+
+        /////////////////////
+        
+        if (Input.GetMouseButtonDown(0))
+        {
+
+        }
     }
     void FlightControl(ref float x, ref float y, ref float z)
     {
+        Debug.Log("Flying");
+
         // Actions
         if (Input.GetButton("Focus") && Focus != null)
             CurrentPawn.Root.LookAt(Focus, Vector3.up);
@@ -398,19 +406,19 @@ public class PlayerController : CharacterController
         PawnIndex++;
         PawnIndex = (PawnIndex >= GameState.PawnMan.PlayerPawns.Length) ? -1 : PawnIndex;
         PossessPawn();
-        SnapPawnOptions();
+        SnapPawnControlOptions();
     }
     void ChangeCharacters()
     {
         GameState.CharacterMan.ToggleCharacter();
         PossessPawn();
-        SnapPawnOptions();
+        SnapPawnControlOptions();
     }
     void ChangeParties()
     {
         GameState.CharacterMan.ToggleParty();
         PossessPawn();
-        SnapPawnOptions();
+        SnapPawnControlOptions();
     }
     bool PossessPawn()
     {
@@ -430,10 +438,10 @@ public class PlayerController : CharacterController
         }
 
         //Debug.Log("successful possession");
-        SnapPawnOptions();
+        SnapPawnControlOptions();
         return true;
     }
-    void SnapPawnOptions()
+    void SnapPawnControlOptions()
     {
         CurrentControlMode = CurrentPawn.ControlMode;
         CursorToggle((CurrentControlMode == ControlMode.TACTICAL) ? true : false);
@@ -530,6 +538,7 @@ public class PlayerController : CharacterController
     {
         if (!bIsCamLerping)
             return;
+
         if (GameState.GameCamera.transform.parent == null)
         { bIsCamLerping = false; return; }
 

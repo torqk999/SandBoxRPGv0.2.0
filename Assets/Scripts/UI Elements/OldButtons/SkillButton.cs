@@ -17,7 +17,7 @@ public class SkillButtonButtonEditor : Editor
         SkillButton button = (SkillButton)target;
     }
 }
-public class SkillButton : DraggableButton
+class SkillButton : DraggableButton
 {
     [Header("Skill")]
     public CharacterAbility Skill;
@@ -31,9 +31,9 @@ public class SkillButton : DraggableButton
         Skill = skill;
         try { MyImage.sprite = skill.sprite; }
         catch { Debug.Log("missing button sprite"); }
-        Title.Append(skill.Name);
+        Strings[0].Append(skill.Name);
         BuildSkillString();
-        Flavour.Append(skill.Flavour);
+        Strings[2].Append(skill.Flavour);
         // Logic for when in hot bar or in strat panel...
     }
     void BuildSkillString()

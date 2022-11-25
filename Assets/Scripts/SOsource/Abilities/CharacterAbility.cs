@@ -88,7 +88,7 @@ public class CharacterAbility : RootScriptObject
     public virtual void EquipAbility(Character currentCharacter, Equipment equip = null)
     {
         Amplify(currentCharacter.Sheet, equip);
-        currentCharacter.Slots.Skills.List.Add(RootLogic.Button);
+        currentCharacter.Slots.Skills.List.Add(this);
         Logic.SourceCharacter = currentCharacter;
     }
     void CastPsystem()

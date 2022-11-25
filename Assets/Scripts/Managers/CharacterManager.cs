@@ -101,9 +101,9 @@ public class CharacterManager : MonoBehaviour
         if (Generated)
             return;
 
-        InitializeCharacterSheets();
-
         /// CHECK THESE FIRST!!! ///
+        InitializeCharacterSheets();
+        Debug.Log("Sheets initialized!");
         GameObject mobPrefab = MobPrefabs.GetChild(0).gameObject;
         CurrentPartyIndex = 0;
 
@@ -202,7 +202,7 @@ public class CharacterManager : MonoBehaviour
             spawnPointFolder.GetChild(i).gameObject.SetActive(false);
         }
 
-        cloneParty.PartyLoot.PhysicalParent.gameObject.SetActive(false); // <<-- Temporary hack
+        //cloneParty.PartyLoot.PhysicalParent.gameObject.SetActive(false); // <<-- Temporary hack
         Parties.Add(cloneParty);
         return true;
     }
@@ -240,7 +240,7 @@ public class CharacterManager : MonoBehaviour
         newCharacter.CurrentProximityInteractions = new List<Interaction>();
 
         SetupCharacterSheet(newCharacter, sourceCharacter, index, fresh);
-        SetupCharacterPanels(newCharacter);
+        SetupCharacterSlots(newCharacter);
         SetupCharacterAI(newCharacter);
         SetupCharacterCanvas(newCharacter);
         SetupCharacterParty(newCharacter, party);
@@ -254,16 +254,11 @@ public class CharacterManager : MonoBehaviour
         return newCharacter;
     }
 
-    private void SetupCharacterPanels(Character newCharacter)
+    private void SetupCharacterSlots(Character newCharacter)
     {
-        newCharacter.Slots.Equips = GameState.UIman.GenerateButtonPage(GameState.UIman.Equipments);
-        newCharacter.Slots.Equips.PhysicalParent.name = $"EQUIPS: {newCharacter.Sheet.Name}";
-
-        newCharacter.Slots.HotBar = GameState.UIman.GenerateButtonPage(GameState.UIman.HotBars);
-        newCharacter.Slots.HotBar.PhysicalParent.name = $"HOTBAR: {newCharacter.Sheet.Name}";
-
-        newCharacter.Slots.Skills = GameState.UIman.GenerateButtonPage(GameState.UIman.SkillLists); // Will menu skill list placeholders be zero?
-        newCharacter.Slots.Skills.PhysicalParent.name = $"SKILLS: {newCharacter.Sheet.Name}";
+        newCharacter.Slots.Inventory = new RootPanel(CharacterMath.PARTY_INVENTORY_MAX, GameState.UIman.Inventories);
+        newCharacter.Slots.Equips = new RootPanel(CharacterMath.EQUIP_SLOTS_COUNT, GameState.UIman.Equipments);
+        newCharacter.Slots.HotBar = new RootPanel(CharacterMath.HOT_BAR_SLOTS, GameState.UIman.HotBars);
     }
 
     private void SetupCharacterRender(Character newCharacter)
@@ -312,7 +307,7 @@ public class CharacterManager : MonoBehaviour
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
-        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
+        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX, index);
         character.Sheet.Copy(source.Sheet, options);
         if (fresh)
             character.Sheet.Initialize();

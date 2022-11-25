@@ -14,7 +14,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<SimpleAIcontroller> myAIpool;
     public List<ItemObject> SampleItems;
 
-    public void SpawnSampleItems(Panel inventory)
+    public void SpawnSampleItems(RootPanel inventory)
     {
         if (inventory == null)
         {

@@ -706,9 +706,10 @@ public struct RootLogic
 {
     public RootOptions Options;
     public GameState GameState;
+    public Page Page;
     public RootScriptObject Original;
     public List<RootScriptObject> Clones;
-    public DraggableButton Button;
+    public RootButton Button;
 
     public void Copy(RootOptions options, RootScriptObject source = null)
     {
@@ -724,30 +725,36 @@ public struct RootOptions
 {
     public string ClassID;
     public bool IsClone;
+
     public int ID;
+    public int Index;
     public int Quantity; // Migrate to ItemOptions
     
-    public RootOptions(ref int index, int quantity = 1)
+    public RootOptions(ref int id, int index = -1, int quantity = 1)
     {
+        ClassID = string.Empty; //source.name;
+        IsClone = false;
+
         try
         {
-            ID = index;
-            index++;
+            ID = id;
+            id++;
         }
         catch
         {
             ID = -1;
         }
-        ClassID = string.Empty; //source.name;
+        Index = index;
         Quantity = quantity;
-        IsClone = false;
     }
 
-    public RootOptions(RootScriptObject source, int quantity = 1)
+    public RootOptions(RootScriptObject source, int index = -1, int quantity = 1)
     {
-        ID = source.RootLogic.Options.ID;
         ClassID = source.name;
-        Quantity = quantity;
         IsClone = true;
+
+        ID = source.RootLogic.Options.ID;
+        Index = index;
+        Quantity = quantity;
     }
 }

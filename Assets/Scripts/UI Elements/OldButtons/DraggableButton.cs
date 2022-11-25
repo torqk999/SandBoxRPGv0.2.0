@@ -19,12 +19,12 @@ public class DraggableButtonEditor : Editor
     }
 }
 
-public class DraggableButton : SelectableButton
+class DraggableButton : SelectableButton
 {
     [Header("DraggableButton")]
     public Vector2 CurrentPosMouse;
-    public Vector2 OldPosButton;
-    public Vector2 NewPosButton;
+    //public Vector2 OldPosButton;
+    //public Vector2 NewPosButton;
     public Vector2 Offset;
     //public Vector2 ButtonBounds;
     public Vector2 Buffer;
@@ -145,7 +145,7 @@ public class DraggableButton : SelectableButton
         if (!CheckCanOccupy(place))
             return false;
 
-        Panel = place.Panel.VirtualParent.Occupants;
+        //Panel = place.Panel.VirtualParent.Occupants;
         SlotIndex = place.SlotIndex;
         Panel.List[SlotIndex] = this;
 
@@ -192,7 +192,7 @@ public class DraggableButton : SelectableButton
             Debug.Log($"post parent: {MyRect.parent.name}");
             //transform.SetParent(UIMan.HUDcanvas.transform /*.gameObject.GetComponent<RectTransform>()*/);
             Offset = (Vector2)MyRect.position - CurrentPosMouse;
-            UIMan.Dragging = this;
+            //UIMan.Dragging = this;
             return;
         }
 
@@ -237,12 +237,12 @@ public class DraggableButton : SelectableButton
             }
 
 
-            Title.Append(Root.Name);
-            Stats.Append("===Stats===\n");
-            Flavour.Append(Root.Flavour);
+            Strings[0].Append(Root.Name);
+            Strings[1].Append("===Stats===\n");
+            Strings[2].Append(Root.Flavour);
         }
 
-        Root.RootLogic.Button = this;
+        //Root.RootLogic.Button = this;
 
         transform.SetParent(Panel.PhysicalParent);
         transform.localScale = Vector3.one;

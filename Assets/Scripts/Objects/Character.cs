@@ -323,7 +323,7 @@ public class Character : Pawn, Interaction
     }
     public bool AttemptAbility(int abilityIndex)
     {
-        CharacterAbility call = (CharacterAbility)((SkillButton)Slots.HotBar.List[abilityIndex]).Root;
+        CharacterAbility call = (CharacterAbility)Slots.HotBar.List[abilityIndex];
         if (call == null) // Am I a joke to you?
             return false;
 
@@ -474,7 +474,7 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.HOT_BAR_SLOTS - 1; i > -1; i--)
-            if (Slots.HotBar.List[i] != null && Slots.Skills.List.Find(x => ((AbilityButton)x).Root.RootLogic.Options.ID == ((AbilityButton)Slots.HotBar.List[i]).Root.RootLogic.Options.ID) == null)
+            if (Slots.HotBar.List[i] != null && Slots.Skills.List.Find(x => x.RootLogic.Options.ID == Slots.HotBar.List[i].RootLogic.Options.ID) == null)
                 Slots.HotBar.List[i] = null;
     }
     void UpdateAbilityCooldowns()
@@ -482,14 +482,14 @@ public class Character : Pawn, Interaction
         
         for (int i = 0; i < Slots.HotBar.List.Count; i++)
             if (Slots.HotBar.List[i] != null)
-                ((CharacterAbility)((AbilityButton)Slots.HotBar.List[i]).Root).UpdateCooldowns();
+                ((CharacterAbility)Slots.HotBar.List[i]).UpdateCooldowns();
     }
     void UpdatePassiveAbilities()
     {
         
-        foreach (AbilityButton ability in Slots.Skills.List)
+        foreach (CharacterAbility ability in Slots.Skills.List)
         {
-            ((CharacterAbility)ability.Root).UpdatePassiveTimer();
+            ability.UpdatePassiveTimer();
         }
     }
     void UpdateRisidualEffects()

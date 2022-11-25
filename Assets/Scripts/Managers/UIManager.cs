@@ -40,7 +40,7 @@ public class UIManager : MonoBehaviour
     [Header("===LOGIC===")]
     public GameState GameState;
     public UIToolTip ToolTip;
-    public DraggableButton Dragging;
+    public RootScriptObject Dragging;
 
     //public bool GameStateLinked = false;
     public bool UIinitialized = false;
@@ -141,16 +141,16 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region BUTTONS
-    public PlaceHolderButton GeneratePlaceHolder(ButtonOptions options)
+    public RootButton GeneratePlaceHolder(ButtonOptions options)
     {
         options.ButtonType = ButtonType.PLACE;
         GameObject placeObject = GenerateButtonObject(options);
-        PlaceHolderButton placeButton = placeObject.AddComponent<PlaceHolderButton>();
+        RootButton placeButton = placeObject.AddComponent<RootButton>();
         placeButton.Init(options);
         placeObject.name = $"{placeButton.PlaceType} Place : {placeButton.SlotIndex}";
         return placeButton;
     }
-    public SkillButton GenerateSkillButton(ButtonOptions options)
+    public RootButton GenerateSkillButton(ButtonOptions options)
     {
         return null;
     }
@@ -283,6 +283,9 @@ public class UIManager : MonoBehaviour
     }
     public void SelectCharacter(Character character)
     {
+        if (character == null)
+            return;
+
         SwapInPanel(Inventories, character.Slots.Inventory);
         SwapInPanel(Equipments, character.Slots.Equips);
         SwapInPanel(HotBars, character.Slots.HotBar);
@@ -290,16 +293,14 @@ public class UIManager : MonoBehaviour
 
         Debug.Log("Character Selected!");
     }
-    void SwapInPanel(Page page, Panel panel)
+    void SwapInPanel(Page page, RootPanel panel)
     {
         if (page == null || panel == null)
             return;
 
-        if (page.Occupants != null)
-            page.Occupants.gameObject.SetActive(false);
-
         page.Occupants = panel;
-        panel.gameObject.SetActive(true);
+        for (int i = 0; i < page.PlaceHolders.List.Count; i++)
+            page.PlaceHolders.List[i].Assign(page.Occupants.List[i]);
     }
 
     public void ToggleCharacterPage(CharPage page)
@@ -336,13 +337,13 @@ public class UIManager : MonoBehaviour
         Debug.Log("refresh toggled!");
         Inventories.Refresh = true;
 
-        UnselectPool(Inventories.Occupants.List);
-        UnselectPool(Equipments.Occupants.List);
+        UnselectPool(Inventories.PlaceHolders.List);
+        UnselectPool(Equipments.PlaceHolders.List);
     }
     public void StrategyPageSelection()
     {
-        UnselectPool(HotBars.Occupants.List);
-        UnselectPool(SkillLists.Occupants.List);
+        UnselectPool(HotBars.PlaceHolders.List);
+        UnselectPool(SkillLists.PlaceHolders.List);
     }
     public void HotBarSelection(int slotIndex)
     {
@@ -351,7 +352,7 @@ public class UIManager : MonoBehaviour
             return;
 
         GameState.pController.CurrentCharacter.CurrentAction =
-            (CharacterAbility)((AbilityButton)GameState.pController.CurrentCharacter.Slots.HotBar.List[slotIndex]).Root;
+            (CharacterAbility)GameState.pController.CurrentCharacter.Slots.HotBar.List[slotIndex];
     }
     public void LootSelectedContainerItem(int containerIndex, int inventoryIndex)
     {
@@ -467,7 +468,7 @@ public class UIManager : MonoBehaviour
     private void InitEquipPlaceHolders()
     {
         ButtonOptions options = new ButtonOptions(null);
-        foreach (PlaceHolderButton button in Equipments.PlaceHolders.List)
+        foreach (RootButton button in Equipments.PlaceHolders.List)
         {
             //Debug.Log("Initializing Equip PlaceHolder");
             button.Init(options);

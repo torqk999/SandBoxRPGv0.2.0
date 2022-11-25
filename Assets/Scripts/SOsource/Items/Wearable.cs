@@ -31,7 +31,7 @@ public class Wearable : Equipment
     {
         slotIndex = (int)EquipSlot;
         if (character.Slots.Equips.List[slotIndex] != null &&
-            !((EquipmentButton)character.Slots.Equips.List[slotIndex]).UnEquipFromCharacter())
+            !((Equipment)character.Slots.Equips.List[slotIndex]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

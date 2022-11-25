@@ -27,7 +27,7 @@ public class RuntimeItemGenerator : MonoBehaviour
         if (Character == null || Item == null)
             return;
 
-        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX);
-        //Character.Inventory.PushItemIntoInventory((ItemObject)Item.GenerateRootObject(options));
+        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX, Character.Slots.Inventory.ReturnEmptyIndex());
+        Character.Slots.Inventory.VirtualParent.PushItemIntoOccupants((ItemObject)Item.GenerateRootObject(options));
     }
 }

@@ -23,10 +23,11 @@ public enum PlaceHolderType
     NONE,
     INVENTORY,
     EQUIP,
-    SKILL
+    SKILL,
+    HOT_BAR
 }
 
-public class PlaceHolderButton : SelectableButton
+class PlaceHolderButton : SelectableButton
 {
     [Header("PlaceHolder")]
     public PlaceHolderType PlaceType;
@@ -62,7 +63,7 @@ public class PlaceHolderButton : SelectableButton
         if (Panel.VirtualParent.Occupants.List[SlotIndex] == null)
             return true;
 
-        return ((DraggableButton)Panel.VirtualParent.Occupants.List[SlotIndex]).Relocate();
+        return ((ItemObject)Panel.VirtualParent.Occupants.List[SlotIndex]).Relocate();
     }
     public void ResetImage()
     {

@@ -45,7 +45,7 @@ public class Ring : Hand
 
         if (character.Slots.Equips.List[(int)EquipSlot.RING_0] != null &&
             character.Slots.Equips.List[(int)EquipSlot.RING_1] != null &&
-            !((EquipmentButton)character.Slots.Equips.List[(int)EquipSlot.RING_0]).UnEquipFromCharacter())
+            !((Equipment)character.Slots.Equips.List[(int)EquipSlot.RING_0]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

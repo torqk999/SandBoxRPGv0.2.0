@@ -18,7 +18,7 @@ public class EquipmentButtonEditor : Editor
     }
 }
 
-public class EquipmentButton : InventoryButton
+class EquipmentButton : InventoryButton
 {
     //[Header("Equipment")]
     //public Character EquippedTo;
@@ -50,7 +50,7 @@ public class EquipmentButton : InventoryButton
         if (!(options.Root is Equipment))
             return;
         Equipment equip = (Equipment)options.Root;
-        Stats.Append($"Equip Level: {equip.EquipLevel}");
+        Strings[1].Append($"Equip Level: {equip.EquipLevel}");
     }
     // Start is called before the first frame update
     protected override void Start()

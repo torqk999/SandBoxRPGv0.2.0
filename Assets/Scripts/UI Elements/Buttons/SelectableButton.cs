@@ -23,7 +23,7 @@ public class SelectableButton : TippedButton
     [Header("SelectableButton")]
     public int SlotIndex;
     public bool Selected;
-    public Panel Panel;
+    public ButtonPanel Panel;
     
     //public RootScriptObject Root;
     //public Transform SlotHome;

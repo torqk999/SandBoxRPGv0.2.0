@@ -24,6 +24,10 @@ public class Pawn : MonoBehaviour
     public Rigidbody RigidBody;
     public Collider Collider;
 
+    //[Header("Camera Logic")]
+    //public Vector3 CamPos;
+    //public Vector3 CamRot;
+
     [Header("Pawn Logic")]
     public Vector3 DefPos; // Used for homeTeleport
     public Vector3 DefRot;

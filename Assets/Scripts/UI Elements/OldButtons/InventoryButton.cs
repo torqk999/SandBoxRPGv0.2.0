@@ -18,7 +18,7 @@ public class InventoryButtonEditor : Editor
     }
 }
 
-public class InventoryButton : DraggableButton
+class InventoryButton : DraggableButton
 {
     //[Header("Inventory Properties")]
     //public Inventory MyInv;
@@ -60,7 +60,7 @@ public class InventoryButton : DraggableButton
 
         ItemObject item = (ItemObject)options.Root;
 
-        Stats.Append
+        Strings[1].Append
            ($"GoldValue: {item.GoldValue}\n" +
             $"Quality: {item.Quality}\n" +
             $"Weight: {item.Weight}");

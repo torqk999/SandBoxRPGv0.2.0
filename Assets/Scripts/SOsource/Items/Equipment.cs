@@ -33,12 +33,12 @@ public class Equipment : ItemObject
         }
         return default;
     }*/
-    public override DraggableButton GenerateMyButton(ButtonOptions options)
+    public override RootButton GenerateMyButton(ButtonOptions options)
     {
         options.ButtonType = ButtonType.ITEM;
         options.PlaceType = PlaceHolderType.EQUIP;
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
-        EquipmentButton myButton = buttonObject.AddComponent<EquipmentButton>();
+        RootButton myButton = buttonObject.AddComponent<RootButton>();
         myButton.Init(options);
         return myButton;
     }
@@ -118,7 +118,7 @@ public class Equipment : ItemObject
                         Destroy(spawnedEffect);
                 }
             
-            effectAbility.Logic.SourceCharacter.Slots.Skills.List.Remove(effectAbility.RootLogic.Button);
+            effectAbility.Logic.SourceCharacter.Slots.Skills.List.Remove(effectAbility);
             effectAbility.Logic.SourceCharacter.UpdateAbilites();
             effectAbility.Logic.SourceCharacter = null;
         }
