@@ -28,9 +28,8 @@ public class RootButton : SelectableButton
     //public PlaceHolderType PlaceType;
     public Sprite EmptyPlaceHolder;
 
-    public void TargetRoot(RootScriptObject root)
+    public void UpdateSprite()
     {
-        Root = root;
         if (Root == null)
             MyImage.sprite = EmptyPlaceHolder;
         else
@@ -44,12 +43,16 @@ public class RootButton : SelectableButton
             EmptyPlaceHolder = UIMan.EmptyButtonSprite;
         else
             EmptyPlaceHolder = MyImage.sprite;
-        TargetRoot(options.Root);
+        UpdateSprite();
     }
 
     public override void Assign(RootScriptObject root)
     {
+        if (root != null)
+        Debug.Log($"Assigning: {root.Name}");
         base.Assign(root);
+        Root = root;
+        UpdateSprite();
     }
 
     // Start is called before the first frame update

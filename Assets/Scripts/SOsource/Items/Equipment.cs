@@ -33,14 +33,14 @@ public class Equipment : ItemObject
         }
         return default;
     }*/
-    public override RootButton GenerateMyButton(ButtonOptions options)
+    /*public override RootButton GenerateMyButton(ButtonOptions options)
     {
-        options.ButtonType = ButtonType.ITEM;
+        //options.ButtonType = ButtonType.ITEM;
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         RootButton myButton = buttonObject.AddComponent<RootButton>();
         myButton.Init(options);
         return myButton;
-    }
+    }*/
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         //options.Root = options.Root == "" ? "Equipment" : options.Root;
@@ -68,18 +68,25 @@ public class Equipment : ItemObject
         EquipLevel = equipSource.EquipLevel;
         EquipSlot = equipSource.EquipSlot;
 
-        options.ID++; // MAYBE???
         CloneAbilities(equipSource, options);
+
+        Debug.Log("Copy Equipment Complete!");
     }
     void CloneAbilities(Equipment source, RootOptions options)
     {
+        Debug.Log("Cloning equip abilities...");
+
         Abilities = new CharacterAbility[source.Abilities.Length];
 
         for (int i = 0; i < Abilities.Length; i++)
         {
             if (source.Abilities[i] != null)
             {
+                options.Root = source.Abilities[i];
+                options.Index = i;
+                options.ID++; // MAYBE???
                 Abilities[i] = source.Abilities[i].GenerateAbility(options);
+                Debug.Log("Ability generated!");
             }
             else
                 Debug.Log($"Ability missing from id#{RootLogic.Options.ID}:{Name}");

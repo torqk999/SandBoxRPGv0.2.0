@@ -7,6 +7,41 @@ using Unity.Rendering;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+#region MOTHBALL
+
+/*public Panel GenerateButtonPage(Page source, bool grid = false)
+    {
+        GameObject newPanelObject = Instantiate(ButtonPanelPrefab, source.ParentContent);
+
+        if (!grid)
+        {
+            GridLayout gridLayout = newPanelObject.GetComponent<GridLayout>();
+            Destroy(gridLayout);
+        }
+
+        Panel newPanel = newPanelObject.GetComponent<Panel>();
+        newPanel.Setup(source);
+        //Debug.Log("New button panel made!");
+        return newPanel;
+    }
+
+ void foo()
+    {
+        EventTrigger trigger = this.gameObject.GetComponent<EventTrigger>();
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerDown;
+        entry.callback.AddListener((data) => { foo2((PointerEventData)data); });
+        trigger.triggers.Add(entry);
+    }
+    void foo2(PointerEventData data)
+    {
+
+    }
+ 
+ 
+ */
+#endregion
+
 public enum GameMenu
 {
     NONE = -1,
@@ -52,29 +87,22 @@ public class UIManager : MonoBehaviour
     public CharPage OldPage;
 
     [Header("Prefabs")]
-    public GameObject CharacterInfoPrefab;
-    public GameObject ButtonPanelPrefab;
-    //public GameObject ButtonListPrefab;
-
-    public GameObject SkillButtonPrefab;
-    public GameObject DraggableButtonPrefab;
-
-    public GameObject EffectPanelPrefab;
     public GameObject PartyMemberPanelPrefab;
-
-    [Header("Random Folders")]
-    public RectTransform CharacterInfoContent;
-    public RectTransform EffectStatsContent;
+    public GameObject InventoryButtonPrefab;
+    public GameObject HotbarButtonPrefab;
+    public GameObject SkillButtonPrefab;
+    public GameObject EffectPanelPrefab;
 
     [Header("Menu Logic")]
-    //public Character CurrentlyViewedCharacter;
-
     public Page Parties;
+
     public Page Containers;
     public Page Inventories;
     public Page Equipments;
+
     public Page HotBars;
     public Page SkillLists;
+    public Page EffectsPrimer;
 
     [Header("CharSheets")]
     public List<GameObject> AllSheetElements = new List<GameObject>();
@@ -110,7 +138,7 @@ public class UIManager : MonoBehaviour
     public GameObject Interaction;
     public GameObject Actionbar;
     public GameObject Party;
-    public Transform PartyMembers; // ??
+    public Transform PartyMembers;
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;
@@ -126,58 +154,45 @@ public class UIManager : MonoBehaviour
 
     #endregion
 
-    #region EXPERIMENTAL
-    void foo()
-    {
-        EventTrigger trigger = this.gameObject.GetComponent<EventTrigger>();
-        EventTrigger.Entry entry = new EventTrigger.Entry();
-        entry.eventID = EventTriggerType.PointerDown;
-        entry.callback.AddListener((data) => { foo2((PointerEventData)data); });
-        trigger.triggers.Add(entry);
-    }
-    void foo2(PointerEventData data)
-    {
-
-    }
-    #endregion
-
     #region BUTTONS
     public RootButton GeneratePlaceHolder(ButtonOptions options)
     {
-        options.ButtonType = ButtonType.PLACE;
         GameObject placeObject = GenerateButtonObject(options);
         RootButton placeButton = placeObject.AddComponent<RootButton>();
         placeButton.Init(options);
-        placeObject.name = $"Place : {placeButton.SlotIndex}";
+        placeObject.name = $"{options.PlaceType} : {placeButton.SlotIndex}";
         return placeButton;
-    }
-    public RootButton GenerateSkillButton(ButtonOptions options)
-    {
-        return null;
     }
     public GameObject GenerateButtonObject(ButtonOptions options)
     {
         GameObject prefab = null;
-        switch (options.ButtonType)
+        switch (options.PlaceType)
         {
-            case ButtonType.PLACE:
-                prefab = DraggableButtonPrefab;
+            case PlaceHolderType.EQUIP:
+            case PlaceHolderType.INVENTORY:
+                prefab = InventoryButtonPrefab;
                 break;
-                //return Instantiate(prefab, options.Page.PlaceHolders.PhysicalParent);
 
-            case ButtonType.ITEM:
-                prefab = DraggableButtonPrefab;
+            case PlaceHolderType.CHARACTER:
+                prefab = PartyMemberPanelPrefab;
                 break;
-                //return Instantiate(prefab, options.Page.Occupants.PhysicalParent);
 
-            case ButtonType.SKILL:
+            case PlaceHolderType.HOT_BAR:
+                prefab = HotbarButtonPrefab;
+                break;
+
+            case PlaceHolderType.SKILL:
                 prefab = SkillButtonPrefab;
+                break;
+
+            case PlaceHolderType.EFFECT:
+                prefab = EffectPanelPrefab;
                 break;
                 //return Instantiate(prefab, options.Page.Occupants.PhysicalParent);
         }
 
         if (prefab != null)
-            return Instantiate(prefab, options.Panel.PhysicalParent);
+            return Instantiate(prefab, options.Page.Buttons.PhysicalParent);
         return null;
     }
 
@@ -290,18 +305,23 @@ public class UIManager : MonoBehaviour
         SwapInPanel(Inventories, character.Slots.Inventory);
         SwapInPanel(Equipments, character.Slots.Equips);
         SwapInPanel(HotBars, character.Slots.HotBar);
-        SwapInPanel(SkillLists, character.Slots.Skills);
+
+        EffectsPrimer.Clear();
+        PopulateSkillsList();
+        PopulateMemberPanels();
 
         Debug.Log("Character Selected!");
     }
+
     void SwapInPanel(Page page, RootPanel panel)
     {
         if (page == null || panel == null)
             return;
 
-        page.Occupants = panel;
-        for (int i = 0; i < page.PlaceHolders.List.Count; i++)
-            page.PlaceHolders.List[i].Assign(page.Occupants.List[i]);
+        UnselectPool(page.Buttons.List);
+        page.OccupantRoots = panel;
+        for (int i = 0; i < page.Buttons.List.Count; i++)
+            page.Buttons.List[i].Assign(page.OccupantRoots.List[i]);
     }
 
     public void ToggleCharacterPage(CharPage page)
@@ -338,13 +358,13 @@ public class UIManager : MonoBehaviour
         Debug.Log("refresh toggled!");
         Inventories.Refresh = true;
 
-        UnselectPool(Inventories.PlaceHolders.List);
-        UnselectPool(Equipments.PlaceHolders.List);
+        UnselectPool(Inventories.Buttons.List);
+        UnselectPool(Equipments.Buttons.List);
     }
     public void StrategyPageSelection()
     {
-        UnselectPool(HotBars.PlaceHolders.List);
-        UnselectPool(SkillLists.PlaceHolders.List);
+        UnselectPool(HotBars.Buttons.List);
+        UnselectPool(SkillLists.Buttons.List);
     }
     public void HotBarSelection(int slotIndex)
     {
@@ -436,123 +456,68 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
-    public Panel GenerateButtonPage(Page source, bool grid = false)
-    {
-        GameObject newPanelObject = Instantiate(ButtonPanelPrefab, source.ParentContent);
-
-        if (!grid)
-        {
-            GridLayout gridLayout = newPanelObject.GetComponent<GridLayout>();
-            Destroy(gridLayout);
-        }
-
-        Panel newPanel = newPanelObject.GetComponent<Panel>();
-        newPanel.Setup(source);
-        //Debug.Log("New button panel made!");
-        return newPanel;
-    }
     void BuildSlotPlaceHolders()
     {
         Debug.Log("Initial slot build");
 
-        ButtonOptions buttonOptions = new ButtonOptions(Inventories.PlaceHolders, PlaceHolderType.INVENTORY, true, CharacterMath.PARTY_INVENTORY_MAX);
+        ButtonOptions buttonOptions = new ButtonOptions(Inventories, PlaceHolderType.INVENTORY, true, CharacterMath.PARTY_INVENTORY_MAX);
         Inventories.Setup(buttonOptions);
 
         Debug.Log("Inventory placeHolders built!");
 
-        buttonOptions = new ButtonOptions(HotBars.PlaceHolders, PlaceHolderType.HOT_BAR, true, CharacterMath.HOT_BAR_SLOTS);
+        buttonOptions = new ButtonOptions(HotBars, PlaceHolderType.HOT_BAR, true, CharacterMath.HOT_BAR_SLOTS);
         HotBars.Setup(buttonOptions);
 
         Debug.Log("HotBar placeHolders built!");
     }
-
     private void InitEquipPlaceHolders()
     {
         ButtonOptions options = new ButtonOptions(null);
-        foreach (RootButton button in Equipments.PlaceHolders.List)
+        foreach (RootButton button in Equipments.Buttons.List)
         {
-            //Debug.Log("Initializing Equip PlaceHolder");
+            Debug.Log("Initializing Equip PlaceHolder");
             button.Init(options);
         }
             
+    }
+    public void PopulateSkillsList()
+    {
+        SkillLists.Clear();
+
+        //SkillLists.Setup();
     }
 
     public void PopulateEffectPanels(CharacterAbility selection)
     {
         // Clear old effectPanels
-        for (int i = EffectStatsContent.childCount - 1; i > -1; i--)
-            Destroy(EffectStatsContent.GetChild(i).gameObject);
+        EffectsPrimer.Clear();
 
         switch (selection)
         {
             case EffectAbility:
+                int index = 0;
                 foreach (BaseEffect effect in ((EffectAbility)selection).Effects)
                 {
-                    GameObject newEffectPanel = Instantiate(EffectPanelPrefab, EffectStatsContent);
-                    StringBuilder outputBuild = new StringBuilder(GlobalConstants.STR_BUILD_CAP);
-                    outputBuild.Append($"Effect: {effect.Name}\n");
-                    outputBuild.Append($"Duration: {effect.RisidualDuration}\n");
-
-                    switch (effect)
-                    {
-                        case CurrentStatEffect:
-
-                            outputBuild.Append($"Target: {((CurrentStatEffect)effect).TargetStat}\n");
-                            outputBuild.Append($"Amount: {((CurrentStatEffect)effect).Value}\n");
-
-                            for (int i = 0; i < CharacterMath.STATS_ELEMENT_COUNT; i++)
-                            {
-                                if (((CurrentStatEffect)effect).ElementPack.Elements[i] == 0)
-                                    continue;
-
-                                outputBuild.Append($"\n{(Element)i}\n" +
-                                    $"Base: {((CurrentStatEffect)effect).ElementPack.Elements[i]}\n" +
-                                    $"Current: {((CurrentStatEffect)effect).ElementPack.Amplification[i]}\n");
-                            }
-                            break;
-
-                        case CrowdControlEffect:
-                            outputBuild.Append($"Type: {((CrowdControlEffect)effect).TargetCCstatus}");
-                            break;
-                    }
-
-                    Text effectText = newEffectPanel.transform.GetChild(0).GetComponent<Text>();
-                    //CanvasRenderer render = newEffectPanel.GetComponent<CanvasRenderer>();
-                    effectText.text = outputBuild.ToString();
-
-                    if (effect.sprite != null)
-                        newEffectPanel.transform.GetChild(1).GetComponent<Image>().sprite = effect.sprite;
-
-
-
-                    newEffectPanel.transform.SetParent(EffectStatsContent);
-                    newEffectPanel.transform.localScale = new Vector3(1, 1, 1);
-
-                    newEffectPanel.SetActive(true);
+                    ButtonOptions buttonOptions = new ButtonOptions(effect, EffectsPrimer, PlaceHolderType.EFFECT);
+                    EffectsPrimer.Add(buttonOptions);
+                    index++;
                 }
                 break;
         }
     }
-    /*void PopulateEquipAndRingSlots()
+    public void PopulateMemberPanels()
     {
-        for (int i = 0; i < CharacterMath.WEAR_SLOTS_COUNT && i < EquipButtons.Length; i++)
-        {
-            if (EquipButtons[i] != null)
-            {
-                //Debug.Log($"GearCallback: {i}");
-                //CreateRemapCallBack(EquipButtons[i], i, ButtonType.SLOT_EQUIP);
-            }
-        }
+        if (!GameState.bPartyChanged)
+            return;
 
-        for (int i = 0; i < CharacterMath.RING_SLOT_COUNT && i < RingButtons.Length; i++)
-        {
-            if (RingButtons[i] != null)
-            {
-                //Debug.Log($"RingCallbacks: {i}");
-                //CreateRemapCallBack(RingButtons[i], i, ButtonType.SLOT_RING);
-            }
-        }
-    }*/
+        for (int i = PartyMembers.childCount - 1; i > -1; i--)
+            Destroy(PartyMembers.GetChild(i).gameObject);
+
+        foreach (CharacterSheet member in GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List)
+            GenerateMemberPanel(member.Posession);
+
+        GameState.bPartyChanged = false;
+    }
     #endregion
 
     #region HUD
@@ -606,19 +571,7 @@ public class UIManager : MonoBehaviour
             text.text = $" {Math.Round(character.CurrentStats.Stats[i], GlobalConstants.DECIMAL_PLACES)} / {Math.Round(character.MaximumStatValues.Stats[i], GlobalConstants.DECIMAL_PLACES)}";
         }
     }
-    void RepopulateMemberPanels()
-    {
-        if (!GameState.bPartyChanged)
-            return;
-
-        for (int i = PartyMembers.childCount - 1; i > -1; i--)
-            Destroy(PartyMembers.GetChild(i).gameObject);
-
-        foreach (CharacterSheet member in GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List)
-            GenerateMemberPanel(member.Posession);
-
-        GameState.bPartyChanged = false;
-    }
+    
     void GenerateMemberPanel(Character character)
     {
         GameObject newMemberPanel = Instantiate(PartyMemberPanelPrefab, PartyMembers);
@@ -761,7 +714,7 @@ public class UIManager : MonoBehaviour
             !GameState.Populated)
             return;
 
-        RepopulateMemberPanels();
+        //PopulateMemberPanels();
         UpdatePartyPanel();
         UpdateInteractionHUD();
         //UpdateCooldownBars();

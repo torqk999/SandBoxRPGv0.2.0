@@ -19,11 +19,11 @@ public class ExtendedButtonEditor : Editor
     }
 }
 
-public enum ButtonType
+/*public enum ButtonType
 {
     DEFAULT,
     ITEM,
-    PLACE,  // implement later...
+    CHARACTER,
     //EQUIP,
     //INVENTORY,
     SKILL,
@@ -31,18 +31,18 @@ public enum ButtonType
     //CONTAINER,
     //SLOT_RING,
     //KEY_MAP
-}
+}*/
 
 [Serializable]
 public struct ButtonOptions
 {
-    public ButtonType ButtonType;
+    //public ButtonType ButtonType;
     public PlaceHolderType PlaceType;
     public int Index_Size;
     public bool ResetImage;
     public RootScriptObject Root;
     //public Page Page;
-    public ButtonPanel Panel;
+    public Page Page;
     //public OccupantPanel OccupantPanel;
     //public PlaceHolderPanel PlaceHolderPanel;
 
@@ -51,33 +51,33 @@ public struct ButtonOptions
     /// For building a new root directly into the target folder
     /// </summary>
     /// <param name="root"> The root object that is tied to this button </param>
-    /// <param name="panel"> The page component that currently houses this button </param>
+    /// <param name="page"> The page component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(RootScriptObject root , ButtonPanel panel, int index = 0)
+    public ButtonOptions(RootScriptObject root , Page page, PlaceHolderType type = default, int index = 0)
     {
         Index_Size = index;
         Root = root;
-        Panel = panel;
+        Page = page;
 
         ResetImage = false;
-        PlaceType = default;
-        ButtonType = default;
+        PlaceType = type;
+        //ButtonType = default;
     }
 
     /// <summary>
     /// For build a new placeHolder directly into the target folder
     /// </summary>
-    /// <param name="panel"> The panel component that currently houses this button </param>
+    /// <param name="page"> The panel component that currently houses this button </param>
     /// <param name="size"> The index of this placHolder and it's button </param>
-    public ButtonOptions(ButtonPanel panel = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
+    public ButtonOptions(Page page = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
     {
         Index_Size = size;
         Root = null;
-        Panel = panel;
+        Page = page;
 
         ResetImage = resetImage;
         PlaceType = type;
-        ButtonType = default;
+        //ButtonType = default;
     }
 }
 
@@ -93,10 +93,10 @@ public class ExtendedButton : Button
 
     public virtual void Assign(RootScriptObject root)
     {
-        if (root != null &&
-            root.sprite != null)
+        //if (root != null &&
+        //    root.sprite != null)
 
-        MyImage.sprite = root.sprite;
+        //MyImage.sprite = root.sprite;
     }
     
     public virtual void CreateCallBackIdentity() { }

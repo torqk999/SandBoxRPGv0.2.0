@@ -24,13 +24,8 @@ public class SelectableButton : TippedButton
     public int SlotIndex;
     public bool Selected;
     public ButtonPanel Panel;
-    
-    //public RootScriptObject Root;
-    //public Transform SlotHome;
-    //public SelectableButton[] SlotFamily;
 
     [Header("Debugging")]
-    
     public Color DefaultColor;
     public Color HoverColor;
     public Color SelectionColor;
@@ -78,11 +73,11 @@ public class SelectableButton : TippedButton
         //Debug.Log("Selectable Init");
         base.Init(options);
 
-        if (options.Panel == null)
+        if (options.Page == null)
             return; // Assume no re-parent;
 
         SlotIndex = options.Index_Size;
-        Panel = options.Panel;
+        Panel = options.Page.Buttons;
         if (Panel != null &&
             Panel.List != null &&
             SlotIndex > -1 &&

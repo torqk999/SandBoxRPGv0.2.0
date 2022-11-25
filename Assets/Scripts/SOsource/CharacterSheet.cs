@@ -76,6 +76,14 @@ public class CharacterSheet : RootScriptObject
         }
     }
 
+    /*public override RootButton GenerateMyButton(ButtonOptions options)
+    {
+        options.PlaceType = PlaceHolderType.CHARACTER;
+        GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
+        RootButton myButton = buttonObject.AddComponent<RootButton>();
+        myButton.Init(options);
+        return myButton;
+    }*/
     public void Initialize(bool fresh = true)
     {
         if (fresh)

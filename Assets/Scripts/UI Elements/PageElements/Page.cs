@@ -41,8 +41,9 @@ public class Page : MonoBehaviour
 {
     public UIManager UIman;
     public RectTransform ParentContent;
-    public RootPanel Occupants;
-    public ButtonPanel PlaceHolders;
+    public RootPanel OccupantRoots;
+    public ButtonPanel Buttons;
+    public PlaceHolderType PlaceType;
     public int MaximumSize;
     public bool Refresh;
 
@@ -52,38 +53,86 @@ public class Page : MonoBehaviour
 
         ParentContent = gameObject.GetComponent<RectTransform>();
         Resize(options.Index_Size);
-        PlaceHolders.PlaceType = options.PlaceType;
+        PlaceType = options.PlaceType;
         PopulatePlaceHolders(options);
         //RefreshContentSize();
     }
 
     void PopulatePlaceHolders(ButtonOptions options)
     {
-        for (int i = 0; i < PlaceHolders.List.Capacity; i++)
+        for (int i = 0; i < Buttons.List.Capacity; i++)
         {
             options.Index_Size = i;
-            PlaceHolders.List[i] = UIman.GeneratePlaceHolder(options);
+            Buttons.List[i] = UIman.GeneratePlaceHolder(options);
         }
+    }
+    public void PopulateLiterals(ButtonOptions options)
+    {
+        PlaceType = options.PlaceType;
+        Clear();
+
+        for (int i = 0; i < Buttons.List.Capacity; i++)
+        {
+            options.Index_Size = i;
+            Buttons.List[i] = UIman.GeneratePlaceHolder(options);
+        }
+    }
+    void AppendRoot(RootScriptObject root)
+    {
+
+    }
+
+    public void Clear()
+    {
+        foreach (SelectableButton button in Buttons.List)
+            Destroy(button);
+
+        Buttons.List.Clear();
+        OccupantRoots.List.Clear();
+    }
+    public void Add(ButtonOptions options)
+    {
+        OccupantRoots.List.Add(options.Root);
+        Buttons.List.Add(UIman.GeneratePlaceHolder(options));
+    }
+    public void Remove(RootScriptObject root)
+    {
+        if (root == null)
+            return;
+
+        int index = root.RootLogic.Options.Index;
+        Remove(index);
+    }
+
+    public void Remove(int index)
+    {
+        if (index < 0 ||
+            index >= Buttons.List.Count)
+            return;
+
+        OccupantRoots.List.RemoveAt(index);
+        Destroy(Buttons.List[index]);
+        Buttons.List.RemoveAt(index);
     }
 
     public void Resize()
     {
-        Occupants.Resize(PlaceHolders.List.Count);
+        OccupantRoots.Resize(Buttons.List.Count);
     }
 
     public void Resize(int size)
     {
-        PlaceHolders.Resize(size);
+        Buttons.Resize(size);
     }
 
     public void RefreshContentSize()
     {
         Refresh = false;
 
-        if (PlaceHolders == null)
+        if (Buttons == null)
             return;
 
-        Vector2 newDelta = PlaceHolders.PhysicalParent.sizeDelta;
+        Vector2 newDelta = Buttons.PhysicalParent.sizeDelta;
         Debug.Log($"SizeDelta: {newDelta}");
         ParentContent.sizeDelta = newDelta;
     }
@@ -113,34 +162,35 @@ public class Page : MonoBehaviour
     #endregion
 
     #region INVENTORY
-    public void GenerateItem(RootOptions rootOptions)
+    public void GenerateRootIntoSlot(RootOptions rootOptions)
     {
-        if (Occupants.List == null ||
+        Debug.Log("how?");
+        if (OccupantRoots.List == null ||
             rootOptions.Index < 0 ||
-            rootOptions.Index >= Occupants.List.Count)
+            rootOptions.Index >= OccupantRoots.List.Count)
             return;
 
         if (rootOptions.Root == null)
             return;
-
+        Debug.Log("how?");
         //RootOptions rootOptions = new RootOptions(ref UIman.GameState.ROOT_SO_INDEX, index);
         ItemObject newRootObject = (ItemObject)rootOptions.Root.GenerateRootObject(rootOptions);
-
+        Debug.Log("What?");
         //ButtonOptions buttonOptions = new ButtonOptions(newRootObject, PlaceHolders, index);
-        PlaceHolders.List[rootOptions.Index].Assign(newRootObject);
+        Buttons.List[rootOptions.Index].Assign(newRootObject);
     }
     public int FindEligibleIndex()
     {
-        for (int i = 0; i < Occupants.List.Count; i++)
-            if (Occupants.List[i] == null)
+        for (int i = 0; i < OccupantRoots.List.Count; i++)
+            if (OccupantRoots.List[i] == null)
                 return i;
         return -1;
     }
     public int CurrentQuantity()
     {
         int output = 0;
-        for (int i = 0; i < Occupants.List.Count; i++)
-            if (Occupants.List[i] != null)
+        for (int i = 0; i < OccupantRoots.List.Count; i++)
+            if (OccupantRoots.List[i] != null)
                 output++;
         return output;
     }
@@ -151,9 +201,9 @@ public class Page : MonoBehaviour
 
         Debug.Log("Pushing into inventory...");
         if (input is Stackable)
-            return Occupants.PushItemIntoStack((Stackable)input);
+            return OccupantRoots.PushItemIntoStack((Stackable)input);
 
-        if (Occupants.List[inventoryIndex] == null)
+        if (OccupantRoots.List[inventoryIndex] == null)
         {
             input.Occupy(this, inventoryIndex);
             return true;
@@ -194,24 +244,24 @@ public class Page : MonoBehaviour
             int sup = startIndex + i;
             int sub = startIndex - i;
 
-            if (sup < Occupants.List.Count &&
-                Occupants.List[sup] == null)
+            if (sup < OccupantRoots.List.Count &&
+                OccupantRoots.List[sup] == null)
                 return sup;
 
 
             if (sub > 0 &&
-                Occupants.List[sub] == null)
+                OccupantRoots.List[sub] == null)
                 return sub;
         }
         return -1;
     }
     public bool TransferItem(Page targetInventory, int sourceIndex, int targetIndex = 0)
     {
-        ItemObject item = (ItemObject)Occupants.List[sourceIndex];
+        ItemObject item = (ItemObject)OccupantRoots.List[sourceIndex];
         if (item == null)
             return false;
 
-        if (!targetInventory.Occupants.List[targetIndex].Vacate())
+        if (!targetInventory.OccupantRoots.List[targetIndex].Vacate())
             return false;
 
         item.Vacate();

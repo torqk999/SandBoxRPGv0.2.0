@@ -602,6 +602,8 @@ public struct AbilityLogic
 
     public void Clone(AbilityLogic source)
     {
+        Debug.Log("cloning ability logic...");
+
         SourceCharacter = source.SourceCharacter;
         TargetBuffer = new List<Character>();
 

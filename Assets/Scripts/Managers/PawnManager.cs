@@ -63,6 +63,8 @@ public class PawnManager : MonoBehaviour
 
         prefab.SetActive(false); // disable template
 
+        Debug.Log("Pawn built!");
+
         return currentPawn;
     }
     GameObject PawnObjectInstantiation(GameObject template, Transform spawnTransform)

@@ -60,7 +60,7 @@ public class CharacterManager : MonoBehaviour
             return;
 
         Parties[CurrentPartyIndex].CurrentMemberIndex++;
-        Parties[CurrentPartyIndex].CurrentMemberIndex = (Parties[CurrentPartyIndex].CurrentMemberIndex >= Parties[CurrentPartyIndex].Members.Count) ?
+        Parties[CurrentPartyIndex].CurrentMemberIndex = (Parties[CurrentPartyIndex].CurrentMemberIndex >= Parties[CurrentPartyIndex].Members.List.Count) ?
             0 : Parties[CurrentPartyIndex].CurrentMemberIndex;
 
         GameState.bPartyChanged = true;
@@ -72,10 +72,10 @@ public class CharacterManager : MonoBehaviour
 
         if (Parties.Count < 1 ||
             Parties[CurrentPartyIndex] == null ||
-            Parties[CurrentPartyIndex].Members.Count < 1)
+            Parties[CurrentPartyIndex].Members.List.Count < 1)
             return null;
 
-        return Parties[CurrentPartyIndex].Members[Parties[CurrentPartyIndex].CurrentMemberIndex];
+        return ((CharacterSheet)Parties[CurrentPartyIndex].Members.List[Parties[CurrentPartyIndex].CurrentMemberIndex]).Posession;
     }
     #endregion
 
@@ -90,7 +90,8 @@ public class CharacterManager : MonoBehaviour
         foreach (Party source in Parties)
             foreach (Party target in Parties)
                 if (source != target)
-                    source.Foes.AddRange(target.Members);   
+                    foreach (CharacterSheet foe in target.Members.List)
+                        source.Foes.Add(foe.Posession); 
     }
 
     #endregion
@@ -170,7 +171,8 @@ public class CharacterManager : MonoBehaviour
             }
 
             newCharacter.bControllable = true;
-            literalParty.Members.Add(newCharacter);
+            //ButtonOptions options = new ButtonOptions(newCharacter.Sheet, GameState.UIman.Parties.PlaceHolders);
+            literalParty.Members.List.Add(newCharacter.Sheet);
         }
 
         //GameState.UIman.CurrentlyViewedInventory = literalParty.PartyLoot; // <<-- Temporary hack
@@ -198,7 +200,7 @@ public class CharacterManager : MonoBehaviour
             }
 
             newCharacter.bControllable = false;
-            cloneParty.Members.Add(newCharacter);
+            cloneParty.Members.List.Add(newCharacter.Sheet);
             spawnPointFolder.GetChild(i).gameObject.SetActive(false);
         }
 
@@ -226,6 +228,8 @@ public class CharacterManager : MonoBehaviour
     }
     Character GenerateCharacter(GameObject prefab, Party party, Transform spawnTransform = null/*, Wardrobe wardrobe = null*/, int index = -1, bool fresh = true)
     {
+        Debug.Log("Generating Character...");
+
         Character newCharacter = (Character)GameState.PawnMan.PawnGeneration(prefab, party.transform, spawnTransform);
         if (newCharacter == null)
             return null;
@@ -250,7 +254,9 @@ public class CharacterManager : MonoBehaviour
         //    GameState.EQUIPMENT_INDEX = wardrobe.CloneAndEquipWardrobe(newCharacter, GameState.EQUIPMENT_INDEX);
 
         CharacterPool.Add(newCharacter);
-        
+
+
+        Debug.Log("Character generated!");
         return newCharacter;
     }
 
@@ -307,8 +313,9 @@ public class CharacterManager : MonoBehaviour
 
         // Sheet
         character.Sheet = (CharacterSheet)ScriptableObject.CreateInstance("CharacterSheet");
-        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX, index);
+        RootOptions options = new RootOptions(ref GameState.ROOT_SO_INDEX, GameState.UIman.Parties, index);
         character.Sheet.Copy(source.Sheet, options);
+        character.Sheet.Posession = character;
         if (fresh)
             character.Sheet.Initialize();
         

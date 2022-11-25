@@ -160,10 +160,13 @@ public class CharacterAbility : RootScriptObject
         //options.Root = options.Root == "" ? "CharacterAbility" : options.Root;
         CharacterAbility newAbility = (CharacterAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
+        Debug.Log("Ability generated!");
         return newAbility;
     }
     public override void Copy(RootScriptObject source, RootOptions options = default)
     {
+        Debug.Log("Copying Ability...");
+
         base.Copy(source, options);
 
         if (!(source is CharacterAbility))
@@ -186,6 +189,8 @@ public class CharacterAbility : RootScriptObject
 
         Logic.CD_Timer = 0;
         Logic.Cast_Timer = 0;
+
+        Debug.Log("Ability Copied!");
     }
     
 }

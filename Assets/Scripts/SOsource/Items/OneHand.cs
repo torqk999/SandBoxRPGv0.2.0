@@ -39,5 +39,7 @@ public class OneHand : Hand
 
         OneHand oneSource = (OneHand)source;
         Type = oneSource.Type;
+
+        Debug.Log("Copy OneHand Complete!");
     }
 }

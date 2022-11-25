@@ -5,14 +5,16 @@ using UnityEngine;
 public enum PlaceHolderType
 {
     NONE,
+    CHARACTER,
     INVENTORY,
     EQUIP,
     SKILL,
+    EFFECT,
     HOT_BAR
 }
 public class ButtonPanel : MonoBehaviour
 {
-    public PlaceHolderType PlaceType;
+    //public PlaceHolderType PlaceType;
     public Page VirtualParent;
     public RectTransform PhysicalParent;
     public List<SelectableButton> List;

@@ -147,23 +147,28 @@ public class Strategy : MonoBehaviour
     }
     void ReturnEligableCharacters(Tactic tactic, ref List<Character> pool)
     {
+        if (Character.CurrentParty == null)
+        {
+            Debug.Log("Invalid party!");
+            return;
+        }
         pool.Clear();
 
-        switch(tactic.Relation)
+        switch (tactic.Relation)
         {
             case Relation.SELF:
                 pool.Add(Character);
                 break;
 
             case Relation.ALLY:
+                foreach (CharacterSheet sheet in Character.CurrentParty.Members.List)
+                    if (sheet != Character.Sheet)
+                        pool.Add(sheet.Posession);
+                break;
+
+
             case Relation.FOE:
-                Party party = GameState.CharacterMan.Parties.Find(x => x.Faction == Character.Sheet.Faction);
-                if (party == null)
-                {
-                    Debug.Log("Invalid party!");
-                    return;
-                }
-                pool.AddRange(tactic.Relation == Relation.ALLY ? Character.CurrentParty.Members : Character.CurrentParty.Foes);
+                pool.AddRange(Character.CurrentParty.Foes);
                 break;
         }
     }

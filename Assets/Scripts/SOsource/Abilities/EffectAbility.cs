@@ -52,13 +52,17 @@ public class EffectAbility : CharacterAbility
     }
     public virtual void ProduceOriginalEffects(EffectAbility source, EffectOptions effectOptions = default(EffectOptions))
     {
-        RootOptions rootOptions = new RootOptions(ref RootLogic.GameState.ROOT_SO_INDEX);
+        Debug.Log("oh shit...");
+        RootOptions rootOptions = new RootOptions(source, RootLogic.GameState.UIman.EffectsPrimer);
         Effects = new BaseEffect[source.Effects.Length];
         for (int i = 0; i < Effects.Length; i++)
             if (source.Effects[i] != null)
             {
+                rootOptions.Index = i;
+                Debug.Log($"{i} oh shit...");
                 Effects[i] = source.Effects[i].GenerateEffect(rootOptions, effectOptions);
                 Effects[i].ProjectileDuration = source.Effects[i].ProjectileDuration;
+                Debug.Log($"{i} oh shit...");
             }    
     }
 
@@ -77,6 +81,7 @@ public class EffectAbility : CharacterAbility
     }
     public override void Copy(RootScriptObject source, RootOptions options = default)
     {
+        Debug.Log("oh shit...");
         base.Copy(source, options);
 
         if (!(source is EffectAbility))

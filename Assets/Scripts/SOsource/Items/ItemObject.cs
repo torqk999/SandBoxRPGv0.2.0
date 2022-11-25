@@ -17,14 +17,14 @@ public class ItemObject : RootScriptObject
     //public int SlotIndex;
     //public SlotPage SlotPage;
 
-    public override RootButton GenerateMyButton(ButtonOptions options)
+    /*public override RootButton GenerateMyButton(ButtonOptions options)
     {
-        options.ButtonType = ButtonType.ITEM;
+        //options.ButtonType = ButtonType.ITEM;
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         RootButton myButton = buttonObject.AddComponent<RootButton>();
         myButton.Init(options);
         return myButton;
-    }
+    }*/
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         //options.Root = options.Root == "" ? "ItemObject" : options.Root;
@@ -50,6 +50,8 @@ public class ItemObject : RootScriptObject
         Quality = item.Quality;
         GoldValue = item.GoldValue;
         Weight = item.Weight;
+
+        Debug.Log("Copy Item Complete!");
     }
 }
 

@@ -14,7 +14,7 @@ public class Panel : MonoBehaviour
         VirtualParent = source;
         gameObject.tag = GlobalConstants.TAG_PANEL;
         //PhysicalParent = gameObject.GetComponent<RectTransform>();
-        Resize(VirtualParent.PlaceHolders.List.Count);
+        Resize(VirtualParent.Buttons.List.Count);
     }
 
     public virtual void Resize(int size)

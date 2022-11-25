@@ -22,14 +22,14 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        for(int i = 0; i < SampleItems.Count && i < inventory.Occupants.List.Count; i++)
+        for(int i = 0; i < SampleItems.Count && i < inventory.OccupantRoots.List.Count; i++)
         {
             if (SampleItems[i] == null)
                 continue;
 
             SampleItems[i].InitializeRoot(GameState);
             RootOptions options = new RootOptions(SampleItems[i], inventory, i);
-            inventory.GenerateItem(options);
+            inventory.GenerateRootIntoSlot(options);
         }
     }
     

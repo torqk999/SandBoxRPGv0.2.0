@@ -34,17 +34,22 @@ public class ProcAbility : EffectAbility
         //options.Root = "ProcAbility";
         ProcAbility newAbility = (ProcAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
+        Debug.Log("Proc Ability Generated!");
         return newAbility;
     }
     public override void Copy(RootScriptObject source, RootOptions options)
     {
+        Debug.Log("wtf...");
         base.Copy(source, options);
-
+        Debug.Log("wtf...");
         if (!(source is ProcAbility))
             return;
-
+        Debug.Log("wtf...");
         ProcAbility procSource = (ProcAbility)source;
+        Debug.Log("wtf...");
         Projectile = procSource.Projectile;
+
+        Debug.Log("Proc Ability Copied!");
     }
 
 }

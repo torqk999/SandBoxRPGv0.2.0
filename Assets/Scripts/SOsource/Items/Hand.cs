@@ -38,6 +38,8 @@ public class Hand : Equipment
         //Details = new List<MaterialType>();
         //Details.AddRange(Details);
         Instantiation = null;
+
+        Debug.Log("Copy Hand Complete!");
     }
     public override bool UpdateCharacterRender(Character character, bool putOn = true)
     {

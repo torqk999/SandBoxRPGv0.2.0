@@ -271,8 +271,10 @@ public class BaseEffect : RootScriptObject
     }*/
     public virtual BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
     {
+        //rootOptions.
         BaseEffect newEffect = (BaseEffect)GenerateRootObject(rootOptions);
         newEffect.Copy(this, rootOptions);
+        Debug.Log("Effect generated!");
         return newEffect;
     }
 }
