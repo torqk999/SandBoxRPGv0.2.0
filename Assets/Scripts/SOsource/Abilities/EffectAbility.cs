@@ -70,7 +70,7 @@ public class EffectAbility : CharacterAbility
     }
     public override CharacterAbility GenerateAbility(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "EffectAbility" : options.ClassID;
+        //options.Root = options.Root == "" ? "EffectAbility" : options.Root;
         EffectAbility newAbility = (EffectAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
         return newAbility;

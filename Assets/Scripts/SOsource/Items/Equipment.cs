@@ -36,7 +36,6 @@ public class Equipment : ItemObject
     public override RootButton GenerateMyButton(ButtonOptions options)
     {
         options.ButtonType = ButtonType.ITEM;
-        options.PlaceType = PlaceHolderType.EQUIP;
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         RootButton myButton = buttonObject.AddComponent<RootButton>();
         myButton.Init(options);
@@ -44,7 +43,7 @@ public class Equipment : ItemObject
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "Equipment" : options.ClassID;
+        //options.Root = options.Root == "" ? "Equipment" : options.Root;
         Equipment newRoot = (Equipment)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

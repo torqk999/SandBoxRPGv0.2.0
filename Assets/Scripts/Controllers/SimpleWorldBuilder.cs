@@ -14,7 +14,7 @@ public class SimpleWorldBuilder : MonoBehaviour
     public List<SimpleAIcontroller> myAIpool;
     public List<ItemObject> SampleItems;
 
-    public void SpawnSampleItems(RootPanel inventory)
+    public void SpawnSampleItems(Page inventory)
     {
         if (inventory == null)
         {
@@ -22,14 +22,14 @@ public class SimpleWorldBuilder : MonoBehaviour
             return;
         }
 
-        for(int i = 0; i < SampleItems.Count && i < inventory.List.Count; i++)
+        for(int i = 0; i < SampleItems.Count && i < inventory.Occupants.List.Count; i++)
         {
             if (SampleItems[i] == null)
                 continue;
 
             SampleItems[i].InitializeRoot(GameState);
-
-            inventory.VirtualParent.GenerateItem(SampleItems[i], i);
+            RootOptions options = new RootOptions(SampleItems[i], inventory, i);
+            inventory.GenerateItem(options);
         }
     }
     
@@ -43,7 +43,7 @@ public class SimpleWorldBuilder : MonoBehaviour
 
             GameState.pController.InitialPawnControl();
 
-            SpawnSampleItems(GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].PartyLoot);
+            SpawnSampleItems(GameState.UIman.Inventories);
 
             return true;
         }

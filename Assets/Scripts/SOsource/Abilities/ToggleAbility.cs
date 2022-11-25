@@ -48,7 +48,7 @@ public class ToggleAbility : EffectAbility
     }
     public override CharacterAbility GenerateAbility(RootOptions options)
     {
-        options.ClassID = "ToggleAbility";
+        //options.Root = "ToggleAbility";
         ToggleAbility newAbility = (ToggleAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
         return newAbility;

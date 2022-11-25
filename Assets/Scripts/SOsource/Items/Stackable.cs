@@ -12,7 +12,7 @@ public class Stackable : ItemObject
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "Stackable" : options.ClassID;
+        //options.Root = options.Root == "" ? "Stackable" : options.Root;
         Stackable newRoot = (Stackable)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

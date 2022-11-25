@@ -32,8 +32,8 @@ public class RootScriptObject : ScriptableObject
     }
     public virtual RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == string.Empty ? "RootScriptObject" : options.ClassID;
-        RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.ClassID);
+        //options.Root = options.Root == null ? de : options.Root;
+        RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.Root.name);
         newRootObject.RootLogic.GameState = RootLogic.GameState;
         newRootObject.Copy(this, options);
         return newRootObject;
@@ -51,33 +51,33 @@ public class RootScriptObject : ScriptableObject
     }
     public virtual bool Vacate()
     {
-        if (RootLogic.Page == null ||
-            RootLogic.Page.Occupants.List == null ||
+        if (RootLogic.Options.Page == null ||
+            RootLogic.Options.Page.Occupants.List == null ||
             RootLogic.Options.Index < 0 ||
-            RootLogic.Options.Index >= RootLogic.Page.Occupants.List.Count)
+            RootLogic.Options.Index >= RootLogic.Options.Page.Occupants.List.Count)
             return false;
 
-        RootLogic.Page.Occupants.List[RootLogic.Options.Index] = null;
+        RootLogic.Options.Page.Occupants.List[RootLogic.Options.Index] = null;
         return true;
         // Un parent? Should be re-parenting anyway...
         //return base.Vacate();
     }
     public bool Relocate()
     {
-        if (RootLogic.Page == null ||
-            RootLogic.Page.Occupants == null ||
-            RootLogic.Page.Occupants.List == null)
+        if (RootLogic.Options.Page == null ||
+            RootLogic.Options.Page.Occupants == null ||
+            RootLogic.Options.Page.Occupants.List == null)
             return false;
 
-        int emptyIndex = RootLogic.Page.Occupants.ReturnEmptyIndex();
+        int emptyIndex = RootLogic.Options.Page.Occupants.ReturnEmptyIndex();
         if (emptyIndex == -1)
         {
             return Drop();
         }
 
-        RootLogic.Page.Occupants.List[RootLogic.Options.Index] = null;
+        RootLogic.Options.Page.Occupants.List[RootLogic.Options.Index] = null;
         RootLogic.Options.Index = emptyIndex;
-        RootLogic.Page.Occupants.List[RootLogic.Options.Index] = this;
+        RootLogic.Options.Page.Occupants.List[RootLogic.Options.Index] = this;
         return true;
     }
     public bool CheckCanOccupy(RootScriptObject place)
@@ -100,8 +100,8 @@ public class RootScriptObject : ScriptableObject
 
         //Panel = place.Panel.VirtualParent.Occupants;
         RootLogic.Options.Index = index;
-        RootLogic.Page.Occupants.List[RootLogic.Options.Index] = this;
-        RootLogic.Page.PlaceHolders.List[RootLogic.Options.Index].Assign(this);
+        RootLogic.Options.Page.Occupants.List[RootLogic.Options.Index] = this;
+        RootLogic.Options.Page.PlaceHolders.List[RootLogic.Options.Index].Assign(this);
 
         return true;
     }

@@ -12,7 +12,7 @@ public class SummonAbility : CharacterAbility
 
     public override CharacterAbility GenerateAbility(RootOptions options)
     {
-        options.ClassID = "SummonAbility";
+        //options.Root = "SummonAbility";
         SummonAbility newAbility = (SummonAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
         return newAbility;

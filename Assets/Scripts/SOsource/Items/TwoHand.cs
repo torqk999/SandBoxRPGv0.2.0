@@ -22,7 +22,7 @@ public class TwoHand : Hand
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "TwoHand" : options.ClassID;
+        //options.Root = options.Root == "" ? "TwoHand" : options.Root;
         TwoHand newRoot = (TwoHand)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

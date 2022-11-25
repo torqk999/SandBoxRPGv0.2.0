@@ -35,7 +35,7 @@ public class ImmuneEffect : BaseEffect
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = "ImmuneEffect";
+        //options.Root = "ImmuneEffect";
         return (ImmuneEffect)base.GenerateRootObject(options);
     }
     public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)

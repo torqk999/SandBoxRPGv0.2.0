@@ -18,7 +18,7 @@ public class OffHand : Hand
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "OffHand" : options.ClassID;
+        //options.Root = options.Root == "" ? "OffHand" : options.Root;
         OffHand newRoot = (OffHand)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

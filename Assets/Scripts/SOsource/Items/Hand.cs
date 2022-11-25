@@ -15,7 +15,7 @@ public class Hand : Equipment
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "Hand" : options.ClassID;
+        //options.Root = options.Root == "" ? "Hand" : options.Root;
         Hand newRoot = (Hand)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

@@ -20,7 +20,6 @@ public class ItemObject : RootScriptObject
     public override RootButton GenerateMyButton(ButtonOptions options)
     {
         options.ButtonType = ButtonType.ITEM;
-        options.PlaceType = PlaceHolderType.INVENTORY;
         GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
         RootButton myButton = buttonObject.AddComponent<RootButton>();
         myButton.Init(options);
@@ -28,9 +27,10 @@ public class ItemObject : RootScriptObject
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "ItemObject" : options.ClassID;
+        //options.Root = options.Root == "" ? "ItemObject" : options.Root;
         ItemObject newRoot = (ItemObject)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
+        newRoot.Occupy(options.Page, options.Index);
         return newRoot;
     }
     public virtual void InitializeRoot()

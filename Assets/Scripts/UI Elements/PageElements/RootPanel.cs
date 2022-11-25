@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class RootPanel //: Panel
 {
     public Page VirtualParent;
@@ -16,10 +17,8 @@ public class RootPanel //: Panel
     public void Resize(int size)
     {
         if (List == null)
-        {
             List = new List<RootScriptObject>(size);
-            return;
-        }
+
 
         List<RootScriptObject> newList = new List<RootScriptObject>(size);
 

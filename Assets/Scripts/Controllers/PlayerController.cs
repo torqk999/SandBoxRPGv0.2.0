@@ -74,7 +74,7 @@ public class PlayerController : CharacterController
         oldPosition = GameState.GameCamera.transform.parent.position;
         CurrentPawn = targetPawn;
         GameState.GameCamera.transform.parent = targetPawn.Socket;
-        SnapPawnControlOptions();
+        //SnapPawnControlOptions();
         LerpTimer = 0;
         bIsCamLerping = true;
         Character targetCharacter = targetPawn as Character;
@@ -117,7 +117,7 @@ public class PlayerController : CharacterController
         if (CurrentPawn == null)
             return;
 
-        SnapPawnControlOptions();
+        //SnapPawnControlOptions();
         Teleport();
     }
     #endregion

@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlaceHolderType
+{
+    NONE,
+    INVENTORY,
+    EQUIP,
+    SKILL,
+    HOT_BAR
+}
 public class ButtonPanel : MonoBehaviour
 {
     public PlaceHolderType PlaceType;

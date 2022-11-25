@@ -33,7 +33,7 @@ public class MaxStatEffect : StatEffect
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = "MaxStatEffect";
+        //options.Root = "MaxStatEffect";
         return (MaxStatEffect)base.GenerateRootObject(options);
     }
     public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)

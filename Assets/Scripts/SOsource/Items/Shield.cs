@@ -23,7 +23,7 @@ public class Shield : Hand
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "Shield" : options.ClassID;
+        //options.Root = options.Root == "" ? "Shield" : options.Root;
         Shield newRoot = (Shield)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

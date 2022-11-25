@@ -19,11 +19,13 @@ public class RootButtonEditor : Editor
 }
 
 
+
+
 public class RootButton : SelectableButton
 {
     public RootScriptObject Root;
     //public Image MyImage;
-    public PlaceHolderType PlaceType;
+    //public PlaceHolderType PlaceType;
     public Sprite EmptyPlaceHolder;
 
     public void TargetRoot(RootScriptObject root)
@@ -33,6 +35,21 @@ public class RootButton : SelectableButton
             MyImage.sprite = EmptyPlaceHolder;
         else
             MyImage.sprite = Root.sprite;
+    }
+
+    public override void Init(ButtonOptions options)
+    {
+        base.Init(options);
+        if (options.ResetImage)
+            EmptyPlaceHolder = UIMan.EmptyButtonSprite;
+        else
+            EmptyPlaceHolder = MyImage.sprite;
+        TargetRoot(options.Root);
+    }
+
+    public override void Assign(RootScriptObject root)
+    {
+        base.Assign(root);
     }
 
     // Start is called before the first frame update

@@ -11,7 +11,7 @@ public class Ring : Hand
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "Ring" : options.ClassID;
+        //options.Root = options.Root == "" ? "Ring" : options.Root;
         Ring newRoot = (Ring)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

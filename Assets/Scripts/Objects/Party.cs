@@ -6,7 +6,7 @@ public class Party : MonoBehaviour
 {
     public string Name;
     public GameState GameState;
-    public List<Character> Members;
+    public RootPanel Members;
     public List<Character> Foes;
     public RootPanel PartyLoot;
     public Formation Formation;
@@ -24,7 +24,7 @@ public class Party : MonoBehaviour
         GameState = state;
         Faction = faction;
         Name = name == "" ? Faction.ToString() : name;
-        Members = new List<Character>();
+        Members = new RootPanel(0, GameState.UIman.Parties);
         Foes = new List<Character>();
         PartyLoot = new RootPanel(CharacterMath.PARTY_INVENTORY_MAX, GameState.UIman.Inventories);
     }

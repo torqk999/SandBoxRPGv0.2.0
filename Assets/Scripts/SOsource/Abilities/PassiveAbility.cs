@@ -55,7 +55,7 @@ public class PassiveAbility : EffectAbility
 
     public override CharacterAbility GenerateAbility(RootOptions options)
     {
-        options.ClassID = "PassiveAbility";
+        //options.Root = "PassiveAbility";
         PassiveAbility newAbility = (PassiveAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
         return newAbility;

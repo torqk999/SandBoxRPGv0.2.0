@@ -706,7 +706,7 @@ public struct RootLogic
 {
     public RootOptions Options;
     public GameState GameState;
-    public Page Page;
+    //public Page Page;
     public RootScriptObject Original;
     public List<RootScriptObject> Clones;
     public RootButton Button;
@@ -723,18 +723,18 @@ public struct RootLogic
 [Serializable] 
 public struct RootOptions
 {
-    public string ClassID;
+    public RootScriptObject Root;
     public bool IsClone;
-
+    public Page Page;
     public int ID;
     public int Index;
     public int Quantity; // Migrate to ItemOptions
     
-    public RootOptions(ref int id, int index = -1, int quantity = 1)
+    public RootOptions(ref int id, Page page = null, int index = -1, int quantity = 1)
     {
-        ClassID = string.Empty; //source.name;
+        Root = null; //source.name;
         IsClone = false;
-
+        Page = page;
         try
         {
             ID = id;
@@ -748,11 +748,11 @@ public struct RootOptions
         Quantity = quantity;
     }
 
-    public RootOptions(RootScriptObject source, int index = -1, int quantity = 1)
+    public RootOptions(RootScriptObject source, Page page = null, int index = -1, int quantity = 1)
     {
-        ClassID = source.name;
+        Root = source;
         IsClone = true;
-
+        Page = page;
         ID = source.RootLogic.Options.ID;
         Index = index;
         Quantity = quantity;

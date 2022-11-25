@@ -21,7 +21,7 @@ public class InvulnerableEffect : BaseEffect
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = "InvulnerableEffect";
+        //options.Root = "InvulnerableEffect";
         return (InvulnerableEffect)base.GenerateRootObject(options);
     }
     public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)

@@ -157,7 +157,7 @@ public class CharacterAbility : RootScriptObject
     }*/
     public virtual CharacterAbility GenerateAbility(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "CharacterAbility" : options.ClassID;
+        //options.Root = options.Root == "" ? "CharacterAbility" : options.Root;
         CharacterAbility newAbility = (CharacterAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
         return newAbility;

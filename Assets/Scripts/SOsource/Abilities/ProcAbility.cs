@@ -31,7 +31,7 @@ public class ProcAbility : EffectAbility
     }
     public override CharacterAbility GenerateAbility(RootOptions options)
     {
-        options.ClassID = "ProcAbility";
+        //options.Root = "ProcAbility";
         ProcAbility newAbility = (ProcAbility)GenerateRootObject(options);
         newAbility.Copy(this, options);
         return newAbility;

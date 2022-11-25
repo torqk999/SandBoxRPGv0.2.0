@@ -33,7 +33,7 @@ public class CrowdControlEffect : BaseEffect
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = "CrowdControlEffect";
+        //options.Root = "CrowdControlEffect";
         return (CrowdControlEffect)base.GenerateRootObject(options);
     }
 

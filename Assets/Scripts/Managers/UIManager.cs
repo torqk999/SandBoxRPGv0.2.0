@@ -69,6 +69,7 @@ public class UIManager : MonoBehaviour
     [Header("Menu Logic")]
     //public Character CurrentlyViewedCharacter;
 
+    public Page Parties;
     public Page Containers;
     public Page Inventories;
     public Page Equipments;
@@ -147,7 +148,7 @@ public class UIManager : MonoBehaviour
         GameObject placeObject = GenerateButtonObject(options);
         RootButton placeButton = placeObject.AddComponent<RootButton>();
         placeButton.Init(options);
-        placeObject.name = $"{placeButton.PlaceType} Place : {placeButton.SlotIndex}";
+        placeObject.name = $"Place : {placeButton.SlotIndex}";
         return placeButton;
     }
     public RootButton GenerateSkillButton(ButtonOptions options)
@@ -459,7 +460,7 @@ public class UIManager : MonoBehaviour
 
         Debug.Log("Inventory placeHolders built!");
 
-        buttonOptions = new ButtonOptions(HotBars.PlaceHolders, PlaceHolderType.SKILL, true, CharacterMath.HOT_BAR_SLOTS);
+        buttonOptions = new ButtonOptions(HotBars.PlaceHolders, PlaceHolderType.HOT_BAR, true, CharacterMath.HOT_BAR_SLOTS);
         HotBars.Setup(buttonOptions);
 
         Debug.Log("HotBar placeHolders built!");
@@ -573,7 +574,7 @@ public class UIManager : MonoBehaviour
             PartyMemberPanelPrefab == null)
             return;
 
-        if (GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.Count !=
+        if (GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List.Count !=
             PartyMembers.childCount)
         {
             Party.SetActive(false);
@@ -583,13 +584,13 @@ public class UIManager : MonoBehaviour
         Party.SetActive(GameState.bHUDactive &&
             !GameState.bGameMenuOpen &&
             GameState.CharacterMan.Parties.Count > 0 &&
-            GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.Count > 0);
+            GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List.Count > 0);
 
         if (!Party.activeSelf)
             return; // Party screen is off, doesn't need updating
 
         for (int i = 0; i < PartyMembers.childCount; i++)
-            UpdateMemberPanel(PartyMembers.GetChild(i), GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members[i]);
+            UpdateMemberPanel(PartyMembers.GetChild(i), ((CharacterSheet)GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List[i]).Posession);
     }
     void UpdateMemberPanel(Transform memberPanel, Character character)
     {
@@ -613,8 +614,8 @@ public class UIManager : MonoBehaviour
         for (int i = PartyMembers.childCount - 1; i > -1; i--)
             Destroy(PartyMembers.GetChild(i).gameObject);
 
-        foreach (Character member in GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members)
-            GenerateMemberPanel(member);
+        foreach (CharacterSheet member in GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List)
+            GenerateMemberPanel(member.Posession);
 
         GameState.bPartyChanged = false;
     }

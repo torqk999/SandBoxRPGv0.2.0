@@ -96,7 +96,7 @@ public class CurrentStatEffect : StatEffect
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = "CurrentStatEffect";
+        //options.Root = "CurrentStatEffect";
         return (CurrentStatEffect)base.GenerateRootObject(options);
     }
     public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)

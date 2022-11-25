@@ -12,7 +12,7 @@ public class Wearable : Equipment
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = options.ClassID == "" ? "Wearable" : options.ClassID;
+        //options.Root = options.Root == "" ? "Wearable" : options.Root;
         Wearable newRoot = (Wearable)base.GenerateRootObject(options);
         newRoot.Copy(this, options);
         return newRoot;

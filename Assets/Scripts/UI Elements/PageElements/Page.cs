@@ -6,6 +6,7 @@ using UnityEngine;
 public struct PageOptions
 {
     public ButtonOptions ButtonOptions;
+    //public PlaceHolderType PlaceHolderType;
     public bool IsPlaceHolder;
     public int Size;
     public Page PlaceHolder;
@@ -16,6 +17,7 @@ public struct PageOptions
     {
         IsPlaceHolder = false;
         PlaceHolder = placeHolder;
+        //PlaceHolderType = placeHolder.PlaceHolders.PlaceType;
 
         TargetBin = null;
         ButtonOptions = default;
@@ -41,7 +43,6 @@ public class Page : MonoBehaviour
     public RectTransform ParentContent;
     public RootPanel Occupants;
     public ButtonPanel PlaceHolders;
-    //public bool IsPlaceHolder;
     public int MaximumSize;
     public bool Refresh;
 
@@ -51,6 +52,7 @@ public class Page : MonoBehaviour
 
         ParentContent = gameObject.GetComponent<RectTransform>();
         Resize(options.Index_Size);
+        PlaceHolders.PlaceType = options.PlaceType;
         PopulatePlaceHolders(options);
         //RefreshContentSize();
     }
@@ -111,21 +113,21 @@ public class Page : MonoBehaviour
     #endregion
 
     #region INVENTORY
-    public void GenerateItem(ItemObject sample, int index)
+    public void GenerateItem(RootOptions rootOptions)
     {
         if (Occupants.List == null ||
-            index < 0 ||
-            index >= Occupants.List.Count)
+            rootOptions.Index < 0 ||
+            rootOptions.Index >= Occupants.List.Count)
             return;
 
-        if (sample == null)
+        if (rootOptions.Root == null)
             return;
 
-        RootOptions rootOptions = new RootOptions(ref UIman.GameState.ROOT_SO_INDEX, index);
-        ItemObject newRootObject = (ItemObject)sample.GenerateRootObject(rootOptions);
+        //RootOptions rootOptions = new RootOptions(ref UIman.GameState.ROOT_SO_INDEX, index);
+        ItemObject newRootObject = (ItemObject)rootOptions.Root.GenerateRootObject(rootOptions);
 
         //ButtonOptions buttonOptions = new ButtonOptions(newRootObject, PlaceHolders, index);
-        PlaceHolders.List[index].Assign(newRootObject);
+        PlaceHolders.List[rootOptions.Index].Assign(newRootObject);
     }
     public int FindEligibleIndex()
     {
