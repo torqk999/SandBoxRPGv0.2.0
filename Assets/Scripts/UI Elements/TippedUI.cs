@@ -39,7 +39,7 @@ public class TippedUI : ExtendedUI
         //UIMan.ToolTip.ToggleTip();
         base.OnPointerExit(eventData);
     }
-    public override void Assign(RootScriptObject root)
+    public override void Assign(RootScriptObject root = null)
     {
         base.Assign(root);
 

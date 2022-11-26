@@ -483,11 +483,12 @@ public class UIManager : MonoBehaviour
     }
     private void InitEquipPlaceHolders()
     {
-        UI_Options options = new UI_Options(null);
-        foreach (RootUI button in Equipments.Buttons.List)
+        UI_Options options = new UI_Options(Equipments, PlaceHolderType.EQUIP);
+        for (int i = 0; i < Equipments.Buttons.List.Count; i++)
         {
             Debug.Log("Initializing Equip PlaceHolder");
-            button.Init(options);
+            options.Index = i;
+            Equipments.Buttons.List[i].Init(options);
         }
             
     }

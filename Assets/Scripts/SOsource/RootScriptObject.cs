@@ -33,7 +33,7 @@ public class RootScriptObject : ScriptableObject
     {
         Debug.Log($"Generating...: {options.Source.GetType()}");
         RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.Source.GetType());
-        newRootObject.RootLogic.Options.GameState = RootLogic.Options.GameState;
+        //newRootObject.RootLogic.Options.GameState = RootLogic.Options.GameState;
         newRootObject.Clone(options);
         Debug.Log($"Generated! : {options.Source.GetType()}");
         return newRootObject;
@@ -45,6 +45,32 @@ public class RootScriptObject : ScriptableObject
     }
 
     #region BUTON ACTIONS
+    public void RePositionRoot(Page pageTarget, RootUI uiTarget)
+    {
+        /*
+        Debug.Log($"pageTarget: {pageTarget != null}");
+        if (pageTarget != null)
+            Debug.Log($"PlaceType: {pageTarget.PlaceType}");
+
+        Debug.Log($"uiTarget: {uiTarget != null}");
+        if (uiTarget != null)
+            Debug.Log($"SlotIndex: {uiTarget.SlotIndex}");
+        */
+        if (pageTarget != null)
+        {
+            if (uiTarget != null)
+            {
+                Debug.Log("Moving!");
+                Move(pageTarget, uiTarget.SlotIndex);
+            }
+
+
+        }
+    }
+    public virtual bool Move(Page page, int index)
+    {
+        return CheckCanOccupy(page, index) && Vacate() && Occupy(page, index);
+    }
     public virtual bool Drop()
     {
         return Vacate();
@@ -56,12 +82,13 @@ public class RootScriptObject : ScriptableObject
             RootLogic.Options.Index >= RootLogic.Options.HomePanel.Count)
             return false;
 
+        RootLogic.Button.Assign();
         RootLogic.Options.HomePanel[RootLogic.Options.Index] = null;
         return true;
         // Un parent? Should be re-parenting anyway...
         //return base.Vacate();
     }
-    public bool Relocate()
+    public virtual bool ReIndex()
     {
         if (RootLogic.Options.HomePanel == null)
             return false;
@@ -126,18 +153,19 @@ public class RootScriptObject : ScriptableObject
         if (page.OccupantRoots[index] == null)
             return true; // Empty
 
-        if (!page.OccupantRoots[index].Vacate())
+        if (!page.OccupantRoots[index].ReIndex())
             return false; // Failed to vacate
 
         return true; // Successfully vacated
     }
     public virtual bool Occupy(Page page, int index)
     {
-        if (!CheckCanOccupy(page, index))
-            return false;
+        //if (!CheckCanOccupy(page, index))
+            //return false;
 
         //Panel = place.Panel.VirtualParent.Occupants;
         RootLogic.Options.Index = index;
+        RootLogic.Options.HomePanel = page.OccupantRoots;
         page.OccupantRoots[index] = this;
         page.Buttons.List[index].Assign(this);
 

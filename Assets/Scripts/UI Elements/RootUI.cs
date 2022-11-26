@@ -49,15 +49,18 @@ public class RootUI : SelectableUI
         Debug.Log("Root init done!");
     }
 
-    public override void Assign(RootScriptObject root)
+    public override void Assign(RootScriptObject root = null)
     {
         if (root != null)
         Debug.Log($"Assigning: {root.Name}");
         base.Assign(root);
         Root = root;
         if (Root != null)
+        {
+            Root.RootLogic.Button = this;
             Root.TextBuilder(ref Title, ref Stats, ref Flavour);
-        
+        }
+            
         UpdateSprite();
     }
 

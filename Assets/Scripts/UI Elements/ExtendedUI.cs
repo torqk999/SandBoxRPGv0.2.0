@@ -42,9 +42,9 @@ public struct UI_Options
     public RootScriptObject Root;
     public Page Page;
 
-    public UI_Options(Page page = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
+    public UI_Options(Page page = null, PlaceHolderType type = default, bool resetImage = false, int index = 0)
     {
-        Index = size;
+        Index = index;
         Root = null;
         Page = page;
 
@@ -64,7 +64,7 @@ public class ExtendedUI : Selectable
     public Slider CD_Bar;
     public Text ButtonText;
 
-    public virtual void Assign(RootScriptObject root)
+    public virtual void Assign(RootScriptObject root = null)
     {
         //if (root != null &&
         //    root.sprite != null)

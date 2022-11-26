@@ -178,9 +178,10 @@ public class Page : MonoBehaviour
         Debug.Log("Generating root into slot...");
         //RootOptions rootOptions = new RootOptions(ref UIman.GameState.ROOT_SO_INDEX, index);
         ItemObject newRootObject = (ItemObject)rootOptions.Source.GenerateRootObject(rootOptions);
-        Debug.Log("Root generated at slot!");
+        newRootObject.Occupy(this, newRootObject.RootLogic.Options.Index);
+        //Debug.Log("Root generated at slot!");
         //ButtonOptions buttonOptions = new ButtonOptions(newRootObject, PlaceHolders, index);
-        Buttons.List[rootOptions.Index].Assign(newRootObject);
+        //Buttons.List[rootOptions.Index].Assign(newRootObject);
     }
     public int FindEligibleIndex()
     {

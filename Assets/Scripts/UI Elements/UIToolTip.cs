@@ -21,6 +21,7 @@ public class UIToolTip : MonoBehaviour
     public RectTransform TextRect;
     public Image ButtonImage;
     public RootUI TargetRoot;
+    public RootUI StoredRoot;
     public Page TargetPage;
 
     public TextMeshProUGUI Title;
@@ -37,9 +38,12 @@ public class UIToolTip : MonoBehaviour
     public bool TippedHovered;
     public bool ButtonActive;
     public bool ClickHeld;
+    public bool JustFollow;
 
     public Vector2 PlaceOffset;
+    public Vector2 ScreenOffset;
     public Vector2 CurrentPosMouse;
+    public Vector2 ContainerOffset;
     public Vector2 SizeOfRect;
     public Vector2 PixelOffset;
 
@@ -94,38 +98,41 @@ public class UIToolTip : MonoBehaviour
 
     void ToggleDrag(bool toggle = true)
     {
-        if (TargetRoot == null ||
-            TargetRoot.Root == null)
-        {
-            DragButton.SetActive(false);
-            return;
-        }
+        StoredRoot = toggle ? TargetRoot : StoredRoot;
+        DragButton.SetActive(toggle && StoredRoot != null && StoredRoot.Root != null);
 
-        DragButton.SetActive(toggle);
-        if (toggle)
+        if (toggle && StoredRoot != null && StoredRoot.Root != null)
         {
             Debug.Log("Setting Drag sprite!");
-            ButtonImage.sprite = TargetRoot.Root.sprite;
+            ButtonImage.sprite = StoredRoot.Root.sprite;
         }
-        else
+        if (!toggle)
         {
-            // drop code
+            Debug.Log("RePositionRoot!");
+            StoredRoot.Root.RePositionRoot(TargetPage, TargetRoot);
         }
+        Debug.Log("Hello?");
     }
 
     void FollowMouse()
     {
         SizeOfRect = ContainerRect.sizeDelta;
-        PlaceOffset = PixelOffset; //; (ContainerRect.sizeDelta / 1.8f);// + PixelOffset;
 
-        /*
+        //ScreenOffset.x = Screen.width / 2;
+        //ScreenOffset.y = Screen.height / 2;
+        //PlaceOffset = (CurrentPosMouse - ScreenOffset) * 1.4f;
+        
+        ContainerOffset = SizeOfRect / 2f;// + PixelOffset;
+
         if (CurrentPosMouse.x + SizeOfRect.x > Screen.width)
-            PlaceOffset.x = -(PixelOffset.x + SizeOfRect.x);
+            ContainerOffset.x = -ContainerOffset.x;
 
         if (CurrentPosMouse.y + SizeOfRect.y > Screen.height)
-            PlaceOffset.y = -(PlaceOffset.y + SizeOfRect.y);
-        */
-        ContainerRect.position = CurrentPosMouse + PlaceOffset;
+            ContainerOffset.y = -ContainerOffset.y;
+
+        //PlaceOffset += ContainerOffset;
+        
+        ContainerRect.anchoredPosition = CurrentPosMouse + ContainerOffset;// + PlaceOffset;
     }
 
     void CheckClick()
@@ -161,17 +168,18 @@ public class UIToolTip : MonoBehaviour
         if (!NeedsRefresh)
             return;
 
+        Debug.Log("Refresh...");
+
         if (!RefreshPhaseDone[0])
         {
-            //ToolTipCanvas.sortingOrder = 1;
+            TextRect.GetComponent<VerticalLayoutGroup>().enabled = false;
+            TextRect.GetComponent<VerticalLayoutGroup>().enabled = true;
             RefreshPhaseDone[0] = true;
             return;
         }
 
         if (!RefreshPhaseDone[1])
         {
-            TextRect.GetComponent<VerticalLayoutGroup>().enabled = false;
-            TextRect.GetComponent<VerticalLayoutGroup>().enabled = true;
             Canvas.ForceUpdateCanvases();
             RefreshPhaseDone[1] = true;
             return;
@@ -179,8 +187,8 @@ public class UIToolTip : MonoBehaviour
 
         if (!RefreshPhaseDone[2])
         {
-            ContainerRect.GetComponent<ContentSizeFitter>().enabled = false;
-            ContainerRect.GetComponent<ContentSizeFitter>().enabled = true;
+            ContainerRect.GetComponent<HorizontalLayoutGroup>().enabled = false;
+            ContainerRect.GetComponent<HorizontalLayoutGroup>().enabled = true;
             Canvas.ForceUpdateCanvases();
             RefreshPhaseDone[2] = true;
             return;
@@ -193,6 +201,18 @@ public class UIToolTip : MonoBehaviour
         NeedsRefresh = false;
     }
 
+    private void RefreshContentSize()
+    {
+        System.Collections.IEnumerator Routine()
+        {
+            var csf = ContainerRect.GetComponent<ContentSizeFitter>();
+            csf.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+            yield return null;
+            csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        }
+        this.StartCoroutine(Routine());
+    }
+
     void RaycastUpdate(GraphicRaycaster myRaycaster)
     {
         if (myRaycaster == null)
@@ -203,17 +223,17 @@ public class UIToolTip : MonoBehaviour
         HitBuffer.Clear();
         myRaycaster.Raycast(pd, HitBuffer);
         
-        Debug.Log($"RaycastCount: {HitBuffer.Count}");
+        //Debug.Log($"RaycastCount: {HitBuffer.Count}");
         foreach (RaycastResult result in HitBuffer)
         {
-            Debug.Log($"name: {result.gameObject.name}");
+            //Debug.Log($"name: {result.gameObject.name}");
 
             if (result.gameObject == null)
                 continue;
 
             if (result.gameObject.tag == GlobalConstants.TAG_BUTTON && !FoundRoot)
             {
-                Debug.Log("Found Button Tag!");
+                //Debug.Log("Found Button Tag!");
 
                 RootUI candidate = result.gameObject.GetComponent<RootUI>();
                 if (candidate != null)
@@ -230,12 +250,12 @@ public class UIToolTip : MonoBehaviour
 
             if (result.gameObject.tag == GlobalConstants.TAG_PANEL && !FoundPage)
             {
-                Debug.Log("Found Panel Tag!");
+                //Debug.Log("Found Panel Tag!");
 
                 Page candidate = result.gameObject.GetComponent<Page>();
                 if (candidate != null)
                 {
-                    Debug.Log("Found Page!");
+                    //Debug.Log("Found Page!");
 
                     FoundPage = true;
 
@@ -273,7 +293,7 @@ public class UIToolTip : MonoBehaviour
         HitBuffer = new List<RaycastResult>();
         RefreshPhaseDone = new bool[3];
         PixelOffset = new Vector2(5, 5);
-        ToggleTip();
+        //ToggleTip();
 
 
         //HitBuffer = new List<RaycastResult>();
@@ -283,11 +303,14 @@ public class UIToolTip : MonoBehaviour
     void Update()
     {
         CurrentPosMouse = (Vector2)Input.mousePosition;
+        FollowMouse();
+        if (JustFollow)
+            return;
+
         RayCastSetup();
         RaycastUpdate(InGameRayCaster);
         RaycastUpdate(HUDrayCaster);
         RayCastCleanup();
-        FollowMouse();
         CheckClick();
         CheckText();
         Refresh();
