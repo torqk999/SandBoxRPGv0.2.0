@@ -48,12 +48,15 @@ public class UIToolTip : MonoBehaviour
         return true;
     }
 
-    public void ToggleTip(bool toggle, StringBuilder[] builders = null)
+    public void ToggleTip(bool toggle,
+        StringBuilder title = null,
+        StringBuilder stats = null,
+        StringBuilder flavour = null)
     {
         TextActive = toggle;
 
         if (TextActive)
-            UpdateText(builders[0], builders[1], builders[2]);
+            UpdateText(title, stats, flavour);
     }
 
     public void ToggleDrag()

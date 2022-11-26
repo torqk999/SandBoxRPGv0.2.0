@@ -1,3 +1,4 @@
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,12 @@ public class RootScriptObject : ScriptableObject
 
     [Header("Root Logic - NO TOUCHY!")]
     public RootLogic RootLogic;
-    
+
+    public virtual void TextBuilder(ref StringBuilder title, ref StringBuilder stats, ref StringBuilder flavour)
+    {
+        title.Append(Name);
+        flavour.Append(Flavour);
+    }
     public virtual void Clone(RootOptions options)
     {
         //Debug.Log("yo");
@@ -33,7 +39,6 @@ public class RootScriptObject : ScriptableObject
         Debug.Log($"Generated! : {options.Source.GetType()}");
         return newRootObject;
     }
-
     public virtual void InitializeRoot(GameState state)
     {
         Debug.Log("Initializing Root...");

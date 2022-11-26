@@ -22,14 +22,14 @@ public class TippedButtonButtonEditor : Editor
 public class TippedUI : ExtendedUI
 {
     [Header("TippedButton")]
-    //public StringBuilder Title;
-    //public StringBuilder Stats;
-    //public StringBuilder Flavour;
-    public StringBuilder[] Strings;
+    public StringBuilder Title;
+    public StringBuilder Stats;
+    public StringBuilder Flavour;
+    //public StringBuilder[] Strings;
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        UIMan.ToolTip.ToggleTip(true, Strings);
+        UIMan.ToolTip.ToggleTip(true, Title, Stats, Flavour);
         //Stats.Clear();
         base.OnPointerEnter(eventData);
     }
@@ -43,19 +43,18 @@ public class TippedUI : ExtendedUI
     {
         base.Assign(root);
 
-        for (int i = 0; i < 3; i++)
-            Strings[i].Clear();
+        Title.Clear();
+        Stats.Clear();
+        Flavour.Clear();
     }
     public override void Init(UI_Options options)
     {
         Debug.Log("Init tip");
         base.Init(options);
-        Strings = new StringBuilder[3];
-        for (int i = 0; i < 3; i++)
-            Strings[i] = new StringBuilder();
-        //Title = new StringBuilder();
-        //Stats = new StringBuilder();
-        //Flavour = new StringBuilder();
+
+        Title = new StringBuilder();
+        Stats = new StringBuilder();
+        Flavour = new StringBuilder();
         Debug.Log("Tipped done");
     }
 
