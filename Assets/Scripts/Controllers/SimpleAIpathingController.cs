@@ -95,7 +95,7 @@ public class SimpleAIpathingController : MonoBehaviour
     {
         if (!GenerateObstructionMask(startLocation))
         {
-            Debug.Log("ObMaskFailed");
+           // Debug.Log("ObMaskFailed");
             return false;
         }
         bool result = GenerateNewPath(startLocation, EndCoord);

@@ -133,7 +133,7 @@ public class SimpleAIcontroller : CharacterController
         }
         else if (State != AIstate.AGGRO && CheckAggroRange())
         {
-            Debug.Log("Aggro");
+            //Debug.Log("Aggro");
             oldState = State;
             State = AIstate.AGGRO;
         } //bIsAggro = true;

@@ -6,7 +6,6 @@ using UnityEngine;
 public class RootScriptObject : ScriptableObject
 {
     [Header("Root Properties")]
-    //public GameState GameState;
     public string Name;
     public string Flavour;
     public Sprite sprite;

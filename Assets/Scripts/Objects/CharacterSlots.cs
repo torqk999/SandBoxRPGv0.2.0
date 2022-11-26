@@ -7,7 +7,8 @@ public enum SlotPageType
     INVENTORY,
     EQUIPMENT,
     HOT_BAR,
-    SKILLS
+    SKILLS,
+    RISIDUALS
 }
 
 [System.Serializable]
@@ -18,4 +19,6 @@ public struct CharacterSlots
     public List<RootScriptObject> HotBar;
     public List<RootScriptObject> Skills;
     public List<RootScriptObject> Risiduals;
+
+
 }

@@ -51,7 +51,7 @@ public class Page : MonoBehaviour
     {
         Debug.Log("Setup Call");
 
-        ParentContent = gameObject.GetComponent<RectTransform>();
+        //ParentContent = gameObject.GetComponent<RectTransform>();
         Resize(options.Index); // Temporarily used as list size...
         PlaceType = options.PlaceType;
         PopulatePlaceHolders(options);

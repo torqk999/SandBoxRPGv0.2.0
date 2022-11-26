@@ -70,7 +70,7 @@ public class UIManager : MonoBehaviour
     public Sprite[] EmptyGearSprites;
     public Sprite EmptyRingSprite;
     public Sprite EmptyButtonSprite;
-    public Sprite PlaceHolderSprite;
+    //public Sprite PlaceHolderSprite;
 
     [Header("===LOGIC===")]
     public GameState GameState;
