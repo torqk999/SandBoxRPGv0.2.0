@@ -9,7 +9,7 @@ public class ProcAbility : EffectAbility
     [Header("Proc Properties")]
     public ParticleSystem Projectile;
 
-    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
+    /*public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
         options.EffectType = EffectType.PROC;
         options.ToggleActive = true;
@@ -29,24 +29,21 @@ public class ProcAbility : EffectAbility
 
         base.ProduceOriginalEffects(source, options);
     }
-    public override CharacterAbility GenerateAbility(RootOptions options)
+    public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = "ProcAbility";
         ProcAbility newAbility = (ProcAbility)GenerateRootObject(options);
-        newAbility.Copy(this, options);
+        newAbility.Clone(options);
         Debug.Log("Proc Ability Generated!");
         return newAbility;
-    }
-    public override void Copy(RootScriptObject source, RootOptions options)
+    }*/
+    public override void Clone(RootOptions options)
     {
-        Debug.Log("wtf...");
-        base.Copy(source, options);
-        Debug.Log("wtf...");
-        if (!(source is ProcAbility))
+        Debug.Log("Copying proc ability...");
+        base.Clone(options);
+        if (!(options.Source is ProcAbility))
             return;
-        Debug.Log("wtf...");
-        ProcAbility procSource = (ProcAbility)source;
-        Debug.Log("wtf...");
+
+        ProcAbility procSource = (ProcAbility)options.Source;
         Projectile = procSource.Projectile;
 
         Debug.Log("Proc Ability Copied!");

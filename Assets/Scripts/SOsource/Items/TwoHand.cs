@@ -24,7 +24,7 @@ public class TwoHand : Hand
     {
         //options.Root = options.Root == "" ? "TwoHand" : options.Root;
         TwoHand newRoot = (TwoHand)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
     public override void InitializeRoot(GameState state)
@@ -32,14 +32,14 @@ public class TwoHand : Hand
         base.InitializeRoot(state);
         EquipSlot = EquipSlot.MAIN;
     }
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is TwoHand))
+        if (!(options.Source is TwoHand))
             return;
 
-        TwoHand twoSource = (TwoHand)source;
+        TwoHand twoSource = (TwoHand)options.Source;
         Type = twoSource.Type;
     }
     /*public override bool EquipToCharacter(Character character, int slotIndex = -1)

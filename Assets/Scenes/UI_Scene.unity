@@ -530,7 +530,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.000023133116}
+  m_AnchoredPosition: {x: 0, y: -0.00026299953}
   m_SizeDelta: {x: 260, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &49260453
@@ -2341,8 +2341,8 @@ MonoBehaviour:
   OccupantRoots:
     VirtualParent: {fileID: 0}
     List: []
-  Buttons: {fileID: 0}
-  PlaceType: 0
+  Buttons: {fileID: 987754444}
+  PlaceType: 6
   MaximumSize: 0
   Refresh: 0
 --- !u!1 &266702716
@@ -2902,9 +2902,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 330476260}
+  - component: {fileID: 330476264}
   - component: {fileID: 330476263}
   - component: {fileID: 330476262}
-  - component: {fileID: 330476264}
   m_Layer: 0
   m_Name: Belt
   m_TagString: Untagged
@@ -2980,7 +2980,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 330476259}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -3012,9 +3012,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 330476262}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -3496,6 +3493,9 @@ MonoBehaviour:
   HotBars: {fileID: 263306831}
   SkillLists: {fileID: 1485985325}
   EffectsPrimer: {fileID: 679625091}
+  EffectBuffer:
+    VirtualParent: {fileID: 0}
+    List: []
   AllSheetElements: []
   CharSheet: {fileID: 967329283}
   Container: {fileID: 698293321}
@@ -3513,7 +3513,6 @@ MonoBehaviour:
   Interaction: {fileID: 1696704576}
   Actionbar: {fileID: 263306828}
   Party: {fileID: 2061434382}
-  PartyMembers: {fileID: 1596370177}
   InteractionHUDnameText: {fileID: 1573665685}
   InteractionHUDvalueText: {fileID: 1224925215}
   InteractionHUDslider: {fileID: 579448447}
@@ -3575,9 +3574,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 363597561}
+  - component: {fileID: 363597565}
   - component: {fileID: 363597564}
   - component: {fileID: 363597563}
-  - component: {fileID: 363597565}
   m_Layer: 0
   m_Name: RightRing
   m_TagString: Untagged
@@ -3653,7 +3652,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 363597560}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -3685,9 +3684,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 363597563}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -4126,9 +4122,9 @@ RectTransform:
   m_Father: {fileID: 1848762254}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 11.666666, y: -55}
   m_SizeDelta: {x: 15, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &438920720
@@ -4989,9 +4985,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 538943643}
+  - component: {fileID: 538943647}
   - component: {fileID: 538943646}
   - component: {fileID: 538943645}
-  - component: {fileID: 538943647}
   m_Layer: 0
   m_Name: Chest
   m_TagString: Untagged
@@ -5067,7 +5063,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 538943642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -5099,9 +5095,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 538943645}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -6008,9 +6001,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 654538491}
+  - component: {fileID: 654538495}
   - component: {fileID: 654538494}
   - component: {fileID: 654538493}
-  - component: {fileID: 654538495}
   m_Layer: 0
   m_Name: OffHand
   m_TagString: Untagged
@@ -6086,7 +6079,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 654538490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -6118,9 +6111,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 654538493}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -7275,9 +7265,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 763975309}
+  - component: {fileID: 763975313}
   - component: {fileID: 763975312}
   - component: {fileID: 763975311}
-  - component: {fileID: 763975313}
   m_Layer: 0
   m_Name: MainHand
   m_TagString: Untagged
@@ -7353,7 +7343,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 763975308}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -7385,9 +7375,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 763975311}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -7695,9 +7682,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 891627193}
+  - component: {fileID: 891627197}
   - component: {fileID: 891627196}
   - component: {fileID: 891627195}
-  - component: {fileID: 891627197}
   m_Layer: 0
   m_Name: Head
   m_TagString: BUTTON
@@ -7773,7 +7760,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 891627192}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -7805,9 +7792,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 891627195}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -8442,9 +8426,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 971413613}
+  - component: {fileID: 971413616}
   - component: {fileID: 971413615}
   - component: {fileID: 971413614}
-  - component: {fileID: 971413616}
   m_Layer: 0
   m_Name: Gloves
   m_TagString: Untagged
@@ -8520,7 +8504,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 971413612}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -8552,9 +8536,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 971413614}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -8910,9 +8891,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1032224391}
+  - component: {fileID: 1032224395}
   - component: {fileID: 1032224394}
   - component: {fileID: 1032224393}
-  - component: {fileID: 1032224395}
   m_Layer: 0
   m_Name: Boots
   m_TagString: Untagged
@@ -8988,7 +8969,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1032224390}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -9020,9 +9001,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1032224393}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -10663,9 +10641,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1269435569}
+  - component: {fileID: 1269435573}
   - component: {fileID: 1269435572}
   - component: {fileID: 1269435571}
-  - component: {fileID: 1269435573}
   m_Layer: 0
   m_Name: Neck
   m_TagString: Untagged
@@ -10741,7 +10719,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1269435568}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -10773,9 +10751,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1269435571}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -11687,9 +11662,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1434444644}
+  - component: {fileID: 1434444648}
   - component: {fileID: 1434444647}
   - component: {fileID: 1434444646}
-  - component: {fileID: 1434444648}
   m_Layer: 0
   m_Name: Legs
   m_TagString: Untagged
@@ -11765,7 +11740,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1434444643}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -11797,9 +11772,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1434444646}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -13257,9 +13229,9 @@ RectTransform:
   m_Father: {fileID: 1848762254}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 35, y: -55}
   m_SizeDelta: {x: 15, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1561399610
@@ -14600,9 +14572,9 @@ RectTransform:
   m_Father: {fileID: 1848762254}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 58.33333, y: -55}
   m_SizeDelta: {x: 15, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1654780194
@@ -14946,8 +14918,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2030928936}
   m_HandleRect: {fileID: 2030928935}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.9999427
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15150,9 +15122,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1695829643}
+  - component: {fileID: 1695829647}
   - component: {fileID: 1695829646}
   - component: {fileID: 1695829645}
-  - component: {fileID: 1695829647}
   m_Layer: 0
   m_Name: Pauldron
   m_TagString: Untagged
@@ -15228,7 +15200,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1695829642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -15260,9 +15232,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1695829645}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}
@@ -17126,9 +17095,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1860351083}
+  - component: {fileID: 1860351087}
   - component: {fileID: 1860351086}
   - component: {fileID: 1860351085}
-  - component: {fileID: 1860351087}
   m_Layer: 0
   m_Name: LeftRing
   m_TagString: Untagged
@@ -17204,7 +17173,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1860351082}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe21ed438a1b4a3479c7748709d79d18, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a4efca2f9454ed4da4cf83af83479ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -17236,9 +17205,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1860351085}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
   UIMan: {fileID: 0}
   MyRect: {fileID: 0}
   MyImage: {fileID: 0}

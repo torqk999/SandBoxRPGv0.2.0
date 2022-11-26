@@ -12,30 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b49634b4c3f27c44a48644ebfb6b45d, type: 3}
   m_Name: Dagger
   m_EditorClassIdentifier: 
-  GameState: {fileID: 0}
-  ID: 0
   Name: Dagger
   Flavour: '"I''m gonna cut you so bad... you gonna wish I hadn''t cut you so bad'
   sprite: {fileID: 21300000, guid: aa1f529d0ca78eb49bd0013a22c1b1a7, type: 3}
   RootLogic:
     Options:
-      ClassID: 
+      GameState: {fileID: 0}
+      Source: {fileID: 0}
+      HomePanel: []
       IsClone: 0
       ID: 0
+      Index: 0
       Quantity: 0
-    Original: {fileID: 0}
     Clones: []
-  Button: {fileID: 0}
+    Button: {fileID: 0}
   Quality: 0
   GoldValue: 0
   Weight: 0
-  SlotIndex: 0
-  SlotFamily: []
   EquipSchool: 4
   ClassType: 2
   Abilities:
   - {fileID: 11400000, guid: 159976e0345343249b4578cc91a5c082, type: 2}
   EquipLevel: 3
+  EquipSlot: 8
   EquippedTo: {fileID: 0}
   HandPosition: 0
   BaseMaterial: 3

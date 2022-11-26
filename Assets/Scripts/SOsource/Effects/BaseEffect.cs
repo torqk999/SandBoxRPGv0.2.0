@@ -27,7 +27,7 @@ public class BaseEffect : RootScriptObject
     {
         try
         {
-            return Logic.SourceAbility.Logic.SourceCharacter;
+            return Logic.Options.Source.Logic.SourceCharacter;
         }
         catch
         {
@@ -37,7 +37,7 @@ public class BaseEffect : RootScriptObject
     }
     public bool HasEligableTarget()
     {
-        if (RootLogic.GameState == null)
+        if (RootLogic.Options.GameState == null)
             return false;
 
         if (SourceCharacter() == null)
@@ -49,11 +49,11 @@ public class BaseEffect : RootScriptObject
         if (AOE_Range <= 0)
             return false;
 
-        if (RootLogic.GameState.CharacterMan.CharacterPool == null ||
-            RootLogic.GameState.CharacterMan.CharacterPool.Count < 1)
+        if (RootLogic.Options.GameState.CharacterMan.CharacterPool == null ||
+            RootLogic.Options.GameState.CharacterMan.CharacterPool.Count < 1)
             return false;
 
-        List<Character> pool = RootLogic.GameState.CharacterMan.CharacterPool;
+        List<Character> pool = RootLogic.Options.GameState.CharacterMan.CharacterPool;
 
         foreach(Character character in pool)
         {
@@ -127,9 +127,9 @@ public class BaseEffect : RootScriptObject
         if (projectile == PsystemType.NONE)
             return;
 
-        if (Logic.SourceAbility == null ||
-            Logic.SourceAbility.Logic.SourceCharacter == null ||
-            Logic.EffectedCharacter == null)
+        if (Logic.Options.Source == null ||
+            Logic.Options.Source.Logic.SourceCharacter == null ||
+            Logic.Options.Effected == null)
             return;
 
         Debug.Log("Firing...");
@@ -141,21 +141,22 @@ public class BaseEffect : RootScriptObject
         }
         if (Logic.Projectile == null)
         {
-            if (RootLogic.GameState == null)
+            if (RootLogic.Options.GameState == null)
                 return;
 
-            Logic.Projectile = Instantiate(RootLogic.GameState.SceneMan.PsystemPrefabs[(int)ProjectileType], Logic.SourceAbility.Logic.SourceCharacter.transform);
+            Logic.Projectile = Instantiate(RootLogic.Options.GameState.SceneMan.PsystemPrefabs[(int)ProjectileType], Logic.Options.Source.Logic.SourceCharacter.transform);
             Logic.Projectile.transform.localPosition = Vector3.zero;
         }
         //Projectile.transform.rotation = Quaternion.Lerp(EffectedCharacter.Root.rotation, SourceAbility.SourceCharacter.Root.rotation, lerp);
-        Logic.Projectile.transform.LookAt(Logic.EffectedCharacter.Root);
-        Logic.Projectile.transform.position = Vector3.Lerp(Logic.EffectedCharacter.Root.position, Logic.SourceAbility.Logic.SourceCharacter.Root.position, lerp);
+        Logic.Projectile.transform.LookAt(Logic.Options.Effected.Root);
+        Logic.Projectile.transform.position = Vector3.Lerp(Logic.Options.Effected.Root.position, Logic.Options.Source.Logic.SourceCharacter.Root.position, lerp);
     }
-    public virtual void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
+    public virtual void ApplySingleEffect(Character target, bool cast = false)
     {
         if (cast)
         {
-            Logic.Options.ToggleActive = options.ToggleActive;
+            if (ResetExistingRisiduals(target))
+                return;
 
             if (ProjectileDuration > 0 ||
                 RisidualDuration > 0 ||
@@ -171,6 +172,9 @@ public class BaseEffect : RootScriptObject
             if (!ProjectileClock(false, ProjectileType))
                 return;
 
+            //if (Logic.Options.EffectType == EffectType.TOGGLE)
+                //Logic.ToggleActive = !Logic.ToggleActive;
+
             if (Logic.Projectile != null)
                 Destroy(Logic.Projectile);
 
@@ -179,50 +183,38 @@ public class BaseEffect : RootScriptObject
                 RemoveRisidualEffect();
         }
     }
-    public void GenerateRisidualEffect(Character target, PsystemType projectile = PsystemType.NONE)
+    bool ResetExistingRisiduals(Character target)
     {
-        Debug.Log("Generating risidual!");
-
-        foreach (BaseEffect effect in target.Risiduals)
+        foreach (BaseEffect effect in target.Slots.Risiduals)
         {
-            if (RootLogic.Clones.Find(x => x == effect) != null)
+            if (RootLogic.Clones.Find(x => x == effect) != null) // Pre-existing generated effect
             {
-                switch(Logic.Options.EffectType)
+                switch (Logic.Options.EffectType)
                 {
                     case EffectType.TOGGLE:
-                        effect.Logic.Options.ToggleActive = !effect.Logic.Options.ToggleActive;
+                        effect.Logic.ToggleActive = !effect.Logic.ToggleActive;
                         break;
 
                     case EffectType.PROC:
                         effect.DurationClock(true);
                         break;
                 }
-                return;
+                return true;
             }
         }
+        return false;
+    }
+    void GenerateRisidualEffect(Character target, PsystemType projectile = PsystemType.NONE)
+    {
+        Debug.Log("Generating risidual!");
 
-        EffectType type = default;
-        if (Logic.SourceAbility != null)
-            switch (Logic.SourceAbility)
-            {
-                case PassiveAbility:
-                    type = EffectType.PASSIVE;
-                    break;
+        
 
-                case ProcAbility:
-                    type = EffectType.PROC;
-                    break;
+        RootOptions rootOptions = new RootOptions(RootLogic.Options.GameState, this, ref RootLogic.Options.GameState.EFFECT_INDEX, target.Slots.Risiduals);
+        //EffectOptions effectOptions = new EffectOptions(type, true, true);
+        BaseEffect newEffect = GenerateEffect(rootOptions);
 
-                case ToggleAbility:
-                    type = EffectType.TOGGLE;
-                    break;
-            }
-
-        RootOptions rootOptions = new RootOptions(this);
-        EffectOptions effectOptions = new EffectOptions(type, true, true);
-        BaseEffect newEffect = GenerateEffect(rootOptions, effectOptions ,target);
-
-        newEffect.RootLogic.Original = this;
+        newEffect.RootLogic.Options.Source = this;
 
         newEffect.ProjectileClock(true, projectile);
         newEffect.DurationClock(true);
@@ -230,7 +222,8 @@ public class BaseEffect : RootScriptObject
 
         RootLogic.Clones.Add(newEffect);
 
-        target.Risiduals.Add(newEffect);
+        //UI_Options options = new UI_Options(newEffect, target, PlaceHolderType.EFFECT);
+        target.Slots.Risiduals.Add(newEffect);
     }
     public virtual void RemoveRisidualEffect()
     {
@@ -246,34 +239,44 @@ public class BaseEffect : RootScriptObject
     {
 
     }
-    public override void InitializeRoot(GameState state)
+    public virtual void InitializeEffect(GameState state, EffectOptions options)
     {
+        Debug.Log("Initializing Effect...");
         base.InitializeRoot(state);
+        Logic.Options = options;
     }
     /*public override void Clone(RootScriptObject source, RootOptions options)
     {
         base.Clone(source, options);
     }*/
-    public virtual void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
+    /*public virtual void CloneEffect(BaseEffect source)
     {
-        RisidualDuration = source.RisidualDuration;
-        PeriodDuration = source.PeriodDuration;
-
-        Logic.EffectedCharacter = effected;
-        //Logic.Original = effectOptions.IsClone ? this : null;
-
-        Logic.Clone(source.Logic, effectOptions);
-    }
-    /*public override RootScriptObject GenerateRootObject(RootOptions options)
-    {
-        options.ClassID = options.ClassID == string.Empty ? "BaseEffect" : options.ClassID;
-        return (BaseEffect)base.GenerateRootObject(options);
+        
     }*/
-    public virtual BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
+    public override void Clone(RootOptions options)
     {
-        //rootOptions.
+        base.Clone(options);
+        if (!(options.Source is BaseEffect))
+            return;
+
+        BaseEffect effect = (BaseEffect)options.Source;
+
+        ProjectileType = effect.ProjectileType;
+        Target = effect.Target;
+        AOE_Range = effect.AOE_Range;
+
+        ProjectileDuration = effect.ProjectileDuration;
+        PeriodDuration = effect.PeriodDuration;
+        RisidualDuration = effect.RisidualDuration;
+
+        Logic.Clone(effect.Logic);
+    }
+    public BaseEffect GenerateEffect(RootOptions rootOptions, bool projectile = false)
+    {
+        Debug.Log("Generating effect...");
         BaseEffect newEffect = (BaseEffect)GenerateRootObject(rootOptions);
-        newEffect.Copy(this, rootOptions);
+        newEffect.Clone(rootOptions);
+        newEffect.Logic.IsProjectile = projectile;
         Debug.Log("Effect generated!");
         return newEffect;
     }

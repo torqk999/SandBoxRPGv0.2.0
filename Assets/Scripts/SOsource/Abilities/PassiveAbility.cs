@@ -12,7 +12,7 @@ public class PassiveAbility : EffectAbility
     public float ProcTimer;
     public float ProcDelay;
 
-    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
+    /*public override void UseAbility(Character target)
     {
         options.EffectType = EffectType.PASSIVE;
         options.ToggleActive = true;
@@ -20,7 +20,7 @@ public class PassiveAbility : EffectAbility
         //options.IsClone = true;
         //options.Inject = false;
 
-        base.UseAbility(target, options);
+        base.UseAbility(target);
     }
 
     public override void ProduceOriginalEffects(EffectAbility source, EffectOptions options = default(EffectOptions))
@@ -32,7 +32,7 @@ public class PassiveAbility : EffectAbility
         //options.Inject = false;
 
         base.ProduceOriginalEffects(source, options);
-    }
+    }*/
     public override void UpdatePassiveTimer()
     {
         ProcTimer -= GlobalConstants.TIME_SCALE;
@@ -53,21 +53,21 @@ public class PassiveAbility : EffectAbility
         Logic.SourceCharacter.AttemptAbility(this);
     }
 
-    public override CharacterAbility GenerateAbility(RootOptions options)
+    /*public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         //options.Root = "PassiveAbility";
         PassiveAbility newAbility = (PassiveAbility)GenerateRootObject(options);
-        newAbility.Copy(this, options);
+        newAbility.Clone(options);
         return newAbility;
-    }
-    public override void Copy(RootScriptObject source, RootOptions options = default)
+    }*/
+    public override void Clone(RootOptions options = default)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is PassiveAbility))
+        if (!(options.Source is PassiveAbility))
             return;
 
-        PassiveAbility passiveSource = (PassiveAbility)source;
+        PassiveAbility passiveSource = (PassiveAbility)options.Source;
 
         AuraSelf = passiveSource.AuraSelf;
         AuraAOE = passiveSource.AuraAOE;

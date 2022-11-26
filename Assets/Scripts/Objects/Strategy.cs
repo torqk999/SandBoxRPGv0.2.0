@@ -61,7 +61,7 @@ public class Strategy : MonoBehaviour
     }
     CharacterAbility ReturnComparableAbility(CharacterAbility source)
     {
-        foreach (CharacterAbility ability in Character.Slots.Skills.List) // Check all abilities
+        foreach (CharacterAbility ability in Character.Slots.Skills) // Check all abilities
         {
             //CharacterAbility ability = (CharacterAbility)abilityButton.Root;
 
@@ -161,7 +161,7 @@ public class Strategy : MonoBehaviour
                 break;
 
             case Relation.ALLY:
-                foreach (CharacterSheet sheet in Character.CurrentParty.Members.List)
+                foreach (CharacterSheet sheet in Character.CurrentParty.MemberSheets)
                     if (sheet != Character.Sheet)
                         pool.Add(sheet.Posession);
                 break;
@@ -295,7 +295,7 @@ public class Strategy : MonoBehaviour
         foreach (Character source in eligable)
         {
             Array.Fill(CCstateBuffer, false);
-            foreach (CrowdControlEffect effect in source.Risiduals)
+            foreach (CrowdControlEffect effect in source.Slots.Risiduals)
                 //if (effect.Action == EffectAction.CROWD_CONTROL)
                 CCstateBuffer[(int)effect.TargetCCstatus] = true;
 

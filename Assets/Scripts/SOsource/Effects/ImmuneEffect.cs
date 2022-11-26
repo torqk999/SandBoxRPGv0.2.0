@@ -8,9 +8,9 @@ public class ImmuneEffect : BaseEffect
     [Header("ImmuneProperties")]
     public CCstatus TargetCCstatus;
 
-    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
+    public override void ApplySingleEffect(Character target, bool cast = false)
     {
-        base.ApplySingleEffect(target, options, cast); // Risidual proc
+        base.ApplySingleEffect(target, cast); // Risidual proc
 
         if (cast)
             Cleanse(target);
@@ -18,22 +18,25 @@ public class ImmuneEffect : BaseEffect
 
     void Cleanse(Character target)
     {
-        foreach (CrowdControlEffect ccEffect in target.Risiduals)
-            if (ccEffect.TargetCCstatus == TargetCCstatus)
-                Destroy(ccEffect);
+        for (int i = target.Slots.Risiduals.Count - 1; i > -1; i--)
+            if (target.Slots.Risiduals[i] is CrowdControlEffect && ((CrowdControlEffect)target.Slots.Risiduals[i]).TargetCCstatus == TargetCCstatus)
+            {
+                Destroy(target.Slots.Risiduals[i]);
+                target.Slots.Risiduals.RemoveAt(i);
+            }
     }
 
-    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
+    public override void Clone(RootOptions options)
     {
-        base.CloneEffect(source, effectOptions);
+        base.Clone(options);
 
-        if (!(source is ImmuneEffect))
+        if (!(options.Source is ImmuneEffect))
             return;
 
-        ImmuneEffect immuneSource = (ImmuneEffect)source;
+        ImmuneEffect immuneSource = (ImmuneEffect)options.Source;
         TargetCCstatus = immuneSource.TargetCCstatus;
     }
-    public override RootScriptObject GenerateRootObject(RootOptions options)
+    /*public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         //options.Root = "ImmuneEffect";
         return (ImmuneEffect)base.GenerateRootObject(options);
@@ -43,5 +46,5 @@ public class ImmuneEffect : BaseEffect
         ImmuneEffect newEffect = (ImmuneEffect)base.GenerateEffect(rootOptions, effectOptions, effected);
         newEffect.CloneEffect(this, effectOptions);
         return newEffect;
-    }
+    }*/
 }

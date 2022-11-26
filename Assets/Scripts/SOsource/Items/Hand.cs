@@ -15,20 +15,19 @@ public class Hand : Equipment
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "Hand" : options.Root;
         Hand newRoot = (Hand)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
 
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is Hand))
+        if (!(options.Source is Hand))
             return;
 
-        Hand handSource = (Hand)source;
+        Hand handSource = (Hand)options.Source;
 
         HandPosition = handSource.HandPosition;
         BaseMaterial = handSource.BaseMaterial;

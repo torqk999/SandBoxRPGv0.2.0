@@ -9,9 +9,9 @@ public class ResistanceEffect : StatEffect
     public ElementPackage ResAdjustments;
     //public ElementPackage AmpedResAdjustments;
 
-    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
+    public override void ApplySingleEffect(Character target, bool cast = false)
     {
-        base.ApplySingleEffect(target, options, cast); // Risidual proc
+        base.ApplySingleEffect(target, cast); // Risidual proc
 
         if (!PeriodClock())
             return;
@@ -20,7 +20,7 @@ public class ResistanceEffect : StatEffect
     }
     public override void RemoveRisidualEffect()
     {
-        Logic.EffectedCharacter.UpdateResAdjust();
+        Logic.Options.Effected.UpdateResAdjust();
         base.RemoveRisidualEffect();
     }
     public override void Amplify(float amp)
@@ -31,18 +31,18 @@ public class ResistanceEffect : StatEffect
     {
         ResAdjustments.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
+    public override void Clone(RootOptions options)
     {
-        base.CloneEffect(source, effectOptions, effected);
+        base.Clone(options);
 
-        if (!(source is ResistanceEffect))
+        if (!(options.Source is ResistanceEffect))
             return;
 
-        ResistanceEffect currentStatEffect = (ResistanceEffect)source;
+        ResistanceEffect currentStatEffect = (ResistanceEffect)options.Source;
 
         ResAdjustments.Clone(currentStatEffect.ResAdjustments);
     }
-    public override RootScriptObject GenerateRootObject(RootOptions options)
+    /*public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         //options.Root = "ResistanceEffect";
         return (ResistanceEffect)base.GenerateRootObject(options);
@@ -52,5 +52,5 @@ public class ResistanceEffect : StatEffect
         ResistanceEffect newEffect = (ResistanceEffect)CreateInstance("MaxStatEffect");
         newEffect.CloneEffect(this, effectOptions);
         return newEffect;
-    }
+    }*/
 }

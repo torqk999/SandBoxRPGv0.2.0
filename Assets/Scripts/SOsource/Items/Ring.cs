@@ -11,9 +11,8 @@ public class Ring : Hand
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "Ring" : options.Root;
         Ring newRoot = (Ring)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
     public override void InitializeRoot(GameState state)
@@ -22,11 +21,11 @@ public class Ring : Hand
         EquipSlot = EquipSlot.RING_0;
     }
 
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is Ring))
+        if (!(options.Source is Ring))
             return;
 
         //Ring ringSource = (Ring)source;
@@ -39,13 +38,13 @@ public class Ring : Hand
     public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         slotIndex = (int)EquipSlot.RING_0;
-        if (character.Slots.Equips.List[(int)EquipSlot.RING_0] != null &&
-            character.Slots.Equips.List[(int)EquipSlot.RING_1] == null)
+        if (character.Slots.Equips[(int)EquipSlot.RING_0] != null &&
+            character.Slots.Equips[(int)EquipSlot.RING_1] == null)
             slotIndex = (int)EquipSlot.RING_1;
 
-        if (character.Slots.Equips.List[(int)EquipSlot.RING_0] != null &&
-            character.Slots.Equips.List[(int)EquipSlot.RING_1] != null &&
-            !((Equipment)character.Slots.Equips.List[(int)EquipSlot.RING_0]).UnEquipFromCharacter())
+        if (character.Slots.Equips[(int)EquipSlot.RING_0] != null &&
+            character.Slots.Equips[(int)EquipSlot.RING_1] != null &&
+            !((Equipment)character.Slots.Equips[(int)EquipSlot.RING_0]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

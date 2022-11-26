@@ -45,7 +45,8 @@ public class GameState : MonoBehaviour
 
     [Header("Generated Indices")]
     public int ROOT_SO_INDEX;
-    //public int ABILITY_INDEX;
+    public int EFFECT_INDEX;
+    public List<RootScriptObject> GENERATED;
     //public int EQUIPMENT_INDEX;
 
     [Header("Dynamic References")]
@@ -116,7 +117,7 @@ public class GameState : MonoBehaviour
             KeyMap.GenerateKeyMap();// Key-Sensitive action. Migrate later maybe?
             Debug.Log("KeyMap Generated!");
             Populated = testBuilder.BuildTestWorld();
-            Debug.Log("Test World Built!");
+            //Debug.Log("Test World Built!");
 
             return true;
         }

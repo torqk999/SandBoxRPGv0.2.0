@@ -49,13 +49,13 @@ public class CharacterSheet : RootScriptObject
     public CharacterAbility[] InnateAbilities;
     //public BaseEffect[] InnatePassives;
 
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is CharacterSheet))
+        if (!(options.Source is CharacterSheet))
             return;
-        CharacterSheet sheet = (CharacterSheet)source;
+        CharacterSheet sheet = (CharacterSheet)options.Source;
 
         Race = sheet.Race;
         Faction = sheet.Faction;

@@ -104,6 +104,8 @@ public class UIManager : MonoBehaviour
     public Page SkillLists;
     public Page EffectsPrimer;
 
+    public RootPanel EffectBuffer;
+
     [Header("CharSheets")]
     public List<GameObject> AllSheetElements = new List<GameObject>();
 
@@ -138,7 +140,7 @@ public class UIManager : MonoBehaviour
     public GameObject Interaction;
     public GameObject Actionbar;
     public GameObject Party;
-    public Transform PartyMembers;
+    //public Transform PartyMembers;
 
     [Header("Interaction Logic")]
     public Text InteractionHUDnameText;
@@ -155,15 +157,21 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region BUTTONS
-    public RootButton GeneratePlaceHolder(ButtonOptions options)
+    public RootUI GeneratePlaceHolder(UI_Options options)
     {
-        GameObject placeObject = GenerateButtonObject(options);
-        RootButton placeButton = placeObject.AddComponent<RootButton>();
+        GameObject placeObject = GenerateUIobject(options);
+        RootUI placeButton = placeObject.AddComponent<RootUI>();
         placeButton.Init(options);
         placeObject.name = $"{options.PlaceType} : {placeButton.SlotIndex}";
         return placeButton;
     }
-    public GameObject GenerateButtonObject(ButtonOptions options)
+    public RootUI GenerateLiteral(UI_Options options)
+    {
+        RootUI listElement = GeneratePlaceHolder(options);
+        listElement.Assign(options.Root);
+        return listElement;
+    }
+    public GameObject GenerateUIobject(UI_Options options)
     {
         GameObject prefab = null;
         switch (options.PlaceType)
@@ -307,13 +315,16 @@ public class UIManager : MonoBehaviour
         SwapInPanel(HotBars, character.Slots.HotBar);
 
         EffectsPrimer.Clear();
-        PopulateSkillsList();
-        PopulateMemberPanels();
+
+        UI_Options options = new UI_Options(SkillLists, PlaceHolderType.SKILL);
+        PopulatePanel(character.Slots.Skills, options);
+        options = new UI_Options(Parties, PlaceHolderType.CHARACTER);
+        PopulatePanel(character.CurrentParty.MemberSheets, options);
 
         Debug.Log("Character Selected!");
     }
 
-    void SwapInPanel(Page page, RootPanel panel)
+    void SwapInPanel(Page page, List<RootScriptObject> panel)
     {
         if (page == null || panel == null)
             return;
@@ -321,7 +332,7 @@ public class UIManager : MonoBehaviour
         UnselectPool(page.Buttons.List);
         page.OccupantRoots = panel;
         for (int i = 0; i < page.Buttons.List.Count; i++)
-            page.Buttons.List[i].Assign(page.OccupantRoots.List[i]);
+            page.Buttons.List[i].Assign(page.OccupantRoots[i]);
     }
 
     public void ToggleCharacterPage(CharPage page)
@@ -339,17 +350,17 @@ public class UIManager : MonoBehaviour
 
         PauseMenuRefresh();
     }
-    public void UnselectPool(List<SelectableButton> buttons)
+    public void UnselectPool(List<SelectableUI> buttons)
     {
         if (buttons != null)
-            foreach (SelectableButton button in buttons)
+            foreach (SelectableUI button in buttons)
                 if (button != null)
                     button.UnSelect();
     }
-    public void UnselectPool(SelectableButton[] buttons)
+    public void UnselectPool(SelectableUI[] buttons)
     {
         if (buttons != null)
-            foreach (SelectableButton button in buttons)
+            foreach (SelectableUI button in buttons)
                 if (button != null)
                     button.UnSelect();
     }
@@ -373,7 +384,7 @@ public class UIManager : MonoBehaviour
             return;
 
         GameState.pController.CurrentCharacter.CurrentAction =
-            (CharacterAbility)GameState.pController.CurrentCharacter.Slots.HotBar.List[slotIndex];
+            (CharacterAbility)GameState.pController.CurrentCharacter.Slots.HotBar[slotIndex];
     }
     public void LootSelectedContainerItem(int containerIndex, int inventoryIndex)
     {
@@ -426,7 +437,7 @@ public class UIManager : MonoBehaviour
                 break;
         }
 
-        UpdatePartyPanel();
+        //UpdatePartyPanel();
     }
     void PauseMenuRefresh()
     {
@@ -460,31 +471,36 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log("Initial slot build");
 
-        ButtonOptions buttonOptions = new ButtonOptions(Inventories, PlaceHolderType.INVENTORY, true, CharacterMath.PARTY_INVENTORY_MAX);
+        UI_Options buttonOptions = new UI_Options(Inventories, PlaceHolderType.INVENTORY, true, CharacterMath.PARTY_INVENTORY_MAX);
         Inventories.Setup(buttonOptions);
 
         Debug.Log("Inventory placeHolders built!");
 
-        buttonOptions = new ButtonOptions(HotBars, PlaceHolderType.HOT_BAR, true, CharacterMath.HOT_BAR_SLOTS);
+        buttonOptions = new UI_Options(HotBars, PlaceHolderType.HOT_BAR, true, CharacterMath.HOT_BAR_SLOTS);
         HotBars.Setup(buttonOptions);
 
         Debug.Log("HotBar placeHolders built!");
     }
     private void InitEquipPlaceHolders()
     {
-        ButtonOptions options = new ButtonOptions(null);
-        foreach (RootButton button in Equipments.Buttons.List)
+        UI_Options options = new UI_Options(null);
+        foreach (RootUI button in Equipments.Buttons.List)
         {
             Debug.Log("Initializing Equip PlaceHolder");
             button.Init(options);
         }
             
     }
-    public void PopulateSkillsList()
+    /*public void PopulateSkillsList(Character character)
     {
-        SkillLists.Clear();
-
-        //SkillLists.Setup();
+        SkillLists.OccupantRoots = character.Slots.Skills;
+        UI_Options options = new UI_Options(SkillLists, PlaceHolderType.SKILL);
+        SkillLists.PopulateLiterals(options);
+    }*/
+    public void PopulatePanel(List<RootScriptObject> panel, UI_Options options)
+    {
+        options.Page.OccupantRoots = panel;
+        options.Page.PopulateLiterals(options);
     }
 
     public void PopulateEffectPanels(CharacterAbility selection)
@@ -496,28 +512,27 @@ public class UIManager : MonoBehaviour
         {
             case EffectAbility:
                 int index = 0;
+                UI_Options buttonOptions = new UI_Options(EffectsPrimer, PlaceHolderType.EFFECT);
                 foreach (BaseEffect effect in ((EffectAbility)selection).Effects)
                 {
-                    ButtonOptions buttonOptions = new ButtonOptions(effect, EffectsPrimer, PlaceHolderType.EFFECT);
+                    buttonOptions.Index_Size = index;
+                    buttonOptions.Root = effect;
                     EffectsPrimer.Add(buttonOptions);
                     index++;
                 }
                 break;
         }
     }
-    public void PopulateMemberPanels()
+    /*public void PopulateMemberPanels(Character character)
     {
-        if (!GameState.bPartyChanged)
-            return;
+        UI_Options options = new UI_Options(Parties, PlaceHolderType.SKILL);
+        Parties.PopulateLiterals(options);
 
-        for (int i = PartyMembers.childCount - 1; i > -1; i--)
-            Destroy(PartyMembers.GetChild(i).gameObject);
+        //Parties.Clear();
 
-        foreach (CharacterSheet member in GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List)
-            GenerateMemberPanel(member.Posession);
-
-        GameState.bPartyChanged = false;
-    }
+        //foreach (CharacterSheet member in character.CurrentParty.Members.List)
+        //GenerateMemberPanel(member.Posession);
+    }*/
     #endregion
 
     #region HUD
@@ -532,53 +547,14 @@ public class UIManager : MonoBehaviour
             UpdateInteractionHUD(GameState.Controller.CurrentCharacter.CurrentInteraction.GetInteractData());
 
     }*/
-    void UpdatePartyPanel()
-    {
-        if (Party == null ||
-            PartyMembers == null ||
-            PartyMemberPanelPrefab == null)
-            return;
-
-        if (GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List.Count !=
-            PartyMembers.childCount)
-        {
-            Party.SetActive(false);
-            return; // Mis-match somewhere, extrenal panel generation
-        }
-
-        Party.SetActive(GameState.bHUDactive &&
-            !GameState.bGameMenuOpen &&
-            GameState.CharacterMan.Parties.Count > 0 &&
-            GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List.Count > 0);
-
-        if (!Party.activeSelf)
-            return; // Party screen is off, doesn't need updating
-
-        for (int i = 0; i < PartyMembers.childCount; i++)
-            UpdateMemberPanel(PartyMembers.GetChild(i), ((CharacterSheet)GameState.CharacterMan.Parties[GameState.CharacterMan.CurrentPartyIndex].Members.List[i]).Posession);
-    }
-    void UpdateMemberPanel(Transform memberPanel, Character character)
-    {
-        memberPanel.gameObject.GetComponent<Image>().color =
-            (character == GameState.pController.CurrentCharacter) ?
-            Color.green : Color.white;
-
-        for (int i = 0; i < 3; i++) // <---   Hard coded value
-        {
-            Slider slider = memberPanel.GetChild(1).GetChild(i).GetComponent<Slider>();
-            Text text = memberPanel.GetChild(2).GetChild(i).GetComponent<Text>();
-            slider.value = character.CurrentStats.Stats[i] / character.MaximumStatValues.Stats[i];
-            text.text = $" {Math.Round(character.CurrentStats.Stats[i], GlobalConstants.DECIMAL_PLACES)} / {Math.Round(character.MaximumStatValues.Stats[i], GlobalConstants.DECIMAL_PLACES)}";
-        }
-    }
     
-    void GenerateMemberPanel(Character character)
+    /*void GenerateMemberPanel(Character character)
     {
-        GameObject newMemberPanel = Instantiate(PartyMemberPanelPrefab, PartyMembers);
+        GameObject newMemberPanel = Instantiate(PartyMemberPanelPrefab, Parties.Buttons.PhysicalParent);
 
         if (character.Sheet.sprite != null)
             newMemberPanel.transform.GetChild(0).GetComponent<Image>().sprite = character.Sheet.sprite;
-    }
+    }*/
     void UpdateInteractionHUD()
     {
         if (GameState.pController == null ||
@@ -715,7 +691,7 @@ public class UIManager : MonoBehaviour
             return;
 
         //PopulateMemberPanels();
-        UpdatePartyPanel();
+        //UpdatePartyPanel();
         UpdateInteractionHUD();
         //UpdateCooldownBars();
         //CheckMap();

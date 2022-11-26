@@ -7,14 +7,14 @@ public class StatEffect : BaseEffect
     [Header ("Stat Properties")]
     public ValueType Value;
 
-    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
+    public override void Clone(RootOptions options)
     {
-        base.CloneEffect(source, effectOptions, effected);
+        base.Clone(options);
 
-        if (!(source is StatEffect))
+        if (!(options.Source is StatEffect))
             return;
 
-        StatEffect statSource = (StatEffect)source;
+        StatEffect statSource = (StatEffect)options.Source;
 
         Value = statSource.Value;
     }

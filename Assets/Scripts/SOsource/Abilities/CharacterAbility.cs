@@ -32,10 +32,10 @@ public class CharacterAbility : RootScriptObject
     public CharAnimationState AnimationState;
     public CharAnimation CharAnimation;
 
-    public PsystemType CastLocationType;
+    public PsystemType CastType;
     public CastLocation CastLocation;
 
-    public PsystemType CastTargetType;
+    //public PsystemType CastTargetType;
     public CastTarget CastTarget;
     public TargetType TargetType;
 
@@ -81,21 +81,21 @@ public class CharacterAbility : RootScriptObject
         }
         return false;
     }
-    public virtual void UseAbility(Character target, EffectOptions options)
+    public virtual void UseAbility(Character target)
     {
         CastPsystem();
     }
     public virtual void EquipAbility(Character currentCharacter, Equipment equip = null)
     {
         Amplify(currentCharacter.Sheet, equip);
-        currentCharacter.Slots.Skills.List.Add(this);
+        currentCharacter.Slots.Skills.Add(this);
         Logic.SourceCharacter = currentCharacter;
     }
     void CastPsystem()
     {
         Debug.Log("Stepped into Cast system");
 
-        if (CastLocationType == PsystemType.NONE)
+        if (CastType == PsystemType.NONE)
             return;
 
         if (Logic.SourceCharacter == null)
@@ -103,11 +103,11 @@ public class CharacterAbility : RootScriptObject
 
         Debug.Log("Casting...");
 
-        if (Logic.CastLocationInstance != null)
-            Destroy(Logic.CastLocationInstance);
+        if (Logic.CastParticleInstance != null)
+            Destroy(Logic.CastParticleInstance);
 
-        Logic.CastLocationInstance = Instantiate(Logic.SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastLocationType], Logic.SourceCharacter.transform);
-        Logic.CastLocationInstance.transform.localPosition = Vector3.zero;
+        Logic.CastParticleInstance = Instantiate(Logic.SourceCharacter.GameState.SceneMan.PsystemPrefabs[(int)CastType], Logic.SourceCharacter.transform);
+        Logic.CastParticleInstance.transform.localPosition = Vector3.zero;
         Logic.Cast_Timer = Cast_Duration;
     }
     public virtual void Amplify(CharacterSheet sheet = null, Equipment equip = null)
@@ -131,9 +131,9 @@ public class CharacterAbility : RootScriptObject
             Logic.Cast_Timer -= GlobalConstants.TIME_SCALE;
             Logic.Cast_Timer = (Logic.Cast_Timer < 0) ? 0 : Logic.Cast_Timer;
         }
-        if (Logic.Cast_Timer == 0 && Logic.CastLocationInstance != null)
+        if (Logic.Cast_Timer == 0 && Logic.CastParticleInstance != null)
         {
-            Destroy(Logic.CastLocationInstance);
+            Destroy(Logic.CastParticleInstance);
         }
     }
     public void UpdateProjectiles()
@@ -146,32 +146,25 @@ public class CharacterAbility : RootScriptObject
     }
     public override void InitializeRoot(GameState state)
     {
+        Debug.Log("Initializing Abiliity...");
         base.InitializeRoot(state);
     }
     /*public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        options.ClassID = "CharacterAbility";
-        CharacterAbility newRootObject = (CharacterAbility)CreateInstance(options.ClassID);
-        newRootObject.Clone(this, options);
-        return newRootObject;
-    }*/
-    public virtual CharacterAbility GenerateAbility(RootOptions options)
-    {
-        //options.Root = options.Root == "" ? "CharacterAbility" : options.Root;
-        CharacterAbility newAbility = (CharacterAbility)GenerateRootObject(options);
-        newAbility.Copy(this, options);
+        CharacterAbility newAbility = (CharacterAbility)base.GenerateRootObject(options);
+        newAbility.Clone(options);
         Debug.Log("Ability generated!");
         return newAbility;
-    }
-    public override void Copy(RootScriptObject source, RootOptions options = default)
+    }*/
+    public override void Clone(RootOptions options = default)
     {
         Debug.Log("Copying Ability...");
 
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is CharacterAbility))
+        if (!(options.Source is CharacterAbility))
             return;
-        CharacterAbility ability = (CharacterAbility)source;
+        CharacterAbility ability = (CharacterAbility)options.Source;
 
         AnimationState = ability.AnimationState;
         CharAnimation = ability.CharAnimation;

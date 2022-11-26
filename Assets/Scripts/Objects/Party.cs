@@ -6,9 +6,9 @@ public class Party : MonoBehaviour
 {
     public string Name;
     public GameState GameState;
-    public RootPanel Members;
+    public List<RootScriptObject> MemberSheets;
     public List<Character> Foes;
-    public RootPanel PartyLoot;
+    public List<RootScriptObject> PartyLoot;
     public Formation Formation;
     public Faction Faction;
     public int CurrentMemberIndex;
@@ -24,8 +24,10 @@ public class Party : MonoBehaviour
         GameState = state;
         Faction = faction;
         Name = name == "" ? Faction.ToString() : name;
-        Members = new RootPanel(0, GameState.UIman.Parties);
+        MemberSheets = new List<RootScriptObject>();//new RootPanel(0, GameState.UIman.Parties);
         Foes = new List<Character>();
-        PartyLoot = new RootPanel(CharacterMath.PARTY_INVENTORY_MAX, GameState.UIman.Inventories);
+        PartyLoot = new List<RootScriptObject>(CharacterMath.PARTY_INVENTORY_MAX);
+        for (int i = 0; i < PartyLoot.Capacity; i++)
+            PartyLoot.Add(null);
     }
 }

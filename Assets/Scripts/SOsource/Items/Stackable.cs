@@ -14,16 +14,16 @@ public class Stackable : ItemObject
     {
         //options.Root = options.Root == "" ? "Stackable" : options.Root;
         Stackable newRoot = (Stackable)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
 
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        if (!(source is Stackable))
+        if (!(options.Source is Stackable))
             return;
 
-        Stackable stackSource = (Stackable)source;
+        Stackable stackSource = (Stackable)options.Source;
 
         MaxQuantity = stackSource.MaxQuantity;
         CurrentQuantity = Math.Abs(options.Quantity);

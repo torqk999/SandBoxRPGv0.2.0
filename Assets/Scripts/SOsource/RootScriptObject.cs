@@ -13,39 +13,31 @@ public class RootScriptObject : ScriptableObject
     [Header("Root Logic - NO TOUCHY!")]
     public RootLogic RootLogic;
     
-    public virtual void Copy(RootScriptObject source, RootOptions options)
+    public virtual void Clone(RootOptions options)
     {
-        Debug.Log("yo");
-        RootLogic.Options = options; Debug.Log("yo");
-        Name = source.Name; Debug.Log("yo");
-        Flavour = source.Flavour; Debug.Log("yo");
-        sprite = source.sprite; Debug.Log("yo");
+        //Debug.Log("yo");
+        RootLogic.Copy(options); //Debug.Log("yo");
+
+        Name = options.Source.Name; //Debug.Log("yo");
+        Flavour = options.Source.Flavour; //Debug.Log("yo");
+        sprite = options.Source.sprite; //Debug.Log("yo");
 
         Debug.Log("Copy Root Complete!");
     }
-
-    /*public virtual RootButton GenerateMyButton(ButtonOptions options)
-    {
-        options.PlaceType = PlaceHolderType.NONE; // test point, shouldn't proc
-        GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
-        RootButton myButton = buttonObject.AddComponent<RootButton>();
-        myButton.Init(options);
-        return myButton;
-    }*/
     public virtual RootScriptObject GenerateRootObject(RootOptions options)
     {
-        Debug.Log($"Generating...: {options.Root.GetType()}");
-        RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.Root.GetType());
-        newRootObject.RootLogic.GameState = RootLogic.GameState;
-        Debug.Log("Good so far");
-        newRootObject.Copy(this, options);
-        Debug.Log($"Generated! : {options.Root.GetType()}");
+        Debug.Log($"Generating...: {options.Source.GetType()}");
+        RootScriptObject newRootObject = (RootScriptObject)CreateInstance(options.Source.GetType());
+        newRootObject.RootLogic.Options.GameState = RootLogic.Options.GameState;
+        newRootObject.Clone(options);
+        Debug.Log($"Generated! : {options.Source.GetType()}");
         return newRootObject;
     }
 
     public virtual void InitializeRoot(GameState state)
     {
-        RootLogic.GameState = state;
+        Debug.Log("Initializing Root...");
+        RootLogic.Options.GameState = state;
     }
 
     #region BUTON ACTIONS
@@ -55,33 +47,37 @@ public class RootScriptObject : ScriptableObject
     }
     public virtual bool Vacate()
     {
-        if (RootLogic.Options.Page == null ||
-            RootLogic.Options.Page.OccupantRoots.List == null ||
+        if (RootLogic.Options.HomePanel == null ||
             RootLogic.Options.Index < 0 ||
-            RootLogic.Options.Index >= RootLogic.Options.Page.OccupantRoots.List.Count)
+            RootLogic.Options.Index >= RootLogic.Options.HomePanel.Count)
             return false;
 
-        RootLogic.Options.Page.OccupantRoots.List[RootLogic.Options.Index] = null;
+        RootLogic.Options.HomePanel[RootLogic.Options.Index] = null;
         return true;
         // Un parent? Should be re-parenting anyway...
         //return base.Vacate();
     }
     public bool Relocate()
     {
-        if (RootLogic.Options.Page == null ||
-            RootLogic.Options.Page.OccupantRoots == null ||
-            RootLogic.Options.Page.OccupantRoots.List == null)
+        if (RootLogic.Options.HomePanel == null)
             return false;
 
-        int emptyIndex = RootLogic.Options.Page.OccupantRoots.ReturnEmptyIndex();
+        int emptyIndex = -1;// RootLogic.Options.GameState.UIman..ReturnEmptyIndex();
+        for (int i = 0; i < RootLogic.Options.HomePanel.Count; i++)
+            if (RootLogic.Options.HomePanel[i] == null)
+            {
+                emptyIndex = i;
+                break;
+            }
+
         if (emptyIndex == -1)
         {
             return Drop();
         }
 
-        RootLogic.Options.Page.OccupantRoots.List[RootLogic.Options.Index] = null;
+        RootLogic.Options.HomePanel[RootLogic.Options.Index] = null;
         RootLogic.Options.Index = emptyIndex;
-        RootLogic.Options.Page.OccupantRoots.List[RootLogic.Options.Index] = this;
+        RootLogic.Options.HomePanel[RootLogic.Options.Index] = this;
         return true;
     }
     public bool CheckCanOccupy(Page page, int index)
@@ -120,26 +116,26 @@ public class RootScriptObject : ScriptableObject
                 break;
         }
 
-        if (page.OccupantRoots.List[index] == this)
+        if (page.OccupantRoots[index] == this)
             return false; // already there;
 
-        if (page.OccupantRoots.List[index] == null)
+        if (page.OccupantRoots[index] == null)
             return true; // Empty
 
-        if (!page.OccupantRoots.List[index])
+        if (!page.OccupantRoots[index].Vacate())
             return false; // Failed to vacate
 
         return true; // Successfully vacated
     }
-    public virtual bool Occupy(Page place, int index)
+    public virtual bool Occupy(Page page, int index)
     {
-        if (!CheckCanOccupy(place, index))
+        if (!CheckCanOccupy(page, index))
             return false;
 
         //Panel = place.Panel.VirtualParent.Occupants;
         RootLogic.Options.Index = index;
-        RootLogic.Options.Page.OccupantRoots.List[RootLogic.Options.Index] = this;
-        RootLogic.Options.Page.Buttons.List[RootLogic.Options.Index].Assign(this);
+        page.OccupantRoots[index] = this;
+        page.Buttons.List[index].Assign(this);
 
         return true;
     }

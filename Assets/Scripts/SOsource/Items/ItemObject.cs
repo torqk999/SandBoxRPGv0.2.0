@@ -13,24 +13,11 @@ public class ItemObject : RootScriptObject
     public int GoldValue;
     public float Weight;
 
-    //[Header("Item Logic")]
-    //public int SlotIndex;
-    //public SlotPage SlotPage;
-
-    /*public override RootButton GenerateMyButton(ButtonOptions options)
-    {
-        //options.ButtonType = ButtonType.ITEM;
-        GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
-        RootButton myButton = buttonObject.AddComponent<RootButton>();
-        myButton.Init(options);
-        return myButton;
-    }*/
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "ItemObject" : options.Root;
         ItemObject newRoot = (ItemObject)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
-        newRoot.Occupy(options.Page, options.Index);
+        newRoot.Clone(options);
+        //newRoot.Occupy(options.HomePanel, options.Index);
         return newRoot;
     }
     public virtual void InitializeRoot()
@@ -38,14 +25,14 @@ public class ItemObject : RootScriptObject
 
     }
 
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is ItemObject))
+        if (!(options.Source is ItemObject))
             return;
 
-        ItemObject item = (ItemObject)source;
+        ItemObject item = (ItemObject)options.Source;
 
         Quality = item.Quality;
         GoldValue = item.GoldValue;

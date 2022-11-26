@@ -7,18 +7,18 @@ using TMPro;
 
 using UnityEditor;
 
-[CustomEditor(typeof(SelectableButton))]
+[CustomEditor(typeof(SelectableUI))]
 public class SelectableButtonEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         // Show default inspector property editor
         DrawDefaultInspector();
-        SelectableButton button = (SelectableButton)target;
+        SelectableUI button = (SelectableUI)target;
     }
 }
 
-public class SelectableButton : TippedButton
+public class SelectableUI : TippedUI
 {
     [Header("SelectableButton")]
     public int SlotIndex;
@@ -68,9 +68,9 @@ public class SelectableButton : TippedButton
         Selected = false;
         //MyImage.color = DefaultColor;
     }
-    public override void Init(ButtonOptions options)
+    public override void Init(UI_Options options)
     {
-        //Debug.Log("Selectable Init");
+        Debug.Log("Init select");
         base.Init(options);
 
         if (options.Page == null)
@@ -84,7 +84,7 @@ public class SelectableButton : TippedButton
             SlotIndex < Panel.List.Capacity)
             Panel.List[SlotIndex] = this;
 
-        //Debug.Log("Selectable Init done");
+        Debug.Log("Selectable Init done");
     }
 
     // Start is called before the first frame update

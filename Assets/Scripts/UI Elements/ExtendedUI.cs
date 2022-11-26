@@ -8,14 +8,14 @@ using TMPro;
 
 using UnityEditor;
 
-[CustomEditor(typeof(ExtendedButton))]
+[CustomEditor(typeof(ExtendedUI))]
 public class ExtendedButtonEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         // Show default inspector property editor
         DrawDefaultInspector();
-        ExtendedButton button = (ExtendedButton)target;
+        ExtendedUI button = (ExtendedUI)target;
     }
 }
 
@@ -34,7 +34,7 @@ public class ExtendedButtonEditor : Editor
 }*/
 
 [Serializable]
-public struct ButtonOptions
+public struct UI_Options
 {
     //public ButtonType ButtonType;
     public PlaceHolderType PlaceType;
@@ -53,7 +53,7 @@ public struct ButtonOptions
     /// <param name="root"> The root object that is tied to this button </param>
     /// <param name="page"> The page component that currently houses this button </param>
     /// <param name="index"> The index of this button and it's placeHolder </param>
-    public ButtonOptions(RootScriptObject root , Page page, PlaceHolderType type = default, int index = 0)
+    public UI_Options(RootScriptObject root , Page page, PlaceHolderType type = default, int index = 0)
     {
         Index_Size = index;
         Root = root;
@@ -69,7 +69,7 @@ public struct ButtonOptions
     /// </summary>
     /// <param name="page"> The panel component that currently houses this button </param>
     /// <param name="size"> The index of this placHolder and it's button </param>
-    public ButtonOptions(Page page = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
+    public UI_Options(Page page = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
     {
         Index_Size = size;
         Root = null;
@@ -81,7 +81,7 @@ public struct ButtonOptions
     }
 }
 
-public class ExtendedButton : Button
+public class ExtendedUI : Selectable
 {
     [Header ("ExtendedButton")]
     public UIManager UIMan;
@@ -138,9 +138,9 @@ public class ExtendedButton : Button
         return false;
     }
 
-    public virtual void Init(ButtonOptions options)
+    public virtual void Init(UI_Options options)
     {
-        //Debug.Log("Extended Init");
+        Debug.Log("Init extend");
         GetUIMan();
         gameObject.tag = GlobalConstants.TAG_BUTTON;
         MyRect = gameObject.GetComponent<RectTransform>();
@@ -152,7 +152,7 @@ public class ExtendedButton : Button
         {
             //Debug.Log($"Cooldown Slider failed to be found!");
         }
-        //Debug.Log("Extended Init done");
+        Debug.Log("Extended Init done");
     }
 
     protected override void Start()

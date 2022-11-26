@@ -17,7 +17,7 @@ public class ButtonPanel : MonoBehaviour
     //public PlaceHolderType PlaceType;
     public Page VirtualParent;
     public RectTransform PhysicalParent;
-    public List<SelectableButton> List;
+    public List<SelectableUI> List;
     
     public void Setup(Page source)
     {
@@ -31,7 +31,7 @@ public class ButtonPanel : MonoBehaviour
 
     public void Resize(int size)
     {
-        List<SelectableButton> newList = new List<SelectableButton>(size);
+        List<SelectableUI> newList = new List<SelectableUI>(size);
 
         for (int i = 0; i < newList.Capacity || i < List.Count; i++)
         {

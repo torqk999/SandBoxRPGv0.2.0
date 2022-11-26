@@ -8,9 +8,9 @@ public class MaxStatEffect : StatEffect
     [Header ("Adjust Values")]
     public RawStatPackage StatAdjustPack;
 
-    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
+    public override void ApplySingleEffect(Character target,  bool cast = false)
     {
-        base.ApplySingleEffect(target, options, cast); // Risidual proc
+        base.ApplySingleEffect(target, cast); // Risidual proc
     }
     public override void Amplify(float amp)
     {
@@ -20,18 +20,18 @@ public class MaxStatEffect : StatEffect
     {
         StatAdjustPack.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
+    public override void Clone(RootOptions options)
     {
-        base.CloneEffect(source, effectOptions, effected);
+        base.Clone(options);
 
-        if (!(source is MaxStatEffect))
+        if (!(options.Source is MaxStatEffect))
             return;
 
-        MaxStatEffect maxSource = (MaxStatEffect)source;
+        MaxStatEffect maxSource = (MaxStatEffect)options.Source;
 
         StatAdjustPack.Clone(maxSource.StatAdjustPack);
     }
-    public override RootScriptObject GenerateRootObject(RootOptions options)
+    /*public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         //options.Root = "MaxStatEffect";
         return (MaxStatEffect)base.GenerateRootObject(options);
@@ -41,5 +41,5 @@ public class MaxStatEffect : StatEffect
         MaxStatEffect newEffect = (MaxStatEffect)CreateInstance("MaxStatEffect");
         newEffect.CloneEffect(this, effectOptions);
         return newEffect;
-    }
+    }*/
 }

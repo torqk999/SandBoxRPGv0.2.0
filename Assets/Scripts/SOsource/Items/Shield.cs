@@ -23,19 +23,18 @@ public class Shield : Hand
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "Shield" : options.Root;
         Shield newRoot = (Shield)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        if (!(source is Shield))
+        if (!(options.Source is Shield))
             return;
 
-        Shield shieldSource = (Shield)source;
+        Shield shieldSource = (Shield)options.Source;
 
-        base.Copy(source, options);
+        base.Clone(options);
 
         Type = shieldSource.Type;
     }

@@ -18,9 +18,8 @@ public class OffHand : Hand
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "OffHand" : options.Root;
         OffHand newRoot = (OffHand)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
     public override void InitializeRoot(GameState state)
@@ -28,14 +27,14 @@ public class OffHand : Hand
         base.InitializeRoot(state);
         EquipSlot = EquipSlot.OFF;
     }
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is OffHand))
+        if (!(options.Source is OffHand))
             return;
 
-        OffHand offSource = (OffHand)source;
+        OffHand offSource = (OffHand)options.Source;
         Type = offSource.Type;
     }
 

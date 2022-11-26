@@ -10,7 +10,7 @@ public class ToggleAbility : EffectAbility
     public ParticleSystem Aura;
     public bool Active;
 
-    public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
+    /*public override void UseAbility(Character target, EffectOptions options = default(EffectOptions))
     {
         Active = !Active;
 
@@ -32,25 +32,25 @@ public class ToggleAbility : EffectAbility
         //options.Inject = false;
 
         base.ProduceOriginalEffects(source, options);
-    }
+    }*/
 
-    public override void Copy(RootScriptObject source, RootOptions options = default)
+    public override void Clone(RootOptions options = default)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is ToggleAbility))
+        if (!(options.Source is ToggleAbility))
             return;
 
-        ToggleAbility passiveSource = (ToggleAbility)source;
+        ToggleAbility passiveSource = (ToggleAbility)options.Source;
 
         Aura = passiveSource.Aura;
         Active = false;
     }
-    public override CharacterAbility GenerateAbility(RootOptions options)
+    /*public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         //options.Root = "ToggleAbility";
         ToggleAbility newAbility = (ToggleAbility)GenerateRootObject(options);
-        newAbility.Copy(this, options);
+        newAbility.Clone(options);
         return newAbility;
-    }
+    }*/
 }

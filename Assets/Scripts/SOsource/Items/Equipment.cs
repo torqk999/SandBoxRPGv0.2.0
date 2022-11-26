@@ -7,61 +7,34 @@ public class Equipment : ItemObject
     [Header("Equipment Properties")]
     public School EquipSchool;
     public ClassType ClassType;
-    public CharacterAbility[] Abilities;
+    public List<CharacterAbility> Abilities;
 
     [Header("Equip Logic - Do not touch")]
     public int EquipLevel;
     public EquipSlot EquipSlot;
     public Character EquippedTo;
 
-    /*public WearSlot GetMySlot()
-    {
-        switch(this)
-        {
-            case OneHand:
-                return HandSlot.MAIN;
-
-            case Shield:
-            case OffHand:
-                return WearSlot.OFF;
-
-            case Ring:
-                return WearSlot.RING;
-
-            case Wearable:
-                return ((Wearable)this).WearSlot;
-        }
-        return default;
-    }*/
-    /*public override RootButton GenerateMyButton(ButtonOptions options)
-    {
-        //options.ButtonType = ButtonType.ITEM;
-        GameObject buttonObject = RootLogic.GameState.UIman.GenerateButtonObject(options);
-        RootButton myButton = buttonObject.AddComponent<RootButton>();
-        myButton.Init(options);
-        return myButton;
-    }*/
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "Equipment" : options.Root;
         Equipment newRoot = (Equipment)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
     public override void InitializeRoot(GameState state)
     {
+        Debug.Log("Initializing Equip...");
         base.InitializeRoot(state);
         foreach (CharacterAbility ability in Abilities)
             ability.InitializeRoot(state);
     }
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is Equipment))
+        if (!(options.Source is Equipment))
             return;
 
-        Equipment equipSource = (Equipment)source;
+        Equipment equipSource = (Equipment)options.Source;
 
         EquipSchool = equipSource.EquipSchool;
         ClassType = equipSource.ClassType;
@@ -76,21 +49,23 @@ public class Equipment : ItemObject
     {
         Debug.Log("Cloning equip abilities...");
 
-        Abilities = new CharacterAbility[source.Abilities.Length];
+        Abilities = new List<CharacterAbility>();
 
-        for (int i = 0; i < Abilities.Length; i++)
+        for (int i = 0; i < (source.Abilities.Count); i++)
         {
             if (source.Abilities[i] != null)
             {
-                options.Root = source.Abilities[i];
+                options.Source = source.Abilities[i];
                 options.Index = i;
                 options.ID++; // MAYBE???
-                Abilities[i] = source.Abilities[i].GenerateAbility(options);
-                Debug.Log("Ability generated!");
+                Abilities.Add((CharacterAbility)source.Abilities[i].GenerateRootObject(options));
+                Debug.Log("Ability added to new equip!");
             }
             else
                 Debug.Log($"Ability missing from id#{RootLogic.Options.ID}:{Name}");
         }
+
+        Debug.Log("Equip abilities generated!");
     }
 
     public virtual bool EquipToCharacter(Character character, int slotIndex = -1)
@@ -111,22 +86,23 @@ public class Equipment : ItemObject
 
         foreach (CharacterAbility equipped in Abilities)
         {
-            if (!(equipped is EffectAbility))
-                continue;
+            if (equipped is EffectAbility)
+            {
+                EffectAbility effectAbility = (EffectAbility)equipped;
 
-            EffectAbility effectAbility = (EffectAbility)equipped;
+                foreach (BaseEffect effect in effectAbility.Effects)
+                    foreach (BaseEffect spawnedEffect in effect.RootLogic.Clones)
+                    {
+                        if (effect.Logic.Options.EffectType == EffectType.PASSIVE ||
+                            effect.Logic.Options.EffectType == EffectType.TOGGLE)
+                            Destroy(spawnedEffect);
+                    }
 
-            foreach (BaseEffect effect in effectAbility.Effects)
-                foreach (BaseEffect spawnedEffect in effect.RootLogic.Clones)
-                {
-                    if (effect.Logic.Options.EffectType == EffectType.PASSIVE ||
-                        effect.Logic.Options.EffectType == EffectType.TOGGLE)
-                        Destroy(spawnedEffect);
-                }
-            
-            effectAbility.Logic.SourceCharacter.Slots.Skills.List.Remove(effectAbility);
-            effectAbility.Logic.SourceCharacter.UpdateAbilites();
-            effectAbility.Logic.SourceCharacter = null;
+                RootLogic.Options.GameState.UIman.Equipments.Remove(effectAbility);
+                //effectAbility.Logic.SourceCharacter.UpdateAbilites();
+                effectAbility.Logic.SourceCharacter = null;
+            }
+            equipped.Vacate();
         }
 
         //////////////////////////////////////

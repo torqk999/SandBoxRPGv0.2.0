@@ -5,7 +5,7 @@ using UnityEngine;
 
 public struct PageOptions
 {
-    public ButtonOptions ButtonOptions;
+    public UI_Options ButtonOptions;
     //public PlaceHolderType PlaceHolderType;
     public bool IsPlaceHolder;
     public int Size;
@@ -24,7 +24,7 @@ public struct PageOptions
         Size = 0;
     }
 
-    public PageOptions(ButtonOptions options, int size)
+    public PageOptions(UI_Options options, int size)
         // PlaceHolder Builder
     {
         ButtonOptions = options;
@@ -41,13 +41,13 @@ public class Page : MonoBehaviour
 {
     public UIManager UIman;
     public RectTransform ParentContent;
-    public RootPanel OccupantRoots;
+    public List<RootScriptObject> OccupantRoots;
     public ButtonPanel Buttons;
     public PlaceHolderType PlaceType;
     public int MaximumSize;
     public bool Refresh;
 
-    public void Setup(ButtonOptions options)
+    public void Setup(UI_Options options)
     {
         Debug.Log("Setup Call");
 
@@ -58,7 +58,12 @@ public class Page : MonoBehaviour
         //RefreshContentSize();
     }
 
-    void PopulatePlaceHolders(ButtonOptions options)
+    /*public void ResizePlace(int size)
+    {
+        
+    }*/
+
+    void PopulatePlaceHolders(UI_Options options)
     {
         for (int i = 0; i < Buttons.List.Capacity; i++)
         {
@@ -66,34 +71,31 @@ public class Page : MonoBehaviour
             Buttons.List[i] = UIman.GeneratePlaceHolder(options);
         }
     }
-    public void PopulateLiterals(ButtonOptions options)
+    public void PopulateLiterals(UI_Options options)
     {
         PlaceType = options.PlaceType;
         Clear();
 
-        for (int i = 0; i < Buttons.List.Capacity; i++)
+        for (int i = 0; i < options.Page.OccupantRoots.Count; i++)
         {
+            options.Root = options.Page.OccupantRoots[i];
             options.Index_Size = i;
-            Buttons.List[i] = UIman.GeneratePlaceHolder(options);
+            options.Page.Add(options);
         }
-    }
-    void AppendRoot(RootScriptObject root)
-    {
-
     }
 
     public void Clear()
     {
-        foreach (SelectableButton button in Buttons.List)
+        foreach (SelectableUI button in Buttons.List)
             Destroy(button);
 
         Buttons.List.Clear();
-        OccupantRoots.List.Clear();
+        OccupantRoots.Clear();
     }
-    public void Add(ButtonOptions options)
+    public void Add(UI_Options options)
     {
-        OccupantRoots.List.Add(options.Root);
-        Buttons.List.Add(UIman.GeneratePlaceHolder(options));
+        OccupantRoots.Add(options.Root);
+        Buttons.List.Add(UIman.GenerateLiteral(options));
     }
     public void Remove(RootScriptObject root)
     {
@@ -110,19 +112,31 @@ public class Page : MonoBehaviour
             index >= Buttons.List.Count)
             return;
 
-        OccupantRoots.List.RemoveAt(index);
+        OccupantRoots.RemoveAt(index);
         Destroy(Buttons.List[index]);
         Buttons.List.RemoveAt(index);
     }
 
-    public void Resize()
+    /*public void Resize()
     {
-        OccupantRoots.Resize(Buttons.List.Count);
-    }
+        OccupantRoots(Buttons.List.Count);
+    }*/
 
     public void Resize(int size)
     {
         Buttons.Resize(size);
+
+        /*List<RootScriptObject> newList = new List<RootScriptObject>(size);
+
+        for (int i = 0; i < newList.Capacity || i < OccupantRoots.Count; i++)
+        {
+            if (i < OccupantRoots.Count)
+                newList.Add(OccupantRoots[i]);
+            else
+                newList.Add(null);
+        }
+
+        OccupantRoots = newList;*/
     }
 
     public void RefreshContentSize()
@@ -164,33 +178,32 @@ public class Page : MonoBehaviour
     #region INVENTORY
     public void GenerateRootIntoSlot(RootOptions rootOptions)
     {
-        Debug.Log("how?");
-        if (OccupantRoots.List == null ||
+        if (OccupantRoots == null ||
             rootOptions.Index < 0 ||
-            rootOptions.Index >= OccupantRoots.List.Count)
+            rootOptions.Index >= OccupantRoots.Count)
             return;
 
-        if (rootOptions.Root == null)
+        if (rootOptions.Source == null)
             return;
-        Debug.Log("how?");
+        Debug.Log("Generating root into slot...");
         //RootOptions rootOptions = new RootOptions(ref UIman.GameState.ROOT_SO_INDEX, index);
-        ItemObject newRootObject = (ItemObject)rootOptions.Root.GenerateRootObject(rootOptions);
-        Debug.Log("What?");
+        ItemObject newRootObject = (ItemObject)rootOptions.Source.GenerateRootObject(rootOptions);
+        Debug.Log("Root generated at slot!");
         //ButtonOptions buttonOptions = new ButtonOptions(newRootObject, PlaceHolders, index);
         Buttons.List[rootOptions.Index].Assign(newRootObject);
     }
     public int FindEligibleIndex()
     {
-        for (int i = 0; i < OccupantRoots.List.Count; i++)
-            if (OccupantRoots.List[i] == null)
+        for (int i = 0; i < OccupantRoots.Count; i++)
+            if (OccupantRoots[i] == null)
                 return i;
         return -1;
     }
     public int CurrentQuantity()
     {
         int output = 0;
-        for (int i = 0; i < OccupantRoots.List.Count; i++)
-            if (OccupantRoots.List[i] != null)
+        for (int i = 0; i < OccupantRoots.Count; i++)
+            if (OccupantRoots[i] != null)
                 output++;
         return output;
     }
@@ -201,9 +214,9 @@ public class Page : MonoBehaviour
 
         Debug.Log("Pushing into inventory...");
         if (input is Stackable)
-            return OccupantRoots.PushItemIntoStack((Stackable)input);
+            return PushItemIntoStack((Stackable)input);
 
-        if (OccupantRoots.List[inventoryIndex] == null)
+        if (OccupantRoots[inventoryIndex] == null)
         {
             input.Occupy(this, inventoryIndex);
             return true;
@@ -217,6 +230,39 @@ public class Page : MonoBehaviour
         }
 
         return false;
+    }
+
+    public bool PushItemIntoStack(Stackable stackItem)
+    {
+        int empty = -1;
+
+        for (int i = 0; i < OccupantRoots.Count; i++)
+        {
+            if (OccupantRoots[i] == null && empty == -1)
+                empty = i; // found an empty slot in case there were no stacks to push into
+
+            if (stackItem.CurrentQuantity <= 0)
+                return true;
+
+            if (!(OccupantRoots[i] is Stackable))
+                continue;
+
+            Stackable stackTarget = (Stackable)OccupantRoots[i];
+
+            if (stackTarget.Name != stackItem.Name)
+                continue;
+
+            int desiredQuantity = stackTarget.MaxQuantity - stackItem.CurrentQuantity;
+            int movedQuantity = stackItem.CurrentQuantity < desiredQuantity ? stackItem.CurrentQuantity : desiredQuantity;
+            stackTarget.CurrentQuantity += movedQuantity;
+            stackItem.CurrentQuantity -= movedQuantity;
+        }
+
+        if (empty == -1)
+            return false;
+
+        OccupantRoots[empty] = stackItem;
+        return true;
     }
     /*public ItemObject RemoveIndexFromOccupants(int inventoryIndex)
     {
@@ -244,24 +290,24 @@ public class Page : MonoBehaviour
             int sup = startIndex + i;
             int sub = startIndex - i;
 
-            if (sup < OccupantRoots.List.Count &&
-                OccupantRoots.List[sup] == null)
+            if (sup < OccupantRoots.Count &&
+                OccupantRoots[sup] == null)
                 return sup;
 
 
             if (sub > 0 &&
-                OccupantRoots.List[sub] == null)
+                OccupantRoots[sub] == null)
                 return sub;
         }
         return -1;
     }
     public bool TransferItem(Page targetInventory, int sourceIndex, int targetIndex = 0)
     {
-        ItemObject item = (ItemObject)OccupantRoots.List[sourceIndex];
+        ItemObject item = (ItemObject)OccupantRoots[sourceIndex];
         if (item == null)
             return false;
 
-        if (!targetInventory.OccupantRoots.List[targetIndex].Vacate())
+        if (!targetInventory.OccupantRoots[targetIndex].Vacate())
             return false;
 
         item.Vacate();

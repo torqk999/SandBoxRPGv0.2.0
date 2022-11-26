@@ -12,26 +12,24 @@ public class Wearable : Equipment
 
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "Wearable" : options.Root;
         Wearable newRoot = (Wearable)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is Wearable))
+        if (!(options.Source is Wearable))
             return;
 
-        Wearable wearSource = (Wearable)source;
-        
+        Wearable wearSource = (Wearable)options.Source;
     }
     public override bool EquipToCharacter(Character character, int slotIndex = -1)
     {
         slotIndex = (int)EquipSlot;
-        if (character.Slots.Equips.List[slotIndex] != null &&
-            !((Equipment)character.Slots.Equips.List[slotIndex]).UnEquipFromCharacter())
+        if (character.Slots.Equips[slotIndex] != null &&
+            !((Equipment)character.Slots.Equips[slotIndex]).UnEquipFromCharacter())
             return false;
 
         return base.EquipToCharacter(character, slotIndex);

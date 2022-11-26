@@ -8,18 +8,18 @@ using TMPro;
 
 using UnityEditor;
 
-[CustomEditor(typeof(TippedButton))]
+[CustomEditor(typeof(TippedUI))]
 public class TippedButtonButtonEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         // Show default inspector property editor
         DrawDefaultInspector();
-        TippedButton button = (TippedButton)target;
+        TippedUI button = (TippedUI)target;
     }
 }
 
-public class TippedButton : ExtendedButton
+public class TippedUI : ExtendedUI
 {
     [Header("TippedButton")]
     //public StringBuilder Title;
@@ -46,9 +46,9 @@ public class TippedButton : ExtendedButton
         for (int i = 0; i < 3; i++)
             Strings[i].Clear();
     }
-    public override void Init(ButtonOptions options)
+    public override void Init(UI_Options options)
     {
-        //Debug.Log("Tipped Init");
+        Debug.Log("Init tip");
         base.Init(options);
         Strings = new StringBuilder[3];
         for (int i = 0; i < 3; i++)
@@ -56,7 +56,7 @@ public class TippedButton : ExtendedButton
         //Title = new StringBuilder();
         //Stats = new StringBuilder();
         //Flavour = new StringBuilder();
-        //Debug.Log("Tipped done");
+        Debug.Log("Tipped done");
     }
 
     // Start is called before the first frame update

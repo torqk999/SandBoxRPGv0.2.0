@@ -7,21 +7,21 @@ using TMPro;
 
 using UnityEditor;
 
-[CustomEditor(typeof(RootButton))]
+[CustomEditor(typeof(RootUI))]
 public class RootButtonEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         // Show default inspector property editor
         DrawDefaultInspector();
-        RootButton button = (RootButton)target;
+        RootUI button = (RootUI)target;
     }
 }
 
 
 
 
-public class RootButton : SelectableButton
+public class RootUI : SelectableUI
 {
     public RootScriptObject Root;
     //public Image MyImage;
@@ -36,14 +36,17 @@ public class RootButton : SelectableButton
             MyImage.sprite = Root.sprite;
     }
 
-    public override void Init(ButtonOptions options)
+    public override void Init(UI_Options options)
     {
+        Debug.Log("Init root");
         base.Init(options);
         if (options.ResetImage)
             EmptyPlaceHolder = UIMan.EmptyButtonSprite;
         else
             EmptyPlaceHolder = MyImage.sprite;
         UpdateSprite();
+
+        Debug.Log("Root init done!");
     }
 
     public override void Assign(RootScriptObject root)

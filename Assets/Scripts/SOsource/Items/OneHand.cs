@@ -25,19 +25,18 @@ public class OneHand : Hand
     }
     public override RootScriptObject GenerateRootObject(RootOptions options)
     {
-        //options.Root = options.Root == "" ? "OneHand" : options.Root;
         OneHand newRoot = (OneHand)base.GenerateRootObject(options);
-        newRoot.Copy(this, options);
+        newRoot.Clone(options);
         return newRoot;
     }
-    public override void Copy(RootScriptObject source, RootOptions options)
+    public override void Clone(RootOptions options)
     {
-        base.Copy(source, options);
+        base.Clone(options);
 
-        if (!(source is OneHand))
+        if (!(options.Source is OneHand))
             return;
 
-        OneHand oneSource = (OneHand)source;
+        OneHand oneSource = (OneHand)options.Source;
         Type = oneSource.Type;
 
         Debug.Log("Copy OneHand Complete!");

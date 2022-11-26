@@ -20,12 +20,12 @@ public class CharacterCanvas : MonoBehaviour
 
     void CheckCharacterEffects()
     {
-        if (Character.Risiduals == null)
+        if (Character.Slots.Risiduals == null)
             return;
 
-        if (Character.Risiduals.Count != OldEffectsCount)
+        if (Character.Slots.Risiduals.Count != OldEffectsCount)
         {
-            OldEffectsCount = Character.Risiduals.Count;
+            OldEffectsCount = Character.Slots.Risiduals.Count;
             BuildEffectImages();
         }
     }
@@ -38,7 +38,7 @@ public class CharacterCanvas : MonoBehaviour
         }
             
 
-        foreach(BaseEffect effect in Character.Risiduals)
+        foreach(BaseEffect effect in Character.Slots.Risiduals)
         {
             GameObject newEffectIcon = Instantiate(EffectImagePrefab, EffectContainer);
             newEffectIcon.SetActive(true);

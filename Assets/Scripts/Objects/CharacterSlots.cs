@@ -13,8 +13,9 @@ public enum SlotPageType
 [System.Serializable]
 public struct CharacterSlots
 {
-    public RootPanel Inventory;
-    public RootPanel Equips;
-    public RootPanel HotBar;
-    public RootPanel Skills;
+    public List<RootScriptObject> Inventory;
+    public List<RootScriptObject> Equips;
+    public List<RootScriptObject> HotBar;
+    public List<RootScriptObject> Skills;
+    public List<RootScriptObject> Risiduals;
 }

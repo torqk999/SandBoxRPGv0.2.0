@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Tactic", menuName = "ScriptableObjects/RawTactic")]
-public class Tactic : ScriptableObject
+public class Tactic : RootScriptObject
 {
     public bool bTacticEnabled;
     public Relation Relation;

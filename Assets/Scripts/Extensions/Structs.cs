@@ -596,8 +596,8 @@ public struct AbilityLogic
     public float CD_Timer;
     public float Cast_Timer;
     public Character SourceCharacter;
-    public GameObject CastLocationInstance;
-    public GameObject CastTargetInstance;
+    public GameObject CastParticleInstance;
+    //public GameObject CastTargetInstance;
     public List<Character> TargetBuffer;
 
     public void Clone(AbilityLogic source)
@@ -616,41 +616,36 @@ public struct EffectLogic
 {
     // Sourced from ability
     public EffectOptions Options;
-    
+
+    // States
+    public bool IsProjectile;
+    public bool ToggleActive;
+
     // Timers
     public float ProjectileTimer;
     public float PeriodTimer;
     public float DurationTimer;
 
     // Active object references
-    public CharacterAbility SourceAbility;
-    public Character EffectedCharacter;
     public List<Character> TargetBuffer;
-    
 
     // Psystem Instantiations
     public GameObject Condition;
     public GameObject Projectile;
     public GameObject Impact;
 
-    public void Clone(EffectLogic source, EffectOptions options)
+    public void Clone(EffectLogic source)
     {
-        Options = options;
+        Options = source.Options;
 
-        //TetherRange = source.TetherRange;
-        //ProjectileDuration = source.ProjectileDuration;
+        IsProjectile = false;
+        ToggleActive = true;
 
         ProjectileTimer = 0;
         PeriodTimer = 0;
         DurationTimer = 0;
 
-        SourceAbility = source.SourceAbility;
-        EffectedCharacter = source.EffectedCharacter;
-
         TargetBuffer = new List<Character>();
-
-        //Original = source.Original;
-        //Clones = new List<BaseEffect>();
 
         Condition = null;
         Projectile = null;
@@ -660,16 +655,33 @@ public struct EffectLogic
 [Serializable]
 public struct EffectOptions
 {
-    public bool IsProjectile;
-    public bool ToggleActive;
     public EffectType EffectType;
-    
-    public EffectOptions(EffectType type, bool toggled, bool projectile = false)
+    public CharacterAbility Source;
+    public Character Effected;
+
+    public EffectOptions(CharacterAbility source, Character effected = null)
     {
-        //IsClone = clone;
-        EffectType = type;
-        ToggleActive = toggled;
-        IsProjectile = projectile;
+        switch(source)
+        {
+            case PassiveAbility:
+                EffectType = EffectType.PASSIVE;
+                break;
+
+            case ProcAbility:
+                EffectType = EffectType.PROC;
+                break;
+
+            case ToggleAbility:
+                EffectType = EffectType.TOGGLE;
+                break;
+
+            default:
+                EffectType = EffectType.NONE;
+                break;
+        }
+
+        Source = source;
+        Effected = effected;
     }
 }
 [Serializable]
@@ -707,55 +719,36 @@ public struct ItemOptions
 public struct RootLogic
 {
     public RootOptions Options;
-    public GameState GameState;
-    //public Page Page;
-    public RootScriptObject Original;
     public List<RootScriptObject> Clones;
-    public RootButton Button;
+    public RootUI Button;
 
-    public void Copy(RootOptions options, RootScriptObject source = null)
+    public void Copy(RootOptions options)
     {
         Options = options;
-        if (Options.IsClone)
-            Original = source;
-        else
-            Clones = new List<RootScriptObject>();
+        Clones = new List<RootScriptObject>();
     }
 }
 [Serializable] 
 public struct RootOptions
 {
-    public RootScriptObject Root;
+    public GameState GameState;
+    public RootScriptObject Source;
+    public List<RootScriptObject> HomePanel;
+    //public Page
+    //public bool IsProjectile;
     public bool IsClone;
-    public Page Page;
     public int ID;
     public int Index;
     public int Quantity; // Migrate to ItemOptions
     
-    public RootOptions(ref int id, Page page = null, int index = -1, int quantity = 1)
+    public RootOptions(GameState state, RootScriptObject source, ref int id, List<RootScriptObject> panel = null, int index = -1, int quantity = 1, bool clone = false)//, bool projectile = false)
     {
-        Root = null; //source.name;
-        IsClone = false;
-        Page = page;
-        try
-        {
-            ID = id;
-            id++;
-        }
-        catch
-        {
-            ID = -1;
-        }
-        Index = index;
-        Quantity = quantity;
-    }
-
-    public RootOptions(RootScriptObject source, Page page = null, int index = -1, int quantity = 1)
-    {
-        Root = source;
-        IsClone = true;
-        Page = page;
-        ID = source.RootLogic.Options.ID;
+        GameState = state;
+        Source = source;
+        //IsProjectile = projectile;
+        IsClone = clone;
+        HomePanel = panel;
+        ID = id;
         Index = index;
         Quantity = quantity;
     }

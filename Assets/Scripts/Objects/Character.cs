@@ -60,7 +60,7 @@ public class Character : Pawn, Interaction
 
     [Header("References")]
     public List<Character> AOE_buffer;
-    public List<BaseEffect> Risiduals;
+    //public List<BaseEffect> Risiduals;
     public Party CurrentParty;
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
@@ -145,7 +145,7 @@ public class Character : Pawn, Interaction
         BaseResistances = new ElementPackage(Sheet);
         CurrentResistances.Clone(BaseResistances);
 
-        Risiduals = new List<BaseEffect>();
+        //Risiduals = new List<BaseEffect>();
         //RebuildAbilityList();
         //UpdateAbilites();
     }
@@ -291,12 +291,12 @@ public class Character : Pawn, Interaction
     */
     public bool CheckCCstatus(CCstatus status)
     {
-        return Risiduals.Find(x => x is CrowdControlEffect &&
+        return Slots.Risiduals.Find(x => x is CrowdControlEffect &&
                                  ((CrowdControlEffect)x).TargetCCstatus == status) != null;
     }
     public bool CheckCCimmune(CCstatus status)
     {
-        return Risiduals.Find(x => x is ImmuneEffect &&
+        return Slots.Risiduals.Find(x => x is ImmuneEffect &&
                                  ((ImmuneEffect)x).TargetCCstatus == status) != null;
     }
     /*public bool CheckElementalImmune(Element element)
@@ -307,7 +307,7 @@ public class Character : Pawn, Interaction
     }*/
     public bool CheckDamageImmune(RawStat stat)
     {
-        return Risiduals.Find(x => x is InvulnerableEffect &&
+        return Slots.Risiduals.Find(x => x is InvulnerableEffect &&
                                  ((InvulnerableEffect)x).TargetStat == stat) != null;
     }
     public bool CheckAllegiance(Character target)
@@ -323,7 +323,7 @@ public class Character : Pawn, Interaction
     }
     public bool AttemptAbility(int abilityIndex)
     {
-        CharacterAbility call = (CharacterAbility)Slots.HotBar.List[abilityIndex];
+        CharacterAbility call = (CharacterAbility)Slots.HotBar[abilityIndex];
         if (call == null) // Am I a joke to you?
             return false;
 
@@ -340,9 +340,8 @@ public class Character : Pawn, Interaction
         if (!call.HasEligableTarget())
             return false;
 
-        EffectOptions options = new EffectOptions(default, true);
+        call.UseAbility(CurrentTargetCharacter);
 
-        call.UseAbility(CurrentTargetCharacter, options);
         SpendResource(call, costModifier);
 
         GlobalCDtimer = CharacterMath.GLOBAL_COOLDOWN;
@@ -426,8 +425,8 @@ public class Character : Pawn, Interaction
 
         if (CurrentStats.Stats[(int)RawStat.HEALTH] == 0)
         {
-            if(Risiduals.Find(x => x is CrowdControlEffect && ((CrowdControlEffect)x).TargetCCstatus == CCstatus.DEAD) == null)
-                Risiduals.Add(RawCrowdControlGeneration("Death", CCstatus.DEAD));
+            if(Slots.Risiduals.Find(x => x is CrowdControlEffect && ((CrowdControlEffect)x).TargetCCstatus == CCstatus.DEAD) == null)
+                Slots.Risiduals.Add(RawCrowdControlGeneration("Death", CCstatus.DEAD));
 
             bAssetUpdate = true;
             DebugState = DebugState.DEAD;
@@ -446,7 +445,7 @@ public class Character : Pawn, Interaction
     {
         CurrentResistances.Clone(BaseResistances);
 
-        foreach (ResistanceEffect adjust in Risiduals)
+        foreach (ResistanceEffect adjust in Slots.Risiduals)
         {
             float resValueModifier = GenerateRawStatValueModifier(adjust.Value, RawStat.HEALTH);
 
@@ -461,7 +460,7 @@ public class Character : Pawn, Interaction
     {
         MaximumStatValues.Clone(BaseStats);
 
-        foreach (MaxStatEffect adjust in Risiduals)
+        foreach (MaxStatEffect adjust in Slots.Risiduals)
         {
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
             {
@@ -474,34 +473,34 @@ public class Character : Pawn, Interaction
     void UpdateAbilitySlots()
     {
         for (int i = CharacterMath.HOT_BAR_SLOTS - 1; i > -1; i--)
-            if (Slots.HotBar.List[i] != null && Slots.Skills.List.Find(x => x.RootLogic.Options.ID == Slots.HotBar.List[i].RootLogic.Options.ID) == null)
-                Slots.HotBar.List[i] = null;
+            if (Slots.HotBar[i] != null && Slots.Skills.Find(x => x.RootLogic.Options.ID == Slots.HotBar[i].RootLogic.Options.ID) == null)
+                Slots.HotBar[i] = null;
     }
     void UpdateAbilityCooldowns()
     {
         
-        for (int i = 0; i < Slots.HotBar.List.Count; i++)
-            if (Slots.HotBar.List[i] != null)
-                ((CharacterAbility)Slots.HotBar.List[i]).UpdateCooldowns();
+        for (int i = 0; i < Slots.HotBar.Count; i++)
+            if (Slots.HotBar[i] != null)
+                ((CharacterAbility)Slots.HotBar[i]).UpdateCooldowns();
     }
     void UpdatePassiveAbilities()
     {
         
-        foreach (CharacterAbility ability in Slots.Skills.List)
+        foreach (CharacterAbility ability in Slots.Skills)
         {
             ability.UpdatePassiveTimer();
         }
     }
     void UpdateRisidualEffects()
     {
-        foreach (BaseEffect risidual in Risiduals)
-            risidual.ApplySingleEffect(this, risidual.Logic.Options);
+        foreach (BaseEffect risidual in Slots.Risiduals)
+            risidual.ApplySingleEffect(this);
     }
     void UpdateAdjustments()
     {
         MaximumStatValues.Clone(BaseStats);
 
-        foreach (MaxStatEffect statAdjust in Risiduals)
+        foreach (MaxStatEffect statAdjust in Slots.Risiduals)
         {
             for (int i = 0; i < CharacterMath.STATS_RAW_COUNT; i++)
             {

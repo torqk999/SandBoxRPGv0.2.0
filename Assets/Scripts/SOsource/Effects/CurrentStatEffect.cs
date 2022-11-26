@@ -9,9 +9,9 @@ public class CurrentStatEffect : StatEffect
     public RawStat TargetStat;
     public ElementPackage ElementPack;
 
-    public override void ApplySingleEffect(Character target, EffectOptions options, bool cast = false)
+    public override void ApplySingleEffect(Character target, bool cast = false)
     {
-        base.ApplySingleEffect(target, options, cast); // Risidual proc
+        base.ApplySingleEffect(target, cast); // Risidual proc
 
         if (target.CheckDamageImmune(TargetStat))
             return;
@@ -82,14 +82,14 @@ public class CurrentStatEffect : StatEffect
     {
         ElementPack.Initialize();
     }
-    public override void CloneEffect(BaseEffect source, EffectOptions effectOptions, Character effected = null)
+    public override void Clone(RootOptions options)
     {
-        base.CloneEffect(source, effectOptions);
+        base.Clone(options);
 
-        if (!(source is CurrentStatEffect))
+        if (!(options.Source is CurrentStatEffect))
             return;
 
-        CurrentStatEffect currentStatEffectSource = (CurrentStatEffect)source;
+        CurrentStatEffect currentStatEffectSource = (CurrentStatEffect)options.Source;
         TargetStat = currentStatEffectSource.TargetStat;
 
         ElementPack.Clone(currentStatEffectSource.ElementPack);
@@ -99,12 +99,12 @@ public class CurrentStatEffect : StatEffect
         //options.Root = "CurrentStatEffect";
         return (CurrentStatEffect)base.GenerateRootObject(options);
     }
-    public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
+    /*public override BaseEffect GenerateEffect(RootOptions rootOptions, EffectOptions effectOptions, Character effected = null)
     {
         CurrentStatEffect newEffect = (CurrentStatEffect)base.GenerateEffect(rootOptions, effectOptions, effected);
         newEffect.CloneEffect(this, effectOptions);
         return newEffect;
-    }
+    }*/
     public void FormRegen(RawStat targetStat, float healMagnitude) // Default regen
     {
         Name = $"{targetStat} REGEN";
