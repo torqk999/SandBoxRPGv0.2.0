@@ -75,7 +75,7 @@ public class UIManager : MonoBehaviour
     [Header("===LOGIC===")]
     public GameState GameState;
     public UIToolTip ToolTip;
-    public RootScriptObject Dragging;
+    //public RootScriptObject Dragging;
 
     //public bool GameStateLinked = false;
     public bool UIinitialized = false;
@@ -515,7 +515,7 @@ public class UIManager : MonoBehaviour
                 UI_Options buttonOptions = new UI_Options(EffectsPrimer, PlaceHolderType.EFFECT);
                 foreach (BaseEffect effect in ((EffectAbility)selection).Effects)
                 {
-                    buttonOptions.Index_Size = index;
+                    buttonOptions.Index = index;
                     buttonOptions.Root = effect;
                     EffectsPrimer.Add(buttonOptions);
                     index++;

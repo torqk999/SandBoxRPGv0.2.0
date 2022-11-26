@@ -29,14 +29,14 @@ public class TippedUI : ExtendedUI
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        UIMan.ToolTip.ToggleTip(true, Title, Stats, Flavour);
+        UIMan.ToolTip.ToggleTip(this);
         //Stats.Clear();
         base.OnPointerEnter(eventData);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
-        UIMan.ToolTip.ToggleTip(false);
+        UIMan.ToolTip.ToggleTip();
         base.OnPointerExit(eventData);
     }
     public override void Assign(RootScriptObject root)

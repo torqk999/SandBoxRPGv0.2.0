@@ -84,7 +84,6 @@ public class PlayerController : CharacterController
 
         return true;
     }
-
     public bool ReturnCameraRay(out Ray ray)
     {
         ray = new Ray();
@@ -236,12 +235,9 @@ public class PlayerController : CharacterController
         if (CheckAction(KeyAction.CYCLE_TARGETS))
             CycleCharacterTargets();
 
-        /////////////////////
-        
-        if (Input.GetMouseButtonDown(0))
-        {
-
-        }
+        ////////////////////////////////////////////
+        // Future Migration of UI interactions... //
+        ////////////////////////////////////////////
     }
     void FlightControl(ref float x, ref float y, ref float z)
     {

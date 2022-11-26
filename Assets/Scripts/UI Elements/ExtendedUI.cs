@@ -36,42 +36,15 @@ public class ExtendedButtonEditor : Editor
 [Serializable]
 public struct UI_Options
 {
-    //public ButtonType ButtonType;
     public PlaceHolderType PlaceType;
-    public int Index_Size;
+    public int Index;
     public bool ResetImage;
     public RootScriptObject Root;
-    //public Page Page;
     public Page Page;
-    //public OccupantPanel OccupantPanel;
-    //public PlaceHolderPanel PlaceHolderPanel;
 
-
-    /// <summary>
-    /// For building a new root directly into the target folder
-    /// </summary>
-    /// <param name="root"> The root object that is tied to this button </param>
-    /// <param name="page"> The page component that currently houses this button </param>
-    /// <param name="index"> The index of this button and it's placeHolder </param>
-    public UI_Options(RootScriptObject root , Page page, PlaceHolderType type = default, int index = 0)
-    {
-        Index_Size = index;
-        Root = root;
-        Page = page;
-
-        ResetImage = false;
-        PlaceType = type;
-        //ButtonType = default;
-    }
-
-    /// <summary>
-    /// For build a new placeHolder directly into the target folder
-    /// </summary>
-    /// <param name="page"> The panel component that currently houses this button </param>
-    /// <param name="size"> The index of this placHolder and it's button </param>
     public UI_Options(Page page = null, PlaceHolderType type = default, bool resetImage = false, int size = 0)
     {
-        Index_Size = size;
+        Index = size;
         Root = null;
         Page = page;
 

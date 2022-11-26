@@ -6,78 +6,124 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+
+#region MOTH BALL
+
+/*void RaycastClick()
+    {
+        var pd = new PointerEventData(EventSystem.current);
+        pd.position = Input.mousePosition;
+        HitBuffer.Clear();
+        MyRayCaster.Raycast(pd, HitBuffer);
+        RootUI rootButton = null;
+        Page rootPage = null;
+
+        foreach (RaycastResult result in HitBuffer)
+        {
+            Debug.Log($"name: {result.gameObject.name}");
+
+            if (result.gameObject == null)
+                continue;
+
+            if (result.gameObject.tag == GlobalConstants.TAG_BUTTON &&
+                rootButton == null)
+                rootButton = result.gameObject.GetComponent<RootUI>();
+
+            if (result.gameObject.tag == GlobalConstants.TAG_PANEL &&
+                rootPage == null)
+                rootPage = result.gameObject.GetComponent<Page>();
+
+        }
+    }*/
+
+#endregion
+
 public class UIToolTip : MonoBehaviour
 {
     public GameObject DragButton;
     public RectTransform TextRect;
-    public RectTransform ContainerRect;
+    public Image ButtonImage;
+    public RootUI TargetRoot;
 
     public TextMeshProUGUI Title;
     public TextMeshProUGUI Stats;
     public TextMeshProUGUI Flavour;
 
-    public GraphicRaycaster MyRayCaster;
-    public List<RaycastResult> HitBuffer;
-
+    public bool FirstRefreshPhaseDone;
     public bool NeedsRefresh;
-    public bool TextActive;
+    public bool TippedHovered;
     public bool ButtonActive;
+    public bool ClickHeld;
 
     public Vector2 PlaceOffset;
     public Vector2 CurrentPosMouse;
     public Vector2 SizeOfRect;
 
-    bool UpdateText(StringBuilder title, StringBuilder stats = null, StringBuilder flavour = null)
+    void ClearAllText()
     {
-        if (title == null)
+        Title.text = string.Empty;
+        Stats.text = string.Empty;
+        Flavour.text = string.Empty;
+    }
+
+    bool UpdateHover(TippedUI tipped)
+    {
+        ClearAllText();
+        NeedsRefresh = true;
+        if (tipped == null)
             return false;
 
-        Title.text = title.ToString();
+        if (tipped.Title.Length == 0 &&
+            tipped.Stats.Length == 0 &&
+            tipped.Flavour.Length == 0)
+            return false;
 
-        if (stats != null)
-            Stats.text = stats.ToString();
+        Title.text = tipped.Title.ToString();
+
+        if (tipped.Stats != null)
+            Stats.text = tipped.Stats.ToString();
         else
             Stats.text = string.Empty;
 
-        if(flavour != null)
-            Flavour.text = flavour.ToString();
+        if(tipped.Flavour != null)
+            Flavour.text = tipped.Flavour.ToString();
         else
             Flavour.text = string.Empty;
-
-        NeedsRefresh = true;
+ 
         return true;
     }
 
-    public void ToggleTip(bool toggle,
-        StringBuilder title = null,
-        StringBuilder stats = null,
-        StringBuilder flavour = null)
+    public void ToggleTip(TippedUI tipped = null)
     {
-        TextActive = toggle;
-
-        if (TextActive)
-            UpdateText(title, stats, flavour);
+        TippedHovered = UpdateHover(tipped);
+        TargetRoot = (tipped != null) && (tipped is RootUI) ? (RootUI)tipped : null;
+        Debug.Log($"TargetRoot present: {TargetRoot != null}");
     }
 
-    public void ToggleDrag()
+    public void ToggleDrag(bool toggle = true)
     {
-        
+        if (TargetRoot == null)
+        {
+            DragButton.SetActive(false);
+            return;
+        }
+
+        DragButton.SetActive(toggle);
+        if (toggle)
+        {
+            Debug.Log("Setting Drag sprite!");
+            ButtonImage.sprite = TargetRoot.Root.sprite;
+        }
+        else
+        {
+            // drop code
+        }
     }
 
     void FollowMouse()
     {
-        if (TextActive && !ContainerRect.gameObject.activeSelf)
-            ContainerRect.gameObject.SetActive(true);
-        
-        if (!TextActive)
-        {
-            if (ContainerRect.gameObject.activeSelf)
-                ContainerRect.gameObject.SetActive(false);
-            return;
-        }
-
-        SizeOfRect = ContainerRect.sizeDelta;
-        PlaceOffset = ContainerRect.sizeDelta / 1.9f;
+        SizeOfRect = TextRect.sizeDelta;
+        PlaceOffset = TextRect.sizeDelta / 1.9f;
 
         if (CurrentPosMouse.x + SizeOfRect.x > Screen.width)
             PlaceOffset.x = -PlaceOffset.x;
@@ -85,7 +131,30 @@ public class UIToolTip : MonoBehaviour
         if (CurrentPosMouse.y + SizeOfRect.y > Screen.height)
             PlaceOffset.y = -PlaceOffset.y;
 
-        ContainerRect.position = CurrentPosMouse + PlaceOffset;
+        TextRect.position = CurrentPosMouse + PlaceOffset;
+    }
+
+    void CheckClick()
+    {
+        if (Input.GetMouseButtonDown(0) && !ClickHeld)
+        {
+            ClickHeld = true;
+            ToggleDrag(true);
+        }
+        if (!Input.GetMouseButton(0) && ClickHeld)
+        {
+            ClickHeld = false;
+            ToggleDrag(false);
+        }
+    }
+
+    void CheckText()
+    {
+        if (TippedHovered && TextRect.localScale == Vector3.zero)
+            TextRect.localScale = Vector3.one;
+
+        if (!TippedHovered && TextRect.localScale == Vector3.one)
+            TextRect.localScale = Vector3.zero;
     }
 
     void Refresh()
@@ -93,17 +162,26 @@ public class UIToolTip : MonoBehaviour
         if (!NeedsRefresh)
             return;
 
-        Canvas.ForceUpdateCanvases();
-        TextRect.GetComponent<VerticalLayoutGroup>().enabled = false;
-        TextRect.GetComponent<VerticalLayoutGroup>().enabled = true;
+        if (!FirstRefreshPhaseDone)
+        {
+            TextRect.localScale = Vector3.zero;
+            Canvas.ForceUpdateCanvases();
+            TextRect.GetComponent<VerticalLayoutGroup>().enabled = false;
+            TextRect.GetComponent<VerticalLayoutGroup>().enabled = true;
+            FirstRefreshPhaseDone = true;
+            return;
+        }
 
+        TextRect.localScale = TippedHovered ? Vector3.one : Vector3.zero;
+        FirstRefreshPhaseDone = false;
         NeedsRefresh = false;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        //ContainerRect = gameObject.GetComponent<RectTransform>();
+        ToggleTip();
+        //HitBuffer = new List<RaycastResult>();
     }
 
     // Update is called once per frame
@@ -111,6 +189,8 @@ public class UIToolTip : MonoBehaviour
     {
         CurrentPosMouse = (Vector2)Input.mousePosition;
         FollowMouse();
+        //CheckClick();
+        CheckText();
         Refresh();
     }
 }

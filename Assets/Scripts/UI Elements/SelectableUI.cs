@@ -30,23 +30,6 @@ public class SelectableUI : TippedUI
     public Color HoverColor;
     public Color SelectionColor;
 
-    /*public PlaceHolderType ReturnPlaceHolder(DraggableButton source)
-    {
-        switch (source)
-        {
-            case EquipmentButton:
-                return PlaceHolderType.EQUIP;
-
-            case InventoryButton:
-                return PlaceHolderType.INVENTORY;
-
-            case SkillButton:
-                return PlaceHolderType.SKILL;
-        }
-        return default;
-    }*/
-
-    
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
@@ -76,7 +59,7 @@ public class SelectableUI : TippedUI
         if (options.Page == null)
             return; // Assume no re-parent;
 
-        SlotIndex = options.Index_Size;
+        SlotIndex = options.Index;
         Panel = options.Page.Buttons;
         if (Panel != null &&
             Panel.List != null &&

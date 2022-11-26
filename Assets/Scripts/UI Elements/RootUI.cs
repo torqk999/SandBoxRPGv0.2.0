@@ -55,6 +55,8 @@ public class RootUI : SelectableUI
         Debug.Log($"Assigning: {root.Name}");
         base.Assign(root);
         Root = root;
+        if (Root != null)
+            Root.TextBuilder(ref Title, ref Stats, ref Flavour);
         
         UpdateSprite();
     }

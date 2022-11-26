@@ -52,22 +52,17 @@ public class Page : MonoBehaviour
         Debug.Log("Setup Call");
 
         ParentContent = gameObject.GetComponent<RectTransform>();
-        Resize(options.Index_Size);
+        Resize(options.Index); // Temporarily used as list size...
         PlaceType = options.PlaceType;
         PopulatePlaceHolders(options);
         //RefreshContentSize();
     }
 
-    /*public void ResizePlace(int size)
-    {
-        
-    }*/
-
     void PopulatePlaceHolders(UI_Options options)
     {
         for (int i = 0; i < Buttons.List.Capacity; i++)
         {
-            options.Index_Size = i;
+            options.Index = i;
             Buttons.List[i] = UIman.GeneratePlaceHolder(options);
         }
     }
@@ -79,7 +74,7 @@ public class Page : MonoBehaviour
         for (int i = 0; i < options.Page.OccupantRoots.Count; i++)
         {
             options.Root = options.Page.OccupantRoots[i];
-            options.Index_Size = i;
+            options.Index = i;
             options.Page.Add(options);
         }
     }
@@ -116,11 +111,6 @@ public class Page : MonoBehaviour
         Destroy(Buttons.List[index]);
         Buttons.List.RemoveAt(index);
     }
-
-    /*public void Resize()
-    {
-        OccupantRoots(Buttons.List.Count);
-    }*/
 
     public void Resize(int size)
     {
