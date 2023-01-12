@@ -861,6 +861,12 @@ MonoBehaviour:
   IntentForward: 0
   IntentRight: 0
   bIntent: 1
+  Slots:
+    Inventory: []
+    Equips: []
+    HotBar: []
+    Skills: []
+    Risiduals: []
   BaseStats:
     Reflection:
       STAMINA: 0
@@ -923,7 +929,6 @@ MonoBehaviour:
   ChannelTimer: 0
   GlobalCDtimer: 0
   AOE_buffer: []
-  Risiduals: []
   CurrentParty: {fileID: 0}
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
@@ -1032,8 +1037,12 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
+  IntentTimer: 0
+  IntentDuration: 0
   IntentVector: {x: 0, y: 0, z: 0}
   IntentRotations: {x: 0, y: 0, z: 0}
+  CurrentIntent: {x: 0, y: 0, z: 0}
+  CurrentRotation: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations: []
@@ -1244,6 +1253,12 @@ MonoBehaviour:
   IntentForward: 0
   IntentRight: 0
   bIntent: 0
+  Slots:
+    Inventory: []
+    Equips: []
+    HotBar: []
+    Skills: []
+    Risiduals: []
   BaseStats:
     Reflection:
       STAMINA: 0
@@ -1306,7 +1321,6 @@ MonoBehaviour:
   ChannelTimer: 0
   GlobalCDtimer: 0
   AOE_buffer: []
-  Risiduals: []
   CurrentParty: {fileID: 0}
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}
@@ -1399,8 +1413,12 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
+  IntentTimer: 0
+  IntentDuration: 0
   IntentVector: {x: 0, y: 0, z: 0}
   IntentRotations: {x: 0, y: 0, z: 0}
+  CurrentIntent: {x: 0, y: 0, z: 0}
+  CurrentRotation: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations:
@@ -2395,8 +2413,12 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
+  IntentTimer: 0
+  IntentDuration: 0
   IntentVector: {x: 0, y: 0, z: 0}
   IntentRotations: {x: 0, y: 0, z: 0}
+  CurrentIntent: {x: 0, y: 0, z: 0}
+  CurrentRotation: {x: 0, y: 0, z: 0}
   KeyAxisScale: 1
   MouseAxisScale: 1
   RollScale: 1
@@ -2524,6 +2546,8 @@ MonoBehaviour:
   bHUDactive: 1
   bGameMenuOpen: 0
   ROOT_SO_INDEX: 0
+  EFFECT_INDEX: 0
+  GENERATED: []
   RigidBodyPawns: []
 --- !u!1 &586143228
 GameObject:
@@ -3715,8 +3739,12 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
+  IntentTimer: 0
+  IntentDuration: 0
   IntentVector: {x: 0, y: 0, z: 0}
   IntentRotations: {x: 0, y: 0, z: 0}
+  CurrentIntent: {x: 0, y: 0, z: 0}
+  CurrentRotation: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations: []
@@ -5391,7 +5419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d110cab7f08b44eb2742501e6f2352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowMesh: 0
+  ShowMesh: 1
   bounds:
   - {fileID: 1041846034}
   - {fileID: 1194377652}
@@ -5731,8 +5759,12 @@ MonoBehaviour:
   CurrentPawn: {fileID: 0}
   CurrentCharacter: {fileID: 0}
   TargetCharacter: {fileID: 0}
+  IntentTimer: 0
+  IntentDuration: 0
   IntentVector: {x: 0, y: 0, z: 0}
   IntentRotations: {x: 0, y: 0, z: 0}
+  CurrentIntent: {x: 0, y: 0, z: 0}
+  CurrentRotation: {x: 0, y: 0, z: 0}
   Pathing: {fileID: 0}
   myStaticSequence:
     Operations:
@@ -5810,6 +5842,12 @@ MonoBehaviour:
   IntentForward: 0
   IntentRight: 0
   bIntent: 0
+  Slots:
+    Inventory: []
+    Equips: []
+    HotBar: []
+    Skills: []
+    Risiduals: []
   BaseStats:
     Reflection:
       STAMINA: 0
@@ -5872,7 +5910,6 @@ MonoBehaviour:
   ChannelTimer: 0
   GlobalCDtimer: 0
   AOE_buffer: []
-  Risiduals: []
   CurrentParty: {fileID: 0}
   SpawnParent: {fileID: 0}
   CurrentTargetCharacter: {fileID: 0}

@@ -11,6 +11,7 @@ public enum AnimatorType
     BIRD,
     FISH
 }
+
 public enum EquipSlot
 {
     HEAD,
@@ -60,7 +61,7 @@ public class Character : Pawn, Interaction
 
     [Header("References")]
     public List<Character> AOE_buffer;
-    //public List<BaseEffect> Risiduals;
+    // public List<BaseEffect> Risiduals;
     public Party CurrentParty;
     public Character SpawnParent; // WIP
     public Character CurrentTargetCharacter;
@@ -608,10 +609,10 @@ public class Character : Pawn, Interaction
         if (bIsPaused)
             return;
 
-        //UpdateLife();
-        //UpdatePassiveAbilities();
-        //UpdateRisidualEffects();
-        //UpdateAbilityCooldowns();
+        // UpdateLife();
+        // UpdatePassiveAbilities();
+        // UpdateRisidualEffects();
+        // UpdateAbilityCooldowns();
         UpdateGlobalCooldown();
         UpdateAnimation();
         UpdateAssetTimer();

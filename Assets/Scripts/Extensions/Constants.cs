@@ -133,15 +133,15 @@ public static class CharacterMath
 
         // ORC
         {
-            1,      // BERZERKER
+            3,      // BERZERKER
             1,      // WARRIOR
             1,      // MONK
             2,      // RANGER
             1,      // ROGUE
-            1,      // PYROMANCER
-            1.25f,  // GEOMANCER
-            1,      // NECROMANCER
-            1,      // AEROTHURGE
+            .5f,    // PYROMANCER
+            .5f,    // GEOMANCER
+            .5f,    // NECROMANCER
+            .5f,    // AEROTHURGE
             .5f,    // HYDROSOPHIST
         }
     };

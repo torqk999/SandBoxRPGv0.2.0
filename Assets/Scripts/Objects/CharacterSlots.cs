@@ -19,6 +19,4 @@ public struct CharacterSlots
     public List<RootScriptObject> HotBar;
     public List<RootScriptObject> Skills;
     public List<RootScriptObject> Risiduals;
-
-
 }

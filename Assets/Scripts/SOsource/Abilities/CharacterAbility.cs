@@ -25,7 +25,7 @@ public enum CastTarget
     RANDOM
 }
 
-//[CreateAssetMenu(fileName = "CharacterAbility", menuName = "ScriptableObjects/CharacterAbility")]
+// [CreateAssetMenu(fileName = "CharacterAbility", menuName = "ScriptableObjects/CharacterAbility")]
 public class CharacterAbility : RootScriptObject
 {
     [Header("Ability Properties")]
@@ -35,7 +35,7 @@ public class CharacterAbility : RootScriptObject
     public PsystemType CastType;
     public CastLocation CastLocation;
 
-    //public PsystemType CastTargetType;
+    // public PsystemType CastTargetType;
     public CastTarget CastTarget;
     public TargetType TargetType;
 
@@ -149,6 +149,7 @@ public class CharacterAbility : RootScriptObject
         Debug.Log("Initializing Abiliity...");
         base.InitializeRoot(state);
     }
+
     /*public override RootScriptObject GenerateRootObject(RootOptions options)
     {
         CharacterAbility newAbility = (CharacterAbility)base.GenerateRootObject(options);
@@ -156,6 +157,7 @@ public class CharacterAbility : RootScriptObject
         Debug.Log("Ability generated!");
         return newAbility;
     }*/
+
     public override void Clone(RootOptions options = default)
     {
         Debug.Log("Copying Ability...");

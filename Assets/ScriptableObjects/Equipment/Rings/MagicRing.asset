@@ -12,14 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 751ed8a25c5c15f478063149c8dc2c8f, type: 3}
   m_Name: MagicRing
   m_EditorClassIdentifier: 
-  itemID: 0
   Name: Magical Ring
-  Sprite: {fileID: 21300000, guid: c21d108321bb06445a4e9e730ce2905b, type: 3}
+  Flavour: 
+  sprite: {fileID: 0}
+  RootLogic:
+    Options:
+      GameState: {fileID: 0}
+      Source: {fileID: 0}
+      HomePanel: []
+      IsClone: 0
+      ID: 0
+      Index: 0
+      Quantity: 0
+    Clones: []
+    Button: {fileID: 0}
   Quality: 3
   GoldValue: 247
   Weight: 0.2
-  EquipSkill: 8
+  EquipSchool: 0
+  ClassType: 0
+  Abilities:
+  - {fileID: 0}
   EquipLevel: 3
-  AbilityID: 0
-  EquipAbilities:
-  - {fileID: 11400000, guid: 71489bca443e9084abfd927107e42678, type: 2}
+  EquipSlot: 0
+  EquippedTo: {fileID: 0}
+  HandPosition: 0
+  BaseMaterial: 0
+  HandleMaterial: 0
+  TrimMaterial: 0
+  Instantiation: {fileID: 0}
