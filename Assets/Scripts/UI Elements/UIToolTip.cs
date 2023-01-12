@@ -109,7 +109,8 @@ public class UIToolTip : MonoBehaviour
         if (!toggle)
         {
             Debug.Log("RePositionRoot!");
-            StoredRoot.Root.RePositionRoot(TargetPage, TargetRoot);
+            if (StoredRoot != null)
+                StoredRoot.Root.RePositionRoot(TargetPage, TargetRoot);
         }
         Debug.Log("Hello?");
     }

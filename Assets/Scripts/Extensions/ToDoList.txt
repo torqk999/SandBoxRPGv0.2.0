@@ -25,10 +25,13 @@ $ Character Canvas (Name, Level, HealthBar, Effects, Toggle)
      * evade
      * block
      * parry
+     * stagger
      * resistance
      * CoolDownBar
      * level scaling
      * race modifiers
+     * min/max
+     * crit
      * 
      * == MAYBE ==
      * phase? ghost?

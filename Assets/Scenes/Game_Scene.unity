@@ -5419,7 +5419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7d110cab7f08b44eb2742501e6f2352, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowMesh: 1
+  ShowMesh: 0
   bounds:
   - {fileID: 1041846034}
   - {fileID: 1194377652}
