@@ -63,7 +63,7 @@ public class UIToolTip : MonoBehaviour
         //Debug.Log("Updating Hover!");
 
         ClearAllText();
-        ToolTipCanvas.sortingOrder = 1;
+        //ToolTipCanvas.sortingOrder = 1;
         Canvas.ForceUpdateCanvases();
         NeedsRefresh = true;
         if (tipped == null)
@@ -119,6 +119,12 @@ public class UIToolTip : MonoBehaviour
     {
         SizeOfRect = ContainerRect.sizeDelta;
 
+        if (!TippedHovered)
+        {
+            ContainerRect.anchoredPosition = CurrentPosMouse + Vector2.one;
+            return;
+        }
+
         //ScreenOffset.x = Screen.width / 2;
         //ScreenOffset.y = Screen.height / 2;
         //PlaceOffset = (CurrentPosMouse - ScreenOffset) * 1.4f;
@@ -170,6 +176,11 @@ public class UIToolTip : MonoBehaviour
             return;
 
         Debug.Log("Refresh...");
+        LayoutRebuilder.ForceRebuildLayoutImmediate(ContainerRect);
+        NeedsRefresh = false;
+        return;
+
+        
 
         if (!RefreshPhaseDone[0])
         {
@@ -208,7 +219,7 @@ public class UIToolTip : MonoBehaviour
         {
             var csf = ContainerRect.GetComponent<ContentSizeFitter>();
             csf.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
-            yield return null;
+            yield return new WaitForFixedUpdate();
             csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         }
         this.StartCoroutine(Routine());
@@ -223,18 +234,18 @@ public class UIToolTip : MonoBehaviour
         pd.position = Input.mousePosition;
         HitBuffer.Clear();
         myRaycaster.Raycast(pd, HitBuffer);
-        
+
         //Debug.Log($"RaycastCount: {HitBuffer.Count}");
         foreach (RaycastResult result in HitBuffer)
         {
-            //Debug.Log($"name: {result.gameObject.name}");
+            Debug.Log($"name: {result.gameObject.name}");
 
             if (result.gameObject == null)
                 continue;
 
             if (result.gameObject.tag == GlobalConstants.TAG_BUTTON && !FoundRoot)
             {
-                //Debug.Log("Found Button Tag!");
+                Debug.Log("Found Button Tag!");
 
                 RootUI candidate = result.gameObject.GetComponent<RootUI>();
                 if (candidate != null)
@@ -294,8 +305,9 @@ public class UIToolTip : MonoBehaviour
         HitBuffer = new List<RaycastResult>();
         RefreshPhaseDone = new bool[3];
         PixelOffset = new Vector2(5, 5);
+        ToolTipCanvas.sortingOrder = 4;
         //ToggleTip();
-
+        //RefreshContentSize(); // <<<<<<<<<<<<<
 
         //HitBuffer = new List<RaycastResult>();
     }
@@ -314,6 +326,8 @@ public class UIToolTip : MonoBehaviour
         RayCastCleanup();
         CheckClick();
         CheckText();
+
+        
         Refresh();
     }
 }

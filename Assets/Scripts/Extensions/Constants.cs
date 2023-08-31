@@ -54,20 +54,20 @@ public static class CharacterMath
             int charLevel = sheet == null ? 0 : sheet.CharacterLevel;
             debug.Append("4\n");
 
-            debug.Append($"{charLevel * CharacterMath.CHAR_LEVEL_FACTOR}:" +
-                $"{weaponLevelFactor * CharacterMath.WEP_LEVEL_FACTOR}:" +
-                $"{skillLevel * CharacterMath.SKILL_MUL_LEVEL[school]}:" +
-                $"{CharacterMath.SKILL_MUL_RACE[(int)race, school]}");
+            debug.Append($"{charLevel * CHAR_LEVEL_FACTOR}:" +
+                $"{weaponLevelFactor * WEP_LEVEL_FACTOR}:" +
+                $"{skillLevel * SKILL_MUL_LEVEL[school]}:" +
+                $"{SKILL_MUL_RACE[(int)race, school]}");
 
             return 1 +                                                                  // Base
 
-            (((charLevel * CharacterMath.CHAR_LEVEL_FACTOR) +                           // Level
+            (((charLevel * CHAR_LEVEL_FACTOR) +                           // Level
 
-            (weaponLevelFactor * CharacterMath.WEP_LEVEL_FACTOR) +                      // Weapon
+            (weaponLevelFactor * WEP_LEVEL_FACTOR) +                      // Weapon
 
-            (skillLevel * CharacterMath.SKILL_MUL_LEVEL[school])) *                     // Skill
+            (skillLevel * SKILL_MUL_LEVEL[school])) *                     // Skill
 
-            CharacterMath.SKILL_MUL_RACE[(int)race, school]);                           // Race
+            SKILL_MUL_RACE[(int)race, school]);                           // Race
         }
         catch
         {
