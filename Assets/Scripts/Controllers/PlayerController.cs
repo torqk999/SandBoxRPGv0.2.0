@@ -197,7 +197,7 @@ public class PlayerController : CharacterController
 
         float x = MouseAxisScale * Input.GetAxisRaw("Mouse X");
         float y = MouseAxisScale * Input.GetAxisRaw("Mouse Y");
-        float z = Input.GetAxis("Roll") * RollScale;
+        float z = RollScale      * Input.GetAxis("Roll");
 
         // Looking
         UpdateCamera(ref x, ref y, ref z);
